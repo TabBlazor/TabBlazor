@@ -25,7 +25,7 @@ namespace Tabler.Docs.Components.Docs
             if (!string.IsNullOrWhiteSpace(Class) && string.IsNullOrEmpty(Code))
             {
                var basePath =  Directory.GetParent(Assembly.GetExecutingAssembly().Location).Parent.Parent.Parent.Parent.FullName;
-                const string projectName = "Tabler.Test.Common";
+                const string projectName = "Tabler.Docs";
                 var classPath = projectName + Class.Substring(projectName.Length).Replace(".", @"\");
                 var codePath = Path.Combine(basePath, $"{classPath}.razor");
 
