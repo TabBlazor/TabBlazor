@@ -1,1 +1,83 @@
-﻿Here are my Buttons docs
+﻿@page "/docs/buttons"
+
+<div class="page">
+
+    <TablerCard Size="TablerCardSize.Large">
+        <TablerCardBody>
+            <div class="d-flex">
+                <h2 class="h1 mt-0 mb-3">Buttons</h2>
+                <p class="ml-auto">
+                    <a href="https://getbootstrap.com/docs/4.4/components/buttons/" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon pr-1 text-blue"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        Bootstrap documentation
+                    </a>
+                </p>
+            </div>
+            <p>Use button styles that best suit your designs and encourage users to take the desired actions. You can customise the button's properties to improve the user experience of your website or system, changing the size, shape, colour and many more.</p>
+            
+            <DocsSnippet Centered="true" Class="@typeof(ButtonsBasic).ToString()" Title="Basics">
+
+                <Description>
+                    <p>As one of the most common elements of UI design, buttons have a very important function of engaging users with your website or system and guiding them in their actions. Use the <code class="highlighter-rouge">.btn</code> classes with the <code class="highlighter-rouge">&lt;button&gt;</code> element and add additional styling that will make your buttons serve their purpose and draw users’ attention.</p>
+                </Description>
+                <Example>
+                    <ButtonsBasic />
+                </Example>
+            </DocsSnippet>
+
+            <DocsSnippet Centered="true" Class="@typeof(ButtonsColor).ToString()" Title="Colors">
+                <Description>
+                    <p>Use the button classes that correspond to the function of your button. The big range of available colors will help you show your buttons’ purpose and make them easy to spot.</p>
+                </Description>
+                <Example>
+                    <ButtonsColor />
+                </Example>
+            </DocsSnippet>
+
+            <DocsSnippet Centered="true" Class="@typeof(ButtonsSize).ToString()" Title="Sizes">
+                <Description>
+                    <p>Set different button sizes</p>
+                </Description>
+                <Example>
+                    <ButtonsSize />
+                </Example>
+            </DocsSnippet>
+
+            <DocsSnippet Centered="true" Class="@typeof(ButtonsShape).ToString()" Title="Size">
+                <Description>
+                    <p>Set different button shapes</p>
+                </Description>
+                <Example>
+                    <ButtonsShape />
+                </Example>
+            </DocsSnippet>
+
+            <DocsSnippet Centered="true" Class="@typeof(ButtonsBehavior).ToString()" Title="Behavior">
+                <Description>
+                    <p>Buttons can be disabled and show loading icon</p>
+                </Description>
+                <Example>
+                    <ButtonsBehavior />
+                </Example>
+            </DocsSnippet>
+
+            <DocsSnippet Centered="true" Class="@typeof(ButtonsList).ToString()" Title="Button List">
+                <Description>
+                    <p>Buttons can be wrapped in a buttons list</p>
+                </Description>
+                <Example>
+                    <ButtonsList />
+                </Example>
+            </DocsSnippet>
+        </TablerCardBody>
+    </TablerCard>
+</div>
+
+@code {
+
+    public void TextChanged(ChangeEventArgs e)
+    {
+        var test = e.Value;
+    }
+
+}

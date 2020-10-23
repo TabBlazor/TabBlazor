@@ -1,0 +1,10 @@
+﻿@inherits TablerBaseComponent
+<HtmlElement Tag="@HtmlTag" 
+             class="@ClassNames" 
+             type="@InputType"
+             href="@Href"
+             @onclick="OnClick"
+             role="button"
+             @attributes="@UnmatchedParameters">
+    @ChildContent
+</HtmlElement>

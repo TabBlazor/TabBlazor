@@ -1,0 +1,20 @@
+﻿<div class="mb-3">
+    <h3>@Title</h3>
+    @Description
+    <div class="example no_toc_section example-bg @(Centered ? "example-centered" : "") @Class">
+        <div class="example-content">
+            <div class="example-column @(Columns > 0 ? $"example-column-{Columns}" : "")">
+                @Example
+            </div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Code))
+    {
+        <div class="example-code mt-3" style="background-color:black;color:lightgrey">
+            <figure class="highlight">
+                <pre><code class="language-html" data-lang="html">@Code</code></pre>
+            </figure>
+        </div>
+    }
+</div>
