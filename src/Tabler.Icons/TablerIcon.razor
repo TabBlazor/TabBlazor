@@ -1,0 +1,25 @@
+﻿
+<svg xmlns="http://www.w3.org/2000/svg"
+     @attributes="Attributes"
+     color="@Color"
+     width="@Size"
+     height="@Size"
+     viewBox="0 0 24 24"
+     stroke-width="@StrokeWidth"
+     stroke="currentColor"
+     fill="none"
+     stroke-linecap="round"
+     stroke-linejoin="round">
+    <use href=@($"_content/Tabler.Icons/icons/blazor-tabler-sprite.svg#tabler-{IconType.GetIconName()}") />
+
+    @*<use href=@($"_content/tabler-icons-blazor/icons/2fa.svg#tabler-2fa") />*@
+    @*@if (svgElements != null)
+    {
+        @((MarkupString)svgElements)
+    }*@
+</svg>
+
+
+
+
+

@@ -13,9 +13,4 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.0-rc.2.20475.17" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Tabler.Icons\Tabler.Icons.csproj" />
-    <ProjectReference Include="..\..\src\Tabler\Tabler.csproj" />
-  </ItemGroup>
-
 </Project>
