@@ -1,0 +1,41 @@
+﻿<h3>Icons List</h3>
+
+
+<div class="row mb-3">
+    <div class="col-2">
+        <div class="form-group">
+            <label>Size</label>
+            <input class="form-control" type="number" min="1" @bind-value="@size" />
+        </div>
+    </div>
+    <div class="col-2">
+        <div class="form-group">
+            <label>Stroke width</label>
+            <input class="form-control" type="number" min="0.1" step="0.1" @bind-value="@strokeWidth" />
+        </div>
+    </div>
+    <div class="col-2">
+        <div class="form-group">
+            <label>Color</label>
+            <input class="form-control" type="color" @bind="@color" @bind:event="oninput" />
+        </div>
+    </div>
+        <div class="col-2">
+            <div class="form-group">
+                <label>Search</label>
+                <input class="form-control" type="text" value="@searchText" @oninput="SearchIcons" />
+            </div>
+        </div>
+ </div>
+
+<div class="row">
+    @foreach (var icon in filteredIcons)
+    {
+        <div class="col  mb-3" title="@icon.GetIconName()">
+            <div style="min-width:80px" class="text-center">
+                <TablerIcon IconType="icon" Size="@size" StrokeWidth="strokeWidth" Color="@color" />
+                <div><small>@icon.GetIconName()</small></div>
+            </div>
+        </div>
+      }
+</div>

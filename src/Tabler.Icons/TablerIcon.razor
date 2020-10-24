@@ -10,13 +10,12 @@
      fill="none"
      stroke-linecap="round"
      stroke-linejoin="round">
-    <use href=@($"_content/Tabler.Icons/icons/blazor-tabler-sprite.svg#tabler-{IconType.GetIconName()}") />
+    @*<use href=@($"/_content/Tabler.Icons/icons/blazor-tabler-sprite.svg#tabler-{IconType.GetIconName()}") />*@
+    @if (svgElements != null)
+        {
+            @((MarkupString)svgElements)
+        }
 
-    @*<use href=@($"_content/tabler-icons-blazor/icons/2fa.svg#tabler-2fa") />*@
-    @*@if (svgElements != null)
-    {
-        @((MarkupString)svgElements)
-    }*@
 </svg>
 
 

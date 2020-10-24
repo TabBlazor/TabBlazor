@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Tabler.Icons;
 
 namespace Tabler.Docs.Server
 {
@@ -27,6 +28,7 @@ namespace Tabler.Docs.Server
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddSingleton<IconService>();
            
         }
 
