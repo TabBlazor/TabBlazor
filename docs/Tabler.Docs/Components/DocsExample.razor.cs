@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tabler.Docs.Components.Docs
+namespace Tabler.Docs.Components
 {
    public partial class DocsExample : ComponentBase
     {

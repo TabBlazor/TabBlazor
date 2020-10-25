@@ -1,0 +1,17 @@
+﻿@inject TablerToastService ToastService
+
+<TablerButton BackgroundColor="TablerColor.Primary" @onclick="ShowToast">Show Toast</TablerButton>
+<TablerButton BackgroundColor="TablerColor.Primary" @onclick="ShowToastManual">Show Toast manual remove</TablerButton>
+
+@code {
+    private async Task ShowToast()
+    {
+        await ToastService.AddToastAsync(new TablerToastService.Toast { Title = "Toast", SubTitle = "Sub title", Message = "This is a Tabler toast message that will be automatically removed after 3 seconds" });
+    }
+
+    private async Task ShowToastManual()
+    {
+        await ToastService.AddToastAsync(new TablerToastService.Toast { Title = "Manual remove", SubTitle = "Sub title", Message = "This is a Tabler toast message. Manual remove...", Delay = 0 });
+
+    }
+}

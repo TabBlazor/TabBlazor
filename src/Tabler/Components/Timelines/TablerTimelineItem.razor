@@ -1,9 +1,11 @@
 ﻿@inherits TablerBaseComponent
-<HtmlElement Tag="li" 
-             class="@ClassNames" 
+@namespace Tabler.Components
+
+<HtmlElement Tag="li"
+             class="@ClassNames"
              @onclick="OnClick"
              @attributes="@UnmatchedParameters">
-    
+
     @if (!string.IsNullOrWhiteSpace(IconName))
     {
         <div class="list-timeline-icon @IconColor.GetColorClass("bg")">@IconName</div>

@@ -28,7 +28,8 @@ namespace Tabler.Docs.Server
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<IconService>();
+            services.AddScoped<IconService>();
+            services.AddTabler();
            
         }
 

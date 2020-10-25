@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Tabler.Docs.Components.Docs
+namespace Tabler.Docs.Components
 {
     public partial class DocsSnippet : ComponentBase
     {
