@@ -1,0 +1,38 @@
+﻿@page "/docs/tabs"
+
+<div class="page">
+
+    <TablerCard Size="TablerCardSize.Large">
+        <TablerCardBody>
+            <div class="d-flex">
+                <h2 class="h1 mt-0 mb-3">Tabs</h2>
+
+            </div>
+            <p>Tabs...</p>
+
+            <DocsSnippet Centered="true" Class="@typeof(TabsBasic).ToString()" Title="Basics">
+                <Description>
+                    Basic tabs setup
+                </Description>
+                <Example>
+                    <div class="p-3" style="background-color: #f5f7fb">
+                        <TabsBasic />
+                    </div>
+
+                </Example>
+            </DocsSnippet>
+
+            <DocsSnippet Centered="true" Class="@typeof(TabsHeader).ToString()" Title="Header">
+                <Description>
+                    Use Header template to set tab header
+                </Description>
+                <Example>
+                    <div class="p-3" style="background-color: #f5f7fb">
+                        <TabsHeader />
+                    </div>
+
+                </Example>
+            </DocsSnippet>
+        </TablerCardBody>
+    </TablerCard>
+</div>

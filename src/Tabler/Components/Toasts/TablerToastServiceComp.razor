@@ -3,28 +3,24 @@
 
 @if (TablerToastService.Toasts.Any())
 {
+    <div style="position: fixed; top: 0; right: 0; z-index: 999999;">
+        @foreach (var toast in TablerToastService.Toasts)
+        {
+            <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" data-toggle="toast">
 
-@*<div style="position: absolute; top: 0; right: 0; z-index: 999999;">*@
-<div style="position: fixed; top: 0; right: 0; z-index: 999999;">
-    @*position:fixed;
-    top:0; /* Keep at the very top of the viewport */*@
-    @foreach (var toast in TablerToastService.Toasts)
-    {
-        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" data-toggle="toast">
-
-            <div class="toast-header">
-                @*<span class="avatar mr-2" style="background-image: url(...)"></span>*@
-                <strong class="mr-auto">@toast.Title</strong>
-                <small>@toast.SubTitle</small>
-                <button type="button" class="ml-2 btn-close" data-dismiss="toast" aria-label="Close" @onclick="() => TablerToastService.Toasts.Remove(toast)">
-                </button>
+                <div class="toast-header">
+                    @*<span class="avatar mr-2" style="background-image: url(...)"></span>*@
+                    <strong class="mr-auto">@toast.Title</strong>
+                    <small>@toast.SubTitle</small>
+                    <button type="button" class="ml-2 btn-close" data-dismiss="toast" aria-label="Close" @onclick="() => TablerToastService.Toasts.Remove(toast)">
+                    </button>
+                </div>
+                <div class="toast-body">
+                    @toast.Message
+                </div>
             </div>
-            <div class="toast-body">
-                @toast.Message
-            </div>
-        </div>
-    }
-</div>
+        }
+    </div>
 }
 
 
