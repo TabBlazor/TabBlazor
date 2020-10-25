@@ -9,7 +9,24 @@ using System.Xml.Linq;
 
 namespace Tabler.Icons
 {
-    public class IconService
+
+    public interface IIconService
+    {
+        Task<string> GetIcon(string iconName);
+    }
+
+    public class FakeIconService : IIconService
+    {
+        public async Task<string> GetIcon(string iconName)
+        {
+            var sampleIcon = @"<path stroke='none' d='M0 0h24v24H0z' fill='none'/>
+                              <path d='M8 8a3.5 3 0 0 1 3.5 -3h1a3.5 3 0 0 1 3.5 3a3 3 0 0 1 -2 3a3 4 0 0 0 -2 4' />
+                              <line x1='12' y1='19' x2='12' y2='19.01' />";
+            return sampleIcon;
+        }
+    }
+
+    public class IconService : IIconService
     {
         private readonly HttpClient httpClient = new HttpClient();
         private Dictionary<string, string> iconsCache;

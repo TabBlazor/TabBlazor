@@ -12,7 +12,7 @@ namespace Tabler.Icons
 {
     public partial class TablerIcon : ComponentBase
     {
-        [Inject] public IconService IconService { get; set; }
+        [Inject] public IIconService IconService { get; set; }
         [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object> Attributes { get; set; }
         [Parameter] public TablerIconType IconType { get; set; }
         [Parameter] public string Color { get; set; }

@@ -2,11 +2,13 @@
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using Tabler.Docs.Services;
 
 namespace Tabler.Docs.Components
 {
     public partial class DocsSnippet : ComponentBase
     {
+        [Inject] ICodeSnippetService CodeSnippetService { get; set; }
         [Parameter] public string Title { get; set; }
         [Parameter] public RenderFragment Description { get; set; }
 
@@ -24,19 +26,10 @@ namespace Tabler.Docs.Components
 
             if (!string.IsNullOrWhiteSpace(Class) && string.IsNullOrEmpty(Code))
             {
-               var basePath =  Directory.GetParent(Assembly.GetExecutingAssembly().Location).Parent.Parent.Parent.Parent.FullName;
-                const string projectName = "Tabler.Docs";
-                var classPath = projectName + Class.Substring(projectName.Length).Replace(".", @"\");
-                var codePath = Path.Combine(basePath, $"{classPath}.razor");
 
-                if (File.Exists(codePath))
-                {
-                    Code = File.ReadAllText(codePath);
-                }
-               else
-                {
-                    Code = $"Unable to find code at {codePath}";
-                }
+                Code = await CodeSnippetService.GetCodeSnippet(Class);
+
+              
             
             }
 
