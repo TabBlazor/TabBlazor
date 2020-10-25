@@ -21,6 +21,7 @@ jobs:
         # Generate the website
         - name: Publish
           run: dotnet publish Tabler.Docs.Client.csproj --configuration Release
+          working-directory: ./docs/Tabler.Docs
 
         # Publish the website
         - name: GitHub Pages action
