@@ -1,0 +1,40 @@
+﻿@page "/docs/badges"
+
+<div class="page">
+    <TablerCard Size="TablerCardSize.Large">
+        <TablerCardBody>
+            <div class="d-flex">
+                <h2 class="h1 mt-0 mb-3">Badges</h2>
+            </div>
+            <p>Badges are..</p>
+            <DocsSnippet Centered="true" Class="@typeof(BadgesBasic).ToString()" Title="Default">
+                <Description>
+                </Description>
+                <Example>
+                    <BadgesBasic />
+                </Example>
+            </DocsSnippet>
+
+            <DocsSnippet Centered="true" Class="@typeof(BadgesPill).ToString()" Title="Shape">
+                <Description>
+                    Set shape to Pill to get a more rounded shape
+                </Description>
+                <Example>
+                    <BadgesPill />
+                </Example>
+            </DocsSnippet>
+
+
+            <DocsSnippet Centered="true" Class="@typeof(BadgesEmpty).ToString()" Title="Empty">
+                <Description>
+                    Empty..
+                </Description>
+                <Example>
+                    <BadgesEmpty />
+                </Example>
+            </DocsSnippet>
+
+        </TablerCardBody>
+    </TablerCard>
+
+</div>

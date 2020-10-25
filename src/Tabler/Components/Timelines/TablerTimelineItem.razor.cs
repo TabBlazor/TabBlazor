@@ -4,7 +4,8 @@ namespace Tabler.Components
 {
     public partial class TablerTimelineItem : TablerBaseComponent
     {
-        [Parameter] public string IconName { get; set; }
+        [Parameter] public string IconText { get; set; }
+        [Parameter] public RenderFragment IconTemplate { get; set; }
         [Parameter] public TablerColor IconColor { get; set; }
         [Parameter] public string Time { get; set; }
         [Parameter] public string Title { get; set; }

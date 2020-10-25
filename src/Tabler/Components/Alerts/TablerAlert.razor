@@ -1,0 +1,22 @@
+﻿@inherits TablerBaseComponent
+@namespace Tabler.Components
+@if (!dismissed)
+{
+    <HtmlElement Tag="div"
+                 class="@ClassNames"
+                 @onclick="OnClick"
+                 @attributes="@UnmatchedParameters">
+
+        @if (Dismissable)
+        {
+            <button data-dismiss="alert" class="btn-close" @onclick="DismissAlert" />
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Title))
+        {
+            <h4>@Title</h4>
+        }
+
+        @ChildContent
+    </HtmlElement>
+}
