@@ -20,7 +20,7 @@ jobs:
 
         # Generate the website
         - name: Publish
-          run: dotnet publish Tabler.Docs.Client.csproj  --p:BlazorEnableCompression=false --configuration Release --output build
+          run: dotnet publish Tabler.Docs.Client.csproj -p:BlazorEnableCompression=false --configuration Release --output build
           working-directory: ./docs/Tabler.Docs.Client
 
         # Publish the website
