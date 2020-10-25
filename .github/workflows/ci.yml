@@ -20,7 +20,7 @@ jobs:
 
         # Generate the website
         - name: Publish
-          run: dotnet publish Tabler.Docs.Client.csproj -p:BlazorEnableCompression=false --configuration Release --output build
+          run: dotnet publish Tabler.Docs.Client.csproj -p:BlazorEnableCompression=false --configuration Release
           working-directory: ./docs/Tabler.Docs.Client
 
         # Publish the website
@@ -30,7 +30,7 @@ jobs:
           with:
             github_token: ${{ secrets.PUBLISH_TOKEN }}
             publish_branch: gh-pages
-            publish_dir: docs/Tabler.Docs.Client/bin/build
+            publish_dir: bin/Release/netstandard2.1/publish/wwwroot
             allow_empty_commit: false
             keep_files: false
             force_orphan: true
