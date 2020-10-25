@@ -12,7 +12,7 @@ jobs:
         - name: Setup .NET Core
           uses: actions/setup-dotnet@v1
           with:
-            dotnet-version: 5.0.0-rc.2.20475.5
+            dotnet-version: 5.0.100-rc.2.20479.15
 
         # Run tests
         - name: Test
