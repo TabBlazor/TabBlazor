@@ -1,7 +1,7 @@
 name: 'Publish to Github pages'
 on: push
 env:
-  PUBLISH_DIR: bin/Release/net5.0/publish/wwwroot
+  PUBLISH_DIR: docs/Tabler.Docs.Client/bin/Release/net5.0/publish/wwwroot
 
 jobs:
   build:
