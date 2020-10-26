@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tabler.Docs", "docs\Tabler.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tabler.Icons", "src\Tabler.Icons\Tabler.Icons.csproj", "{8BD1DCC2-DF87-4F23-AF06-EEEA299431E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tabler.Docs.Client", "docs\Tabler.Docs.Client\Tabler.Docs.Client.csproj", "{47975C0E-BD4C-48F0-8C18-83E30F2C88A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tabler.Docs.Client", "docs\Tabler.Docs.Client\Tabler.Docs.Client.csproj", "{47975C0E-BD4C-48F0-8C18-83E30F2C88A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

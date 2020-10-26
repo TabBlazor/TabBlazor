@@ -42,21 +42,23 @@ namespace Tabler.Docs.Services
 
         public async Task<string> GetCodeSnippet(string className)
         {
-            var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Blazor-Tabler", "1"));
 
-            try
-            {
-                var names = className.Split(".");
-                var folder = names.SkipLast(1).Last();
-                var fileName = $"{names.Last()}.razor";
-                var filePath = $"{baseUrl}/{folder}/{fileName}";
-                return  await httpClient.GetStringAsync(filePath);
-            }
-            catch (Exception ex)
-            {
-                return $"Unable to load code. Error: {ex.Message}";
-            }
+            return "Temporary disbled..";
+            //var httpClient = new HttpClient();
+            //httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Blazor-Tabler", "1"));
+
+            //try
+            //{
+            //    var names = className.Split(".");
+            //    var folder = names.SkipLast(1).Last();
+            //    var fileName = $"{names.Last()}.razor";
+            //    var filePath = $"{baseUrl}/{folder}/{fileName}";
+            //    return  await httpClient.GetStringAsync(filePath);
+            //}
+            //catch (Exception ex)
+            //{
+            //    return $"Unable to load code. Error: {ex.Message}";
+            //}
 
          
         }
