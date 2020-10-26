@@ -9,7 +9,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Tabler.Docs.Services;
-using Tabler.Icons;
+
 
 namespace Tabler.Docs.Client
 {
@@ -26,8 +26,8 @@ namespace Tabler.Docs.Client
             //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
             builder.Services.AddTabler();
-            builder.Services.AddScoped<IIconService, IconService>();
-            builder.Services.AddScoped<ICodeSnippetService, FakeSnippetService>();
+            //builder.Services.AddScoped<IIconService, IconService>();
+            builder.Services.AddScoped<ICodeSnippetService, GitHubSnippetService>();
             await builder.Build().RunAsync();
         }
     }

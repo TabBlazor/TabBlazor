@@ -1,4 +1,5 @@
-﻿
+﻿@namespace Tabler.Components
+
 <svg xmlns="http://www.w3.org/2000/svg"
      @attributes="Attributes"
      color="@Color"
@@ -10,14 +11,8 @@
      fill="none"
      stroke-linecap="round"
      stroke-linejoin="round">
-    @*<use href=@($"/_content/Tabler.Icons/icons/blazor-tabler-sprite.svg#tabler-{IconType.GetIconName()}") />*@
-    @if (svgElements != null)
-        {
-            @((MarkupString)svgElements)
-        }
+    @if (Elements != null)
+    {
+        @((MarkupString)Elements)
+    }
 </svg>
-
-
-
-
-

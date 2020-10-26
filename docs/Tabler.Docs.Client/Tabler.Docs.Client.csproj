@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Tabler.Icons\Tabler.Icons.csproj" />
     <ProjectReference Include="..\Tabler.Docs\Tabler.Docs.csproj" />
   </ItemGroup>
 

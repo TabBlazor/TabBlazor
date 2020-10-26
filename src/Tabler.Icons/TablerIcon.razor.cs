@@ -18,12 +18,19 @@ namespace Tabler.Icons
         [Parameter] public string Color { get; set; }
         [Parameter] public int Size { get; set; } = 24;
         [Parameter] public double StrokeWidth { get; set; } = 2;
+        [Parameter] public string Svg { get; set; }
 
         private TablerIconType? iconType;
         private string svgElements;
 
         protected override async Task OnParametersSetAsync()
         {
+            if (Svg != null)
+            {
+                svgElements = Svg;
+                return;
+            }
+
             if (iconType != IconType || string.IsNullOrWhiteSpace(svgElements))
             {
                 svgElements = await IconService.GetIcon(IconType.GetIconName());
