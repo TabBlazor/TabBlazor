@@ -27,7 +27,7 @@ namespace Tabler.Docs.Client
 
             builder.Services.AddTabler();
             builder.Services.AddScoped<IIconService, IconService>();
-            builder.Services.AddScoped<ICodeSnippetService, GitHubSnippetService>();
+            builder.Services.AddScoped<ICodeSnippetService, FakeSnippetService>();
             await builder.Build().RunAsync();
         }
     }

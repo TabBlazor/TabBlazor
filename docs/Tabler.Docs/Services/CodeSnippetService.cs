@@ -15,6 +15,15 @@ namespace Tabler.Docs.Services
     {
         public Task<string> GetCodeSnippet(string className);
     }
+
+    public class FakeSnippetService : ICodeSnippetService
+    {
+        public Task<string> GetCodeSnippet(string className)
+        {
+            return Task.FromResult("Source code view is disabled");
+        }
+    }
+
     public class LocalSnippetService : ICodeSnippetService
     {
         public async Task<string> GetCodeSnippet(string className)
@@ -49,11 +58,6 @@ namespace Tabler.Docs.Services
 
         public async Task<string> GetCodeSnippet(string className)
         {
-
-            //return "Temporary disbled..";
-            var httpClient = httpClientFactory.CreateClient("GitHub");
-            //httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Blazor-Tabler", "1"));
-
             try
             {
                 var names = className.Split(".");
@@ -61,52 +65,17 @@ namespace Tabler.Docs.Services
                 var fileName = $"{names.Last()}.razor";
                 var filePath = $"{baseUrl}/{folder}/{fileName}";
                 Console.WriteLine($"Try to access github with path {filePath}");
-                return await httpClient.GetStringAsync(filePath);
+
+                using var httpClient = httpClientFactory.CreateClient("GitHub");
+                using var stream = await httpClient.GetStreamAsync(filePath);
+                StreamReader reader = new StreamReader(stream);
+                return reader.ReadToEnd();
+                // return await httpClient.GetStringAsync(filePath);
             }
             catch (Exception ex)
             {
                 return $"Unable to load code. Error: {ex.Message}";
             }
-
-
         }
-        //public async Task<List<FileData>> GetFilesAsync(string repo, string path)
-        //{
-        //    var result = new List<FileData>();
-
-        //    var httpClient = new HttpClient();
-        //    httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Blazor-Icons", "1"));
-
-        //    var contentsUrl = $"https://api.github.com/repos/{repo}/contents/{path}";
-        //    var contentsJson = await httpClient.GetStringAsync(contentsUrl);
-        //    var contents = (JArray)JsonConvert.DeserializeObject(contentsJson);
-        //    //var counter = 0;
-        //    foreach (var file in contents)
-        //    {
-        //        //counter++;
-        //        //if (counter >= 9) { return result; }
-        //        var fileType = (string)file["type"];
-        //        //if (fileType == "dir")
-        //        //{
-        //        //    var directoryContentsUrl = (string)file["url"];
-        //        //    // use this URL to list the contents of the folder
-        //        //    Console.WriteLine($"DIR: {directoryContentsUrl}");
-        //        //}
-        //        if (fileType == "file")
-        //        {
-        //            var fileData = new FileData();
-        //            fileData.FileName = (string)file["name"];
-        //            fileData.Data = await httpClient.GetByteArrayAsync((string)file["download_url"]);
-        //            result.Add(fileData);
-        //            Console.WriteLine($"Added: {fileData.FileName}");
-
-
-        //        }
-        //    }
-        //    return result;
-        //}
-
     }
-
-
 }
