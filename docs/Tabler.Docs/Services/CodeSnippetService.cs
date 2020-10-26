@@ -60,6 +60,7 @@ namespace Tabler.Docs.Services
                 var folder = names.SkipLast(1).Last();
                 var fileName = $"{names.Last()}.razor";
                 var filePath = $"{baseUrl}/{folder}/{fileName}";
+                Console.WriteLine($"Try to access github with path {filePath}");
                 return await httpClient.GetStringAsync(filePath);
             }
             catch (Exception ex)
