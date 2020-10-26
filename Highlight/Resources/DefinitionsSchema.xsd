@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:complexType name="defaultType">
+        <xs:sequence>
+            <xs:element name="font" type="fontType" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="styleType">
+        <xs:attribute name="foreColor" type="xs:string" use="required" />
+        <xs:attribute name="backColor" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="fontType">
+        <xs:sequence>
+            <xs:element name="bracketStyle" type="styleType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="attributeNameStyle" type="styleType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="attributeValueStyle" type="styleType" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="optional" />
+        <xs:attribute name="size" type="xs:integer" use="optional" />
+        <xs:attribute name="style" type="xs:string" use="optional" />
+        <xs:attribute name="foreColor" type="xs:string" use="optional" />
+        <xs:attribute name="backColor" type="xs:string" use="optional" />
+    </xs:complexType>
+
+    <xs:element name="word" />
+
+    <xs:complexType name="definitionType">
+        <xs:sequence>
+            <xs:element name="default" type="defaultType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="pattern" type="patternType" maxOccurs="unbounded" minOccurs="1" />
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="caseSensitive" use="required" type="xs:boolean" />
+    </xs:complexType>
+
+    <xs:element name="definitions">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="definition" type="definitionType" maxOccurs="unbounded" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="patternType">
+        <xs:sequence>
+            <xs:element name="font" type="fontType" minOccurs="0" maxOccurs="1" />
+            <xs:element ref="word" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="name" use="required" type="xs:string" />
+        <xs:attribute name="type" use="required" type="constructType" />
+        <xs:attribute name="beginsWith" type="xs:string" use="optional" />
+        <xs:attribute name="endsWith" type="xs:string" use="optional" />
+        <xs:attribute name="escapesWith" type="xs:string" use="optional" />
+        <xs:attribute name="highlightAttributes" type="xs:boolean" use="optional" />
+    </xs:complexType>
+
+    <xs:simpleType name="constructType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="block" />
+            <xs:enumeration value="word" />
+            <xs:enumeration value="markup" />
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

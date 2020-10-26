@@ -13,9 +13,9 @@
 
     @if (!string.IsNullOrWhiteSpace(Code))
     {
-        <div class="example-code mt-3" style="background-color:black;color:lightgrey">
+        <div class="example-code mt-3" >
             <figure class="highlight">
-                <pre><code class="language-html" data-lang="html">@Code</code></pre>
+                <pre><code class="language-html" data-lang="html">  @((MarkupString)@Code)</code></pre>
             </figure>
         </div>
     }

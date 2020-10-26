@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Highlight\Highlight.csproj" />
     <ProjectReference Include="..\..\src\Tabler\Tabler.csproj" />
   </ItemGroup>
 
