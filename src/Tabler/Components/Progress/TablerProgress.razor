@@ -1,0 +1,19 @@
+﻿@inherits TablerBaseComponent
+@namespace Tabler.Components
+
+@*<HtmlElement Tag="@HtmlTag"
+             class="@ClassNames"
+             @onclick="OnClick"
+             @attributes="@UnmatchedParameters">
+    @ChildContent
+</HtmlElement>*@
+
+<div class="@ClassNames" @attributes="@UnmatchedParameters" @onclick="OnClick">
+    <div class="@BarClassNames" style="width: @Precentage.ToString()%" role="progressbar" aria-valuenow="@Precentage" aria-valuemin="0" aria-valuemax="100">
+        @if (!string.IsNullOrEmpty(Text))
+        {
+            <span>@Text</span>
+        }
+
+    </div>
+</div>

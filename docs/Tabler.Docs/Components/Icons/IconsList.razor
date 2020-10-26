@@ -28,11 +28,11 @@
         </div>
  </div>
 
-<div class="row" style="min-height:400px">
+<div class="row iconlist-container">
     @foreach (var icon in filteredIcons)
     {
         <div class="col  mb-3" title="@icon.Name">
-            <div style="min-width:80px" class="text-center">
+            <div class="iconlist-item text-center ">
                 <TablerIcon Size="@size" Elements="@icon.Elements" StrokeWidth="strokeWidth" Color="@color" />
                 <div><small>@icon.Name</small></div>
             </div>

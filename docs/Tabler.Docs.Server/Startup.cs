@@ -24,7 +24,7 @@ namespace Tabler.Docs.Server
             services.AddRazorPages();
             services.AddServerSideBlazor();
             //services.AddScoped<IIconService, FakeIconService>();
-            services.AddScoped<ICodeSnippetService, FakeSnippetService>();
+            services.AddScoped<ICodeSnippetService, LocalSnippetService>();
             services.AddTabler();
            
         }

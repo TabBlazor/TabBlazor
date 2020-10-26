@@ -1,0 +1,8 @@
+﻿@inherits TablerBaseComponent
+@namespace Tabler.Components
+<HtmlElement Tag="div" 
+             class="@ClassNames" 
+             @onclick="OnClick"
+             @attributes="@UnmatchedParameters">
+    @ChildContent
+</HtmlElement>

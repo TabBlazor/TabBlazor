@@ -16,3 +16,11 @@
         right: 0.75rem;
         top: 0.5rem;
     }
+
+.iconlist-container {
+    min-height:400px
+}
+
+.iconlist-item {
+  min-width:80px;
+}
