@@ -22,6 +22,13 @@ jobs:
         - name: Publish
           run: dotnet publish Tabler.Docs.Client.csproj -p:BlazorEnableCompression=false --configuration Release
           working-directory: ./docs/Tabler.Docs.Client
+        
+        # Rewrite Base Url
+        - name: Rewrite base href
+          uses: SteveSandersonMS/ghaction-rewrite-base-href@v1
+          with:
+            html_path: ${{ env.PUBLISH_DIR }}/index.html
+            base_href: /Blazor-Tabler/
 
         # Publish the website
         - name: GitHub Pages action
