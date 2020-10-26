@@ -28,30 +28,32 @@ namespace Tabler.Icons
 
     public class IconService : IIconService
     {
-        private readonly HttpClient httpClient = new HttpClient();
+
+
+        //private readonly HttpClient httpClient = new HttpClient();
         private Dictionary<string, string> iconsCache;
-        private bool isClientSide; 
+        private bool isClientSide;
 
         private bool isLoading = false;
         private XElement iconSprite = null;
+        private readonly IHttpClientFactory httpClientFactory;
 
-
-        public IconService()
+        public IconService(IHttpClientFactory httpClientFactory)
         {
-        //    this.httpClient = httpClient;
-            isClientSide = Type.GetType("Mono.Runtime") != null;
-
+            this.httpClientFactory = httpClientFactory;
         }
+
+    
 
         public async Task<string> GetIcon(string iconName)
         {
 
-           while (isLoading)
+            while (isLoading)
             {
                 await Task.Delay(25);
             }
 
-           if (iconsCache == null)
+            if (iconsCache == null)
             {
                 await LoadIcons();
             }
@@ -69,63 +71,42 @@ namespace Tabler.Icons
 
         private async Task LoadIcons()
         {
-             isLoading = true;
-            
-            if (iconsCache == null) { iconsCache = new Dictionary<string, string>(); }
-            
-            var url = $"/_content/Tabler.Icons/icons/blazor-tabler-sprite.svg";
-            url = "https://localhost:44362/_content/Tabler.Icons/icons/blazor-tabler-sprite.svg";
+            isLoading = true;
 
-            var stream = await httpClient.GetStreamAsync(url);
-
-            var token = new CancellationToken();
-            iconSprite = (await XDocument.LoadAsync(stream, LoadOptions.None, token)).Root;
-
-            var iconElements = iconSprite.Descendants().Where(e => e.Name.LocalName == "symbol");
-
-            foreach (var iconElement in iconElements)
+            var httpClient = httpClientFactory.CreateClient("Local");
+            try
             {
-                var iconName = iconElement.Attributes().First(e => e.Name == "id").Value;
-                var data = string.Concat(iconElement.Nodes().Select(x => x.ToString()).ToArray());
-                if (!iconsCache.ContainsKey(iconName))
-                {
-                    iconsCache.Add(iconName, data);
-                }
-                
-            }
-
-            isLoading = false;
-        }
-
-        public async Task DownloadAllIcons()
-        {
-            //var icons = Enum.GetValues(typeof(TablerIconType)).Cast<TablerIconType>().ToList();
-            //var tasks = new List<Task>();
-            //foreach (var icon in icons)
-            //{
-            //    tasks.Add(GetIconElementsAsync(icon.GetIconName()));
-            //}
-            //await Task.WhenAll(tasks);
-        }
-
-        public async Task<string> GetIconElementsAsync(string iconName)
-        {
-            if (!iconsCache.ContainsKey(iconName)) {
-                var url = $"_content/tabler-icons-blazor/icons/tabler/{iconName}.svg";
-
+                if (iconsCache == null) { iconsCache = new Dictionary<string, string>(); }
+                var url = $"_content/Tabler.Icons/icons/blazor-tabler-sprite.svg";
                 var stream = await httpClient.GetStreamAsync(url);
-                var svg = XDocument.Load(stream).Root;
-                var data = string.Concat(svg.Nodes().Select(x => x.ToString()).ToArray());
 
-                if (!iconsCache.ContainsKey(iconName))
+                var token = new CancellationToken();
+                iconSprite = (await XDocument.LoadAsync(stream, LoadOptions.None, token)).Root;
+
+                var iconElements = iconSprite.Descendants().Where(e => e.Name.LocalName == "symbol");
+
+                foreach (var iconElement in iconElements)
                 {
-                    iconsCache.Add(iconName, data);
-                }
-                   
-            }
+                    var iconName = iconElement.Attributes().First(e => e.Name == "id").Value;
+                    var data = string.Concat(iconElement.Nodes().Select(x => x.ToString()).ToArray());
+                    if (!iconsCache.ContainsKey(iconName))
+                    {
+                        iconsCache.Add(iconName, data);
+                    }
 
-            return iconsCache[iconName];
+                }
+
+                isLoading = false;
+            }
+            catch (Exception)
+            {
+
+
+            }
         }
+
+    
+    
 
     }
 }

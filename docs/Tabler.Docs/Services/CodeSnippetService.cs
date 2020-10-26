@@ -39,28 +39,35 @@ namespace Tabler.Docs.Services
     {
         const string repo = "joadan/Blazor-Tabler";
         const string baseUrl = "https://raw.githubusercontent.com/joadan/Blazor-Tabler/master/docs/Tabler.Docs/Components";
+        private readonly IHttpClientFactory httpClientFactory;
+
+        public GitHubSnippetService(IHttpClientFactory httpClientFactory)
+        {
+            this.httpClientFactory = httpClientFactory;
+        }
+
 
         public async Task<string> GetCodeSnippet(string className)
         {
 
-            return "Temporary disbled..";
-            //var httpClient = new HttpClient();
+            //return "Temporary disbled..";
+            var httpClient = httpClientFactory.CreateClient("GitHub");
             //httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Blazor-Tabler", "1"));
 
-            //try
-            //{
-            //    var names = className.Split(".");
-            //    var folder = names.SkipLast(1).Last();
-            //    var fileName = $"{names.Last()}.razor";
-            //    var filePath = $"{baseUrl}/{folder}/{fileName}";
-            //    return  await httpClient.GetStringAsync(filePath);
-            //}
-            //catch (Exception ex)
-            //{
-            //    return $"Unable to load code. Error: {ex.Message}";
-            //}
+            try
+            {
+                var names = className.Split(".");
+                var folder = names.SkipLast(1).Last();
+                var fileName = $"{names.Last()}.razor";
+                var filePath = $"{baseUrl}/{folder}/{fileName}";
+                return await httpClient.GetStringAsync(filePath);
+            }
+            catch (Exception ex)
+            {
+                return $"Unable to load code. Error: {ex.Message}";
+            }
 
-         
+
         }
         //public async Task<List<FileData>> GetFilesAsync(string repo, string path)
         //{
