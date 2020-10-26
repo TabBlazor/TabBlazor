@@ -28,14 +28,14 @@
         </div>
  </div>
 
-<div class="row">
-    @*@foreach (var icon in filteredIcons)
+<div class="row" style="min-height:400px">
+    @foreach (var icon in filteredIcons)
     {
-        <div class="col  mb-3" title="@icon.GetIconName()">
+        <div class="col  mb-3" title="@icon.Name">
             <div style="min-width:80px" class="text-center">
-                <TablerIcon IconType="icon" Size="@size" StrokeWidth="strokeWidth" Color="@color" />
-                <div><small>@icon.GetIconName()</small></div>
+                <TablerIcon Size="@size" Elements="@icon.Elements" StrokeWidth="strokeWidth" Color="@color" />
+                <div><small>@icon.Name</small></div>
             </div>
         </div>
-      }*@
+      }
 </div>
