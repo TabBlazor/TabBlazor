@@ -11,6 +11,7 @@ namespace Tabler.Docs.Components
    public partial class DocsExample : ComponentBase
     {
         [Parameter] public string Title { get; set; }
+        [Parameter] public RenderFragment ChildContent { get; set; }
         [Parameter] public RenderFragment Description { get; set; }
     }
 }

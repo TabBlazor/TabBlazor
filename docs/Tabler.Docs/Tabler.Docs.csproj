@@ -4,18 +4,26 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="compilerconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="compilerconfig.json" />
+  </ItemGroup>
+
   
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ColorCode.HTML" Version="2.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.0-rc.2.20475.17" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0-rc.2.20475.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Highlight\Highlight.csproj" />
     <ProjectReference Include="..\..\src\Tabler\Tabler.csproj" />
   </ItemGroup>
 
