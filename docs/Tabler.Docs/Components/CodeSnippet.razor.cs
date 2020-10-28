@@ -1,6 +1,9 @@
 ﻿using ColorCode;
 using Microsoft.AspNetCore.Components;
 using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Tabler.Docs.Services;
 
@@ -45,9 +48,29 @@ namespace Tabler.Docs.Components
                     code = code + formatter.GetHtmlString(cSharp, Languages.CSharp);
                 }
 
+
+                code = HighlightRazor(code);
+
                 Code = code;
                 
             }
+        }
+
+        private string HighlightRazor(string code)
+        {
+            var keywords = new List<string> { "@code", "@inject" };
+           
+            var result = code;
+            foreach (var keyword in keywords)
+            {
+                // var rx = new Regex($@"^{keyword}\s");
+                // result = rx.Replace(result, @"<span class=""razor"">{keyword}</span>");
+                result = result.Replace(keyword, $@"<span class=""razor"">{keyword}</span>");
+            }
+
+         
+            return result;
+
         }
 
         private string ExampleBackground()
