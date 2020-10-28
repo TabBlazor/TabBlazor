@@ -1,40 +1,30 @@
 ﻿@page "/docs/progress"
 
-<div class="page">
-    <TablerCard Size="TablerCardSize.Large">
-        <TablerCardBody>
-            <div class="d-flex">
-                <h2 class="h1 mt-0 mb-3">Progress</h2>
-            </div>
-            <p></p>
+    <TablerPage>
+        <DocsExample Title="Progress">
 
-            <DocsSnippet Centered="true" Class="@typeof(ProgressBasic).ToString()" Title="Basic">
-                <Description>
-
-                </Description>
+            <CodeSnippet ClassName="@typeof(ProgressBasic).ToString()" Title="Basic">
                 <Example>
                     <ProgressBasic />
                 </Example>
-            </DocsSnippet>
+            </CodeSnippet>
 
-            <DocsSnippet Centered="true" Class="@typeof(ProgressSize).ToString()" Title="Size">
-                <Description>
-
-                </Description>
+            <CodeSnippet ClassName="@typeof(ProgressSize).ToString()" Title="Size">
+                
                 <Example>
                     <ProgressSize />
                 </Example>
-            </DocsSnippet>
+            </CodeSnippet>
 
-            <DocsSnippet Centered="true" Class="@typeof(ProgressIndeterminate).ToString()" Title="Indeterminate">
+            <CodeSnippet ClassName="@typeof(ProgressIndeterminate).ToString()" Title="Indeterminate">
                 <Description>
-                    Looks good
+                    Waiting....
                 </Description>
                 <Example>
                     <ProgressIndeterminate />
                 </Example>
-            </DocsSnippet>
+            </CodeSnippet>
 
-        </TablerCardBody>
-    </TablerCard>
-</div>
+        </DocsExample>
+    </TablerPage>
+   

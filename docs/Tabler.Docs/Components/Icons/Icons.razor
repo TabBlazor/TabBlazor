@@ -1,38 +1,46 @@
 ﻿@page "/docs/icons"
 
-<TablerCard Size="TablerCardSize.Large">
-    <TablerCardBody>
-        <h2 class="h1 mt-0 mb-3">Icons</h2>
-        <p>Tabler icons can be imported using the seperate nuget package...</p>
+    <TablerPage>
+        <DocsExample Title="Icons">
+         Icons are not include by default. The TablerIcon takes a ..
 
-        <DocsSnippet Centered="true" Class="@typeof(IconsBasic).ToString()" Title="Basics">
-            <Description>
-                <p>Basic Icon</p>
-            </Description>
-            <Example>
-                <IconsBasic />
-            </Example>
-        </DocsSnippet>
+            <CodeSnippet ClassName="@typeof(IconsBasic).ToString()" Title="Basics">
+                <Description>
+                    <p>Basic Icon</p>
+                </Description>
+                <Example>
+                    <IconsBasic />
+                </Example>
+            </CodeSnippet>
 
-        <DocsSnippet Centered="true" Class="@typeof(IconsColorSize).ToString()" Title="Settings">
-            <Description>
-                <p>Set size and color for each icon</p>
-            </Description>
-            <Example>
-                <IconsColorSize />
-            </Example>
-        </DocsSnippet>
+            <CodeSnippet ClassName="@typeof(IconsColorSize).ToString()" Title="Settings">
+                <Description>
+                    <p>Set size and color for each icon</p>
+                </Description>
+                <Example>
+                    <IconsColorSize />
+                </Example>
+            </CodeSnippet>
 
-        <DocsSnippet Centered="true" Class="@typeof(IconsCSS).ToString()" Title="CSS">
-            <Description>
-                <p>Use css for icons</p>
-            </Description>
-            <Example>
-                <IconsCSS />
-            </Example>
-        </DocsSnippet>
+            <CodeSnippet ClassName="@typeof(IconsCSS).ToString()" Title="CSS">
+                <Description>
+                    <p>Use css for icons</p>
+                </Description>
+                <Example>
+                    <IconsCSS />
+                </Example>
+            </CodeSnippet>
 
-        <IconsList />
+            <CodeSnippet  Title="Tabler icons">
+                <Description>
+                   A list of all Tabler icons
+                </Description>
+                <Example>
+                    <IconsList />
+                </Example>
+            </CodeSnippet>
 
-    </TablerCardBody>
-</TablerCard>
+        </DocsExample>
+    </TablerPage>
+
+   

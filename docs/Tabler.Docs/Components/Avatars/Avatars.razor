@@ -1,58 +1,51 @@
 ﻿@page "/docs/avatars"
 
-<div class="page">
-    <TablerCard Size="TablerCardSize.Large">
-        <TablerCardBody>
-            <div class="d-flex">
-                <h2 class="h1 mt-0 mb-3">Avatars</h2>
-            </div>
-            <p></p>
+<TablerPage>
+    <DocsExample Title="Avatars">
+        <CodeSnippet ClassName="@typeof(AvatarsBasic).ToString()" Title="Basic Setup">
+            <Description>
+                Basic avatar
+            </Description>
+            <Example>
+                <AvatarsBasic />
+            </Example>
+        </CodeSnippet>
 
-            <DocsSnippet Centered="true" Class="@typeof(AvatarsBasic).ToString()" Title="Basic">
-                <Description>
-                    Basic avatar
-                </Description>
-                <Example>
-                    <AvatarsBasic />
-                </Example>
-            </DocsSnippet>
+        <CodeSnippet ClassName="@typeof(AvatarsSize).ToString()" Title="Size">
+            <Description>
+                Size the avatar according to your needs
+            </Description>
+            <Example>
+                <AvatarsSize />
+            </Example>
+        </CodeSnippet>
 
-            <DocsSnippet Centered="true" Class="@typeof(AvatarsSize).ToString()" Title="Size">
-                <Description>
-                    Size the avatar according to your needs
-                </Description>
-                <Example>
-                    <AvatarsSize />
-                </Example>
-            </DocsSnippet>
+        <CodeSnippet ClassName="@typeof(AvatarsRounded).ToString()" Title="Rounded">
+            <Description>
+                Rounded setting
+            </Description>
+            <Example>
+                <AvatarsRounded />
+            </Example>
+        </CodeSnippet>
 
-            <DocsSnippet Centered="true" Class="@typeof(AvatarsRounded).ToString()" Title="Size">
-                <Description>
-                    Rounded setting
-                </Description>
-                <Example>
-                    <AvatarsRounded />
-                </Example>
-            </DocsSnippet>
+        <CodeSnippet ClassName="@typeof(AvatarsStatus).ToString()" Title="Status">
+            <Description>
+                Set a status icon
+            </Description>
+            <Example>
+                <AvatarsStatus />
+            </Example>
+        </CodeSnippet>
 
-            <DocsSnippet Centered="true" Class="@typeof(AvatarsStatus).ToString()" Title="Status">
-                <Description>
-                    Set a status icon
-                </Description>
-                <Example>
-                    <AvatarsStatus />
-                </Example>
-            </DocsSnippet>
+        <CodeSnippet ClassName="@typeof(AvatarsList).ToString()" Title="Avatars List">
+            <Description>
+                Wrap the avatars in a list. Set stacked if they should be stacked
+            </Description>
+            <Example>
+                <AvatarsList />
+            </Example>
+        </CodeSnippet>
 
-            <DocsSnippet Centered="true" Class="@typeof(AvatarsList).ToString()" Title="Avatars List">
-                <Description>
-                    Wrap the avatars in a list. Set stacked if they should be stacked
-                </Description>
-                <Example>
-                    <AvatarsList />
-                </Example>
-            </DocsSnippet>
-
-        </TablerCardBody>
-    </TablerCard>
-</div>
+    </DocsExample>
+</TablerPage>

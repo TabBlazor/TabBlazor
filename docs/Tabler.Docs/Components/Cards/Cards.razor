@@ -1,61 +1,46 @@
 ﻿@page "/docs/cards"
 
+<TablerPage>
+    <DocsExample Title="Cards">
 
-<div class="page">
-    <TablerCard Size="TablerCardSize.Large">
-        <TablerCardBody>
-            <div class="d-flex">
-                <h2 class="h1 mt-0 mb-3">Cards</h2>
-            </div>
-            <p>Cards are flexible user interface elements, which help organize content into meaningful sections and make it easier to display on different screen sizes. Cards contain various smaller components, such as images, text, links and buttons and may act as an entry to more detailed information, helping users scan the page quickly and find the most relevant content.</p>
+        <CodeSnippet SetBackground ClassName="@typeof(CardsBasic).ToString()" Title="Basic Setup">
+            <Description>
+                As one of the most common elements of UI design, buttons have a very important function of engaging users with your website or system and guiding them in their actions.
+            </Description>
+            <Example>
+                <CardsBasic />
+            </Example>
+        </CodeSnippet>
 
-            <DocsSnippet Centered="true" Class="@typeof(CardsBasic).ToString()" Title="Basics">
-                <Description>
-                    Basic card setup
-                </Description>
-                <Example>
-                    <div class="p-3" style="background-color: #f5f7fb">
-                        <CardsBasic />
-                    </div>
-                </Example>
-            </DocsSnippet>
+        <CodeSnippet ClassName="@typeof(CardsPadding).ToString()" Title="Padding">
+            <Description>
+                    You can change the padding of a newly created card. To do it, use the Size parameter.
+                    Cards with the small size are well suited for small items such as snippets, etc., while the large size can be used for large blocks of text. Padding will be automatically reduced on small devices, to fit the screen size.
+            </Description>
+            <Example>
+                <CardsPadding />
+            </Example>
+        </CodeSnippet>
 
-            <DocsSnippet Centered="true" Class="@typeof(CardsPadding).ToString()" Title="Padding">
-                <Description>
-                    <p>
-                        You can change the padding of a newly created card. To do it, use the Size parameter.
-                        Cards with the small size are well suited for small items such as snippets, etc., while the large size can be used for large blocks of text. Padding will be automatically reduced on small devices, to fit the screen size.
-                    </p>
-                </Description>
-                <Example>
-                    <div class="p-3" style="background-color: #f5f7fb">
-                        <CardsPadding />
-                    </div>
-                </Example>
-            </DocsSnippet>
+        <CodeSnippet  ClassName="@typeof(CardsHeader).ToString()" Title="Header">
+            <Description>
+                Use the card header to set a header. Use the card title if you want the header in the body
+            </Description>
+            <Example>
+                <CardsHeader />
+            </Example>
+        </CodeSnippet>
 
-            <DocsSnippet Centered="true" Class="@typeof(CardsHeader).ToString()" Title="Header">
-                <Description>
-                    <p>Use the card header to set a header. Use the card title if you want the header in the body</p>
-                </Description>
-                <Example>
-                    <div class="p-3" style="background-color: #f5f7fb">
-                        <CardsHeader />
-                    </div>
-                </Example>
-            </DocsSnippet>
+        <CodeSnippet SetBackground ClassName="@typeof(CardsStatus).ToString()" Title="Status">
+            <Description>
+                Add a status color to your card, either at the top or on the side of the card, to customise it and make it more eye-catching.eader in the body
+            </Description>
+            <Example>
+                <CardsStatus />
+            </Example>
+        </CodeSnippet>
 
-            <DocsSnippet Centered="true" Class="@typeof(CardsStatus).ToString()" Title="Status">
-                <Description>
-                    <p>Add a status color to your card, either at the top or on the side of the card, to customise it and make it more eye-catching.eader in the body</p>
-                </Description>
-                <Example>
-                    <div class="p-3" style="background-color: #f5f7fb">
-                        <CardsStatus />
-                    </div>
-                </Example>
-            </DocsSnippet>
+    </DocsExample>
+</TablerPage>
 
-        </TablerCardBody>
-    </TablerCard>
-</div>
+

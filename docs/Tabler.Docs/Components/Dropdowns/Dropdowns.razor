@@ -1,21 +1,16 @@
 ﻿@page "/docs/dropdowns"
 
-<div class="page">
-    <TablerCard Size="TablerCardSize.Large">
-        <TablerCardBody>
-            <div class="d-flex">
-                <h2 class="h1 mt-0 mb-3">Dropdowns</h2>
-            </div>
-            <p></p>
+<TablerPage>
+    <DocsExample Title="Dropdowns">
 
-            <DocsSnippet Centered="true" Class="@typeof(DropdownsBasic).ToString()" Title="Basic">
-                <Description>
-                    Basic avatar
-                </Description>
-                <Example>
-                    <DropdownsBasic />
-                </Example>
-            </DocsSnippet>
-            </TablerCardBody>
-        </TablerCard>
-</div>
+        <CodeSnippet SetBackground ClassName="@typeof(DropdownsBasic).ToString()" Title="Basic Setup">
+            <Description>
+             Basic drop down  
+            </Description>
+            <Example>
+                <DropdownsBasic />
+            </Example>
+        </CodeSnippet>
+
+        </DocsExample>
+    </TablerPage>
