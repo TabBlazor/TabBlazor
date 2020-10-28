@@ -27,10 +27,29 @@ namespace Tabler.Docs.Components
             if (!string.IsNullOrWhiteSpace(ClassName) && string.IsNullOrEmpty(Code))
             {
                 var formatter = new HtmlClassFormatter();
-                Code = formatter.GetHtmlString(await CodeSnippetService.GetCodeSnippet(ClassName), Languages.Html);
+            
+                var html = await CodeSnippetService.GetCodeSnippet(ClassName);
+                var cSharp = "";
+
+                var index = html.IndexOf("@code {");
+                if (index > 0)
+                {
+                    cSharp = html.Substring(index);
+                    html = html.Substring(0, index);
+                }
+
+                var code = formatter.GetHtmlString(html, Languages.Html);
+
+                if (!string.IsNullOrWhiteSpace(cSharp))
+                {
+                    code = code + formatter.GetHtmlString(cSharp, Languages.CSharp);
+                }
+
+                Code = code;
+                
             }
         }
-       
+
         private string ExampleBackground()
         {
             return SetBackground ? "example-bg" : "";
@@ -40,11 +59,6 @@ namespace Tabler.Docs.Components
         {
             DocsExample.RemoveCodeSnippet(this);
         }
-
-        //void Activate()
-        //{
-        //    ContainerTabSet.SetActivateTab(this);
-        //}
 
     }
 }

@@ -18,7 +18,7 @@ pre.highlight,
 
 .highlight {
 
-    .htmlAttributeName {
+    .htmlAttributeName, .razor {
         color: $code-yellow;
     }
 
@@ -26,7 +26,11 @@ pre.highlight,
         color: $code-red;
     }
 
-    .htmlAttributeValue {
+    .htmlAttributeValue, .string {
         color: $code-green;
+    }
+
+    .keyword {
+        color: $code-blue;
     }
 }
