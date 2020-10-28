@@ -1,13 +1,14 @@
 ﻿<aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
     <div class="container">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu">
+        <button class="navbar-toggler" type="button" @onclick="ToogleExpanded">
             <span class="navbar-toggler-icon"></span>
         </button>
         <a href="." class="navbar-brand navbar-brand-autodark">
             <img src="_content/Tabler.Docs/img/logo-white.svg" alt="Tabler" class="navbar-brand-image">
         </a>
         
-        <div class="collapse navbar-collapse" id="navbar-menu">
+        
+        <div class="navbar-collapse @menuCollapse" id="navbar-menu">
             <ul class="navbar-nav pt-lg-3">
                 <li class="nav-item">
                     <a class="nav-link" href="dashboard">
@@ -157,3 +158,14 @@
         </div>
     </div>
 </aside>
+
+@code {
+    private bool isExpanded;
+
+    private void ToogleExpanded()
+    {
+        isExpanded = !isExpanded;
+    }
+
+    private string menuCollapse => isExpanded ? "" : "collapse";
+}
