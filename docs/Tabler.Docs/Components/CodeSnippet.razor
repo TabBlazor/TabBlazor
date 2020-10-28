@@ -1,15 +1,28 @@
 ﻿<TablerCard>
-    <TablerCardHeader>
+    <TablerCardHeader id="@Id">
         <h4 class="card-title">@Title</h4>
     </TablerCardHeader>
-    <div class="p-3">
-        @ChildContent
-    </div>
-    <div class="card-code">
-        <figure class="highlight">
-            @((MarkupString)@Code)
-        </figure>
-    </div>
+
+    <TablerCardBody>
+
+        @Description
+
+        <div class="p-3 @ExampleBackground()" >
+            @Example
+        </div>
+     
+        
+        <div class="card-code">
+            <figure class="highlight">
+                @((MarkupString)@Code)
+            </figure>
+        </div>
+
+    </TablerCardBody>
+
+
+
+
 
 </TablerCard>
 

@@ -57,6 +57,9 @@ pre.highlight,
   flex: 1;
   max-width: 100%; }
 
+.example-bg {
+  background-color: #f5f7fb; }
+
 .example-code {
   margin: 2rem 0;
   border-top: none; }

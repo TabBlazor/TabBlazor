@@ -1,9 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Tabler.Services.Services;
 
 namespace Tabler
 {
@@ -13,7 +9,8 @@ namespace Tabler
         public static IServiceCollection AddTabler(this IServiceCollection services)
         {
             return services
-               .AddScoped<TablerToastService>();
+               .AddScoped<TablerToastService>()
+               .AddScoped<TablerService>();
         }
 
     }

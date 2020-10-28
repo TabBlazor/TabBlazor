@@ -1,6 +1,10 @@
 ﻿<div class="mb-3">
-    <h3>@Title</h3>
-    @Description
+    @if (!string.IsNullOrEmpty(Title))
+    {
+        <h3>@Title</h3>
+    }
+
+
 
     <div class="mb-3" />
     <div class="example no_toc_section example-bg @(Centered ? "example-centered" : "") @Class">
@@ -13,7 +17,7 @@
 
     @if (!string.IsNullOrWhiteSpace(Title))
     {
-        <div class="example-code mt-3" >
+        <div class="example-code mt-3">
             <figure class="highlight">
                 <pre><code class="language-html" data-lang="html">  @((MarkupString)@Code)</code></pre>
             </figure>
