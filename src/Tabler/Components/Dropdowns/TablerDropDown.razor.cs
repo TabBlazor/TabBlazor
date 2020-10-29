@@ -5,9 +5,8 @@ namespace Tabler.Components
 {
     public partial class TablerDropDown : TablerBaseComponent
     {
-
         [Parameter] public RenderFragment Dropdown { get; set; }
-
+        [Parameter] public string Text { get; set; }
         protected bool isExpanded;
 
         protected override string ClassNames => ClassBuilder

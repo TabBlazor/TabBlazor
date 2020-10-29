@@ -1,0 +1,32 @@
+﻿@namespace Tabler.Components
+
+<div class="popover-container">
+
+    <span  @onclick="TooglePopup">@ChildContent</span>
+ 
+
+
+    @if (showPopup)
+    {
+        <span class="popover">
+            @Popover
+        </span>
+    }
+
+
+
+</div>
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public RenderFragment Popover { get; set; }
+
+
+    private bool showPopup = true;
+
+    private void TooglePopup()
+    {
+        showPopup = !showPopup;
+    }
+
+}

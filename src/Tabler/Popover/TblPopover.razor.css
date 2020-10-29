@@ -1,0 +1,15 @@
+﻿.popover-container {
+    position: relative;
+    display: inline-block;
+}
+
+.popover {
+    /* //top: 23px;*/
+    left: 98px;
+    min-height: 70px;
+    min-width: 100px;
+}
+
+.popover.arrow {
+        left: 100px;
+    }
