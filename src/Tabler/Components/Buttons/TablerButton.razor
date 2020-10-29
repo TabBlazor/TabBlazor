@@ -1,12 +1,44 @@
-﻿@inherits TablerBaseComponent
+﻿@inherits TablerDropdownBaseComponent
 @namespace Tabler.Components
 
-<HtmlElement Tag="@HtmlTag" 
-             class="@ClassNames" 
-             type="@InputType"
-             href="@Href"
-             @onclick="OnClick"
-             role="button"
-             @attributes="@UnmatchedParameters">
-    @ChildContent
-</HtmlElement>
+@if (Dropdown == null)
+{
+
+    <HtmlElement Tag="@HtmlTag"
+                 class="@ClassNames"
+                 type="@InputType"
+                 href="@Href"
+                 @onclick="OnButtonClick"
+                 role="button"
+                 @attributes="@UnmatchedParameters">
+        @ChildContent
+    </HtmlElement>
+
+
+
+
+}
+else
+{
+
+<div class="dropdown">
+    <HtmlElement Tag="@HtmlTag"
+                 class="@ClassNames"
+                 type="@InputType"
+                 href="@Href"
+                 @onclick="OnButtonClick"
+                 role="button"
+                 @attributes="@UnmatchedParameters">
+        @ChildContent
+    </HtmlElement>
+
+    @if (isExpanded)
+    {
+        @Dropdown
+    }
+
+
+</div>
+
+
+}

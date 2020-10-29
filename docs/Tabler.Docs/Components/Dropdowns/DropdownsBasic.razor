@@ -1,13 +1,19 @@
 ﻿
 <TablerDropDown>
-    <TablerButton @onclick="toogleOpen" BackgroundColor="TablerColor.Primary">
-        Toogle
-    </TablerButton>
-    <TablerDropDownMenu Show="isOpen">
-        <TablerDropDownItem>Item 1</TablerDropDownItem>
-        <TablerDropDownItem>Item 2</TablerDropDownItem>
-        <TablerDropDownItem>Item 3</TablerDropDownItem>
-    </TablerDropDownMenu>
+    <ChildContent>
+        <TablerButton @onclick="toogleOpen" BackgroundColor="TablerColor.Primary">
+            Toogle
+        </TablerButton>
+    </ChildContent>
+   
+    @*<DropdownMenu>
+        <TablerDropDownMenu Show="isOpen">
+            <TablerDropDownItem>Item 1</TablerDropDownItem>
+            <TablerDropDownItem>Item 2</TablerDropDownItem>
+            <TablerDropDownItem>Item 3</TablerDropDownItem>
+        </TablerDropDownMenu>
+    </DropdownMenu>*@
+    
 </TablerDropDown>
 
 @code {

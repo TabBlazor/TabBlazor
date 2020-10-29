@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace Tabler.Components
 {
@@ -25,7 +26,7 @@ namespace Tabler.Components
         Reset
     }
 
-    public partial class TablerButton : TablerBaseComponent
+    public partial class TablerButton : TablerDropdownBaseComponent
     {
         [Parameter] public bool Disabled { get; set; }
         [Parameter] public bool Block { get; set; }
@@ -36,7 +37,16 @@ namespace Tabler.Components
         [Parameter] public TablerButtonSize Size { get; set; } = TablerButtonSize.Default;
         [Parameter] public TablerButtonType Type { get; set; } = TablerButtonType.Button;
         [Parameter] public string LinkTo { get; set; }
-        [Parameter] public TablerDropDownMenu DropDownMenu { get; set; }
+
+        protected void OnButtonClick(MouseEventArgs e)
+        {
+            OnClick.InvokeAsync(e);
+
+            if (Dropdown != null)
+            {
+                ToogleExpanded();
+            }
+        }
 
         protected string HtmlTag => Type switch
         {
