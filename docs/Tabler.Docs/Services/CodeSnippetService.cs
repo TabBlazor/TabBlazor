@@ -47,7 +47,7 @@ namespace Tabler.Docs.Services
     public class GitHubSnippetService : ICodeSnippetService
     {
         const string repo = "joadan/Blazor-Tabler";
-        const string baseUrl = "https://raw.githubusercontent.com/joadan/Blazor-Tabler/master/docs/Tabler.Docs/Components";
+        const string baseUrl = "https://raw.githubusercontent.com/joadan/Blazor-Tabler/master/docs/Tabler.Docs";
         private readonly IHttpClientFactory httpClientFactory;
 
         public GitHubSnippetService(IHttpClientFactory httpClientFactory)
@@ -61,9 +61,10 @@ namespace Tabler.Docs.Services
             try
             {
                 var names = className.Split(".");
-                var folder = names.SkipLast(1).Last();
+                var folder1 = names.SkipLast(2).Last();
+                var folder2 = names.SkipLast(1).Last();
                 var fileName = $"{names.Last()}.razor";
-                var filePath = $"{baseUrl}/{folder}/{fileName}";
+                var filePath = $"{baseUrl}/{folder1}/{folder2}/{fileName}";
                 Console.WriteLine($"Try to access github with path {filePath}");
 
                 using var httpClient = httpClientFactory.CreateClient("GitHub");
