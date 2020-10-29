@@ -1,0 +1,21 @@
+﻿@namespace Tabler.Components
+<div class="tooltip-wrapper">
+    <span>
+        @if (Tooltip != null)
+        {
+            @Tooltip
+        }
+        else
+        {
+            @Text
+        }
+
+    </span>
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public RenderFragment Tooltip { get; set; }
+    [Parameter] public string Text { get; set; }
+}
