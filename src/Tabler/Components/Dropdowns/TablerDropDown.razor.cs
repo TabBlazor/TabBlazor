@@ -1,23 +1,30 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace Tabler.Components
 {
     public partial class TablerDropDown : TablerBaseComponent
     {
 
-        //[Parameter] public RenderFragment DropdownMenu { get; set; }
+        [Parameter] public RenderFragment Dropdown { get; set; }
 
-        //protected bool isExpanded;
+        protected bool isExpanded;
 
-        //protected override string ClassNames => ClassBuilder
-        //    .Add("dropdown")
-        //    .Add(BackgroundColor.GetColorClass("bg"))
-        //    .Add(TextColor.GetColorClass("text"))
-        //    .ToString();
+        protected override string ClassNames => ClassBuilder
+            .Add("dropdown")
+            .Add(BackgroundColor.GetColorClass("bg"))
+            .Add(TextColor.GetColorClass("text"))
+            .ToString();
 
-        //public void Toogle()
-        //{
-        //    isExpanded = !isExpanded;
-        //}
+        protected void OnDropdownClick(MouseEventArgs e)
+        {
+            OnClick.InvokeAsync(e);
+            Toogle();
+        }
+
+        public void Toogle()
+        {
+            isExpanded = !isExpanded;
+        }
     }
 }

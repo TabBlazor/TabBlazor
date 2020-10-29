@@ -1,10 +1,9 @@
 ﻿<TablerButtonList>
-
-
-    <TablerButton BackgroundColor="TablerColor.Primary" Type="TablerButtonType.Button">
+    <TablerDropDown>
         <ChildContent>
-            Button 1
+            <TablerButton BackgroundColor="TablerColor.Primary" Type="TablerButtonType.Button" Text="Click me" />
         </ChildContent>
+
         <Dropdown>
             <TablerDropDownMenu>
                 <TablerDropDownItem>Item 1</TablerDropDownItem>
@@ -12,24 +11,24 @@
                 <TablerDropDownItem>Item 3</TablerDropDownItem>
             </TablerDropDownMenu>
         </Dropdown>
-    </TablerButton>
 
+    </TablerDropDown>
 
-    <TablerButton BackgroundColor="TablerColor.Primary" Type="TablerButtonType.Button">
+    <TablerDropDown>
         <ChildContent>
-            Button 2
+            <TablerButton BackgroundColor="TablerColor.Primary" Type="TablerButtonType.Button" Text="Any content" />
         </ChildContent>
+
         <Dropdown>
             <TablerDropDownMenu class="p-0">
-                <TablerCard class="m-0"  Size="TablerCardSize.Default">
-                    <TablerCardBody >
-                        <h1>Kolla nu då..</h1>
+                <TablerCard class="m-0" Size="TablerCardSize.Default">
+                    <TablerCardBody>
+                        <h1>Aliens...</h1>
                         <TablerIcon Elements="@DemoIcons.Alien" Size="48" />
                     </TablerCardBody>
                 </TablerCard>
             </TablerDropDownMenu>
+        </Dropdown>
 
-
-</Dropdown>
-    </TablerButton>
+    </TablerDropDown>
 </TablerButtonList>

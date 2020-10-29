@@ -1,10 +1,14 @@
 ﻿@inherits TablerBaseComponent
 @namespace Tabler.Components
-<HtmlElement Tag="div" 
-             class="@ClassNames" 
-             @onclick="OnClick"
+<HtmlElement Tag="div"
+             class="@ClassNames"
+             @onclick="OnDropdownClick"
              @attributes="@UnmatchedParameters">
+    
     @ChildContent
 
-    @*@DropdownMenu*@
+    @if (isExpanded)
+    {
+        @Dropdown
+    }
 </HtmlElement>
