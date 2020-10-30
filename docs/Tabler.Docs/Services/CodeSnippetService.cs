@@ -65,7 +65,7 @@ namespace Tabler.Docs.Services
                 var folder2 = names.SkipLast(1).Last();
                 var fileName = $"{names.Last()}.razor";
                 var filePath = $"{baseUrl}/{folder1}/{folder2}/{fileName}";
-                Console.WriteLine($"Try to access github with path {filePath}");
+               // Console.WriteLine($"Try to access github with path {filePath}");
 
                 using var httpClient = httpClientFactory.CreateClient("GitHub");
                 using var stream = await httpClient.GetStreamAsync(filePath);
