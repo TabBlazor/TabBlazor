@@ -2,7 +2,7 @@
 
 namespace Tabler.Components
 {
-    public partial class TablerAvatarList : TablerBaseComponent
+    public partial class AvatarList : TablerBaseComponent
     {
         [Parameter] public bool Stacked { get; set; }
         protected override string ClassNames => ClassBuilder

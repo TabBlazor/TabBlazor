@@ -2,7 +2,7 @@
 
 namespace Tabler.Components
 {
-    public partial class TablerAlert : TablerBaseComponent
+    public partial class Alert : TablerBaseComponent
     {
         [Parameter] public string Title { get; set; }
         [Parameter] public bool Dismissible { get; set; }

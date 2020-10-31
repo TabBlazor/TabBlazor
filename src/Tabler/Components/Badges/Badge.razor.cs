@@ -4,22 +4,22 @@ using Microsoft.AspNetCore.Components.Rendering;
 
 namespace Tabler.Components
 {
-    public enum TablerBadgeShape
+    public enum BadgeShape
     {
         Default,
         Pill
     }
 
-    public partial class TablerBadge : TablerBaseComponent
+    public partial class Badge : TablerBaseComponent
     {
-        [Parameter] public TablerBadgeShape Shape { get; set; }
+        [Parameter] public BadgeShape Shape { get; set; }
 
         protected string HtmlTag => "span";
 
         protected override string ClassNames => ClassBuilder
               .Add("badge")
               .Add(BackgroundColor.GetColorClass("bg", TablerColorType.Default))
-              .AddCompare("badge-pill", Shape, TablerBadgeShape.Pill)
+              .AddCompare("badge-pill", Shape, BadgeShape.Pill)
               .ToString();
     }
 

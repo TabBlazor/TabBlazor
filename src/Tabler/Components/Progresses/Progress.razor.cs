@@ -5,17 +5,17 @@ using Microsoft.AspNetCore.Components.Rendering;
 namespace Tabler.Components
 {
 
-    public enum TablerProgressSize
+    public enum ProgressSize
     {
         Default,
         Small,
         Large
     }
 
-    public partial class TablerProgress : TablerBaseComponent
+    public partial class Progress : TablerBaseComponent
     {
         [Parameter] public TablerColor Color { get; set; }
-        [Parameter] public TablerProgressSize Size { get; set; }
+        [Parameter] public ProgressSize Size { get; set; }
         [Parameter] public bool Indeterminate { get; set; }
         [Parameter] public int Precentage { get; set; }
         [Parameter] public string Text { get; set; }
@@ -25,8 +25,8 @@ namespace Tabler.Components
         protected override string ClassNames => ClassBuilder
               .Add("progress")
               .Add(BackgroundColor.GetColorClass("bg", TablerColorType.Default))
-              .AddCompare("progress-sm", Size, TablerProgressSize.Small)
-              .AddCompare("progress-lg", Size, TablerProgressSize.Large)
+              .AddCompare("progress-sm", Size, ProgressSize.Small)
+              .AddCompare("progress-lg", Size, ProgressSize.Large)
 
               .ToString();
 
