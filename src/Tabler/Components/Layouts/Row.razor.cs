@@ -2,7 +2,7 @@
 
 namespace Tabler.Components
 {
-    public partial class TablerRow : TablerBaseComponent
+    public partial class Row : TablerBaseComponent
     {
         [Parameter] public bool HasCards { get; set; }
 

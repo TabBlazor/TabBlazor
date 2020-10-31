@@ -2,7 +2,7 @@
 
 namespace Tabler.Components
 {
-    public partial class TablerInput : TablerBaseComponent
+    public partial class Input : TablerBaseComponent
     {
         protected override string ClassNames => ClassBuilder
             //.Add("card-tabs")

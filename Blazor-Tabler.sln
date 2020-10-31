@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tabler.Docs.Server", "docs\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tabler.Docs", "docs\Tabler.Docs\Tabler.Docs.csproj", "{ABA6934F-8630-4C75-A4A9-B8504B9AA629}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tabler.Icons", "src\Tabler.Icons\Tabler.Icons.csproj", "{8BD1DCC2-DF87-4F23-AF06-EEEA299431E0}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tabler.Docs.Client", "docs\Tabler.Docs.Client\Tabler.Docs.Client.csproj", "{47975C0E-BD4C-48F0-8C18-83E30F2C88A0}"
 EndProject
 Global
@@ -33,10 +31,6 @@ Global
 		{ABA6934F-8630-4C75-A4A9-B8504B9AA629}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABA6934F-8630-4C75-A4A9-B8504B9AA629}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABA6934F-8630-4C75-A4A9-B8504B9AA629}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8BD1DCC2-DF87-4F23-AF06-EEEA299431E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8BD1DCC2-DF87-4F23-AF06-EEEA299431E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8BD1DCC2-DF87-4F23-AF06-EEEA299431E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8BD1DCC2-DF87-4F23-AF06-EEEA299431E0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{47975C0E-BD4C-48F0-8C18-83E30F2C88A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{47975C0E-BD4C-48F0-8C18-83E30F2C88A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47975C0E-BD4C-48F0-8C18-83E30F2C88A0}.Release|Any CPU.ActiveCfg = Release|Any CPU

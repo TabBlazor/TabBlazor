@@ -1,9 +1,9 @@
 ﻿namespace Tabler.Components
 {
-    public partial class TablerPageHeader : TablerBaseComponent
+    public partial class PagePretitle : TablerBaseComponent
     {
         protected override string ClassNames => ClassBuilder
-            .Add("page-header")
+            .Add("page-pretitle")
             .Add(BackgroundColor.GetColorClass("bg"))
             .Add(TextColor.GetColorClass("text"))
             .ToString();

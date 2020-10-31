@@ -1,6 +1,6 @@
 ﻿namespace Tabler.Components
 {
-    public partial class TablerPage : TablerBaseComponent
+    public partial class Page : TablerBaseComponent
     {
         protected override string ClassNames => ClassBuilder
             .Add("page")

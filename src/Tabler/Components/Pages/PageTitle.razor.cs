@@ -2,7 +2,7 @@
 
 namespace Tabler.Components
 {
-    public partial class TablerPageTitle : TablerBaseComponent
+    public partial class PageTitle : TablerBaseComponent
     {
         [Parameter] public string HtmlTag { get; set; } = "h1";
 
