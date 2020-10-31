@@ -1,10 +1,10 @@
 ﻿namespace Tabler.Components
 {
-    public partial class TablerTabs : TablerBaseComponent
+    public partial class Tabs : TablerBaseComponent
     {
-        public ITablerTab ActiveTab { get; private set; }
+        public ITab ActiveTab { get; private set; }
 
-        public void AddTab(ITablerTab tab)
+        public void AddTab(ITab tab)
         {
             if (ActiveTab == null)
             {
@@ -12,7 +12,7 @@
             }
         }
 
-        public void RemoveTab(ITablerTab tab)
+        public void RemoveTab(ITab tab)
         {
             if (ActiveTab == tab)
             {
@@ -20,7 +20,7 @@
             }
         }
 
-        public void SetActivateTab(ITablerTab tab)
+        public void SetActivateTab(ITab tab)
         {
             if (tab == null)
             {

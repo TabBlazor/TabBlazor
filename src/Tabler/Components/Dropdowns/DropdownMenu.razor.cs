@@ -2,7 +2,7 @@
 
 namespace Tabler.Components
 {
-    public partial class TablerDropDownMenu : TablerBaseComponent
+    public partial class DropdownMenu : TablerBaseComponent
     {
         [Parameter] public int Columns { get; set; } = 1;
         [Parameter] public bool Arrow { get; set; } = false;

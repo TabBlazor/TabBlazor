@@ -1,9 +1,9 @@
 ﻿namespace Tabler.Components
 {
-    public partial class TablerButtonList : TablerBaseComponent
+    public partial class CardHeader : TablerBaseComponent
     {
         protected override string ClassNames => ClassBuilder
-            .Add("btn-list")
+            .Add("card-header")
             .Add(BackgroundColor.GetColorClass("bg"))
             .Add(TextColor.GetColorClass("text"))
             .ToString();

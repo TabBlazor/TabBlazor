@@ -1,34 +1,34 @@
-﻿<TablerButtonList>
-    <TablerDropDown>
+﻿<ButtonList>
+    <Dropdown>
         <ChildContent>
-            <TablerButton BackgroundColor="TablerColor.Primary" Type="TablerButtonType.Button" Text="Click me" />
+            <Button BackgroundColor="TablerColor.Primary" Type="ButtonType.Button" Text="Click me" />
         </ChildContent>
 
-        <Dropdown>
-            <TablerDropDownMenu>
-                <TablerDropDownItem>Item 1</TablerDropDownItem>
-                <TablerDropDownItem>Item 2</TablerDropDownItem>
-                <TablerDropDownItem>Item 3</TablerDropDownItem>
-            </TablerDropDownMenu>
-        </Dropdown>
+        <DropdownTemplate>
+            <DropdownMenu>
+                <DropdownItem>Item 1</DropdownItem>
+                <DropdownItem>Item 2</DropdownItem>
+                <DropdownItem>Item 3</DropdownItem>
+            </DropdownMenu>
+        </DropdownTemplate>
 
-    </TablerDropDown>
+    </Dropdown>
 
-    <TablerDropDown>
+    <Dropdown>
         <ChildContent>
-            <TablerButton BackgroundColor="TablerColor.Primary" Type="TablerButtonType.Button" Text="Any content" />
+            <Button BackgroundColor="TablerColor.Primary" Type="ButtonType.Button" Text="Any content" />
         </ChildContent>
 
-        <Dropdown>
-            <TablerDropDownMenu class="p-0">
-                <TablerCard class="m-0" Size="TablerCardSize.Default">
-                    <TablerCardBody>
+        <DropdownTemplate>
+            <DropdownMenu class="p-0">
+                <Card class="m-0" Size="CardSize.Default">
+                    <CardBody>
                         <h1>Aliens...</h1>
-                        <TablerIcon Elements="@DemoIcons.Alien" Size="48" />
-                    </TablerCardBody>
-                </TablerCard>
-            </TablerDropDownMenu>
-        </Dropdown>
+                        <Icon Elements="@DemoIcons.Alien" Size="48" />
+                    </CardBody>
+                </Card>
+            </DropdownMenu>
+        </DropdownTemplate>
 
-    </TablerDropDown>
-</TablerButtonList>
+    </Dropdown>
+</ButtonList>

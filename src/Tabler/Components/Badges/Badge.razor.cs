@@ -18,7 +18,7 @@ namespace Tabler.Components
 
         protected override string ClassNames => ClassBuilder
               .Add("badge")
-              .Add(BackgroundColor.GetColorClass("bg", TablerColorType.Default))
+              .Add(BackgroundColor.GetColorClass("bg", ColorType.Default))
               .AddCompare("badge-pill", Shape, BadgeShape.Pill)
               .ToString();
     }

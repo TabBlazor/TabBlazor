@@ -1,23 +1,23 @@
-﻿<TablerCard>
-    <TablerCardBody>
+﻿<Card>
+    <CardBody>
         <div class="d-flex align-items-center">
             <div class="subheader">Sales</div>
             <div class="ml-auto lh-1">
-                <TablerDropDown>
+                <Dropdown>
                     <ChildContent>
                         <a class="dropdown-toggle text-muted" aria-haspopup="true" aria-expanded="false">
                             Last 7 days
                         </a>
                     </ChildContent>
-                    <Dropdown>
-                        <TablerDropDownMenu>
-                            <TablerDropDownItem>Last 7 Days</TablerDropDownItem>
-                            <TablerDropDownItem>Last 30 days</TablerDropDownItem>
-                            <TablerDropDownItem>Last 3 months</TablerDropDownItem>
-                        </TablerDropDownMenu>
-                    </Dropdown>
+                    <DropdownTemplate>
+                        <DropdownMenu>
+                            <DropdownItem>Last 7 Days</DropdownItem>
+                            <DropdownItem>Last 30 days</DropdownItem>
+                            <DropdownItem>Last 3 months</DropdownItem>
+                        </DropdownMenu>
+                    </DropdownTemplate>
                     
-                </TablerDropDown>
+                </Dropdown>
             </div>
         </div>
         <div class="h1 mb-3">75%</div>
@@ -25,10 +25,10 @@
             <div>Conversion rate</div>
             <div class="ml-auto">
                 <span class="text-green d-inline-flex align-items-center lh-1">
-                    7% <TablerIcon class="ml-1" Size="16" Elements="@DemoIcons.Trending_up" />
+                    7% <Icon class="ml-1" Size="16" Elements="@DemoIcons.Trending_up" />
                 </span>
             </div>
         </div>
         <Progress Size="ProgressSize.Small" Precentage="75" />
-    </TablerCardBody>
-</TablerCard>
+    </CardBody>
+</Card>

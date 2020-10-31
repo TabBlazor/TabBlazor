@@ -1,9 +1,9 @@
 ﻿@namespace Tabler.Components
 <div class="tooltip-wrapper">
     <span>
-        @if (Tooltip != null)
+        @if (TooltipTemplate != null)
         {
-            @Tooltip
+            @TooltipTemplate
         }
         else
         {
@@ -16,6 +16,6 @@
 
 @code {
     [Parameter] public RenderFragment ChildContent { get; set; }
-    [Parameter] public RenderFragment Tooltip { get; set; }
+    [Parameter] public RenderFragment TooltipTemplate { get; set; }
     [Parameter] public string Text { get; set; }
 }

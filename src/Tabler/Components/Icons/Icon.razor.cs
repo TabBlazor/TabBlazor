@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tabler.Components
 {
-   public partial class TablerIcon : ComponentBase
+    public partial class Icon : ComponentBase
     {
         [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object> Attributes { get; set; }
         [Parameter] public string Color { get; set; }

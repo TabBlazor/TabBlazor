@@ -24,7 +24,7 @@ namespace Tabler.Components
         //.progress-bar-indeterminate
         protected override string ClassNames => ClassBuilder
               .Add("progress")
-              .Add(BackgroundColor.GetColorClass("bg", TablerColorType.Default))
+              .Add(BackgroundColor.GetColorClass("bg", ColorType.Default))
               .AddCompare("progress-sm", Size, ProgressSize.Small)
               .AddCompare("progress-lg", Size, ProgressSize.Large)
 

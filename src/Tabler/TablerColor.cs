@@ -30,23 +30,23 @@ namespace Tabler
         Dark
     }
 
-    public enum TablerColorType
+    public enum ColorType
     {
         Default,
         Outline,
         Ghost
     }
 
-    public static class TablerColorsExtensions
+    public static class ColorsExtensions
     {
         public static string GetColorClass(this TablerColor colors, string type,
-            TablerColorType colorType = TablerColorType.Default, string suffix = "")
+            ColorType colorType = ColorType.Default, string suffix = "")
         {
             var colorClass = $"{type}";
             colorClass += colorType switch
             {
-                TablerColorType.Default => "",
-                _ => $"-{Enum.GetName(typeof(TablerColorType), colorType)?.ToLower()}"
+                ColorType.Default => "",
+                _ => $"-{Enum.GetName(typeof(ColorType), colorType)?.ToLower()}"
             };
 
             colorClass = colors switch

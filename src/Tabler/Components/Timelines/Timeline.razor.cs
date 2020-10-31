@@ -2,21 +2,21 @@
 
 namespace Tabler.Components
 {
-    public enum TablerTimelineType
+    public enum TimelineType
     {
         Default,
         Simple
     }
 
-    public partial class TablerTimeline : TablerBaseComponent
+    public partial class Timeline : TablerBaseComponent
     {
-        [Parameter] public TablerTimelineType Type { get; set; } = TablerTimelineType.Default;
+        [Parameter] public TimelineType Type { get; set; } = TimelineType.Default;
 
         protected override string ClassNames => ClassBuilder
             .Add("list list-timeline")
             .Add(BackgroundColor.GetColorClass("bg"))
             .Add(TextColor.GetColorClass("text"))
-            .AddIf("list-timeline-simple", Type == TablerTimelineType.Simple)
+            .AddIf("list-timeline-simple", Type == TimelineType.Simple)
             .ToString();
     }
 }

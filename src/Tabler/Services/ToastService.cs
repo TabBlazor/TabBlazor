@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tabler
 {
-    public class TablerToastService
+    public class ToastService
     {
         public class Toast
         {

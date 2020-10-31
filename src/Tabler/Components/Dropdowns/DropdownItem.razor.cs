@@ -1,9 +1,9 @@
 ﻿namespace Tabler.Components
 {
-    public partial class TablerCardTabs : TablerBaseComponent
+    public partial class DropdownItem : TablerBaseComponent
     {
         protected override string ClassNames => ClassBuilder
-            .Add("card-tabs")
+            .Add("dropdown-item")
             .Add(BackgroundColor.GetColorClass("bg"))
             .Add(TextColor.GetColorClass("text"))
             .ToString();

@@ -2,7 +2,7 @@
 
 namespace Tabler.Components
 {
-    public enum TablerCardSize
+    public enum CardSize
     {
         Default,
         Small,
@@ -10,15 +10,15 @@ namespace Tabler.Components
         Large
     }
 
-    public enum TablerCardStatusPosition
+    public enum CardStatusPosition
     {
         Left,
         Top,
         Bottom
     }
-    public partial class TablerCard : TablerBaseComponent
+    public partial class Card : TablerBaseComponent
     {
-        [Parameter] public TablerCardSize Size { get; set; } = TablerCardSize.Default;
+        [Parameter] public CardSize Size { get; set; } = CardSize.Default;
         [Parameter] public bool IsStacker { get; set; }
         [Parameter] public TablerColor StatusTop { get; set; } = TablerColor.Default;
         [Parameter] public TablerColor StatusLeft { get; set; } = TablerColor.Default;
@@ -38,9 +38,9 @@ namespace Tabler.Components
             .AddIf("card-stacked", IsStacker)
             .Add(BackgroundColor.GetColorClass("bg"))
             .Add(TextColor.GetColorClass("text"))
-            .AddCompare("card-sm", Size, TablerCardSize.Small)
-            .AddCompare("card-md", Size, TablerCardSize.Medium)
-            .AddCompare("card-lg", Size, TablerCardSize.Large)
+            .AddCompare("card-sm", Size, CardSize.Small)
+            .AddCompare("card-md", Size, CardSize.Medium)
+            .AddCompare("card-lg", Size, CardSize.Large)
             .ToString();
 
         protected string StatusClassNames(string position, TablerColor color)

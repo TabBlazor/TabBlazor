@@ -3,21 +3,21 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace Tabler.Components
 {
-    public enum TablerButtonShape
+    public enum ButtonShape
     {
         Default,
         Square,
         Pill
     }
 
-    public enum TablerButtonSize
+    public enum ButtonSize
     {
         Default,
         Large,
         Small
     }
 
-    public enum TablerButtonType
+    public enum ButtonType
     {
         Link,
         Button,
@@ -26,40 +26,40 @@ namespace Tabler.Components
         Reset
     }
 
-    public partial class TablerButton : TablerBaseComponent
+    public partial class Button : TablerBaseComponent
     {
         [Parameter] public string Text { get; set; }
         [Parameter] public bool Disabled { get; set; }
         [Parameter] public bool Block { get; set; }
         [Parameter] public bool IsIcon { get; set; }
         [Parameter] public bool IsLoading { get; set; }
-        [Parameter] public TablerColorType BackgroundColorType { get; set; } = TablerColorType.Default;
-        [Parameter] public TablerButtonShape Shape { get; set; } = TablerButtonShape.Default;
-        [Parameter] public TablerButtonSize Size { get; set; } = TablerButtonSize.Default;
-        [Parameter] public TablerButtonType Type { get; set; } = TablerButtonType.Button;
+        [Parameter] public ColorType BackgroundColorType { get; set; } = ColorType.Default;
+        [Parameter] public ButtonShape Shape { get; set; } = ButtonShape.Default;
+        [Parameter] public ButtonSize Size { get; set; } = ButtonSize.Default;
+        [Parameter] public ButtonType Type { get; set; } = ButtonType.Button;
         [Parameter] public string LinkTo { get; set; }
 
       
 
         protected string HtmlTag => Type switch
         {
-            TablerButtonType.Input => "input",
-            TablerButtonType.Link => "a",
-            TablerButtonType.Submit => "input",
-            TablerButtonType.Reset => "input",
+            ButtonType.Input => "input",
+            ButtonType.Link => "a",
+            ButtonType.Submit => "input",
+            ButtonType.Reset => "input",
             _ => "button"
         };
 
         protected string InputType => Type switch
         {
-            TablerButtonType.Input => "button",
-            TablerButtonType.Button => "button",
-            TablerButtonType.Submit => "submit",
-            TablerButtonType.Reset => "reset",
+            ButtonType.Input => "button",
+            ButtonType.Button => "button",
+            ButtonType.Submit => "submit",
+            ButtonType.Reset => "reset",
             _ => null
         };
 
-        protected string Href => Type == TablerButtonType.Link
+        protected string Href => Type == ButtonType.Link
             ? LinkTo
             : null;
 
@@ -71,10 +71,10 @@ namespace Tabler.Components
                 .AddIf("btn-block", Block)
                 .AddIf("btn-icon", IsIcon)
                 .AddIf("btn-loading", IsLoading)
-                .AddCompare("btn-pill", Shape, TablerButtonShape.Pill)
-                .AddCompare("btn-square", Shape, TablerButtonShape.Square)
-                .AddCompare("btn-lg", Size, TablerButtonSize.Large)
-                .AddCompare("btn-sm", Size, TablerButtonSize.Small)
+                .AddCompare("btn-pill", Shape, ButtonShape.Pill)
+                .AddCompare("btn-square", Shape, ButtonShape.Square)
+                .AddCompare("btn-lg", Size, ButtonSize.Large)
+                .AddCompare("btn-sm", Size, ButtonSize.Small)
                 .ToString();
     }
 }

@@ -9,7 +9,7 @@
     @if (showPopup)
     {
         <span class="popover">
-            @Popover
+            @PopoverTemplate
         </span>
     }
 
@@ -19,7 +19,7 @@
 
 @code {
     [Parameter] public RenderFragment ChildContent { get; set; }
-    [Parameter] public RenderFragment Popover { get; set; }
+    [Parameter] public RenderFragment PopoverTemplate { get; set; }
 
 
     private bool showPopup = true;

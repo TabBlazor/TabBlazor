@@ -2,7 +2,7 @@
 
 namespace Tabler.Components
 {
-    public interface ITablerTab
+    public interface ITab
     {
         RenderFragment ChildContent { get; }
     }

@@ -1,20 +1,20 @@
 ﻿
-<TablerDropDown>
+<Dropdown>
     <ChildContent>
-        <TablerButton @onclick="toogleOpen" BackgroundColor="TablerColor.Primary">
+        <Button @onclick="toogleOpen" BackgroundColor="TablerColor.Primary">
             Toogle
-        </TablerButton>
+        </Button>
     </ChildContent>
    
     @*<DropdownMenu>
-        <TablerDropDownMenu Show="isOpen">
-            <TablerDropDownItem>Item 1</TablerDropDownItem>
-            <TablerDropDownItem>Item 2</TablerDropDownItem>
-            <TablerDropDownItem>Item 3</TablerDropDownItem>
-        </TablerDropDownMenu>
+        <DropdownMenu Show="isOpen">
+            <DropdownItem>Item 1</DropdownItem>
+            <DropdownItem>Item 2</DropdownItem>
+            <DropdownItem>Item 3</DropdownItem>
+        </DropdownMenu>
     </DropdownMenu>*@
     
-</TablerDropDown>
+</Dropdown>
 
 @code {
     private bool isOpen = true;

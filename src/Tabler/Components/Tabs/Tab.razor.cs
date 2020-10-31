@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace Tabler.Components
 {
-   public partial class TablerTab : TablerBaseComponent, ITablerTab
+   public partial class Tab : TablerBaseComponent, ITab
     {
-        [CascadingParameter] TablerTabs ContainerTabSet { get; set; }
+        [CascadingParameter] Tabs ContainerTabSet { get; set; }
         [Parameter] public string Title { get; set; }
         [Parameter] public RenderFragment Header { get; set; }
 

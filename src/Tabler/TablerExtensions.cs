@@ -9,7 +9,7 @@ namespace Tabler
         public static IServiceCollection AddTabler(this IServiceCollection services)
         {
             return services
-               .AddScoped<TablerToastService>()
+               .AddScoped<ToastService>()
                .AddScoped<TablerService>();
         }
 

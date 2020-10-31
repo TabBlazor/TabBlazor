@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace Tabler.Components
 {
-    public partial class TablerDropDown : TablerBaseComponent
+    public partial class Dropdown : TablerBaseComponent
     {
-        [Parameter] public RenderFragment Dropdown { get; set; }
+        [Parameter] public RenderFragment DropdownTemplate { get; set; }
         [Parameter] public string Text { get; set; }
         protected bool isExpanded;
 

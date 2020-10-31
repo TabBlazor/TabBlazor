@@ -2,7 +2,7 @@
 
 namespace Tabler.Components
 {
-    public partial class TablerTimelineItem : TablerBaseComponent
+    public partial class TimelineItem : TablerBaseComponent
     {
         [Parameter] public string IconText { get; set; }
         [Parameter] public RenderFragment IconTemplate { get; set; }

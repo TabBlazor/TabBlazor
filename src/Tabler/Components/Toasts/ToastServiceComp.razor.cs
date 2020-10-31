@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Components;
 
 namespace Tabler.Components
 {
-    public partial class TablerToastServiceComp : ComponentBase
+    public partial class ToastServiceComp : ComponentBase
     {
-        [Inject] public TablerToastService TablerToastService { get; set; }
+        [Inject] public ToastService ToastService { get; set; }
 
         protected override void OnInitialized()
         {
-            TablerToastService.OnChanged += OnToastChanged;
+            ToastService.OnChanged += OnToastChanged;
         }
 
         public async Task OnToastChanged()
@@ -19,7 +19,7 @@ namespace Tabler.Components
 
         public void Dispose()
         {
-            TablerToastService.OnChanged -= OnToastChanged;
+           ToastService.OnChanged -= OnToastChanged;
         }
     }
 }
