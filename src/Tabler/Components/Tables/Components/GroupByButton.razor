@@ -5,8 +5,7 @@
     <span class="ml-2">
         @foreach (var column in Table.Columns.Where(e => e.Groupable))
         {
-            @*<Button BackgroundColor="TablerColor.Primary" BackgroundColorType="@(column.GroupBy ? ColorType.Default:ColorType.Outline)" Size="ButtonSize.Small" Shape="ButtonShape.Pill" @onclick="@column.GroupByMeAsync" Text="@column.Title" />*@
-            <Badge BackgroundColor="@(column.GroupBy ? TablerColor.Primary:TablerColor.Default)" @onclick="@column.GroupByMeAsync">@column.Title</Badge>
+            <Badge class="ml-1" BackgroundColor="@(column.GroupBy ? TablerColor.Primary:TablerColor.Default)" @onclick="@column.GroupByMeAsync">@column.Title</Badge>
         }
     </span>
 

@@ -115,7 +115,20 @@ namespace Tabler.Components.Tables
 
         public string GetTableCssClass()
         {
-            return "";
+            var classBuileder = new ClassBuilder();
+
+
+            //ClassBuilder
+            //.Add("page")
+            //.Add(BackgroundColor.GetColorClass("bg"))
+            //.Add(TextColor.GetColorClass("text"))
+            //.ToString();
+
+            return classBuileder
+                .AddIf("grouped-table", HasGrouping)
+                .ToString();
+            //grouped-table
+
             //return new CssBuilder()
             //    .AddClass("")
             //    .AddClass("details-enabled", DetailsTemplate != null)

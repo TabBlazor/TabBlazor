@@ -4,6 +4,26 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="compilerconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Styles\blazor-tabler.scss" />
+    <None Remove="Styles\_custom.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\css\blazor-tabler.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Styles\blazor-tabler.scss" />
+    <Content Include="Styles\_custom.scss" />
+    <Content Include="Styles\_tabler-buttons.scss" />
+    <Content Include="Styles\_tabler.scss" />
+  </ItemGroup>
+
   
   <ItemGroup>
     <SupportedPlatform Include="browser" />
@@ -13,6 +33,14 @@
     <PackageReference Include="LinqKit.Core" Version="1.1.20" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.0-rc.2.20475.17" />
     <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="3.1.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\css\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="compilerconfig.json" />
   </ItemGroup>
 
 </Project>

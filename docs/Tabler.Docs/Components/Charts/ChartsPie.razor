@@ -1,17 +1,13 @@
-﻿@using Microsoft.AspNetCore.Components.Web
-<h3>Pie Charts</h3>
-
-<div class="row">
+﻿<div class="row">
     <div class="col-auto">
         <ApexChart TItem="Order"
-                   ChartType="ChartType.Bar"
-                   XAxisType="XaxisType.Datetime"
+                   ChartType="ChartType.Pie"
                    Options="GetOptions()">
 
             <ApexSeries TItem="Order"
                         Items="SampleData.GetOrders()"
                         Name="Net Value"
-                        XValue="@(e => e.OrderDate.FirstDayOfMonth())"
+                        XValue="@(e => e.OrderType.ToString())"
                         YAggregate="@(e => e.Sum(e => e.NetValue))"
                         OrderBy="e=>e.X" />
 
@@ -25,8 +21,8 @@
     private ApexCharts.ApexChartOptions<Order> GetOptions()
     {
         var options = new ApexCharts.ApexChartOptions<Order>();
-        options.Colors = new List<string> { "#206bc4" };
-        options.Chart = new Chart { Sparkline = new ChartSparkline { Enabled = true } };
+        //options.Colors = new List<string> { "#206bc4" };
+        //options.Chart = new Chart { Sparkline = new ChartSparkline { Enabled = true } };
         return options;
     }
 

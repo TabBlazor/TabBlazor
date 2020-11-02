@@ -23,7 +23,7 @@ namespace Tabler.Components.Tables
             if (items != null)
             {
                 var query = items.AsQueryable();
-                query = AddFilter(query);
+                query = AddSearch(query);
                 query = AddSorting(query);
                 state.TotalCount = query.Count();
 
@@ -34,7 +34,7 @@ namespace Tabler.Components.Tables
 
                 query = query.Skip(state.PageNumber * state.PageSize).Take(state.PageSize);
                 var columnGroup = columns.FirstOrDefault(e => e.GroupBy);
-          
+
                 if (columnGroup == null)
                 {
                     viewResult.Add(new TableResult<object, Item>(null, query.ToList()));
@@ -68,18 +68,15 @@ namespace Tabler.Components.Tables
             return query;
         }
 
-        private IQueryable<Item> AddFilter(IQueryable<Item> query)
+        private IQueryable<Item> AddSearch(IQueryable<Item> query)
         {
             var predicate = PredicateBuilder.New<Item>();
-
-            //var expression = PredicateBuilder.New<Item>();
-            foreach (var column in columns.Where(c => c.Visible))
+            foreach (var column in columns.Where(c => c.Searchable))
             {
                 var filter = column.GetFilter(state);
                 if (filter != null)
                 {
                     predicate = predicate.Or(filter);
-                    //expression = expression.Or(filter);
                 }
             }
 

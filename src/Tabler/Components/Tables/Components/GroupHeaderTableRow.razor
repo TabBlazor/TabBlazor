@@ -1,23 +1,17 @@
 ﻿@typeparam TableItem
-
 @inherits GroupHeaderTableRowBase<TableItem>
 
 @if (Group != null)
 {
-<AllColumnRow TableItem="TableItem" CssClass="grouping-row">
-    <div class="mr-2 clickable @ExpandedCss()" @onclick="ToogleExpanded" />
-    @if (Group?.GroupingTemplate != null)
-    {
-        @Group.GroupingTemplate(Group)
-    }
-    else if (Group?.Key != null)
-    {
-        @($"{Group.Key} ({Group.Count})")
-    }
-    else
-    {
-        @*@($"{Loc.GetString(x => x.Table_NoValue)} ({Group.Count})")*@
-    }
-
-</AllColumnRow>
+    <AllColumnRow TableItem="TableItem" CssClass="grouping-row">
+        <div class="mr-2 clickable @ExpandedCss()" @onclick="ToogleExpanded" />
+        @if (Group?.GroupingTemplate != null)
+        {
+            @Group.GroupingTemplate(Group)
+        }
+        else
+        {
+            <strong>   @($"{Group?.Key ?? "*No Value*"} ({Group.Count})")</strong>
+        }
+    </AllColumnRow>
 }

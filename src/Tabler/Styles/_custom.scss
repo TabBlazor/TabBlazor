@@ -1,0 +1,49 @@
+﻿
+//Clickable
+.clickable {
+    cursor: pointer;
+}
+
+.clickable-text {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.non-clickable {
+    cursor: default;
+}
+
+
+//Arrows
+.arrow-down {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #495057;
+    display: inline-block;
+}
+
+.arrow-right {
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 6px solid #495057;
+    display: inline-block;
+}
+
+//Grouped table
+.grouped-table {
+    tr.grouping-row {
+        background-color: #f5f7fb !important;
+        text-align: left !important;
+        font-weight: bold;
+    }
+
+    tr {
+        td {
+            padding-left: 0.5rem;
+        }
+    }
+}
