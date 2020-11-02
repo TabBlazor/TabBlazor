@@ -28,17 +28,16 @@
         return "";
     },
 
-    //outsideClickHandler: {
-    //    addEvent: function (elementId, dotnetHelper) {
-    //        window.addEventListener("click", (e) => {
-    //            var element = document.getElementById(elementId);
-    //            if (e != null && element != null) {
-    //                if (e.target !== element && !element.contains(e.target)) {
-    //                    dotnetHelper.invokeMethodAsync("InvokeClickOutside");
-    //                }
-    //            }
-
-    //        });
-    //    }
-    //}
+    clickOutsideHandler: {
+        addEvent: function (elementId, dotnetHelper) {
+            window.addEventListener("click", (e) => {
+                var element = document.getElementById(elementId);
+                if (e != null && element != null) {
+                    if (e.target !== element && !element.contains(e.target)) {
+                        dotnetHelper.invokeMethodAsync("InvokeClickOutside");
+                    }
+                }
+            });
+        }
+    }
 }

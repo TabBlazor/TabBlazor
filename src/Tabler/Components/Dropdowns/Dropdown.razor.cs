@@ -11,9 +11,15 @@ namespace Tabler.Components
 
         protected override string ClassNames => ClassBuilder
             .Add("dropdown")
+            .Add("clickable")
             .Add(BackgroundColor.GetColorClass("bg"))
             .Add(TextColor.GetColorClass("text"))
             .ToString();
+
+        protected void OnClickOutside()
+        {
+            isExpanded = false;
+        }
 
         protected void OnDropdownClick(MouseEventArgs e)
         {
