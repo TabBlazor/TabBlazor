@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tabler.Docs.Components.Charts
+namespace Tabler.Docs.Data
 {
   public static class SampleData
     {

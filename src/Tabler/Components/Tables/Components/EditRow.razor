@@ -1,0 +1,26 @@
+﻿@typeparam TableItem
+@inherits EditRowBase<TableItem>
+
+<tr class="is-inline-edit data-row">
+    @foreach (var column in InlineEditTable.VisibleColumns)
+    {
+        <td style="@GetColumnWidth(column)" class="@GetColumnClass(column)">
+            @if (column.EditorTemplate != null)
+            {
+                @column.EditorTemplate(Item)
+            }
+            else if (column.Template != null)
+            {
+                @column.Template(Item)
+            }
+            else
+            {
+                @column.GetValue(Item)
+            }
+        </td>
+    }
+    <td class="div-td-tool inline-edit-actions">
+        <button class="btn btn-primary btn-sm" @onclick:stopPropagation type="submit">Save</button>
+        <button class="btn btn-secondary btn-sm" @onclick:stopPropagation type="button" @onclick="OnEditItemCanceled">Cancel</button>
+    </td>
+</tr>

@@ -1,0 +1,10 @@
+﻿@typeparam TableItem
+@inherits DetailsRowBase<TableItem>
+
+
+<tr class="pt-3 no-hover-row">
+    <td class="div-table-details" colspan="@Table.VisibleColumnCount">
+        <i class="div-table-details-close fe fe-x" title="Close" @onclick="Table.ClearSelectedItem"></i>
+        @Table.DetailsTemplate(Item)
+    </td>
+</tr>

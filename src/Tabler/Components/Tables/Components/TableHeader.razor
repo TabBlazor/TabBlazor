@@ -1,0 +1,19 @@
+﻿@typeparam TableItem
+@inherits TableHeaderBase<TableItem>
+
+<thead>
+    <tr class="no-hover-row">
+        @foreach (IColumn<TableItem> column in Table.VisibleColumns)
+        {
+            <th style="@GetColumnWidth(column)" class="@GetColumnHeaderClass(column)" @onclick="@(() => column.SortByAsync())">
+                <span>@((MarkupString)column.Title)</span>
+            </th>
+        }
+        @*@if (Table.AllRowActions.Any())
+        {
+            <th class="div-td-tool" style="width: @Table.GetColumnWidth()">
+                <i class="fe fe-settings"></i>
+            </th>
+        }*@
+    </tr>
+</thead>

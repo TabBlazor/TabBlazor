@@ -1,0 +1,9 @@
+﻿@namespace Tabler.Components
+@typeparam TableItem
+@inherits AllColumnRowBase<TableItem>
+
+<tr class="all-column-row @CssClass">
+    <td colspan="@Table.VisibleColumnCount">
+        @ChildContent
+    </td>
+</tr>

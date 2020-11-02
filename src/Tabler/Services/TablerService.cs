@@ -22,5 +22,10 @@ namespace Tabler.Services.Services
              await jSRuntime.InvokeVoidAsync("blazorTabler.scrollToFragment", fragmentId);
         }
 
+        public async Task ShowAlert(string message)
+        {
+            await jSRuntime.InvokeVoidAsync("blazorTabler.showAlert", message);
+        }
+
     }
 }

@@ -1,0 +1,19 @@
+﻿@typeparam TableItem
+@inherits TableHeaderToolsBase<TableItem>
+
+@if (Table.ShowSearch)
+{
+
+    <div class="ml-auto text-muted">
+       
+        <div class="ml-2 d-inline-block">
+            <input type="text" class="form-control form-control-sm" placeholder="search..." @onchange="@(x => Table.OnSearchChanged(x))">
+        </div>
+    </div>
+}
+@if (Table.OnRefresh != null)
+{
+    <span class="clickable hover-icon" title="Refresh">
+        <Icon Icon="material refresh" OnClick="Table.RefreshItems"></Icon>
+    </span>
+}

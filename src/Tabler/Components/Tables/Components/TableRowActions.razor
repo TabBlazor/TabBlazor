@@ -1,0 +1,17 @@
+﻿@typeparam TableItem
+@inherits TableRowActionsBase<TableItem>
+
+@*@if (Table.AllRowActions.Any())
+{
+    <td class="div-td-tool" style="width: @Table.GetColumnWidth()">
+        @foreach (var menuItem in Table.AllRowActions.Where(x => x.ShouldRender(Item)))
+        {
+            @if (menuItem.Id != "DeleteItem" || CanDeleteItem(Item))
+            {
+                <a @onclick="(() =>  ActionClicked(menuItem, Item))" class="clickable" title="@menuItem.Title">
+                    <Icon Icon="@menuItem.Icon"></Icon>
+                </a>
+            }
+        }
+    </td>
+}*@

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Tabler.Components.Tables;
 using Tabler.Services.Services;
 
 namespace Tabler
@@ -10,7 +11,8 @@ namespace Tabler
         {
             return services
                .AddScoped<ToastService>()
-               .AddScoped<TablerService>();
+               .AddScoped<TablerService>()
+            .AddScoped<TableFilterService>();
         }
 
     }

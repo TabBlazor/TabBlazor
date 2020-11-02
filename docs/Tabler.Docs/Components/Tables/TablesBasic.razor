@@ -1,0 +1,29 @@
+﻿<Tabler.Components.Tables.Components.Table Item="Order" Items="SampleData.GetOrders()" PageSize="10" OnItemEdited="OnItemEdit" OnItemSelected="OnItemSelect">
+
+    <HeaderTemplate>
+        <strong>Orders</strong>
+    </HeaderTemplate>
+
+    <ChildContent>
+        <Column Item="Order"  Property="e=>e.CustomerName" Title="Customer" Sortable Searchable Groupable />
+        <Column Item="Order" Property="e=>e.Country" Title="Country" Sortable Searchable Groupable />
+        <Column Item="Order" Property="e=>e.OrderType" Title="Order type" Sortable Searchable Groupable />
+    </ChildContent>
+
+</Tabler.Components.Tables.Components.Table>
+
+
+@code {
+
+    [Inject] Tabler.Services.Services.TablerService TablerService { get; set; }
+
+    private async Task OnItemEdit(Order order)
+    {
+        await TablerService.ShowAlert($"Edited order {order.OrderId}");
+    }
+
+    private async Task OnItemSelect(Order order)
+    {
+        await TablerService.ShowAlert($"Selected order {order.OrderId}");
+    }
+}

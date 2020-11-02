@@ -1,0 +1,20 @@
+﻿@typeparam TableItem
+@inherits TableRowBase<TableItem>
+
+<tr class="@GetRowCssClass(Item) data-row">
+    @foreach (IColumn<TableItem> column in Table.VisibleColumns)
+    {
+        <td style="@GetColumnWidth(column)" class="@GetColumnClass(column)" @onclick="(() => Table.SetSelectedItem(Item))">
+            @if (column.Template != null)
+            {
+                @column.Template(Item)
+            }
+            else if (column.Property != null)
+            {
+                @column.GetValue(Item);
+            }
+        </td>
+    }
+
+    <TableRowActions Table="Actions" Item="Item"></TableRowActions>
+</tr>
