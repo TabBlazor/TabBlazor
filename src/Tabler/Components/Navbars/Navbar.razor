@@ -1,0 +1,22 @@
+﻿@inherits TablerBaseComponent
+@namespace Tabler.Components
+
+<HtmlElement Tag="@HtmlTag"
+             class="@ClassNames"
+             @onclick="OnClick"
+             @attributes="@UnmatchedParameters">
+
+    <div class="container">
+
+        <button class="navbar-toggler" type="button" @onclick="ToogleExpand">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+
+        @if (isExpanded)
+        {
+            @ChildContent
+        }
+
+    </div>
+</HtmlElement>

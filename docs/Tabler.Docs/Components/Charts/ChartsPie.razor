@@ -2,7 +2,8 @@
     <div class="col-auto">
         <ApexChart TItem="Order"
                    ChartType="ChartType.Pie"
-                   Options="GetOptions()">
+                   Options="GetOptions()"
+                  >
 
             <ApexSeries TItem="Order"
                         Items="SampleData.GetOrders()"
@@ -21,6 +22,7 @@
     private ApexCharts.ApexChartOptions<Order> GetOptions()
     {
         var options = new ApexCharts.ApexChartOptions<Order>();
+        options.Theme = new Theme { Palette = PaletteType.Palette2 };
         //options.Colors = new List<string> { "#206bc4" };
         //options.Chart = new Chart { Sparkline = new ChartSparkline { Enabled = true } };
         return options;

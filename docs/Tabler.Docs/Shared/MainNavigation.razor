@@ -1,236 +1,50 @@
-﻿<aside class="navbar navbar-vertical navbar-expand-md navbar-dark">
-    <div class="container">
-        <button class="navbar-toggler" type="button" @onclick="ToogleExpanded">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <a href="." class="navbar-brand navbar-brand-autodark">
+﻿<Navbar>
+        <a href="https://github.com/joadan/Blazor-Tabler" class="navbar-brand navbar-brand-autodark">
             <img src="_content/Tabler.Docs/img/logo-white.svg" alt="Tabler" class="navbar-brand-image">
         </a>
-        
-        
-        <div class="navbar-collapse @menuCollapse" id="navbar-menu">
-            <ul class="navbar-nav pt-lg-3">
-                <li class="nav-item">
-                    <a class="nav-link" href="dashboard">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.Dashboard" />
-                        </span>
-                        <span class="nav-link-title">
-                            Home
-                        </span>
-                    </a>
-                </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="docs/tables">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.Table" />
-                        </span>
-                        <span class="nav-link-title">
-                            Tables
-                        </span>
-                    </a>
-                </li>
+        <NavbarMenu>
+            <NavbarMenuItem Href="dashboard" Text="Dashboard">
+                <MenuItemIcon>
+                    <Icon class="icon" Elements="@DemoIcons.Dashboard" />
+                </MenuItemIcon>
+            </NavbarMenuItem>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="docs/charts">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.Chart_bar" />
-                        </span>
-                        <span class="nav-link-title">
-                            Charts
-                        </span>
-                    </a>
-                </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="snippets/statistcs">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.Snowflake" />
-                        </span>
-                        <span class="nav-link-title">
-                            Snippets - Stats
-                        </span>
-                    </a>
-                </li>
+            <NavbarMenuItem Text="Snippets" Expanded>
+                <MenuItemIcon>
+                    <Icon class="icon" Elements="@DemoIcons.Code" />
+                </MenuItemIcon>
+                <SubMenu>
+                    <NavbarMenuItem Text="Statistics" Href="snippets/statistcs" />
+                    <NavbarMenuItem Text="Profile" Href="snippets/profiles" />
+                </SubMenu>
+            </NavbarMenuItem>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="snippets/profiles">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.User" />
-                        </span>
-                        <span class="nav-link-title">
-                            Snippets - Profile
-                        </span>
-                    </a>
-                </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="docs/buttons">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.Click" />
-                        </span>
-                        <span class="nav-link-title">
-                            Buttons
-                        </span>
-                    </a>
-                </li>
+            <NavbarMenuItem Text="Components">
+                <MenuItemIcon>
+                    <Icon class="icon" Elements="@DemoIcons.Command" />
+                </MenuItemIcon>
+                <SubMenu>
+                    <NavbarMenuItem Text="Table" Href="docs/tables" />
+                    <NavbarMenuItem Text="Chart" Href="docs/charts" />
+                    <NavbarMenuItem Text="Button" Href="docs/buttons" />
+                    <NavbarMenuItem Text="Popover" Href="docs/popovers" />
+                    <NavbarMenuItem Text="Alert" Href="docs/tooltips" />
+                    <NavbarMenuItem Text="Card" Href="docs/cards" />
+                    <NavbarMenuItem Text="Icon" Href="docs/icons" />
+                    <NavbarMenuItem Text="Toast" Href="docs/toasts" />
+                    <NavbarMenuItem Text="Tab" Href="docs/tabs" />
+                    <NavbarMenuItem Text="Timeline" Href="docs/timelines" />
+                    <NavbarMenuItem Text="Avatar" Href="docs/avatars" />
+                    <NavbarMenuItem Text="Badge" Href="docs/badges" />
+                    <NavbarMenuItem Text="Dropdown" Href="docs/dropdowns" />
+                    <NavbarMenuItem Text="Progress" Href="docs/progress" />
+                    <NavbarMenuItem Text="Navbar" Href="docs/navbars" />
+                </SubMenu>
+            </NavbarMenuItem>
+        </NavbarMenu>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="docs/popovers">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.Question_mark" />
-                        </span>
-                        <span class="nav-link-title">
-                            Popovers
-                        </span>
-                    </a>
-                </li>
+</Navbar>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="docs/tooltips">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.Notification" />
-                        </span>
-                        <span class="nav-link-title">
-                            Tooltips
-                        </span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="docs/alerts">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.Alert_triangle" />
-                        </span>
-                        <span class="nav-link-title">
-                            Alerts
-                        </span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="docs/cards">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.Layout_cards" />
-                        </span>
-                        <span class="nav-link-title">
-                            Cards
-                        </span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="docs/icons">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.Grid" />
-                        </span>
-                        <span class="nav-link-title">
-                            Icons
-                        </span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="docs/toasts">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.Messages" />
-                        </span>
-                        <span class="nav-link-title">
-                            Toasts
-                        </span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="docs/tabs">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.File_horizontal" />
-                        </span>
-                        <span class="nav-link-title">
-                            Tabs
-                        </span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="docs/timelines">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.List" />
-                        </span>
-                        <span class="nav-link-title">
-                            Timelines
-                        </span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="docs/avatars">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.Users" />
-                        </span>
-                        <span class="nav-link-title">
-                            Avatars
-                        </span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="docs/badges">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.Award" />
-                        </span>
-                        <span class="nav-link-title">
-                            Badges
-                        </span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="docs/dropdowns">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.List" />
-                        </span>
-                        <span class="nav-link-title">
-                            Dropdowns
-                        </span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="docs/progress">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.Chart_bar" />
-                        </span>
-                        <span class="nav-link-title">
-                            Progress
-                        </span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="docs/navbars">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <Icon class="icon" Elements="@DemoIcons.Menu" />
-                        </span>
-                        <span class="nav-link-title">
-                            Navbars
-                        </span>
-                    </a>
-                </li>
-
-            </ul>
-        </div>
-    </div>
-</aside>
-
-@code {
-    private bool isExpanded;
-
-    private void ToogleExpanded()
-    {
-        isExpanded = !isExpanded;
-    }
-
-    private string menuCollapse => isExpanded ? "" : "collapse";
-}
