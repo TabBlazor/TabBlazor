@@ -6,3 +6,5 @@ Minimal javascript!
 ## [Demo](https://joadan.github.io/Blazor-Tabler)
 
 **Work ongoing**
+
+![Alt text](tabler-preview.png?raw=true "Title")
