@@ -12,18 +12,19 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v1
 
+        # Install .NET Core SDK
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.100-preview1-014459
+        dotnet-version: 5.0.100-rc.2.20479.15
 
     - name: Dotnet Pack 
-      working-directory: RazorClassLibrary/RazorClassLibrary
+      working-directory: src/Tabler
       run: dotnet pack -c Release -p:Version=${GITHUB_REF##*/v}
 
     - name: Dotnet Nuget Push   
-      working-directory: RazorClassLibrary/RazorClassLibrary/bin/Release
-      run: dotnet nuget push RazorClassLibrary.*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
+      working-directory: src/Tabler/bin/Release
+      run: dotnet nuget push Tabler.*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
       continue-on-error: true
 
     - name: Create Release
