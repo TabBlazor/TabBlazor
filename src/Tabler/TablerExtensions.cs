@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Tabler.Components;
 using Tabler.Components.Tables;
-using Tabler.Services.Services;
+using Tabler.Services;
 
 namespace Tabler
 {
@@ -12,7 +13,8 @@ namespace Tabler
             return services
                .AddScoped<ToastService>()
                .AddScoped<TablerService>()
-            .AddScoped<TableFilterService>();
+               .AddScoped<IModalService, ModalService>()
+               .AddScoped<TableFilterService>();
         }
 
     }

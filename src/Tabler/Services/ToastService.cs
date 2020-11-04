@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Tabler
+namespace Tabler.Services
 {
     public class ToastService
     {

@@ -5,7 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Tabler.Services.Services;
+using Tabler.Services;
 
 namespace Tabler.Docs.Components
 {

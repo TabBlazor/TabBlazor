@@ -1,0 +1,26 @@
+﻿<Button @onclick="ShowModal" BackgroundColor="TablerColor.Primary">Show Modal</Button>
+
+<div>@message</div>
+
+
+@code {
+    @inject IModalService ModalService
+    private string message;
+
+    protected async Task ShowModal()
+    {
+        message = string.Empty;
+        var result = await ModalService.Show("This is a Title", typeof(TestModalContent), null);
+
+        if (result.Cancelled)
+        {
+            message = "Modal was cancelled!";
+        }
+        else
+        {
+            message = "Modal as ok!";
+        }
+
+    }
+
+}
