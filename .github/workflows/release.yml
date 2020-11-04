@@ -24,7 +24,7 @@ jobs:
 
     - name: Dotnet Nuget Push   
       working-directory: src/Tabler/bin/Release
-      run: dotnet nuget push Tabler.*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
+      run: dotnet nuget push Blazor-Tabler.*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
       continue-on-error: true
 
     - name: Create Release
