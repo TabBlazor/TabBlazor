@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <PackageId>Blazor-Tabler</PackageId>
+    <Description>Blazor dashboard admin theme based on Tabler UI. Minimal Javascript</Description>
+    <Authors>Joakim Dangården</Authors>
+    <Product>Blazor-Tabler</Product>
+    <PackageTags>Blazor Tabler Admin Theme</PackageTags>
+    <RepositoryUrl>https://github.com/joadan/Blazor-Tabler</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/joadan/Blazor-Tabler</PackageProjectUrl>
+    <Version>0.1.0-Alpha</Version>
   </PropertyGroup>
 
   <ItemGroup>
