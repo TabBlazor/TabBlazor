@@ -1,5 +1,5 @@
 # Blazor-Tabler
-A blazor wrapper for [Tabler](https://preview-dev.tabler.io/) admin theme
+A blazor admin template built on [Tabler](https://preview-dev.tabler.io/)
 
 Minimal javascript!
 
