@@ -10,6 +10,16 @@ namespace Tabler.Docs.Data
     {
         Web, Contract, Mail, Phone
     }
+
+    public class Customer
+    {
+        public Guid CustomerId { get; set; } = Guid.NewGuid();
+        public string CustomerName { get; set; }
+      
+    }
+
+
+
     public class Order
     {
         public Guid OrderId { get; set; } = Guid.NewGuid();

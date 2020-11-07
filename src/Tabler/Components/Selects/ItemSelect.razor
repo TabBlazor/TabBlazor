@@ -1,0 +1,42 @@
+﻿@namespace Tabler.Components
+@typeparam TValue
+@inherits TablerBaseComponent
+
+
+
+
+
+<div class="@(IsClearable ? "input-icon":"")">
+    <select class="@ClassNames" @onchange="ValueChanged" @attributes="UnmatchedParameters">
+        @if (itemList.Count == 0)
+        {
+            <option value="null">@ItemListEmptyText</option>
+        }
+        else if (ItemNotInList())
+        {
+            <option value="null">*Select*</option>
+        }
+        @foreach (var listItem in itemList)
+        {
+            if (SelectedValue != null && listItem.Value == GetValue(SelectedValue))
+            {
+                <option bind="selectedItem" selected value="@listItem.Value">@listItem.Text</option>
+            }
+            else
+            {
+                <option value="@listItem.Value">@listItem.Text</option>
+            }
+        }
+    </select>
+
+    @*@if (IsClearable)
+    {
+        <span class="input-icon-addon mr-3 clickable" @onclick="Clear">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+        </span>
+    }*@
+</div>
