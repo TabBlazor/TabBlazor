@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tabler.Docs", "docs\Tabler.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tabler.Docs.Client", "docs\Tabler.Docs.Client\Tabler.Docs.Client.csproj", "{47975C0E-BD4C-48F0-8C18-83E30F2C88A0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tabler.Docs.Wasm", "Tabler.Docs.Wasm\Tabler.Docs.Wasm.csproj", "{9B860CBA-77D5-42A3-A566-DE6BB14225D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{47975C0E-BD4C-48F0-8C18-83E30F2C88A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47975C0E-BD4C-48F0-8C18-83E30F2C88A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47975C0E-BD4C-48F0-8C18-83E30F2C88A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B860CBA-77D5-42A3-A566-DE6BB14225D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B860CBA-77D5-42A3-A566-DE6BB14225D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B860CBA-77D5-42A3-A566-DE6BB14225D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B860CBA-77D5-42A3-A566-DE6BB14225D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +49,7 @@ Global
 		{AB9C8A88-E800-4A1E-917D-B15E5D7241C8} = {BC1B6966-CBEF-4107-A708-0C6DC37D606D}
 		{ABA6934F-8630-4C75-A4A9-B8504B9AA629} = {BC1B6966-CBEF-4107-A708-0C6DC37D606D}
 		{47975C0E-BD4C-48F0-8C18-83E30F2C88A0} = {BC1B6966-CBEF-4107-A708-0C6DC37D606D}
+		{9B860CBA-77D5-42A3-A566-DE6BB14225D8} = {BC1B6966-CBEF-4107-A708-0C6DC37D606D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE9B41A8-AEAC-4181-A5C5-0CCA8C2A53BB}

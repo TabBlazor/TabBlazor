@@ -10,8 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tabler.Docs.Services;
 
-
-namespace Tabler.Docs.Client
+namespace Tabler.Docs.Wasm
 {
     public class Program
     {
@@ -20,6 +19,7 @@ namespace Tabler.Docs.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
+            // builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddHttpClient("Local", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
             builder.Services.AddHttpClient("GitHub", client => client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Blazor-Tabler", "1")));
             builder.Services.AddTabler();
