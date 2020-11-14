@@ -1,7 +1,7 @@
 name: 'Publish to Github pages'
 on: push
 env:
-  PUBLISH_DIR: docs/Tabler.Docs.Client/bin/Release/net5.0/publish/wwwroot
+  PUBLISH_DIR: docs/Tabler.Docs.Wasm/bin/Release/net5.0/publish/wwwroot
 
 jobs:
   build:
@@ -22,8 +22,8 @@ jobs:
 
         # Generate the website
         - name: Publish
-          run: dotnet publish Tabler.Docs.Client.csproj --configuration Release
-          working-directory: ./docs/Tabler.Docs.Client
+          run: dotnet publish Tabler.Docs.Wasm.csproj --configuration Release
+          working-directory: ./docs/Tabler.Docs.Wasm
         
         # Rewrite Base Url
         - name: Rewrite base href
@@ -39,7 +39,7 @@ jobs:
           with:
             github_token: ${{ secrets.PUBLISH_TOKEN }}
             publish_branch: gh-pages
-            publish_dir: docs/Tabler.Docs.Client/bin/Release/net5.0/publish/wwwroot
+            publish_dir: docs/Tabler.Docs.Wasm/bin/Release/net5.0/publish/wwwroot
             allow_empty_commit: false
             keep_files: false
             force_orphan: true
