@@ -10,10 +10,12 @@ namespace Tabler.Components
         [Parameter] public RenderFragment MenuItemIcon { get; set; }
         [Parameter] public RenderFragment SubMenu { get; set; }
         [Parameter] public bool Expanded { get; set; }
+        [Parameter] public bool Expandable { get; set; } = true;
 
         protected string HtmlTag => "li";
         protected bool isExpanded;
-        protected bool IsDropdown => SubMenu != null;
+        protected bool IsDropdown => SubMenu != null && Expandable;
+
         protected bool isSubMenu => ParentMenuItem != null;
 
         protected override void OnInitialized()
