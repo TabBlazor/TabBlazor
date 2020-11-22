@@ -12,7 +12,10 @@
     <None Include="compilerconfig.json" />
   </ItemGroup>
 
-  
+  <ItemGroup>
+    <Content Include="components\**\*" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>

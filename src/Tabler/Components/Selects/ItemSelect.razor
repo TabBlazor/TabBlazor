@@ -3,9 +3,6 @@
 @inherits TablerBaseComponent
 
 
-
-
-
 <div class="@(IsClearable ? "input-icon":"")">
     <select class="@ClassNames" @onchange="ValueChanged" @attributes="UnmatchedParameters">
         @if (itemList.Count == 0)
