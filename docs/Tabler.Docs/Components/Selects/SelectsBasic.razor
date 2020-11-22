@@ -1,8 +1,8 @@
 ﻿<ItemSelect Items="Data.SampleData.GetCustomers()"
             @bind-SelectedValue="selectedCustomer"
             TextExpression="e=>e.CustomerName"
-            ValueExpression="e => e.CustomerId.ToString()" />
-
+            ValueExpression="e => e.CustomerId.ToString()"
+            NoSelectedText="*Select Customer*"/>
 <br />
 
 @if (selectedCustomer != null)
@@ -12,7 +12,5 @@
 }
 
 @code {
-
-    private Customer selectedCustomer;
-
+   private Customer selectedCustomer;
 }

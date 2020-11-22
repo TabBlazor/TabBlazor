@@ -8,20 +8,24 @@
 </span>
 
 @code{
-    private string Id { get; set; } = Guid.NewGuid().ToString();
+        private string Id { get; set; } = Guid.NewGuid().ToString();
 
-    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object> Attributes { get; set; }
-    [Parameter] public EventCallback OnClickOutside { get; set; }
-    [Parameter] public RenderFragment ChildContent { get; set; }
+        [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object> Attributes { get; set; }
+        [Parameter] public EventCallback OnClickOutside { get; set; }
+        [Parameter] public RenderFragment ChildContent { get; set; }
 
-    protected async override Task OnInitializedAsync()
-    {
-        await JSRuntime.InvokeVoidAsync("blazorTabler.clickOutsideHandler.addEvent", Id, DotNetObjectReference.Create(this));
-    }
-
+        
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await JSRuntime.InvokeVoidAsync("blazorTabler.clickOutsideHandler.addEvent", Id, DotNetObjectReference.Create(this));
+            }
+        }
+  
     [JSInvokable]
     public async Task InvokeClickOutside()
     {
-       await OnClickOutside.InvokeAsync();
+        await OnClickOutside.InvokeAsync();
     }
 }

@@ -17,6 +17,7 @@ namespace Tabler.Components
         [Parameter] public Func<TValue, string> TextExpression { get; set; }
         [Parameter] public Func<TValue, string> ValueExpression { get; set; }
         [Parameter] public string ItemListEmptyText { get; set; } = "*No items*";
+        [Parameter] public string NoSelectedText { get; set; } = "*Select*";
         [Parameter] public bool IsClearable { get; set; }
              
         protected List<ListItem<TValue>> itemList = new List<ListItem<TValue>>();

@@ -6,16 +6,21 @@
         <div class="d-flex align-items-center">
             <div class="subheader">Active users</div>
             <div class="ml-auto lh-1">
-                <div class="dropdown">
-                    <a class="dropdown-toggle text-muted" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Last 7 days
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" style="">
-                        <a class="dropdown-item active" href="#">Last 7 days</a>
-                        <a class="dropdown-item" href="#">Last 30 days</a>
-                        <a class="dropdown-item" href="#">Last 3 months</a>
-                    </div>
-                </div>
+                <Dropdown>
+                    <ChildContent>
+                        <a class="dropdown-toggle text-muted" aria-haspopup="true" aria-expanded="false">
+                            Last 7 days
+                        </a>
+                    </ChildContent>
+                    <DropdownTemplate>
+                        <DropdownMenu>
+                            <DropdownItem>Last 7 Days</DropdownItem>
+                            <DropdownItem>Last 30 days</DropdownItem>
+                            <DropdownItem>Last 3 months</DropdownItem>
+                        </DropdownMenu>
+                    </DropdownTemplate>
+
+                </Dropdown>
             </div>
         </div>
         <div class="d-flex align-items-baseline">

@@ -1,26 +1,15 @@
 ﻿
 <Dropdown>
     <ChildContent>
-        <Button @onclick="toogleOpen" BackgroundColor="TablerColor.Primary">
-            Toogle
-        </Button>
+        <Button BackgroundColor="TablerColor.Primary" Type="ButtonType.Button" Text="Click me" />
     </ChildContent>
-   
-    @*<DropdownMenu>
-        <DropdownMenu Show="isOpen">
+
+    <DropdownTemplate>
+        <DropdownMenu>
             <DropdownItem>Item 1</DropdownItem>
             <DropdownItem>Item 2</DropdownItem>
             <DropdownItem>Item 3</DropdownItem>
         </DropdownMenu>
-    </DropdownMenu>*@
-    
+    </DropdownTemplate>
+
 </Dropdown>
-
-@code {
-    private bool isOpen = true;
-
-    private void toogleOpen()
-    {
-        isOpen = !isOpen;
-    }
-} 
