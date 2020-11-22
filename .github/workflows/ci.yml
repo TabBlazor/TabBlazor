@@ -41,5 +41,5 @@ jobs:
             publish_branch: gh-pages
             publish_dir: docs/Tabler.Docs.Wasm/bin/Release/net5.0/publish/wwwroot
             allow_empty_commit: false
-            keep_files: true
+            keep_files: false
             force_orphan: true
