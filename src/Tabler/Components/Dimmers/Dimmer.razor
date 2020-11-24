@@ -1,0 +1,19 @@
+﻿@namespace Tabler.Components
+
+@inherits TablerBaseComponent
+
+<HtmlElement Tag="div"
+             class="@ClassNames"
+             @onclick="OnClick"
+             @attributes="@UnmatchedParameters">
+
+    @if (ShowSpinner)
+    {
+        <div class="loader"></div>
+    }
+
+    <div class="dimmer-content">
+        @ChildContent
+    </div>
+</HtmlElement>
+

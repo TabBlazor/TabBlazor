@@ -28,6 +28,12 @@
         return "";
     },
 
+    setPropByElement: (element, property, value) => {
+        element[property] = value;
+        return "";
+    },
+ 
+
     clickOutsideHandler: {
         addEvent: function (elementId, dotnetHelper) {
             window.addEventListener("click", (e) => {

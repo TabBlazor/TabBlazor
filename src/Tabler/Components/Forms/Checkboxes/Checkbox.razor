@@ -1,0 +1,9 @@
+﻿@namespace Tabler.Components
+
+@inherits ComponentBase
+
+<label class="form-check">
+    <input type="checkbox" class="form-check-input" checked="@Value" @onclick="ToggleState" disabled="@Disabled">
+    <span class="form-check-label">@Label</span>
+    <span class="form-check-description">@Description</span>
+</label>

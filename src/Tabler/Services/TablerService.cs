@@ -10,21 +10,26 @@ namespace Tabler.Services
 {
     public class TablerService
     {
-        private readonly IJSRuntime jSRuntime;
+        private readonly IJSRuntime jsRuntime;
 
         public TablerService(IJSRuntime jSRuntime)
         {
-            this.jSRuntime = jSRuntime;
+            this.jsRuntime = jSRuntime;
         }
 
         public async Task ScrollToFragment(string fragmentId)
         {
-             await jSRuntime.InvokeVoidAsync("blazorTabler.scrollToFragment", fragmentId);
+             await jsRuntime.InvokeVoidAsync("blazorTabler.scrollToFragment", fragmentId);
         }
 
         public async Task ShowAlert(string message)
         {
-            await jSRuntime.InvokeVoidAsync("blazorTabler.showAlert", message);
+            await jsRuntime.InvokeVoidAsync("blazorTabler.showAlert", message);
+        }
+
+        public  async Task SetElementProperty(ElementReference element, string property, object value)
+        {
+            await jsRuntime.InvokeVoidAsync("blazorTabler.setPropByElement", element, property, value);
         }
 
     }

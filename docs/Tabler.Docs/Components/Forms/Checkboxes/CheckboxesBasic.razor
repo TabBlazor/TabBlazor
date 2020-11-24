@@ -1,0 +1,23 @@
+﻿<Checkbox @bind-Value="isChecked" />
+<div class="mb-3">
+    <i> Value is checked: @isChecked</i>
+</div>
+
+<Checkbox Label="This is a label" @bind-Value="isChecked1" />
+<div class="mb-3">
+    <i> Value is checked: @isChecked1</i>
+</div>
+
+<Checkbox Label="I Have a description" Description="This is a description" @bind-Value="isChecked2" />
+<div class="mb-3">
+    <i>Value is checked: @isChecked2</i>
+</div>
+
+<Checkbox Label="I'm disabled" Disabled />
+
+@code {
+    private bool isChecked;
+    private bool isChecked1 = true;
+    private bool isChecked2;
+}
+

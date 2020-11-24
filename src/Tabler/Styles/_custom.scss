@@ -14,6 +14,35 @@
 }
 
 
+/**
+Dimmer
+*/
+.dimmer {
+    position: relative;
+    min-height: 2.5rem;
+}
+
+.dimmer .loader {
+    display: none;
+    margin: 0 auto;
+    position: absolute;
+    top: 35%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+}
+
+.dimmer.active .loader {
+    display: block;
+}
+
+.dimmer.active .dimmer-content {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+
+
 //Arrows
 .arrow-down {
     width: 0;
