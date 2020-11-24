@@ -18,33 +18,18 @@ namespace Tabler.Components
         [Parameter] public Func<TValue, string> ValueExpression { get; set; }
         [Parameter] public string ItemListEmptyText { get; set; } = "*No items*";
         [Parameter] public string NoSelectedText { get; set; } = "*Select*";
-        [Parameter] public bool IsClearable { get; set; }
+        [Parameter] public bool Clearable { get; set; }
              
         protected List<ListItem<TValue>> itemList = new List<ListItem<TValue>>();
 
         protected override void OnParametersSet()
         {
             PopulateItemList();
-            //CssClass = $"{CssClass} {SetBorderCss()}";
         }
 
         protected override string ClassNames => ClassBuilder
-          .Add("form-select")
+          .Add("form-control form-select")
           .ToString();
-
-        //private string SetBorderCss()
-        //{
-        //    if (IsClearable && IsBorderless)
-        //        return "border-0 p-1";
-
-        //    if (IsClearable)
-        //        return "border-right-0";
-
-        //    if (IsBorderless)
-        //        return "border-0 p-1";
-
-        //    return string.Empty;
-        //}
 
         protected bool ItemNotInList()
         {

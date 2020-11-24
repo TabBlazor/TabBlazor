@@ -50,6 +50,8 @@ namespace Tabler.Docs.Services
         const string baseUrl = "https://raw.githubusercontent.com/joadan/Blazor-Tabler/master/docs/Tabler.Docs";
         private readonly IHttpClientFactory httpClientFactory;
 
+        private Dictionary<string, string> cachedCode = new Dictionary<string, string>();
+
         public GitHubSnippetService(IHttpClientFactory httpClientFactory)
         {
             this.httpClientFactory = httpClientFactory;
@@ -60,18 +62,26 @@ namespace Tabler.Docs.Services
         {
             try
             {
-                var names = className.Split(".");
-                var folder1 = names.SkipLast(2).Last();
-                var folder2 = names.SkipLast(1).Last();
-                var fileName = $"{names.Last()}.razor";
-                var filePath = $"{baseUrl}/{folder1}/{folder2}/{fileName}";
-               // Console.WriteLine($"Try to access github with path {filePath}");
+                if (!cachedCode.ContainsKey(className))
+                {
+                    var baseName = "Tabler.Docs.";
+                    var path = baseUrl + "/" + className.Replace(baseName, "").Replace(".", "/") + ".razor";
 
-                using var httpClient = httpClientFactory.CreateClient("GitHub");
-                using var stream = await httpClient.GetStreamAsync(filePath);
-                StreamReader reader = new StreamReader(stream);
-                return reader.ReadToEnd();
-                // return await httpClient.GetStringAsync(filePath);
+                    using var httpClient = httpClientFactory.CreateClient("GitHub");
+                    using var stream = await httpClient.GetStreamAsync(path);
+                    StreamReader reader = new StreamReader(stream);
+
+                    var code = reader.ReadToEnd();
+
+                    if (!cachedCode.ContainsKey(className))
+                    {
+                        cachedCode[className] = code;
+                    }
+                 
+                }
+
+                return cachedCode[className];
+
             }
             catch (Exception ex)
             {

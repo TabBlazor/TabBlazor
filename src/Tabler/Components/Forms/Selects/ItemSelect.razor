@@ -3,7 +3,7 @@
 @inherits TablerBaseComponent
 
 
-<div class="@(IsClearable ? "input-icon":"")">
+<div class="input-group input-group-flat">
     <select class="@ClassNames" @onchange="ValueChanged" @attributes="UnmatchedParameters">
         @if (itemList.Count == 0)
         {
@@ -11,7 +11,7 @@
         }
         else if (ItemNotInList())
         {
-            <option value="null">@NoSelectedText</option>
+            <option value="null" selected="@(SelectedValue==null)">@NoSelectedText</option>
         }
         @foreach (var listItem in itemList)
         {
@@ -26,14 +26,13 @@
         }
     </select>
 
-    @*@if (IsClearable)
+    @if (Clearable)
     {
-        <span class="input-icon-addon mr-3 clickable" @onclick="Clear">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
+        <span class="input-group-text">
+            <a @onclick="Clear"  class="link-secondary cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </a>
+         
         </span>
-    }*@
+    }
 </div>
