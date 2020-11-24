@@ -30,8 +30,6 @@
   <ItemGroup>
     <Content Include="Styles\blazor-tabler.scss" />
     <Content Include="Styles\_custom.scss" />
-    <Content Include="Styles\_tabler-buttons.scss" />
-    <Content Include="Styles\_tabler.scss" />
   </ItemGroup>
 
   

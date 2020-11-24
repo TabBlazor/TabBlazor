@@ -1,6 +1,4 @@
-﻿/*@import '_tabler';
-@import '_tabler-buttons';*/
-.clickable {
+﻿.clickable {
   cursor: pointer; }
 
 .clickable-text {

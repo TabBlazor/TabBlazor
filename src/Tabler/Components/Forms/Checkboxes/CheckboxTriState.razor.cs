@@ -9,7 +9,6 @@ namespace Tabler.Components
         [Inject] public TablerService TablerService { get; set; }
         [Parameter] public string Label { get; set; }
         [Parameter] public string Description { get; set; }
-        [Parameter] public bool DefaultValue { get; set; }
         [Parameter] public bool? Value { get; set; }
         [Parameter] public EventCallback<bool?> ValueChanged { get; set; }
         [Parameter] public bool Disabled { get; set; }
@@ -31,7 +30,7 @@ namespace Tabler.Components
         {
             if (Value == null)
             {
-                Value = DefaultValue;
+                Value = true;
             }
             else
             {

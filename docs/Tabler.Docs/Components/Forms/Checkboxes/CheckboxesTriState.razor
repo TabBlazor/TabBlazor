@@ -1,22 +1,14 @@
-﻿
-<CheckboxTriState Label="This is a label" @bind-Value="isChecked" />
-<div class="mb-3">
-    <i> Value is checked: @isChecked</i>
-</div>
-
-
-<CheckboxTriState DefaultValue="true" @bind-Value="isChecked1" />
+﻿<CheckboxTriState Label="TriStateCheckbox" Description="I can also have an discription" @bind-Value="isChecked1" />
 <div>
     <i> Value is checked: @isChecked1</i>
 </div>
+
 @if (isChecked1.HasValue)
 {
     <Button Size="ButtonSize.Small" @onclick="SetNull">Set null</Button>
 }
 
-
 @code {
-    private bool? isChecked;
     private bool? isChecked1;
 
     private void SetNull()
