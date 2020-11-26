@@ -6,7 +6,7 @@ Minimal javascript!
 ## [Demo](https://joadan.github.io/Blazor-Tabler)
 
 ### Nuget
-[Blazor-ApexCharts](https://www.nuget.org/packages/Blazor-ApexCharts/)
+[Blazor-Tabler](https://www.nuget.org/packages/Blazor-Tabler/)
 
 ***Work ongoing***
 
