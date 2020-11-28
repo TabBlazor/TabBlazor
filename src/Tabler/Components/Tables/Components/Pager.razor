@@ -9,64 +9,36 @@
     </div>
     @if (ShowPageNumber)
     {
-
-        @*<ul class="pagination m-0 ml-auto">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><polyline points="15 6 9 12 15 18"></polyline></svg>
-                        prev
+        <ul class="pagination m-0 ml-auto">
+            @if (Table.PageNumber > 0)
+            {
+                <li class="page-item clickable" @onclick="@(() => Table.FirstPage())">
+                    <a class="page-link">
+                        First
                     </a>
                 </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item active"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">4</a></li>
-                <li class="page-item"><a class="page-link" href="#">5</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">
-                        next <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><polyline points="9 6 15 12 9 18"></polyline></svg>
+                <li class="page-item clickable" @onclick="@(() => Table.SetPage(Table.PageNumber-1))">
+                    <a class="page-link">@(Table.PageNumber)</a>
+                </li>
+
+            }
+
+            <li class="page-item active">
+                <a class="page-link">@(Table.PageNumber+1)</a>
+            </li>
+
+            @if (Table.PageNumber + 1 < TotalPages)
+            {
+                <li class="page-item clickable" @onclick="@(() => Table.SetPage(Table.PageNumber+1))">
+                    <a class="page-link">@(Table.PageNumber + 2)</a>
+                </li>
+
+                <li class="page-item clickable" @onclick="@(() => Table.LastPage())">
+                    <a class="page-link">
+                        Last
                     </a>
                 </li>
-            </ul>*@
-
-
-
-<ul class="pagination m-0 ml-auto">
-    <li class="page-item disabled">
-        <a class="page-link clickable" href="#" tabindex="-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><polyline points="15 6 9 12 15 18"></polyline></svg>
-            prev
-        </a>
-    </li>
-
-    @for (int i = 1; i < TotalPages + 1; i++)
-    {
-        var pageNumber = i;
-        <li class="page-item clickable @(Table.PageNumber + 1 == pageNumber ? "active":"")" @onclick="@(() => Table.SetPage(pageNumber-1))"><a class="page-link">@pageNumber</a></li>
+            }
+        </ul>
     }
-
-    <li class="page-item">
-        <a class="page-link clickable" href="#">
-            next <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><polyline points="9 6 15 12 9 18"></polyline></svg>
-        </a>
-    </li>
-</ul>
-
-        @*<div class="dataTables_paginate">
-
-                @if (Table.PageNumber > 0)
-                {
-                    <a class="paginate_button next" @onclick="@(() => Table.FirstPage())">First page</a>
-                    <a class="paginate_button" @onclick="@(() => Table.PreviousPage())">@(Table.PageNumber)</a>
-                }
-
-                <a class="paginate_button current">@(Table.PageNumber + 1)</a>
-
-                @if (Table.PageNumber + 1 < TotalPages)
-                {
-                    <a class="paginate_button" @onclick="@(() => Table.NextPage())">@(Table.PageNumber + 2)</a>
-                    <a class="paginate_button next" @onclick="@(() => Table.LastPage())">Last Page</a>
-                }
-            </div>*@
-        }
-    }
+}
