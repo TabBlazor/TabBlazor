@@ -29,9 +29,9 @@
                                     @if (ReloadingItems)
                                     {
                                         <AllColumnRow TableItem="Item">
-                                            @*<Dimmer Active="true">
-                                                    @Loc.GetString(x => x.Table_LoadingItems).Ellipsis()
-                                                </Dimmer>*@
+                                            <Dimmer Active="true">
+                                                    Loading..
+                                                </Dimmer>
                                         </AllColumnRow>
                                     }
                                     else if (ShowNoItemsLabel && !TempItems.Any())

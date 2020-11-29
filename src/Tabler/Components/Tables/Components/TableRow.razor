@@ -16,5 +16,15 @@
         </td>
     }
 
-    <TableRowActions Table="Actions" Item="Item"></TableRowActions>
+    @if (Table.RowActionTemplate != null)
+    {
+        <td>
+            <div class="row-action">
+                @Table.RowActionTemplate(Item)
+            </div>
+        </td>
+
+    }
+
+    @*<TableRowActions Table="Actions" Item="Item"></TableRowActions>*@
 </tr>

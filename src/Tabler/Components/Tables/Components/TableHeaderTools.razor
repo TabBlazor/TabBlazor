@@ -3,11 +3,9 @@
 
 @if (Table.ShowSearch)
 {
-
     <div class="ml-auto text-muted">
-       
         <div class="ml-2 d-inline-block">
-            <input type="text" class="form-control form-control-sm" placeholder="search..." @onchange="@(x => Table.OnSearchChanged(x))">
+            <input type="text" class="form-control form-control-sm" placeholder="search..." @oninput="@(x => Table.OnSearchChanged(x))">
         </div>
     </div>
 }

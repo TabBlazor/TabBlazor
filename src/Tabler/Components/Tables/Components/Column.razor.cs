@@ -10,7 +10,7 @@ using LinqKit;
 
 namespace Tabler.Components
 {
-    public class ColumnBase<Item> : ComponentBase, IColumn<Item> //SbtComponent, IColumn<Item>
+    public class ColumnBase<Item> : ComponentBase, IColumn<Item> 
     {
         [Inject] protected TableFilterService FilterService { get; set; }
 

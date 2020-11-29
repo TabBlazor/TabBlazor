@@ -9,6 +9,11 @@
                 <span>@((MarkupString)column.Title)</span>
             </th>
         }
+
+        @if(Table.RowActionTemplate!=null)
+        {
+            <th></th>
+        }
         @*@if (Table.AllRowActions.Any())
         {
             <th class="div-td-tool" style="width: @Table.GetColumnWidth()">

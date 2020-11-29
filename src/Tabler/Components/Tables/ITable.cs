@@ -15,6 +15,7 @@ namespace Tabler.Components.Tables
         int TotalCount { get; }
         int VisibleColumnCount { get; }
         TableItem SelectedItem { get; }
+        RenderFragment<TableItem> RowActionTemplate { get; set; }
         //List<MenuDropdownItem<TableItem>> RowActions { get; set; }
         Task FirstPage();
         Task SetPage(int pageNumber);
@@ -64,6 +65,7 @@ namespace Tabler.Components.Tables
         IList<TableItem> Items { get; }
         TableItem SelectedItem { get; }
         RenderFragment<TableItem> DetailsTemplate { get; }
+        RenderFragment<TableItem> RowActionTemplate { get; set; }
         EventCallback<TableItem> OnItemSelected { get; }
         Task SetSelectedItem(TableItem item);
     }

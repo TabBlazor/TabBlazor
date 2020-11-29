@@ -13,7 +13,7 @@ namespace Tabler.Components.Tables
 {
     public class TableFilterService
     {
-       // private readonly IStringLocalizer<object> loc;
+        // private readonly IStringLocalizer<object> loc;
 
         //public TableFilterService(IStringLocalizer<object> loc)
         //{
@@ -34,9 +34,8 @@ namespace Tabler.Components.Tables
             {
                 case Type _ when type == typeof(string):
                     return StringContainsOrdinalIgnoreCase(property, value);
-               // case Type _ when type.BaseType == typeof(Enum):
-                    //return EnumTranslationContains(property, value);
-                  //  return StringContainsOrdinalIgnoreCase(property, value);
+                case Type _ when type.BaseType == typeof(Enum):
+                    return EnumTranslationContains(property, value);
                 default:
                     return null;
             }
@@ -45,10 +44,10 @@ namespace Tabler.Components.Tables
         public Expression<Func<T, bool>> EnumTranslationContains<T>(Expression<Func<T, object>> expression, string value)
         {
             var method = typeof(TableFilterService)
-                    .GetMethod(nameof(TableFilterService.EnumTranslationContains), new[] { typeof(Enum), typeof(string), typeof(IStringLocalizer<object>) });
+                    .GetMethod(nameof(TableFilterService.EnumTranslationContains), new[] { typeof(Enum), typeof(string) });
 
             // var enumContains = Expression.Call(method, expression.Body, Expression.Constant(value), Expression.Constant(loc));
-            var enumContains = Expression.Call(method, expression.Body, Expression.Constant(value), Expression.Constant(true));
+            var enumContains = Expression.Call(method, expression.Body, Expression.Constant(value));
             return Expression.Lambda<Func<T, bool>>(
                 enumContains,
                 expression.Parameters);
@@ -71,15 +70,23 @@ namespace Tabler.Components.Tables
                 expression.Parameters);
         }
 
-
-        public static bool EnumTranslationContains(object value, string text, IStringLocalizer<object> loc)
+        public static bool EnumTranslationContains(object value, string text)
         {
             if (!(value is Enum enumValue))
             {
                 return false;
             }
             return enumValue.ToString().Contains(text, StringComparison.OrdinalIgnoreCase);
-           // return loc.GetString(enumValue).ToString().Contains(text, StringComparison.OrdinalIgnoreCase);
         }
+
+        //public static bool EnumTranslationContains(object value, string text, IStringLocalizer<object> loc)
+        //{
+        //    if (!(value is Enum enumValue))
+        //    {
+        //        return false;
+        //    }
+        //    return enumValue.ToString().Contains(text, StringComparison.OrdinalIgnoreCase);
+        //    // return loc.GetString(enumValue).ToString().Contains(text, StringComparison.OrdinalIgnoreCase);
+        //}
     }
 }

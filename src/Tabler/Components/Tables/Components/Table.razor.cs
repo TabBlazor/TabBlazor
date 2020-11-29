@@ -30,6 +30,7 @@ namespace Tabler.Components.Tables
         [Parameter] public RenderFragment HeaderTemplate { get; set; }
         [Parameter] public RenderFragment ChildContent { get; set; }
         [Parameter] public RenderFragment<Item> DetailsTemplate { get; set; }
+        [Parameter] public RenderFragment<Item> RowActionTemplate { get; set; }
 
         [Parameter] public Func<Task<IList<Item>>> OnRefresh { get; set; }
         [Parameter] public EventCallback<Item> OnItemEdited { get; set; }
@@ -40,13 +41,14 @@ namespace Tabler.Components.Tables
         [Parameter] public Func<Item, bool> AllowDeleteExpression { get; set; }
         [Parameter] public int TotalCount { get; set; }
 
+        public bool HasRowActions => RowActionTemplate != null;
         public bool ShowSearch { get; set; } = true;
         protected IEnumerable<TableResult<object, Item>> TempItems { get; set; } = Enumerable.Empty<TableResult<object, Item>>();
         public List<IColumn<Item>> Columns { get; } = new List<IColumn<Item>>();
         public List<IColumn<Item>> VisibleColumns => Columns.Where(x => x.Visible).ToList();
         //public List<MenuDropdownItem<Item>> AllRowActions { get; set; } = new List<MenuDropdownItem<Item>>();
         public int PageNumber { get; set; }
-        public int VisibleColumnCount => Columns.Count(x => x.Visible); // + (AllRowActions.Any() ? 1 : 0);
+        public int VisibleColumnCount => Columns.Count(x => x.Visible) + (HasRowActions ? 1 : 0);
         public string SearchText { get; set; }
         public bool ResetPage { get; set; }
         public bool IsAddInProgress { get; set; }
@@ -116,15 +118,8 @@ namespace Tabler.Components.Tables
         public string GetTableCssClass()
         {
             var classBuileder = new ClassBuilder();
-
-
-            //ClassBuilder
-            //.Add("page")
-            //.Add(BackgroundColor.GetColorClass("bg"))
-            //.Add(TextColor.GetColorClass("text"))
-            //.ToString();
-
             return classBuileder
+                .Add("tabler-table")
                 .AddIf("grouped-table", HasGrouping)
                 .ToString();
             //grouped-table

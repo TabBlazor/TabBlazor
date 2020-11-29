@@ -3,6 +3,15 @@
         <strong>Orders</strong>
     </HeaderTemplate>
 
+    <RowActionTemplate>
+        <Icon class="icon" Elements="@DemoIcons.Drag_drop_2" />
+        @if (context.OrderType == OrderType.Mail)
+        {
+            <Icon class="icon" Elements="@DemoIcons.Edit" />
+        }
+      
+    </RowActionTemplate>
+
     <ChildContent>
         <Column Item="Order"  Property="e=>e.CustomerName" Title="Customer" Sortable Searchable Groupable />
         <Column Item="Order" Property="e=>e.Country" Title="Country" Sortable Searchable Groupable />
