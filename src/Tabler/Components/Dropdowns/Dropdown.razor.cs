@@ -1,13 +1,18 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.VisualBasic;
 
 namespace Tabler.Components
 {
     public partial class Dropdown : TablerBaseComponent
     {
         [Parameter] public RenderFragment DropdownTemplate { get; set; }
-        [Parameter] public string Text { get; set; }
+
         protected bool isExpanded;
+
+        private double top;
+        private double left;
+        private bool isContextMenu;
 
         protected override string ClassNames => ClassBuilder
             .Add("dropdown")
@@ -21,6 +26,16 @@ namespace Tabler.Components
             isExpanded = false;
         }
 
+        private string GetSyle()
+        {
+            if (isContextMenu)
+            {
+                return $"position:fixed;top:{top}px;left:{left}px";
+            }
+
+            return "";
+        }
+
         protected void OnDropdownClick(MouseEventArgs e)
         {
             OnClick.InvokeAsync(e);
@@ -30,6 +45,26 @@ namespace Tabler.Components
         public void Toogle()
         {
             isExpanded = !isExpanded;
+        }
+
+        public void Open()
+        {
+            isExpanded = true;
+        }
+
+        public void OpenAsContextMenu(MouseEventArgs e)
+        {
+            isContextMenu = true;
+            top = e.ClientY;
+            left = e.ClientX;
+            isExpanded = true;
+            StateHasChanged();
+
+        }
+
+        public void Close()
+        {
+            isExpanded = false;
         }
     }
 }

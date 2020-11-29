@@ -91,31 +91,3 @@ Dimmer
     right: 3px;
     top: 2px;
     content: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="%239C27B0" fill="none" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpath stroke="none" d="M0 0h24v24H0z" fill="none"/%3E%3Cpolyline points="6 15 12 9 18 15" /%3E%3C/svg%3E'); }
-
-/*   hover-icon {
-        i {
-            color: $gray-600;
-
-            &:hover {
-                transition: color 0.2s ease-in;
-                color: $gray-900
-            }
-        }*/
-/* max-width: 80px;
-    min-width: 80px;
-    width: 80px;
-    text-align: right;
-    font-size: 17px;
-    padding: 0.1rem 0.5rem;
-    opacity: 0;
-    padding-right: 0.5rem !important;*/
-/* @include hover-icon();*/
-/* .material-icons {
-        position: relative;
-        font-size: 17px;
-        top: 4px;
-    }
-
-    a {
-        padding-left: 0.25rem;
-    }*/
