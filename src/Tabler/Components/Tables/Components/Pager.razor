@@ -12,12 +12,12 @@
         <ul class="pagination m-0 ml-auto">
             @if (Table.PageNumber > 0)
             {
-                <li class="page-item clickable" @onclick="@(() => Table.FirstPage())">
+                <li class="page-item cursor-pointer" @onclick="@(() => Table.FirstPage())">
                     <a class="page-link">
                         First
                     </a>
                 </li>
-                <li class="page-item clickable" @onclick="@(() => Table.SetPage(Table.PageNumber-1))">
+                <li class="page-item cursor-pointer" @onclick="@(() => Table.SetPage(Table.PageNumber-1))">
                     <a class="page-link">@(Table.PageNumber)</a>
                 </li>
 
@@ -29,11 +29,11 @@
 
             @if (Table.PageNumber + 1 < TotalPages)
             {
-                <li class="page-item clickable" @onclick="@(() => Table.SetPage(Table.PageNumber+1))">
+                <li class="page-item cursor-pointer" @onclick="@(() => Table.SetPage(Table.PageNumber+1))">
                     <a class="page-link">@(Table.PageNumber + 2)</a>
                 </li>
 
-                <li class="page-item clickable" @onclick="@(() => Table.LastPage())">
+                <li class="page-item cursor-pointer" @onclick="@(() => Table.LastPage())">
                     <a class="page-link">
                         Last
                     </a>

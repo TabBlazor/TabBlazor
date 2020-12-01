@@ -25,7 +25,7 @@ namespace Tabler.Components
 
         protected override string ClassNames => ClassBuilder
             .Add("nav-item")
-            .Add("clickable")
+            .Add("cursor-pointer")
             .AddIf("dropdown", IsDropdown)
             .ToString();
 

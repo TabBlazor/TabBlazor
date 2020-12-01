@@ -1,0 +1,17 @@
+﻿@namespace Tabler.Components
+@if (!RenderForm)
+{
+    @ChildContent
+}
+else
+{
+    <EditForm EditContext="@EditContext" OnValidSubmit="HandleValidSubmit" @attributes="UnknownParameters">
+        @ChildContent
+        @*@if (IncludeSaveButton)
+        {
+            <div class="btn-list text-right card-footer">
+                <button type="submit" class="@GetSaveButtonClass()">@L.GetString(x => x.Save)</button>
+            </div>
+        }*@
+    </EditForm>
+}

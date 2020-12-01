@@ -20,7 +20,7 @@ namespace Tabler.Components
               .Add("badge")
               .Add(BackgroundColor.GetColorClass("bg", ColorType.Default))
               .AddCompare("badge-pill", Shape, BadgeShape.Pill)
-            .AddIf("clickable", OnClick.HasDelegate)
+            .AddIf("cursor-pointer", OnClick.HasDelegate)
               .ToString();
     }
 

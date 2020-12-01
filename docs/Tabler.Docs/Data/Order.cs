@@ -15,7 +15,6 @@ namespace Tabler.Docs.Data
     {
         public Guid CustomerId { get; set; } = Guid.NewGuid();
         public string CustomerName { get; set; }
-      
     }
 
 

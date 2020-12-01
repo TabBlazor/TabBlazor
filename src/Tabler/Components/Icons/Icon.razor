@@ -1,7 +1,7 @@
 ﻿@namespace Tabler.Components
-
+@inherits TablerBaseComponent
 <svg xmlns="http://www.w3.org/2000/svg"
-     @attributes="Attributes"
+     class="@ClassNames"
      color="@Color"
      width="@Size"
      height="@Size"
@@ -10,7 +10,8 @@
      stroke="currentColor"
      fill="none"
      stroke-linecap="round"
-     stroke-linejoin="round">
+     stroke-linejoin="round"
+     @attributes="UnmatchedParameters">
     @if (Elements != null)
     {
         @((MarkupString)Elements)

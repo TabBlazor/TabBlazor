@@ -313,23 +313,23 @@ namespace Tabler.Components.Tables
             Items.Add(tableItem);
 
             await LastPage();
-            OnEditItem(tableItem);
+            EditItem(tableItem);
             await Update();
         }
 
-        private async Task OnDeleteItem(Item item)
+        public async Task OnDeleteItem(Item item)
         {
             //var result = await AppService.ShowDialog("", title: L.GetString(x => x.DeleteConfirmItem), DialogType.Warning);
             //if (result.Ok)
             //{
-            //    Items.Remove(item);
-            //    await OnItemDeleted.InvokeAsync(item);
+            Items.Remove(item);
+            await OnItemDeleted.InvokeAsync(item);
             //}
 
             await CloseEdit();
         }
 
-        private void OnEditItem(Item tableItem)
+        public void EditItem(Item tableItem)
         {
             CurrentEditItem = tableItem;
             StateHasChanged();

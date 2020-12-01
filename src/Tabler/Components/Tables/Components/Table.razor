@@ -16,73 +16,75 @@
         <CardBody>
             <div class="the-grid">
                 @*<FluentForm Model="@CurrentEditItem" class="inline-edit-form" OnValidSubmit="@OnValidSubmit" RuleSet="@ValidationRuleSet">*@
-                @if (VisibleColumns.Any())
-                {
-                    <div class="div-table-wrapper @GetTableCssClass()">
-                        <div class="div-table-table">
-                            <table @attributes="Attributes">
-                                @if (ShowTableHeader)
-                                {
-                                    <TableHeader TableItem="Item"></TableHeader>
-                                }
-                                <tbody>
-                                    @if (ReloadingItems)
+                <TablerForm  Model="@CurrentEditItem" OnValidSubmit="@OnValidSubmit">
+                    @if (VisibleColumns.Any())
+                    {
+                        <div class="div-table-wrapper @GetTableCssClass()">
+                            <div class="div-table-table">
+                                <table @attributes="Attributes">
+                                    @if (ShowTableHeader)
                                     {
-                                        <AllColumnRow TableItem="Item">
-                                            <Dimmer Active="true">
+                                        <TableHeader TableItem="Item"></TableHeader>
+                                    }
+                                    <tbody>
+                                        @if (ReloadingItems)
+                                        {
+                                            <AllColumnRow TableItem="Item">
+                                                <Dimmer Active="true">
                                                     Loading..
                                                 </Dimmer>
-                                        </AllColumnRow>
-                                    }
-                                    else if (ShowNoItemsLabel && !TempItems.Any())
-                                    {
-                                        <AllColumnRow TableItem="Item">
-                                            <h5>
-                                                <i>No items</i>
-                                            </h5>
-                                        </AllColumnRow>
-                                    }
-                                    else
-                                    {
-                                        foreach (var group1 in TempItems)
+                                            </AllColumnRow>
+                                        }
+                                        else if (ShowNoItemsLabel && !TempItems.Any())
                                         {
-                                            var group = group1;
-                                            @if (HasGrouping)
+                                            <AllColumnRow TableItem="Item">
+                                                <h5>
+                                                    <i>No items</i>
+                                                </h5>
+                                            </AllColumnRow>
+                                        }
+                                        else
+                                        {
+                                            foreach (var group1 in TempItems)
                                             {
-                                                <GroupHeaderTableRow @bind-Group="group"></GroupHeaderTableRow>
-                                            }
-                                            @if (!HasGrouping || group.Expanded)
-                                            {
-                                                foreach (var item in group)
+                                                var group = group1;
+                                                @if (HasGrouping)
                                                 {
-                                                    @if (IsEditingItem(item))
+                                                    <GroupHeaderTableRow @bind-Group="group"></GroupHeaderTableRow>
+                                                }
+                                                @if (!HasGrouping || group.Expanded)
+                                                {
+                                                    foreach (var item in group)
                                                     {
-                                                        <EditRow InlineEditTable="this" Item="item"></EditRow>
-                                                    }
-                                                    else
-                                                    {
-                                                        <TableRow Item="item" Table="this"></TableRow>
-
-                                                        @if (ShowDetailsRow(item))
+                                                        @if (IsEditingItem(item))
                                                         {
-                                                            <DetailsRow Item="item" Table="this"></DetailsRow>
+                                                            <EditRow InlineEditTable="this" Item="item"></EditRow>
+                                                        }
+                                                        else
+                                                        {
+                                                            <TableRow Item="item" Table="this"></TableRow>
+
+                                                            @if (ShowDetailsRow(item))
+                                                            {
+                                                                <DetailsRow Item="item" Table="this"></DetailsRow>
+                                                            }
                                                         }
                                                     }
                                                 }
                                             }
                                         }
-                                    }
-                                </tbody>
-                            </table>
-                            @if (AllowAdd && !IsAddInProgress)
-                            {
-                                <button type="button" @onclick="@OnAddItem" class="m-2 add-row btn btn-primary btn-sm">
-                                    <i class="fe fe-plus mr-2"></i>Add row
-                                </button>
-                            }
+                                    </tbody>
+                                </table>
+                                @if (AllowAdd && !IsAddInProgress)
+                                {
+                                    <button type="button" @onclick="@OnAddItem" class="m-2 add-row btn btn-primary btn-sm">
+                                        <i class="fe fe-plus mr-2"></i>Add row
+                                    </button>
+                                }
+                            </div>
                         </div>
-                    </div>
-                }
+                    }
+                </TablerForm>
                 @*</FluentForm>*@
                 @ChildContent
 

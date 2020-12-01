@@ -1,12 +1,6 @@
-﻿.clickable {
-  cursor: pointer; }
-
-.clickable-text {
+﻿.clickable-text {
   cursor: pointer;
   text-decoration: underline; }
-
-.non-clickable {
-  cursor: default; }
 
 /**
 Dimmer
@@ -62,6 +56,9 @@ Dimmer
 .tabler-table .row-action {
   text-align: right;
   opacity: 0; }
+
+.tabler-table .row-action-edit {
+  text-align: right; }
 
 .tabler-table .sorting {
   position: relative; }

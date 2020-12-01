@@ -16,7 +16,7 @@ namespace Tabler.Components
 
         protected override string ClassNames => ClassBuilder
             .Add("dropdown")
-            .Add("clickable")
+            .Add("cursor-pointer")
             .Add(BackgroundColor.GetColorClass("bg"))
             .Add(TextColor.GetColorClass("text"))
             .ToString();

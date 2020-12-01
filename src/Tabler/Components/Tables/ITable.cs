@@ -66,7 +66,11 @@ namespace Tabler.Components.Tables
         TableItem SelectedItem { get; }
         RenderFragment<TableItem> DetailsTemplate { get; }
         RenderFragment<TableItem> RowActionTemplate { get; set; }
+        bool AllowEdit { get; }
+        bool AllowDelete { get; }
         EventCallback<TableItem> OnItemSelected { get; }
+        Task OnDeleteItem(TableItem item);
+        void EditItem(TableItem item);
         Task SetSelectedItem(TableItem item);
     }
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Tabler.Components.Tables;
 
 namespace Tabler.Components.Tables
@@ -24,5 +25,16 @@ namespace Tabler.Components.Tables
         {
             return EqualityComparer<TableItem>.Default.Equals(first, second);
         }
+
+        protected async Task Delete()
+        {
+            await Table.OnDeleteItem(Item);
+        }
+
+        protected void Edit()
+        {
+            Table.EditItem(Item);
+        }
+
     }
 }

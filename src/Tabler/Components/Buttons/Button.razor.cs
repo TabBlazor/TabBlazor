@@ -33,13 +33,12 @@ namespace Tabler.Components
         [Parameter] public bool Block { get; set; }
         [Parameter] public bool IsIcon { get; set; }
         [Parameter] public bool IsLoading { get; set; }
+        [Parameter] public bool IsDropdown { get; set; }
         [Parameter] public ColorType BackgroundColorType { get; set; } = ColorType.Default;
         [Parameter] public ButtonShape Shape { get; set; } = ButtonShape.Default;
         [Parameter] public ButtonSize Size { get; set; } = ButtonSize.Default;
         [Parameter] public ButtonType Type { get; set; } = ButtonType.Button;
         [Parameter] public string LinkTo { get; set; }
-
-      
 
         protected string HtmlTag => Type switch
         {
@@ -71,6 +70,7 @@ namespace Tabler.Components
                 .AddIf("btn-block", Block)
                 .AddIf("btn-icon", IsIcon)
                 .AddIf("btn-loading", IsLoading)
+                .AddIf("dropdown-toggle", IsDropdown)
                 .AddCompare("btn-pill", Shape, ButtonShape.Pill)
                 .AddCompare("btn-square", Shape, ButtonShape.Square)
                 .AddCompare("btn-lg", Size, ButtonSize.Large)

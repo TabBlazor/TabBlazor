@@ -1,21 +1,29 @@
-﻿<Tabler.Components.Tables.Components.Table Item="Order" Items="SampleData.GetOrders()" PageSize="10" OnItemEdited="OnItemEdit" OnItemSelected="OnItemSelect">
+﻿<Tabler.Components.Tables.Components.Table Item="Order" Items="orders" PageSize="10" OnItemEdited="OnItemEdit" OnItemSelected="OnItemSelect">
     <HeaderTemplate>
         <strong>Orders</strong>
     </HeaderTemplate>
 
     <RowActionTemplate>
-        <Icon class="icon" Elements="@DemoIcons.Drag_drop_2" />
-        @if (context.OrderType == OrderType.Mail)
-        {
-            <Icon class="icon" Elements="@DemoIcons.Edit" />
-        }
-      
+        <Icon class="icon" Elements="@DemoIcons.Drag_drop_2" title="This is just a test" />
+       
     </RowActionTemplate>
 
     <ChildContent>
-        <Column Item="Order"  Property="e=>e.CustomerName" Title="Customer" Sortable Searchable Groupable />
-        <Column Item="Order" Property="e=>e.Country" Title="Country" Sortable Searchable Groupable />
-        <Column Item="Order" Property="e=>e.OrderType" Title="Order type" Sortable Searchable Groupable />
+        <Column Item="Order" Property="e=>e.CustomerName" Title="Customer" Sortable Searchable Groupable>
+            <EditorTemplate>
+                <input type="text" @bind-value="@context.CustomerName" />
+            </EditorTemplate>
+        </Column>
+        <Column Item="Order" Property="e=>e.Country" Title="Country" Sortable Searchable Groupable>
+            <EditorTemplate>
+                <input type="text" @bind-value="@context.Country" />
+            </EditorTemplate>
+        </Column>
+        <Column Item="Order" Property="e=>e.OrderType" Title="Order type" Sortable Searchable Groupable>
+            <EditorTemplate>
+                <ItemSelect Items="EnumInfo.GetList<OrderType>()" @bind-SelectedValue="@context.OrderType" TextExpression="e=> e.ToString()" ValueExpression="e=> e.ToString()" Clearable />
+            </EditorTemplate>
+        </Column>
     </ChildContent>
 
 </Tabler.Components.Tables.Components.Table>
@@ -23,6 +31,8 @@
 @code {
 
     [Inject] Tabler.Services.TablerService TablerService { get; set; }
+    private List<Order> orders = SampleData.GetOrders();
+
 
     private async Task OnItemEdit(Order order)
     {
