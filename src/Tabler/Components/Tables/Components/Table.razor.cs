@@ -6,8 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Web;
 using Tabler.Components.Tables.Components;
+using Tabler.Components.Tables;
 
-namespace Tabler.Components.Tables
+namespace Tabler.Components
 {
     public class TableBase<Item> : ComponentBase,  ITable<Item>, IInlineEditTable<Item>, IDetailsTable<Item>, ITableRow<Item>, ITableState // ITableRowActions<Item>
     {
