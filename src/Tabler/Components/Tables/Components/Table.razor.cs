@@ -42,7 +42,7 @@ namespace Tabler.Components
         [Parameter] public Func<Item, bool> AllowDeleteExpression { get; set; }
         [Parameter] public int TotalCount { get; set; }
 
-        public bool HasRowActions => RowActionTemplate != null;
+        public bool HasRowActions => RowActionTemplate != null || AllowDelete || AllowEdit;
         public bool ShowSearch { get; set; } = true;
         protected IEnumerable<TableResult<object, Item>> TempItems { get; set; } = Enumerable.Empty<TableResult<object, Item>>();
         public List<IColumn<Item>> Columns { get; } = new List<IColumn<Item>>();

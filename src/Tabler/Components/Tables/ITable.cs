@@ -16,8 +16,8 @@ namespace Tabler.Components.Tables
         int VisibleColumnCount { get; }
         TableItem SelectedItem { get; }
         RenderFragment<TableItem> RowActionTemplate { get; set; }
-        //List<MenuDropdownItem<TableItem>> RowActions { get; set; }
-        Task FirstPage();
+        bool HasRowActions { get; }
+         Task FirstPage();
         Task SetPage(int pageNumber);
         Task NextPage();
         Task PreviousPage();
@@ -68,6 +68,7 @@ namespace Tabler.Components.Tables
         RenderFragment<TableItem> RowActionTemplate { get; set; }
         bool AllowEdit { get; }
         bool AllowDelete { get; }
+        bool HasRowActions { get; }
         EventCallback<TableItem> OnItemSelected { get; }
         Task OnDeleteItem(TableItem item);
         void EditItem(TableItem item);

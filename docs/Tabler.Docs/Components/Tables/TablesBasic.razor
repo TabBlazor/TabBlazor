@@ -1,12 +1,9 @@
-﻿<Table Item="Order" Items="orders" PageSize="10" OnItemEdited="OnItemEdit" OnItemSelected="OnItemSelect">
+﻿<Table Item="Order" Items="orders" PageSize="10" OnItemEdited="OnItemEdit" OnItemSelected="OnItemSelect" OnItemAdded="OnItemAdd" OnItemDeleted="OnItemDelete">
     <HeaderTemplate>
         <strong>Orders</strong>
     </HeaderTemplate>
 
-    <RowActionTemplate>
-        <Icon class="icon" Elements="@DemoIcons.Drag_drop_2" title="This is just a test" />
-       
-    </RowActionTemplate>
+  
 
     <ChildContent>
         <Column Item="Order" Property="e=>e.CustomerName" Title="Customer" Sortable Searchable Groupable>
@@ -39,8 +36,19 @@
         await TablerService.ShowAlert($"Edited order {order.OrderId}");
     }
 
+    private async Task OnItemAdd(Order order)
+    {
+        await TablerService.ShowAlert($"Added order {order.OrderId}");
+    }
+
     private async Task OnItemSelect(Order order)
     {
         await TablerService.ShowAlert($"Selected order {order.OrderId}");
     }
+
+    private async Task OnItemDelete(Order order)
+    {
+        await TablerService.ShowAlert($"Order deleted {order.OrderId}");
+    }
+
 }

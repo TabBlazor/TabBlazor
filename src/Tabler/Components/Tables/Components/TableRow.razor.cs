@@ -26,6 +26,8 @@ namespace Tabler.Components.Tables
             return EqualityComparer<TableItem>.Default.Equals(first, second);
         }
 
+        protected bool ShowRowAction => Table.RowActionTemplate != null || Table.AllowDelete || Table.AllowEdit;
+
         protected async Task Delete()
         {
             await Table.OnDeleteItem(Item);
