@@ -6,9 +6,9 @@
   
 
     <ChildContent>
-        <Column Item="Order" Property="e=>e.CustomerName" Title="Customer" Sortable Searchable Groupable>
+        <Column Item="Order" Property="e=>e.Customer.CustomerName" Title="Customer" Sortable Searchable Groupable>
             <EditorTemplate>
-                <input type="text" @bind-value="@context.CustomerName" />
+                @*<input type="text" @bind-value="@context.CustomerName" />*@
             </EditorTemplate>
         </Column>
         <Column Item="Order" Property="e=>e.Country" Title="Country" Sortable Searchable Groupable>

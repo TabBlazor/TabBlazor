@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Tabler.Components
 {
-   public partial class TablerForm : ComponentBase
+    public partial class TablerForm : ComponentBase
     {
 
         [Inject] protected IServiceProvider Provider { get; set; }
@@ -27,6 +27,7 @@ namespace Tabler.Components
         public bool RenderForm { get; set; }
         public bool CanSubmit => IsValid && IsModified;
 
+        private bool initialized;
         protected override void OnParametersSet()
         {
             SetupForm();
@@ -67,15 +68,19 @@ namespace Tabler.Components
 
         public void OnAfterModelValidation(bool isValid)
         {
-            IsValid = isValid;
-            StateHasChanged();
-            IsValidChanged.InvokeAsync(IsValid);
+            if (isValid != IsValid || !initialized)
+            {
+                initialized = true;
+                IsValid = isValid;
+                StateHasChanged();
+                IsValidChanged.InvokeAsync(IsValid);
+            }
+
         }
 
         public void Validate()
         {
             IsValid = EditContext.Validate();
-
             OnAfterModelValidation(IsValid);
         }
 

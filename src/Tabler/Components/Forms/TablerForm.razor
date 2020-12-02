@@ -7,6 +7,7 @@ else
 {
     <EditForm EditContext="@EditContext" OnValidSubmit="HandleValidSubmit" @attributes="UnknownParameters">
         @ChildContent
+        <DataAnnotationsValidator />
         @*@if (IncludeSaveButton)
         {
             <div class="btn-list text-right card-footer">
