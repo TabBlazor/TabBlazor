@@ -2,7 +2,6 @@
 
 <TablerForm Model="order" >
     <ChildContent>
-
         <BlazoredTypeahead @bind-Value="order.Customer" SearchMethod="SearchCustomers" EnableDropDown>
             <ResultTemplate Context="customer">
                 @customer.CustomerName
@@ -10,13 +9,9 @@
             <SelectedTemplate Context="customer">
                 @customer.CustomerName
             </SelectedTemplate>
-
         </BlazoredTypeahead>
         <ValidationMessage For=@( () => order.Customer ) />
     </ChildContent>
-
-
-
 </TablerForm>
 
 
@@ -36,7 +31,6 @@
     private async Task<IEnumerable<Customer>> SearchCustomers(string text)
     {
         return customers.Where(e => e.CustomerName.Contains(text, StringComparison.InvariantCultureIgnoreCase));
-
     }
 
     public class OrderContainer
