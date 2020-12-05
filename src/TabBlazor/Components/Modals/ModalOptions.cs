@@ -1,4 +1,4 @@
-﻿namespace TabBlazor.Components
+﻿namespace TabBlazor
 {
     public class ModalOptions
     {

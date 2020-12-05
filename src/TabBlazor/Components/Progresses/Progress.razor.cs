@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
-namespace TabBlazor.Components
+namespace TabBlazor
 {
 
     public enum ProgressSize

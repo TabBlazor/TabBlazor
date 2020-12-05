@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
-namespace TabBlazor.Components
+namespace TabBlazor
 {
     public enum ButtonShape
     {

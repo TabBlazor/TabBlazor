@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using TabBlazor.Services;
 
-namespace TabBlazor.Components
+namespace TabBlazor
 {
     public partial class ToastServiceComp : ComponentBase
     {

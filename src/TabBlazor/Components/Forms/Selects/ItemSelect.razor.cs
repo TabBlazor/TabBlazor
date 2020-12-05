@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TabBlazor.Components.Selects;
 
-namespace TabBlazor.Components
+namespace TabBlazor
 {
     public partial class ItemSelect<TValue> : TablerBaseComponent
     {

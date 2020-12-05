@@ -8,7 +8,7 @@
     <Product>TabBlazor</Product>
     <PackageTags>Blazor Tabler Admin Theme</PackageTags>
     <RepositoryUrl>https://github.com/joadan/TabBlazor</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/joadan/TabBlazor</PackageProjectUrl>
+    <PackageProjectUrl>https://joadan.github.io/TabBlazor</PackageProjectUrl>
     <Version>0.0.1-alpha</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>

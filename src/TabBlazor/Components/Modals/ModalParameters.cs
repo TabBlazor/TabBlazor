@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TabBlazor.Components
+namespace TabBlazor
 {
     public class ModalParameters : Dictionary<string, object>
     {

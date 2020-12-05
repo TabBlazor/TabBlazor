@@ -1,5 +1,5 @@
 ﻿
-namespace TabBlazor.Components
+namespace TabBlazor
 {
     public partial class NavbarMenu : TablerBaseComponent
     {

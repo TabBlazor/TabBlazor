@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TabBlazor.Services;
 
-namespace TabBlazor.Components
+namespace TabBlazor
 {
     public partial class Modal : ComponentBase
     {

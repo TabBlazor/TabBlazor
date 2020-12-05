@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace TabBlazor.Components
+namespace TabBlazor
 {
     public enum TimelineType
     {

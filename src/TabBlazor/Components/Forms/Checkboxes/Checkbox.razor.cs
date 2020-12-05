@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
 
-namespace TabBlazor.Components
+namespace TabBlazor
 {
     public partial class Checkbox : ComponentBase
     {

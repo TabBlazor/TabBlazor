@@ -1,4 +1,6 @@
-﻿namespace TabBlazor.Components
+﻿using TabBlazor.Components;
+
+namespace TabBlazor
 {
     public partial class Tabs : TablerBaseComponent
     {

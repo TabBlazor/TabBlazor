@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using TabBlazor.Components.Tables;
 using LinqKit;
 
-namespace TabBlazor.Components
+namespace TabBlazor
 {
     public class ColumnBase<Item> : ComponentBase, IColumn<Item> 
     {

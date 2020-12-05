@@ -1,4 +1,4 @@
-﻿namespace TabBlazor.Components
+﻿namespace TabBlazor
 {
     public partial class DropdownItem : TablerBaseComponent
     {

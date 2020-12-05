@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Components.Web;
 using TabBlazor.Components.Tables.Components;
 using TabBlazor.Components.Tables;
 
-namespace TabBlazor.Components
+namespace TabBlazor
 {
     public class TableBase<Item> : ComponentBase,  ITable<Item>, IInlineEditTable<Item>, IDetailsTable<Item>, ITableRow<Item>, ITableState // ITableRowActions<Item>
     {

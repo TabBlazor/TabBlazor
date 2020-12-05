@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace TabBlazor.Components
+namespace TabBlazor
 {
     public class ModalModel
     {

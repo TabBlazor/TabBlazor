@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using TabBlazor;
 
-namespace TabBlazor.Components
+namespace TabBlazor
 {
     public abstract class TablerBaseComponent : ComponentBase
     {

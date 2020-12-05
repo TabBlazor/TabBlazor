@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TabBlazor.Components
+namespace TabBlazor
 {
     public partial class TablerForm : ComponentBase
     {
