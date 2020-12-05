@@ -47,7 +47,7 @@ namespace Tabler.Docs.Services
     public class GitHubSnippetService : ICodeSnippetService
     {
         const string repo = "joadan/Blazor-Tabler";
-        const string baseUrl = "https://raw.githubusercontent.com/joadan/Blazor-Tabler/master/docs/Tabler.Docs";
+        const string baseUrl = "https://raw.githubusercontent.com/joadan/TabBlazor/master/docs/Tabler.Docs";
         private readonly IHttpClientFactory httpClientFactory;
 
         private Dictionary<string, string> cachedCode = new Dictionary<string, string>();
