@@ -1,12 +1,12 @@
-# Blazor-Tabler
+# TabBlazor
 A blazor admin template built on [Tabler](https://preview-dev.tabler.io/)
 
 Minimal javascript!
 
-## [Demo](https://joadan.github.io/Blazor-Tabler)
+## [Demo](https://joadan.github.io/TabBlazor)
 
 ### Nuget
-[Blazor-Tabler](https://www.nuget.org/packages/Blazor-Tabler/)
+[TabBlazor](https://www.nuget.org/packages/TabBlazor/)
 
 ***Work ongoing***
 
