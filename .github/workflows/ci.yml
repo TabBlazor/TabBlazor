@@ -30,7 +30,7 @@ jobs:
           uses: SteveSandersonMS/ghaction-rewrite-base-href@v1
           with:
             html_path: ${{ env.PUBLISH_DIR }}/index.html
-            base_href: /Blazor-Tabler/
+            base_href: /TabBlazor/
 
         # Publish the website
         - name: GitHub Pages action
