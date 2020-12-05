@@ -23,8 +23,8 @@ jobs:
       run: dotnet pack -c Release -p:Version=${GITHUB_REF##*/v}
 
     - name: Dotnet Nuget Push   
-      working-directory: src/Tabler/bin/Release
-      run: dotnet nuget push Blazor-Tabler.*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
+      working-directory: src/TabBlazor/bin/Release
+      run: dotnet nuget push TabBlazor.*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
       continue-on-error: true
 
     - name: Create Release
