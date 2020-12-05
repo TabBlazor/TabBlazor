@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30615.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TabBlazor", "src\Tabler\TabBlazor.csproj", "{4B60BA07-6267-48C1-A7DD-12163179E776}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{BC1B6966-CBEF-4107-A708-0C6DC37D606D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tabler.Docs.Server", "docs\Tabler.Docs.Server\Tabler.Docs.Server.csproj", "{AB9C8A88-E800-4A1E-917D-B15E5D7241C8}"
@@ -13,16 +11,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tabler.Docs", "docs\Tabler.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tabler.Docs.Wasm", "docs\Tabler.Docs.Wasm\Tabler.Docs.Wasm.csproj", "{201D070B-83BD-4FE4-8BEF-FC50ACE97114}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TabBlazor", "src\TabBlazor\TabBlazor.csproj", "{12670973-FFE5-4B66-A898-1689AA02BF77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4B60BA07-6267-48C1-A7DD-12163179E776}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4B60BA07-6267-48C1-A7DD-12163179E776}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4B60BA07-6267-48C1-A7DD-12163179E776}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4B60BA07-6267-48C1-A7DD-12163179E776}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AB9C8A88-E800-4A1E-917D-B15E5D7241C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AB9C8A88-E800-4A1E-917D-B15E5D7241C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB9C8A88-E800-4A1E-917D-B15E5D7241C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -35,6 +31,10 @@ Global
 		{201D070B-83BD-4FE4-8BEF-FC50ACE97114}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{201D070B-83BD-4FE4-8BEF-FC50ACE97114}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{201D070B-83BD-4FE4-8BEF-FC50ACE97114}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12670973-FFE5-4B66-A898-1689AA02BF77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12670973-FFE5-4B66-A898-1689AA02BF77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12670973-FFE5-4B66-A898-1689AA02BF77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12670973-FFE5-4B66-A898-1689AA02BF77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
