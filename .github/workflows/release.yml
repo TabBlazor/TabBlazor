@@ -19,7 +19,7 @@ jobs:
         dotnet-version: 5.0.100-rc.2.20479.15
 
     - name: Dotnet Pack 
-      working-directory: src/Tabler
+      working-directory: src/TabBlazor
       run: dotnet pack -c Release -p:Version=${GITHUB_REF##*/v}
 
     - name: Dotnet Nuget Push   
