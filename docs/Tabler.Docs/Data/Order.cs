@@ -25,6 +25,8 @@ namespace Tabler.Docs.Data
         }
         public Guid CustomerId { get; set; } = Guid.NewGuid();
         public string CustomerName { get; set; }
+        public int Visits { get; set; }
+        public int Percentage { get; set; }
     }
 
 
@@ -34,7 +36,6 @@ namespace Tabler.Docs.Data
         public Guid OrderId { get; set; } = Guid.NewGuid();
         [Required(ErrorMessage = "Customer is required")]
         public Customer Customer { get; set; }
-        //public string CustomerName => Customer.CustomerName;
         public string Country { get; set; }
         public DateTimeOffset OrderDate { get; set; }
         public OrderType OrderType { get; set; }

@@ -2,7 +2,7 @@
 
 namespace TabBlazor
 {
-    public partial class TablerRowCol : TablerBaseComponent
+    public partial class RowCol : TablerBaseComponent
     {
         [Parameter] public int Columns { get; set; } = 0;
         [Parameter] public int Xs { get; set; } = 0;

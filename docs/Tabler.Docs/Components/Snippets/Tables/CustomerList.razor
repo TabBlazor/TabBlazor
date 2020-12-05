@@ -1,0 +1,17 @@
+﻿<Table Item="Customer" Items="SampleData.GetCustomers()">
+    <HeaderTemplate>
+        <CardTitle>Customers</CardTitle>
+    </HeaderTemplate>
+    <ChildContent>
+        <Column Item="Customer" Property="e=>e.CustomerName" Title="Name" Sortable />
+
+        <Column Item="Customer" Property="e=>e.Visits" Title="Visits" Sortable />
+
+        <Column Item="Customer" Property="e=>e.Percentage" Title="Score" Sortable>
+            <Template>
+                <Progress Color="TablerColor.Primary" Precentage="@context.Percentage" />
+            </Template>
+        </Column>
+    </ChildContent>
+   
+</Table>
