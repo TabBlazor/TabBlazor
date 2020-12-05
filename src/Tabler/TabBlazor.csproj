@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <PackageId>Blazor-Tabler</PackageId>
+    <PackageId>TabBlazor</PackageId>
     <Description>Blazor dashboard admin theme based on Tabler UI. Minimal Javascript</Description>
     <Authors>Joakim Dangården</Authors>
-    <Product>Blazor-Tabler</Product>
+    <Product>TabBlazor</Product>
     <PackageTags>Blazor Tabler Admin Theme</PackageTags>
-    <RepositoryUrl>https://github.com/joadan/Blazor-Tabler</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/joadan/Blazor-Tabler</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/joadan/TabBlazor</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/joadan/TabBlazor</PackageProjectUrl>
     <Version>0.0.1-alpha</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
@@ -19,16 +19,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Styles\blazor-tabler.scss" />
+    <None Remove="Styles\tabler-blazor.scss" />
     <None Remove="Styles\_custom.scss" />
   </ItemGroup>
 
   <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\css\blazor-tabler.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\tabler-blazor.css" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Styles\blazor-tabler.scss" />
+    <Content Include="Styles\tabler-blazor.scss" />
     <Content Include="Styles\_custom.scss" />
   </ItemGroup>
 

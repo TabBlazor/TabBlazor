@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Tabler\Tabler.csproj" />
+    <ProjectReference Include="..\..\src\Tabler\TabBlazor.csproj" />
   </ItemGroup>
 
 </Project>

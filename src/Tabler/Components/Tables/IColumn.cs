@@ -3,9 +3,9 @@
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Tabler.Components.Tables.Components;
+using TabBlazor.Components.Tables.Components;
 
-namespace Tabler.Components.Tables
+namespace TabBlazor.Components.Tables
 {
     public interface IColumn<Item>
     {

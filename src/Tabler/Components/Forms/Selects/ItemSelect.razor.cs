@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tabler.Components.Selects;
+using TabBlazor.Components.Selects;
 
-namespace Tabler.Components
+namespace TabBlazor.Components
 {
     public partial class ItemSelect<TValue> : TablerBaseComponent
     {

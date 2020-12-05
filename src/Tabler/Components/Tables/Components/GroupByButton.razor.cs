@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 
 
-namespace Tabler.Components.Tables.Components
+namespace TabBlazor.Components.Tables.Components
 {
     public partial class GroupByButtonBase<Item> : ComponentBase
     {

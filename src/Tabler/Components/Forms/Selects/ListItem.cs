@@ -1,4 +1,4 @@
-﻿namespace Tabler.Components.Selects
+﻿namespace TabBlazor.Components.Selects
 {
     public class ListItem<TValue>
     {

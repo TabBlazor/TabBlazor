@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tabler.Components
+namespace TabBlazor.Components
 {
     public class ModalResult
     {

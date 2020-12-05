@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace Tabler.Components
+namespace TabBlazor.Components
 {
     public enum CardSize
     {

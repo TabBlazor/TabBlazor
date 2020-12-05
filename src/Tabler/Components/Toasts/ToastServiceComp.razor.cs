@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using Tabler.Services;
+using TabBlazor.Services;
 
-namespace Tabler.Components
+namespace TabBlazor.Components
 {
     public partial class ToastServiceComp : ComponentBase
     {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
-using Tabler.Components.Tables;
+using TabBlazor.Components.Tables;
 
-namespace Tabler.Components.Tables
+namespace TabBlazor.Components.Tables
 {
     public class TableRowActionsBase<TableItem> : TableRowComponentBase<TableItem>
     {

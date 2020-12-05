@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace Tabler.Components
+namespace TabBlazor.Components
 {
     public static class EnumInfo
     {

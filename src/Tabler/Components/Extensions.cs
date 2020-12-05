@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tabler.Components
+namespace TabBlazor.Components
 {
    public static class Extensions
     {

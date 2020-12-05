@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Tabler.Components.Tables;
+using TabBlazor.Components.Tables;
 
-namespace Tabler.Components.Tables
+namespace TabBlazor.Components.Tables
 {
     public class TableHeaderBase<TableItem> : TableRowComponentBase<TableItem>
     {

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Tabler.Components.Tables
+namespace TabBlazor.Components.Tables
 {
     public interface ITable<TableItem>
     {

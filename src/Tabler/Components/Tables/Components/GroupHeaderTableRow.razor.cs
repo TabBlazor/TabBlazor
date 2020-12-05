@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Tabler.Components.Tables.Components;
+using TabBlazor.Components.Tables.Components;
 using System.Threading.Tasks;
 
-namespace Tabler.Components.Tables
+namespace TabBlazor.Components.Tables
 {
     public class GroupHeaderTableRowBase<TableItem> : ComponentBase
     {

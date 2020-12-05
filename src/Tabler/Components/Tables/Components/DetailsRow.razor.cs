@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace Tabler.Components.Tables.Components
+namespace TabBlazor.Components.Tables.Components
 {
     public class DetailsRowBase<TableItem> : ComponentBase // ComponentBase
     {

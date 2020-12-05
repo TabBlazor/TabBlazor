@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tabler.Services
+namespace TabBlazor.Services
 {
     public class TablerService
     {

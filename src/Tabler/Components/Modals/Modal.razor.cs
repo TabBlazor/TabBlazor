@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tabler.Services;
+using TabBlazor.Services;
 
-namespace Tabler.Components
+namespace TabBlazor.Components
 {
     public partial class Modal : ComponentBase
     {

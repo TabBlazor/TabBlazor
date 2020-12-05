@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
 
-namespace Tabler.Components.Tables
+namespace TabBlazor.Components.Tables
 {
     public class EditRowBase<TableItem> : TableRowComponentBase<TableItem>
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Tabler.Components
+namespace TabBlazor.Components
 {
     public interface IModalService
     {

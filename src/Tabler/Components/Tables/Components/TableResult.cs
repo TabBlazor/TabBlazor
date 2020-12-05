@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Tabler.Components.Tables.Components
+namespace TabBlazor.Components.Tables.Components
 {
     public class TableResult<TKey, TElement> : List<TElement>, IGrouping<TKey, TElement>
     {

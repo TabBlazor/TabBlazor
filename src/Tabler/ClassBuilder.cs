@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Tabler
+namespace TabBlazor
 {
     public class ClassBuilder
     {

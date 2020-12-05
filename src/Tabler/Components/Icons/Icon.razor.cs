@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 
-namespace Tabler.Components
+namespace TabBlazor.Components
 {
     public partial class Icon : TablerBaseComponent
     {

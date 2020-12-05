@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Tabler.Components;
-using Tabler.Components.Tables;
-using Tabler.Services;
+using TabBlazor.Components;
+using TabBlazor.Components.Tables;
+using TabBlazor.Services;
 
-namespace Tabler
+namespace TabBlazor
 {
     public static class TablerExtensions
     {

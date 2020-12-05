@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Tabler.Components.Tables;
+using TabBlazor.Components.Tables;
 
-namespace Tabler.Components.Tables
+namespace TabBlazor.Components.Tables
 {
     public class TableRowBase<TableItem> : TableRowComponentBase<TableItem>
     {

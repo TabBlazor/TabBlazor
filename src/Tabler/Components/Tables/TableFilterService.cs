@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 //using Swegon.Components;
 
-namespace Tabler.Components.Tables
+namespace TabBlazor.Components.Tables
 {
     public class TableFilterService
     {

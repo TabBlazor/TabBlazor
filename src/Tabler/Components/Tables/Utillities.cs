@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Tabler.Components.Tables
+namespace TabBlazor.Components.Tables
 {
     internal static class Utillities
     {

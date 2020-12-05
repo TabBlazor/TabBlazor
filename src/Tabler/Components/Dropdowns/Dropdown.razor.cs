@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.VisualBasic;
 
-namespace Tabler.Components
+namespace TabBlazor.Components
 {
     public partial class Dropdown : TablerBaseComponent
     {

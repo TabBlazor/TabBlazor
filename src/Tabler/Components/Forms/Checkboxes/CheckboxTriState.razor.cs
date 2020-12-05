@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
-using Tabler.Services;
+using TabBlazor.Services;
 
-namespace Tabler.Components
+namespace TabBlazor.Components
 {
     public partial class CheckboxTriState : ComponentBase
     {

@@ -1,9 +1,9 @@
 ﻿using LinqKit;
 using System.Collections.Generic;
 using System.Linq;
-using Tabler.Components.Tables.Components;
+using TabBlazor.Components.Tables.Components;
 
-namespace Tabler.Components.Tables
+namespace TabBlazor.Components.Tables
 {
     public class TheGridDataFactory<Item>
     {

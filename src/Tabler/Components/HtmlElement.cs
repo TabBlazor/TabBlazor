@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
-namespace Tabler.Components
+namespace TabBlazor.Components
 {
     public class HtmlElement : ComponentBase
     {

@@ -1,14 +1,14 @@
 ﻿//using LinqKit;
 using Microsoft.AspNetCore.Components;
-using Tabler.Components.Tables.Components;
+using TabBlazor.Components.Tables.Components;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Tabler.Components.Tables;
+using TabBlazor.Components.Tables;
 using LinqKit;
 
-namespace Tabler.Components
+namespace TabBlazor.Components
 {
     public class ColumnBase<Item> : ComponentBase, IColumn<Item> 
     {

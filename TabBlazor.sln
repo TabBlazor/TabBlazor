@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30615.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tabler", "src\Tabler\Tabler.csproj", "{4B60BA07-6267-48C1-A7DD-12163179E776}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TabBlazor", "src\Tabler\TabBlazor.csproj", "{4B60BA07-6267-48C1-A7DD-12163179E776}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{BC1B6966-CBEF-4107-A708-0C6DC37D606D}"
 EndProject

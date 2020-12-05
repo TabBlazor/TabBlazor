@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System;
-using Tabler.Components.Tables;
+using TabBlazor.Components.Tables;
 
-namespace Tabler.Components.Tables
+namespace TabBlazor.Components.Tables
 {
     public class PagerBase<Item> : ComponentBase
     {

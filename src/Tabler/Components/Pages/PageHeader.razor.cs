@@ -1,4 +1,4 @@
-﻿namespace Tabler.Components
+﻿namespace TabBlazor.Components
 {
     public partial class PageHeader : TablerBaseComponent
     {
