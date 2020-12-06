@@ -11,6 +11,6 @@ Minimal javascript!
 ***Work ongoing***
 
 
-![Alt text](tabler-preview.png?raw=true "Title")
+![Alt text](TabBlazorDashbord.png?raw=true "Dashboard")
 
 Based on [Tabler.Blazor](https://github.com/zarxor/Tabler.Blazor) by [zarxor](https://github.com/zarxor)
