@@ -12,8 +12,8 @@ namespace TabBlazor.Components.Tables
             return new ClassBuilder()
                 .AddIf("cursor-pointer", column.Sortable)
                 .AddIf("sorting", !column.SortColumn && column.Sortable)
-                .AddIf("sorting_asc", column.SortColumn && column.SortDescending)
-                .AddIf("sorting_desc", column.SortColumn && !column.SortDescending)
+                .AddIf("sorting_desc", column.SortColumn && column.SortDescending)
+                .AddIf("sorting_asc", column.SortColumn && !column.SortDescending)
                 .ToString();
          }
     }
