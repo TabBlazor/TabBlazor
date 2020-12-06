@@ -11,7 +11,7 @@ namespace TabBlazor
         [Parameter] public int Lg { get; set; } = 0;
 
         protected override string ClassNames => ClassBuilder
-            .Add("col")
+            //.Add("col")
             .Add(BackgroundColor.GetColorClass("bg"))
             .Add(TextColor.GetColorClass("text"))
             .AddIf($"col-{Columns}", Columns > 0)
