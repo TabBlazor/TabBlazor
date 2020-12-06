@@ -15,10 +15,11 @@
             }
         </td>
     }
-    <td>
 
-        @if (Table.HasRowActions)
-        {
+
+    @if (Table.HasRowActions)
+    {
+        <td>
             <div class="row-action">
 
                 @if (Table.RowActionTemplate != null)
@@ -48,8 +49,7 @@
                     </svg>
                 }
             </div>
-        }
-    </td>
-
+        </td>
+    }
 
 </tr>

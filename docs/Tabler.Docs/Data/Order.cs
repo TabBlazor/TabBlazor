@@ -12,6 +12,11 @@ namespace Tabler.Docs.Data
         Web, Contract, Mail, Phone
     }
 
+    public enum OrderStatus
+    {
+        Active, Shipped, OnHold, Cancelled
+    }
+
     public class Customer
     {
         public Customer()
@@ -39,6 +44,7 @@ namespace Tabler.Docs.Data
         public string Country { get; set; }
         public DateTimeOffset OrderDate { get; set; }
         public OrderType OrderType { get; set; }
+        public OrderStatus OrderStatus { get; set; }
         public decimal GrossValue { get; set; }
         public decimal NetValue { get => GrossValue * (1 - (DiscountPrecentage / 100)); }
         public decimal DiscountPrecentage { get; set; }
