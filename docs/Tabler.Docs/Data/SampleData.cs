@@ -30,7 +30,7 @@ namespace Tabler.Docs.Data
             return new List<Customer> {
                 new Customer { CustomerName = "Odio Corporation", Percentage=30, Visits=5402 },
                 new Customer { CustomerName = "Nascetur AB", Percentage=15, Visits=1134 },
-                new Customer { CustomerName = "Justo Eu Institute", Percentage=69, Visits=26431 },
+                new Customer { CustomerName = "Justo Eu Institute", Percentage=23, Visits=26431 },
                 new Customer { CustomerName = "Ani Vent", Percentage=88, Visits=97654 },
                 new Customer { CustomerName = "Cali Inc", Percentage=77, Visits=43543 }
                 };
