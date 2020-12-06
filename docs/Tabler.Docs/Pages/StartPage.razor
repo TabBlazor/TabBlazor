@@ -1,17 +1,33 @@
 ﻿@page "/"
-@page "/start-page"
+@page "/dashboard"
 
 <PageTitle>Dashboard</PageTitle>
-<PagePretitle>TabBlazor</PagePretitle>
+<PagePretitle>
+    Tabler
+    <Icon Elements="@DemoIcons.Heart" Size="12"></Icon>
+    Blazor
+</PagePretitle>
 
-<Row class="row-deck row-cards">
+<Row class="mt-1 row-deck row-cards">
+    <RowCol Sm="12" Md="6" Lg="3">
+        <Tabler.Docs.Components.Snippets.Statistics.SmallSales />
+    </RowCol>
+    <RowCol Sm="12" Md="6" Lg="3">
+        <Tabler.Docs.Components.Snippets.Statistics.SmallOrders />
+    </RowCol>
+    <RowCol Sm="12" Md="6" Lg="3">
+        <Tabler.Docs.Components.Snippets.Statistics.SmallLikes />
+    </RowCol>
+    <RowCol Sm="12" Md="6" Lg="3">
+        <Tabler.Docs.Components.Snippets.Statistics.SmallMembers />
+    </RowCol>
+
     <RowCol Sm="12" Md="6" Lg="3">
         <Tabler.Docs.Components.Snippets.Statistics.StatisticsMedium />
     </RowCol>
     <RowCol Sm="12" Md="6" Lg="3">
         <Tabler.Docs.Components.Snippets.Statistics.StatisticsChart />
     </RowCol>
-
     <RowCol Sm="12" Md="6" Lg="3">
         <Tabler.Docs.Components.Snippets.Statistics.StatisticsLineChart />
     </RowCol>
@@ -21,6 +37,10 @@
 
     <RowCol Sm="12" Lg="6">
         <Tabler.Docs.Components.Snippets.Tables.CustomerList />
+    </RowCol>
+
+    <RowCol Sm="12" Lg="6">
+        <Tabler.Docs.Components.Snippets.Tables.Orders />
     </RowCol>
 
 
