@@ -13,7 +13,12 @@ namespace TabBlazor.Components.Tables
 
         public string GetRowCssClass(TableItem item)
         {
-            return "";
+
+            return new ClassBuilder()
+              .AddIf("table-primary", IsSame(Table.SelectedItem, item) && Table.OnItemSelected.HasDelegate)
+              .ToString();
+
+           
             //return new CssBuilder()
             //    .AddClass("")
             //    .AddClass("selected-details", IsSame(Table.SelectedItem, item))
