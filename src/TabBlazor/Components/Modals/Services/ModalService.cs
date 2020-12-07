@@ -10,7 +10,7 @@ namespace TabBlazor.Services
     public class ModalService : IModalService
     {
         public event Action<ModalResult> OnClose;
-        internal event Action<string, string, RenderFragment, ModalParameters> OnShow;
+        internal event Action<string, ModalOptions, RenderFragment, ModalParameters> OnShow;
         internal event Action<string> OnTitleSet;
 
         internal ModalModel modalModel;
@@ -20,10 +20,10 @@ namespace TabBlazor.Services
             OnTitleSet?.Invoke(title);
         }
 
-        public Task<ModalResult> Show(string title, Type componentType, ModalParameters parameters, ModalSize modalSize = ModalSize.Large)
+        public Task<ModalResult> Show(string title, Type componentType, ModalParameters parameters, ModalOptions modalOptions = null)
         {
 
-            modalModel = new ModalModel(componentType, title, parameters, new ModalOptions());
+            modalModel = new ModalModel(componentType, title, parameters, modalOptions);
 
             if (!typeof(ComponentBase).IsAssignableFrom(componentType))
             {
@@ -47,14 +47,16 @@ namespace TabBlazor.Services
                 x.CloseComponent();
             });
 
-            OnShow?.Invoke(title, GetehaderClass(modalSize), content, parameters);
+            if (modalOptions == null)
+            {
+                modalOptions = new ModalOptions();
+            }
+          
+            OnShow?.Invoke(title, modalOptions, content, parameters);
             return modalModel.Task;
         }
 
-        private string GetehaderClass(ModalSize modalSize)
-        {
-            return $"modal-size-{((int)modalSize).ToString()}";
-        }
+   
 
         public void Cancel()
         {
