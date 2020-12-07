@@ -1,5 +1,20 @@
-﻿<ItemSelect Items="EnumInfo.GetList<ModalSize>()" @bind-SelectedValue="@modalOptions.Size" TextExpression="e=> e.ToString()" ValueExpression="e=> e.ToString()" />
-<Button @onclick="ShowModal" BackgroundColor="TablerColor.Primary">Show Modal</Button>
+﻿
+<Row>
+    <RowCol Sm="12" Md="6">
+        <label class="form-label">Size</label>
+        <ItemSelect Items="EnumInfo.GetList<ModalSize>()" @bind-SelectedValue="@modalOptions.Size" TextExpression="e=> e.ToString()" ValueExpression="e=> e.ToString()" />
+    </RowCol>
+    <RowCol Sm="12" Md="6">
+        <label class="form-label">Fullscreen</label>
+        <ItemSelect Items="EnumInfo.GetList<ModalFullscreen>()" @bind-SelectedValue="@modalOptions.Fullscreen" TextExpression="e=> e.ToString()" ValueExpression="e=> e.ToString()" />
+    </RowCol>
+</Row>
+<Row class="mt-2">
+    <RowCol>
+        <Button @onclick="ShowModal" BackgroundColor="TablerColor.Primary">Show Modal</Button>
+    </RowCol>
+</Row>
+
 
 <div>@message</div>
 

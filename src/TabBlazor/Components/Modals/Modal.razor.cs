@@ -39,6 +39,7 @@ namespace TabBlazor
                 .AddIf("modal-fullscreen-lg-down", modalOptions.Fullscreen == ModalFullscreen.BelowLarge)
                 .AddIf("modal-fullscreen-xl-down", modalOptions.Fullscreen == ModalFullscreen.BelowXLarge)
                 .AddIf("modal-fullscreen-xxl-down", modalOptions.Fullscreen == ModalFullscreen.BelowXXLarge)
+                .AddIf("modal-dialog-scrollable", modalOptions.Scrollable)
                 .ToString();
 
         public void SetTitle(string title)
