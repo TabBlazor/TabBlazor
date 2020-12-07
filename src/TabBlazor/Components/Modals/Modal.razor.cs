@@ -30,7 +30,6 @@ namespace TabBlazor
 
         protected string GetModalCss() => new ClassBuilder()
                 .Add("modal-dialog")
-                .AddIf("modal-xs", modalOptions.Size == ModalSize.XSmall)
                 .AddIf("modal-sm", modalOptions.Size == ModalSize.Small)
                 .AddIf("modal-lg", modalOptions.Size == ModalSize.Large)
                 .AddIf("modal-xl", modalOptions.Size == ModalSize.XLarge)
