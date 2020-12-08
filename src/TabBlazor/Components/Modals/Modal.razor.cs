@@ -79,6 +79,7 @@ namespace TabBlazor
         public void Dispose()
         {
             ((ModalService)ModalService).OnShow -= ShowModal;
+            ((ModalService)ModalService).OnTitleSet -= SetTitle;
             ModalService.OnClose -= CloseModal;
         }
 

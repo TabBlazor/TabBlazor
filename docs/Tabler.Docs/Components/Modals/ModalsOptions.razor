@@ -30,7 +30,7 @@
 @code {
     @inject IModalService ModalService
     private string message;
-    private ModalOptions modalOptions = new ModalOptions { CloseOnClickOutside = true };
+    private ModalOptions modalOptions = new ModalOptions { CloseOnClickOutside = false };
 
     protected async Task ShowModal()
     {
