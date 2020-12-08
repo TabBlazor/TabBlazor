@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Microsoft.AspNetCore.Components.Web;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TabBlazor.Services;
 
@@ -10,7 +8,6 @@ namespace TabBlazor
 {
     public partial class Modal : ComponentBase
     {
-
         [Inject] protected IModalService ModalService { get; set; }
 
         protected bool IsVisible { get; set; }
@@ -20,15 +17,22 @@ namespace TabBlazor
         public string HeaderCssClass { get; private set; }
 
         protected ModalOptions modalOptions = new ModalOptions();
+        protected ElementReference BlurContainer;
 
-        protected void OnClickOutside()
+        protected void OnKeyDown(KeyboardEventArgs e)
+        {
+            if (e.Key == "Escape" && modalOptions.CloseOnEsc)
+            {
+                ModalService.Cancel();
+            }
+        }
+
+        protected void OnClickOutside(MouseEventArgs e)
         {
             if (modalOptions.CloseOnClickOutside)
             {
                 ModalService.Cancel();
             }
-          
-            
         }
 
         protected override void OnInitialized()
@@ -36,6 +40,14 @@ namespace TabBlazor
             ((ModalService)ModalService).OnShow += ShowModal;
             ((ModalService)ModalService).OnTitleSet += SetTitle;
             ModalService.OnClose += CloseModal;
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (!firstRender && IsVisible)
+            {
+                await BlurContainer.FocusAsync();
+            }
         }
 
         protected string GetModalCss() => new ClassBuilder()
@@ -57,6 +69,7 @@ namespace TabBlazor
             Title = title;
             InvokeAsync(StateHasChanged);
         }
+
 
         public void ShowModal(string title, ModalOptions modalOptions, RenderFragment content, ModalParameters parameters)
         {

@@ -10,10 +10,13 @@
     </RowCol>
 
     <Row class="mt-2">
-        <RowCol Sm="12" Md="6">
+        <RowCol Sm="12" Md="4">
             <Checkbox @bind-Value="@modalOptions.CloseOnClickOutside" Label="Close on click outside" />
         </RowCol>
-        <RowCol Sm="12" Md="6">
+        <RowCol Sm="12" Md="4">
+            <Checkbox @bind-Value="@modalOptions.CloseOnEsc" Label="Close on Esc" />
+        </RowCol>
+        <RowCol Sm="12" Md="4">
             <Checkbox @bind-Value="@modalOptions.ShowHeader" Label="Show Header" />
         </RowCol>
     </Row>
@@ -30,7 +33,7 @@
 @code {
     @inject IModalService ModalService
     private string message;
-    private ModalOptions modalOptions = new ModalOptions { CloseOnClickOutside = false };
+    private ModalOptions modalOptions = new ModalOptions { CloseOnClickOutside = true };
 
     protected async Task ShowModal()
     {
