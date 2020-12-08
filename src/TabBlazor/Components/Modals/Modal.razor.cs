@@ -21,6 +21,16 @@ namespace TabBlazor
 
         protected ModalOptions modalOptions = new ModalOptions();
 
+        protected void OnClickOutside()
+        {
+            if (modalOptions.CloseOnClickOutside)
+            {
+                ModalService.Cancel();
+            }
+          
+            
+        }
+
         protected override void OnInitialized()
         {
             ((ModalService)ModalService).OnShow += ShowModal;

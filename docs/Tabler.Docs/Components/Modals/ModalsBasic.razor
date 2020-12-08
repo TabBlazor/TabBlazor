@@ -8,7 +8,11 @@
     protected async Task ShowModal()
     {
         message = string.Empty;
-        var result = await ModalService.Show("This is a Title", typeof(TestModalContent));
+
+        var modalParameters = new ModalParameters();
+        modalParameters.Add("ReportName", "Report name from parameter");
+
+        var result = await ModalService.Show("This is a Title", typeof(TestModalContent), modalParameters, new ModalOptions { Size = ModalSize.Large });
 
         if (result.Cancelled)
         {

@@ -1,13 +1,22 @@
-﻿
-<Row>
+﻿<Row>
     <RowCol Sm="12" Md="6">
         <label class="form-label">Size</label>
         <ItemSelect Items="EnumInfo.GetList<ModalSize>()" @bind-SelectedValue="@modalOptions.Size" TextExpression="e=> e.ToString()" ValueExpression="e=> e.ToString()" />
     </RowCol>
+
     <RowCol Sm="12" Md="6">
         <label class="form-label">Fullscreen</label>
         <ItemSelect Items="EnumInfo.GetList<ModalFullscreen>()" @bind-SelectedValue="@modalOptions.Fullscreen" TextExpression="e=> e.ToString()" ValueExpression="e=> e.ToString()" />
     </RowCol>
+
+    <Row class="mt-2">
+        <RowCol Sm="12" Md="6">
+            <Checkbox @bind-Value="@modalOptions.CloseOnClickOutside" Label="Close on click outside" />
+        </RowCol>
+        <RowCol Sm="12" Md="6">
+            <Checkbox @bind-Value="@modalOptions.ShowHeader" Label="Show Header" />
+        </RowCol>
+    </Row>
 </Row>
 <Row class="mt-2">
     <RowCol>
@@ -15,14 +24,13 @@
     </RowCol>
 </Row>
 
-
 <div>@message</div>
 
 
 @code {
     @inject IModalService ModalService
     private string message;
-    private ModalOptions modalOptions = new ModalOptions();
+    private ModalOptions modalOptions = new ModalOptions { CloseOnClickOutside = true };
 
     protected async Task ShowModal()
     {
