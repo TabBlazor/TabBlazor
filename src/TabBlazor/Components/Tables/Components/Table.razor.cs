@@ -32,6 +32,8 @@ namespace TabBlazor
         [Parameter] public RenderFragment ChildContent { get; set; }
         [Parameter] public RenderFragment<Item> DetailsTemplate { get; set; }
         [Parameter] public RenderFragment<Item> RowActionTemplate { get; set; }
+        [Parameter] public Item SelectedItem { get;  set; }
+        [Parameter] public EventCallback<Item> SelectedItemChanged { get; set; }
 
         [Parameter] public Func<Task<IList<Item>>> OnRefresh { get; set; }
         [Parameter] public EventCallback<Item> OnItemEdited { get; set; }
@@ -55,7 +57,6 @@ namespace TabBlazor
         public bool IsAddInProgress { get; set; }
         public bool ReloadingItems { get; set; }
         public Item CurrentEditItem { get; private set; }
-        public Item SelectedItem { get; private set; }
         protected IDictionary<string, object> Attributes { get; set; }
         public bool ChangedItem { get; set; }
         public bool AllowAdd => OnItemAdded.HasDelegate;
@@ -178,6 +179,7 @@ namespace TabBlazor
 
             SelectedItem = item;
             await OnItemSelected.InvokeAsync(item);
+            await SelectedItemChanged.InvokeAsync(item);
             await Update();
         }
 

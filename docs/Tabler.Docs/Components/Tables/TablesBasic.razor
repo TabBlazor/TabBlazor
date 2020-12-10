@@ -28,7 +28,7 @@
 @code {
 
     [Inject] TabBlazor.Services.TablerService TablerService { get; set; }
-    private List<Order> orders = SampleData.GetOrders();
+    private static List<Order> orders = SampleData.GetOrders();
 
 
     private async Task OnItemEdit(Order order)

@@ -15,7 +15,7 @@ namespace TabBlazor.Components.Tables
         {
 
             return new ClassBuilder()
-              .AddIf("table-primary", IsSame(Table.SelectedItem, item) && Table.OnItemSelected.HasDelegate)
+              .AddIf("table-primary", IsSame(Table.SelectedItem, item) && (Table.OnItemSelected.HasDelegate || Table.SelectedItemChanged.HasDelegate))
               .ToString();
 
            

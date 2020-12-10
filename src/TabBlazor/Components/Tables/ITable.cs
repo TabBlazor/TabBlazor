@@ -70,6 +70,7 @@ namespace TabBlazor.Components.Tables
         bool AllowDelete { get; }
         bool HasRowActions { get; }
         EventCallback<TableItem> OnItemSelected { get; }
+        EventCallback<TableItem> SelectedItemChanged { get; }
         Task OnDeleteItem(TableItem item);
         void EditItem(TableItem item);
         Task SetSelectedItem(TableItem item);
