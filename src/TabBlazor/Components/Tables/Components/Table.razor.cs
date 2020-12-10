@@ -165,7 +165,6 @@ namespace TabBlazor
 
         public async Task SetSelectedItem(Item item)
         {
-            await OnItemSelected.InvokeAsync(item);
             if (SelectedItem != null && !IsSame(item, SelectedItem))
             {
                 ChangedItem = true;
@@ -178,6 +177,7 @@ namespace TabBlazor
             }
 
             SelectedItem = item;
+            await OnItemSelected.InvokeAsync(item);
             await Update();
         }
 
