@@ -29,15 +29,16 @@ namespace TabBlazor
         [Parameter] public RenderFragment<Item> RowActionTemplate { get; set; }
         [Parameter] public Item SelectedItem { get; set; }
         [Parameter] public EventCallback<Item> SelectedItemChanged { get; set; }
-
         [Parameter] public Func<Task<IList<Item>>> OnRefresh { get; set; }
         [Parameter] public EventCallback<Item> OnItemEdited { get; set; }
         [Parameter] public EventCallback<Item> OnItemAdded { get; set; }
         [Parameter] public EventCallback<Item> OnItemDeleted { get; set; }
         [Parameter] public EventCallback<Item> OnItemSelected { get; set; }
-
         [Parameter] public Func<Item, bool> AllowDeleteExpression { get; set; }
         [Parameter] public int TotalCount { get; set; }
+
+        [Parameter] public Func<Task<Item>> AddItemAdd { get; set; }
+
 
         public bool HasRowActions => RowActionTemplate != null || AllowDelete || AllowEdit;
         public bool ShowSearch { get; set; } = true;
