@@ -10,19 +10,14 @@ using TabBlazor.Components.Tables;
 
 namespace TabBlazor
 {
-    public class TableBase<Item> : ComponentBase,  ITable<Item>, IInlineEditTable<Item>, IDetailsTable<Item>, ITableRow<Item>, ITableState // ITableRowActions<Item>
+    public class TableBase<Item> : ComponentBase, ITable<Item>, IInlineEditTable<Item>, IDetailsTable<Item>, ITableRow<Item>, ITableState // ITableRowActions<Item>
     {
-       // [Inject] protected AppService AppService { get; set; }
-
         [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> UnknownParameters { get; set; }
-        //[Parameter] public List<MenuDropdownItem<Item>> RowActions { get; set; } = new List<MenuDropdownItem<Item>>();
-        //[Parameter] public List<MenuDropdownItem<object>> HeaderActions { get; set; } = new List<MenuDropdownItem<object>>();
         [Parameter] public bool ShowHeader { get; set; } = true;
         [Parameter] public bool ShowFooter { get; set; } = true;
         [Parameter] public bool ShowTableHeader { get; set; } = true;
         [Parameter] public bool Selectable { get; set; }
         [Parameter] public bool ShowNoItemsLabel { get; set; } = true;
-        //[Parameter] public WebColor? StatusColor { get; set; }
         [Parameter] public string TableClass { get; set; } = "table card-table table-striped table-vcenter datatable dataTable no-footer";
         [Parameter] public string ValidationRuleSet { get; set; } = "default";
         [Parameter] public int PageSize { get; set; } = 20;
@@ -32,7 +27,7 @@ namespace TabBlazor
         [Parameter] public RenderFragment ChildContent { get; set; }
         [Parameter] public RenderFragment<Item> DetailsTemplate { get; set; }
         [Parameter] public RenderFragment<Item> RowActionTemplate { get; set; }
-        [Parameter] public Item SelectedItem { get;  set; }
+        [Parameter] public Item SelectedItem { get; set; }
         [Parameter] public EventCallback<Item> SelectedItemChanged { get; set; }
 
         [Parameter] public Func<Task<IList<Item>>> OnRefresh { get; set; }
@@ -49,7 +44,6 @@ namespace TabBlazor
         protected IEnumerable<TableResult<object, Item>> TempItems { get; set; } = Enumerable.Empty<TableResult<object, Item>>();
         public List<IColumn<Item>> Columns { get; } = new List<IColumn<Item>>();
         public List<IColumn<Item>> VisibleColumns => Columns.Where(x => x.Visible).ToList();
-        //public List<MenuDropdownItem<Item>> AllRowActions { get; set; } = new List<MenuDropdownItem<Item>>();
         public int PageNumber { get; set; }
         public int VisibleColumnCount => Columns.Count(x => x.Visible) + (HasRowActions ? 1 : 0);
         public string SearchText { get; set; }
@@ -85,7 +79,6 @@ namespace TabBlazor
             }
 
             Attributes = baseAttributes;
-            //AllRowActions = GetRowActions();
             await Update();
         }
 
@@ -207,7 +200,6 @@ namespace TabBlazor
             if (CurrentEditItem == null || !TempItems.Any())
             {
                 TempItems = DataFactory.GetData(Items, ResetPage);
-               // AllRowActions = GetRowActions();
                 await Refresh();
             }
         }
@@ -228,8 +220,8 @@ namespace TabBlazor
 
         public async Task SetPage(int pageNumber)
         {
-                PageNumber = pageNumber;
-                await Update();
+            PageNumber = pageNumber;
+            await Update();
         }
 
         public async Task FirstPage()
@@ -269,39 +261,6 @@ namespace TabBlazor
         {
             await InvokeAsync(StateHasChanged);
         }
-
-        //private List<MenuDropdownItem<Item>> GetRowActions()
-        //{
-        //    var result = new List<MenuDropdownItem<Item>>();
-        //    result = result.Concat(RowActions).ToList();
-        //    if (AllowEdit)
-        //    {
-        //        result.Add(new MenuDropdownItem<Item>
-        //        {
-        //            CallBack = EventCallback.Factory.Create<Item>(this, OnEditItem),
-        //            Icon = "fe fe-edit-3",
-        //            Title = L.GetString(x => x.FastEdit)
-        //        });
-        //    }
-
-        //    if (AllowDelete)
-        //    {
-        //        result.Add(new MenuDropdownItem<Item>
-        //        {
-        //            CallBack = EventCallback.Factory.Create<Item>(this, OnDeleteItem),
-        //            Icon = "fe fe-trash-2",
-        //            Title = L.GetString(x => x.Delete),
-        //            Id = "DeleteItem"
-        //        });
-        //    }
-
-        //    return result;
-        //}
-
-        //public List<MenuDropdownItem<object>> GetHeaderActions()
-        //{
-        //    return HeaderActions;
-        //}
 
         protected async Task OnAddItem()
         {
