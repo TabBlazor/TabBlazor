@@ -30,7 +30,12 @@
 </head>
 
 <body>
-    <div id="app">Loading...</div>
+    <div id="app">
+        <div class="spash">
+            <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+            <lottie-player src="https://assets4.lottiefiles.com/packages/lf20_2RSPTv.json" background="transparent" speed="1" style="width: 90%; height: 90%;" loop autoplay></lottie-player>
+        </div>
+    </div>
 
     <script src="decode.js"></script>
     <script src="_framework/blazor.webassembly.js" autostart="false"></script>
@@ -56,7 +61,7 @@
         });
     </script>
 
- <!-- Start Single Page Apps for GitHub Pages -->
+    <!-- Start Single Page Apps for GitHub Pages -->
     <script type="text/javascript">
         // Single Page Apps for GitHub Pages
         // https://github.com/rafrex/spa-github-pages
@@ -87,7 +92,7 @@
         }(window.location))
     </script>
     <!-- End Single Page Apps for GitHub Pages -->
-    
+
 </body>
 
 </html>

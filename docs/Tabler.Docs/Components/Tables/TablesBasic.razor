@@ -8,12 +8,12 @@
     <ChildContent>
         <Column Item="Order" Property="e=>e.Customer.CustomerName" Title="Customer" Sortable Searchable Groupable>
             <EditorTemplate>
-                @*<input type="text" @bind-value="@context.CustomerName" />*@
+                <input type="text" class="form-control" @bind-value="@context.Customer.CustomerName" />
             </EditorTemplate>
         </Column>
         <Column Item="Order" Property="e=>e.Country" Title="Country" Sortable Searchable Groupable>
             <EditorTemplate>
-                <input type="text" @bind-value="@context.Country" />
+                <input type="text" class="form-control" @bind-value="@context.Country" />
             </EditorTemplate>
         </Column>
         <Column Item="Order" Property="e=>e.OrderType" Title="Order type" Sortable Searchable Groupable>
