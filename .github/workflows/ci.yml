@@ -24,14 +24,7 @@ jobs:
         - name: Publish
           run: dotnet publish Tabler.Docs.Wasm.csproj --configuration Release
           working-directory: ./docs/Tabler.Docs.Wasm
-        
-        # Rewrite Base Url
-        - name: Rewrite base href
-          uses: SteveSandersonMS/ghaction-rewrite-base-href@v1
-          with:
-            html_path: ${{ env.PUBLISH_DIR }}/index.html
-            base_href: /TabBlazor/
-
+    
         # Publish the website
         - name: GitHub Pages action
           if: ${{ github.ref == 'refs/heads/master' }} # Publish only when the push is on master
