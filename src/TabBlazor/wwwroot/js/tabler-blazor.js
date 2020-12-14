@@ -39,7 +39,7 @@
             window.addEventListener("click", (e) => {
                 var element = document.getElementById(elementId);
                 if (e != null && element != null) {
-                    if (e.target !== element && (!element.contains(e.target) || e.target.id === 'tabblazor-modal-container')) {
+                    if (e.target !== element && (!element.contains(e.target))) {
                         dotnetHelper.invokeMethodAsync("InvokeClickOutside");
                     }
                 }

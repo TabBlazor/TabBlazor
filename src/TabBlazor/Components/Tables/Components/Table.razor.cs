@@ -37,7 +37,7 @@ namespace TabBlazor
         [Parameter] public Func<Item, bool> AllowDeleteExpression { get; set; }
         [Parameter] public int TotalCount { get; set; }
 
-        [Parameter] public Func<Task<Item>> AddItemAdd { get; set; }
+        [Parameter] public Func<Item> AddItemFactory { get; set; }
 
 
         public bool HasRowActions => RowActionTemplate != null || AllowDelete || AllowEdit;
@@ -271,8 +271,16 @@ namespace TabBlazor
             }
 
             IsAddInProgress = true;
-
-            Item tableItem = (Item)Activator.CreateInstance(typeof(Item));
+            Item tableItem;
+            if (AddItemFactory != null)
+            {
+                tableItem = AddItemFactory();
+            }
+            else
+            {
+                tableItem = (Item)Activator.CreateInstance(typeof(Item));
+            }
+           
             Items.Add(tableItem);
 
             await LastPage();

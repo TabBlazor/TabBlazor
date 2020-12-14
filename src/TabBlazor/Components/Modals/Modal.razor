@@ -4,8 +4,8 @@
 {
 
     <div class="modal-backdrop fade show" />
-    <div class="modal modal-blur fade show" id="tabblazor-modal-container" @ref="BlurContainer" @onkeydown="OnKeyDown" @onclick="OnClickOutside" tabindex="-1" style="display: block;" aria-hidden="true">
-        <div class="@GetModalCss()" role="document" @onclick:stopPropagation="true">
+    <div class="modal modal-blur fade show" id="tabblazor-modal-container" @ref="BlurContainer" @onkeydown="OnKeyDown"  @onclick="OnClickOutside" tabindex="-1" style="display: block;" aria-hidden="true">
+        <div class="@GetModalCss()" role="document" @onclick:stopPropagation="true"  @onkeydown:stopPropagation="true" >
             <div class="modal-content">
                 @if (modalOptions.ShowHeader)
                 {
