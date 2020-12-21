@@ -1,0 +1,52 @@
+﻿
+<TreeView Items="@folders" ChildSelector="e=>e.SubFolders" ExpandAll>
+    <Template>
+        <Card StatusLeft="TablerColor.Danger" Size="CardSize.Small">
+            <CardBody>  
+            <span>@context.FolderName (@context.SubFolders.Count)</span>
+            </CardBody>
+        </Card>
+    </Template>
+</TreeView>
+
+@code {
+
+    List<FileFolder> folders = new List<FileFolder>();
+
+    protected override void OnInitialized()
+    {
+
+        var drawings = new FileFolder("Drawings");
+
+        var architecture = new FileFolder("Arcitecture");
+        architecture.SubFolders.Add(new FileFolder("Folder1"));
+        architecture.SubFolders.Add(new FileFolder("Folder1"));
+        drawings.SubFolders.Add(architecture);
+
+        drawings.SubFolders.Add(new FileFolder("HVAC"));
+        drawings.SubFolders.Add(new FileFolder("Floorplans"));
+        folders.Add(drawings);
+
+        folders.Add(new FileFolder("Documents"));
+        folders.Add(new FileFolder("Images"));
+    }
+
+
+
+    public class FileFolder
+    {
+
+        public FileFolder()
+        { }
+
+        public FileFolder(string folderName)
+        {
+            FolderName = folderName;
+        }
+
+        public string FolderName { get; set; }
+
+        public List<FileFolder> SubFolders { get; set; } = new List<FileFolder>();
+    }
+
+}

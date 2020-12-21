@@ -42,11 +42,14 @@ namespace TabBlazor
 
         public bool HasRowActions => RowActionTemplate != null || AllowDelete || AllowEdit;
         public bool ShowSearch { get; set; } = true;
+
+        public bool SelectCheckbox { get; set; } = false;
+
         protected IEnumerable<TableResult<object, Item>> TempItems { get; set; } = Enumerable.Empty<TableResult<object, Item>>();
         public List<IColumn<Item>> Columns { get; } = new List<IColumn<Item>>();
         public List<IColumn<Item>> VisibleColumns => Columns.Where(x => x.Visible).ToList();
         public int PageNumber { get; set; }
-        public int VisibleColumnCount => Columns.Count(x => x.Visible) + (HasRowActions ? 1 : 0);
+        public int VisibleColumnCount => Columns.Count(x => x.Visible) + (HasRowActions ? 1 : 0) + (SelectCheckbox ? 1 : 0);
         public string SearchText { get; set; }
         public bool ResetPage { get; set; }
         public bool IsAddInProgress { get; set; }

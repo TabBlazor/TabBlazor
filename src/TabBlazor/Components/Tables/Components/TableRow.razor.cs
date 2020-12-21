@@ -13,23 +13,17 @@ namespace TabBlazor.Components.Tables
 
         public string GetRowCssClass(TableItem item)
         {
-
             return new ClassBuilder()
-              .AddIf("table-primary", IsSame(Table.SelectedItem, item) && (Table.OnItemSelected.HasDelegate || Table.SelectedItemChanged.HasDelegate))
-              .ToString();
-
-           
-            //return new CssBuilder()
-            //    .AddClass("")
-            //    .AddClass("selected-details", IsSame(Table.SelectedItem, item))
-            //    .AddClass("hover-row", Table.DetailsTemplate != null || Table.OnItemSelected.HasDelegate || !Table.OnItemSelected.Equals(default(EventCallback<TableItem>)))
-            //    .Build();
+               .AddIf("table-primary", IsSelected(item) && (Table.OnItemSelected.HasDelegate || Table.SelectedItemChanged.HasDelegate))
+               .ToString();
         }
 
-        public bool IsSame(TableItem first, TableItem second)
+        protected bool IsSelected(TableItem item)
         {
-            return EqualityComparer<TableItem>.Default.Equals(first, second);
+            return EqualityComparer<TableItem>.Default.Equals(item, Table.SelectedItem);
         }
+
+      
 
         protected bool ShowRowAction => Table.RowActionTemplate != null || Table.AllowDelete || Table.AllowEdit;
 
