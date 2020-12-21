@@ -9,13 +9,10 @@
         {
             <div class="@StatusClassNames("top", StatusTop)"></div>
         }
-        @if (StatusBottom != TablerColor.Default)
+        @if (StatusStart != TablerColor.Default)
         {
-            <div class="@StatusClassNames("bottom", StatusBottom)"></div>
+            <div class="@StatusClassNames("start", StatusStart)"></div>
         }
-        @if (StatusLeft != TablerColor.Default)
-        {
-            <div class="@StatusClassNames("left", StatusLeft)"></div>
-        }
+     
         @ChildContent
     </HtmlElement>

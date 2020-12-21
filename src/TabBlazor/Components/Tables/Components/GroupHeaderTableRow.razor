@@ -4,7 +4,7 @@
 @if (Group != null)
 {
     <AllColumnRow TableItem="TableItem" CssClass="grouping-row">
-        <div class="mr-2 cursor-pointer @ExpandedCss()" @onclick="ToogleExpanded" />
+        <div class="me-2 cursor-pointer @ExpandedCss()" @onclick="ToogleExpanded" />
         @if (Group?.GroupingTemplate != null)
         {
             @Group.GroupingTemplate(Group)

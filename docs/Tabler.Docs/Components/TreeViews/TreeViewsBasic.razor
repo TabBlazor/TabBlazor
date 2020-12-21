@@ -1,7 +1,7 @@
 ﻿
 <TreeView Items="@folders" ChildSelector="e=>e.SubFolders" ExpandAll>
     <Template>
-        <Card StatusLeft="TablerColor.Danger" Size="CardSize.Small">
+        <Card StatusStart="TablerColor.Danger" Size="CardSize.Small">
             <CardBody>  
             <span>@context.FolderName (@context.SubFolders.Count)</span>
             </CardBody>

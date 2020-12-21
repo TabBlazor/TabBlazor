@@ -19,16 +19,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Styles\tabler-blazor.scss" />
+    <None Remove="Styles\tabblazor.scss" />
     <None Remove="Styles\_custom.scss" />
   </ItemGroup>
 
   <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\css\tabler-blazor.css" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Styles\tabler-blazor.scss" />
+    <Content Include="Styles\tabblazor.scss" />
     <Content Include="Styles\_custom.scss" />
   </ItemGroup>
 
@@ -41,10 +37,6 @@
     <PackageReference Include="LinqKit.Core" Version="1.1.20" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="5.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\css\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,6 @@
 ﻿[
   {
-    "outputFile": "wwwroot/css/tabler-blazor.css",
-    "inputFile": "Styles/tabler-blazor.scss"
+    "outputFile": "wwwroot/css/tabblazor.css",
+    "inputFile": "Styles/tabblazor.scss"
   }
 ]

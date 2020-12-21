@@ -10,10 +10,10 @@
             <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" data-toggle="toast">
 
                 <div class="toast-header">
-                    @*<span class="avatar mr-2" style="background-image: url(...)"></span>*@
-                    <strong class="mr-auto">@toast.Title</strong>
+                    @*<span class="avatar me-2" style="background-image: url(...)"></span>*@
+                    <strong class="me-auto">@toast.Title</strong>
                     <small>@toast.SubTitle</small>
-                    <button type="button" class="ml-2 btn-close" data-dismiss="toast" aria-label="Close" @onclick="() => ToastService.Toasts.Remove(toast)">
+                    <button type="button" class="ms-2 btn-close" data-dismiss="toast" aria-label="Close" @onclick="() => ToastService.Toasts.Remove(toast)">
                     </button>
                 </div>
                 <div class="toast-body">

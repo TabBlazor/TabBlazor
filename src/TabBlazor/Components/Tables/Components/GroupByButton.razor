@@ -2,10 +2,10 @@
 @inherits GroupByButtonBase<Item>
 @if (Table.Columns.Any(e => e.Groupable))
 {
-    <span class="ml-2">
+    <span class="ms-2">
         @foreach (var column in Table.Columns.Where(e => e.Groupable))
         {
-            <Badge class="ml-1" BackgroundColor="@(column.GroupBy ? TablerColor.Primary:TablerColor.Default)" @onclick="@column.GroupByMeAsync">@column.Title</Badge>
+            <Badge class="ms-1" BackgroundColor="@(column.GroupBy ? TablerColor.Primary:TablerColor.Default)" @onclick="@column.GroupByMeAsync">@column.Title</Badge>
         }
     </span>
 
