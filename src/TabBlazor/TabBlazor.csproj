@@ -12,6 +12,8 @@
     <Version>0.0.1-alpha</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
+    <PackageIcon>TabBlazorLogo.png</PackageIcon>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +23,10 @@
   <ItemGroup>
     <None Remove="Styles\tabblazor.scss" />
     <None Remove="Styles\_custom.scss" />
+    <None Include="TabBlazorLogo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +47,12 @@
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="TabBlazorLogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
  
