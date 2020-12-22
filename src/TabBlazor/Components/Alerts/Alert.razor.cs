@@ -6,6 +6,7 @@ namespace TabBlazor
     {
         [Parameter] public string Title { get; set; }
         [Parameter] public bool Dismissible { get; set; }
+        [Parameter] public bool Important { get; set; }
         private bool dismissed;
 
         protected override string ClassNames => ClassBuilder
@@ -13,6 +14,7 @@ namespace TabBlazor
             .Add(BackgroundColor.GetColorClass("alert"))
             .Add(TextColor.GetColorClass("text"))
             .AddIf("alert-dismissible", Dismissible)
+            .AddIf("alert-important", Important)
             .ToString();
 
         protected void DismissAlert()
