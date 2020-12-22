@@ -11,9 +11,17 @@ namespace TabBlazor
         [Parameter] public EventCallback<bool> ValueChanged { get; set; }
         [Parameter] public bool Disabled { get; set; }
 
-          protected async Task ToggleState() {
+        [Parameter] public bool Switch { get; set; }
+
+        protected async Task ToggleState()
+        {
             Value = !Value;
             await ValueChanged.InvokeAsync(Value);
         }
+
+        protected string ClassNames => new ClassBuilder()
+        .Add("form-check")
+        .AddIf("form-switch", Switch)
+        .ToString();
     }
 }
