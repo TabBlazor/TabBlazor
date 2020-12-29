@@ -1,5 +1,7 @@
 ﻿@namespace TabBlazor
+@typeparam TItem
 @typeparam TValue
+
 @inherits TablerBaseComponent
 
 
@@ -15,13 +17,13 @@
         }
         @foreach (var listItem in itemList)
         {
-            if (SelectedValue != null && listItem.Value == GetValue(SelectedValue))
+            if (SelectedValue != null && IsSelected(listItem.Value))
             {
-                <option bind="selectedItem" selected value="@listItem.Value">@listItem.Text</option>
+                <option bind="selectedItem" selected value="@listItem.Id">@listItem.Text</option>
             }
             else
             {
-                <option value="@listItem.Value">@listItem.Text</option>
+                <option value="@listItem.Id">@listItem.Text</option>
             }
         }
     </select>

@@ -1,11 +1,12 @@
-﻿namespace TabBlazor.Components.Selects
-{
-    public class ListItem<TValue>
-    {
-        public string Text { get; set; }
-        public string Value { get; set; }
-        public TValue Item { get; set; }
-        public bool Selected { get; set; }
+﻿using System;
 
+namespace TabBlazor.Components.Selects
+{
+    public class ListItem<TItem, TValue>
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Text { get; set; }
+        public TValue Value { get; set; }
+        public TItem Item { get; set; }
     }
 }

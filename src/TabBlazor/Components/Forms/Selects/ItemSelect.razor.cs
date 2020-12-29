@@ -8,19 +8,19 @@ using TabBlazor.Components.Selects;
 
 namespace TabBlazor
 {
-    public partial class ItemSelect<TValue> : TablerBaseComponent
+    public partial class ItemSelect<TItem, TValue> : TablerBaseComponent
     {
-        [Parameter] public List<TValue> Items { get; set; }
+        [Parameter] public List<TItem> Items { get; set; }
         [Parameter] public TValue SelectedValue { get; set; }
         [Parameter] public EventCallback<TValue> SelectedValueChanged { get; set; }
         [Parameter] public EventCallback Updated { get; set; }
-        [Parameter] public Func<TValue, string> TextExpression { get; set; }
-        [Parameter] public Func<TValue, string> ValueExpression { get; set; }
+        [Parameter] public Func<TItem, string> TextExpression { get; set; }
+        [Parameter] public Func<TItem, TValue> ValueExpression { get; set; }
         [Parameter] public string ItemListEmptyText { get; set; } = "*No items*";
         [Parameter] public string NoSelectedText { get; set; } = "*Select*";
         [Parameter] public bool Clearable { get; set; }
-             
-        protected List<ListItem<TValue>> itemList = new List<ListItem<TValue>>();
+
+        protected List<ListItem<TItem, TValue>> itemList = new List<ListItem<TItem, TValue>>();
 
         protected override void OnParametersSet()
         {
@@ -31,25 +31,30 @@ namespace TabBlazor
           .Add("form-control form-select")
           .ToString();
 
+        protected bool IsSelected(TValue value)
+        {
+            return (EqualityComparer<TValue>.Default.Equals(SelectedValue, value));
+        }
+
         protected bool ItemNotInList()
         {
             if (SelectedValue == null) return true;
             foreach (var item in itemList)
             {
-                if (item.Value == GetValue(SelectedValue)) return false;
+                if (IsSelected(item.Value)) return false;
             }
             return true;
         }
 
         private void PopulateItemList()
         {
-            itemList = new List<ListItem<TValue>>();
+            itemList = new List<ListItem<TItem, TValue>>();
 
             if (Items != null)
             {
                 foreach (var item in Items)
                 {
-                    var listItem = new ListItem<TValue>
+                    var listItem = new ListItem<TItem, TValue>
                     {
                         Text = GetText(item),
                         Value = GetValue(item),
@@ -63,12 +68,12 @@ namespace TabBlazor
 
         protected void ValueChanged(ChangeEventArgs e)
         {
-            var value = e.Value.ToString();
-            var listItem = itemList.FirstOrDefault(v => v.Value == value);
+            var id = e.Value.ToString();
+            var listItem = itemList.FirstOrDefault(v => v.Id == id);
 
             if (listItem != null)
             {
-                SelectedValue = listItem.Item;
+                SelectedValue = listItem.Value;
             }
             else
             {
@@ -79,14 +84,14 @@ namespace TabBlazor
             Updated.InvokeAsync(null);
         }
 
-        protected string GetValue(TValue item)
+        protected TValue GetValue(TItem item)
         {
-            if (ValueExpression == null) return null;
+            if (ValueExpression == null) return default;
 
             return ValueExpression.Invoke(item);
         }
 
-        private string GetText(TValue item)
+        private string GetText(TItem item)
         {
             if (TextExpression == null) return "No Expresssion Set up!";
             return TextExpression.Invoke(item);

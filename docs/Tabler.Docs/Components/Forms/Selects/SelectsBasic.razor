@@ -1,16 +1,24 @@
-﻿<ItemSelect Items="Data.SampleData.GetCustomers()"
+﻿<ItemSelect Items="customers"
             @bind-SelectedValue="selectedCustomer"
             TextExpression="e=>e.CustomerName"
-            ValueExpression="e => e.CustomerId.ToString()"
-            NoSelectedText="*Select Customer*"/>
-<br />
+            ValueExpression="e => e"
+            NoSelectedText="*Select Customer*" 
+             />
+
 
 @if (selectedCustomer != null)
 {
-    <div>Selected Customer : </div>
+    <div class="mt-3">Selected Customer : </div>
     @selectedCustomer.CustomerName
 }
 
 @code {
-   private Customer selectedCustomer;
+    private Customer selectedCustomer;
+    private List<Customer> customers = new List<Customer>();
+
+    protected override void OnInitialized()
+    {
+        customers = Data.SampleData.GetCustomers();
+        selectedCustomer = customers.First();
+    }
 }

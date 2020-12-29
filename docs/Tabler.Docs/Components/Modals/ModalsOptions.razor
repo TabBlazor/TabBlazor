@@ -1,12 +1,12 @@
 ﻿<Row>
     <RowCol Sm="12" Md="6">
         <label class="form-label">Size</label>
-        <ItemSelect Items="EnumInfo.GetList<ModalSize>()" @bind-SelectedValue="@modalOptions.Size" TextExpression="e=> e.ToString()" ValueExpression="e=> e.ToString()" />
+        <ItemSelect Items="EnumInfo.GetList<ModalSize>()" @bind-SelectedValue="@modalOptions.Size" TextExpression="e=> e.ToString()" ValueExpression="e=> e" />
     </RowCol>
 
     <RowCol Sm="12" Md="6">
         <label class="form-label">Fullscreen</label>
-        <ItemSelect Items="EnumInfo.GetList<ModalFullscreen>()" @bind-SelectedValue="@modalOptions.Fullscreen" TextExpression="e=> e.ToString()" ValueExpression="e=> e.ToString()" />
+        <ItemSelect Items="EnumInfo.GetList<ModalFullscreen>()" @bind-SelectedValue="@modalOptions.Fullscreen" TextExpression="e=> e.ToString()" ValueExpression="e=> e" />
     </RowCol>
 
     <Row class="mt-2">
