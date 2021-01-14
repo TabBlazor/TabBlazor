@@ -14,16 +14,24 @@ namespace TabBlazor.Components.Tables
         public string GetRowCssClass(TableItem item)
         {
             return new ClassBuilder()
-               .AddIf("table-primary", IsSelected(item) && (Table.OnItemSelected.HasDelegate || Table.SelectedItemChanged.HasDelegate))
+               .AddIf("table-primary", IsSelected(item) && (Table.OnItemSelected.HasDelegate || Table.SelectedItemsChanged.HasDelegate))
                .ToString();
         }
 
-        protected bool IsSelected(TableItem item)
+        public void RowClick()
         {
-            return EqualityComparer<TableItem>.Default.Equals(item, Table.SelectedItem);
+            if (!Table.ShowCheckboxes)
+            {
+                Table.SetSelectedItem(Item);
+            }
+          
         }
 
-      
+        public bool IsSelected(TableItem item)
+        {
+            if (Table.SelectedItems == null) { return false; }
+            return Table.SelectedItems.Contains(item);
+        }
 
         protected bool ShowRowAction => Table.RowActionTemplate != null || Table.AllowDelete || Table.AllowEdit;
 

@@ -4,6 +4,11 @@
 @namespace  TabBlazor.Components.Tables
 
 <tr class="is-inline-edit data-row">
+
+    @if (InlineEditTable.ShowCheckboxes) {
+        <td></td>
+    }
+
     @foreach (var column in InlineEditTable.VisibleColumns)
     {
         <td style="@GetColumnWidth(column)" class="@GetColumnClass(column)">

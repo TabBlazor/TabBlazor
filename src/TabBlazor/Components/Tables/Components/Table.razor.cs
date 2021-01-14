@@ -27,11 +27,11 @@ namespace TabBlazor
         [Parameter] public RenderFragment ChildContent { get; set; }
         [Parameter] public RenderFragment<Item> DetailsTemplate { get; set; }
         [Parameter] public RenderFragment<Item> RowActionTemplate { get; set; }
-        [Parameter] public Item SelectedItem { get; set; }
-        [Parameter] public EventCallback<Item> SelectedItemChanged { get; set; }
-
+        
         [Parameter] public List<Item> SelectedItems { get; set; }
-        [Parameter] public EventCallback<List<Item>> SelectedItemsChanged{ get; set; }
+        [Parameter] public EventCallback<List<Item>> SelectedItemsChanged { get; set; }
+        [Parameter] public bool MultiSelect { get; set; }
+
 
         [Parameter] public Func<Task<IList<Item>>> OnRefresh { get; set; }
         [Parameter] public EventCallback<Item> OnItemEdited { get; set; }
@@ -64,7 +64,7 @@ namespace TabBlazor
         public bool AllowEdit => OnItemEdited.HasDelegate;
         public bool HasGrouping => Columns.Any(x => x.GroupBy);
         public TheGridDataFactory<Item> DataFactory { get; set; }
-
+        public Item SelectedItem { get; set; }
         protected async override Task OnParametersSetAsync()
         {
             await Update();
@@ -148,9 +148,11 @@ namespace TabBlazor
             await CloseEdit();
         }
 
-        public bool IsSame(Item first, Item second)
+      
+        public bool IsSelected(Item item)
         {
-            return EqualityComparer<Item>.Default.Equals(first, second);
+            if (SelectedItems == null) { return false; }
+            return SelectedItems.Contains(item);
         }
 
         public bool IsEditingItem(Item item)
@@ -160,38 +162,54 @@ namespace TabBlazor
 
         protected bool ShowDetailsRow(Item item)
         {
-            return DetailsTemplate != null && SelectedItem != null && IsSame(item, SelectedItem);
+            return DetailsTemplate != null && IsSelected(item);
         }
 
         public async Task SetSelectedItem(Item item)
         {
-            if (SelectedItem != null && !IsSame(item, SelectedItem))
+            if (SelectedItems == null) { SelectedItems = new List<Item>(); }
+
+            if (IsSelected(item))
             {
-                ChangedItem = true;
-            }
-            else if (SelectedItem != null && IsSame(item, SelectedItem))
-            {
+                SelectedItems.Remove(item);
                 SelectedItem = default;
-                await Update();
-                return;
+            }
+            else
+            {
+                SelectedItems.Add(item);
             }
 
             SelectedItem = item;
-            await OnItemSelected.InvokeAsync(item);
-            await SelectedItemChanged.InvokeAsync(item);
+            await UpdateSelected();
+        }
+
+
+        public async Task SelectAll()
+        {
+            if (Items == null || !Items.Any()) return;
+
+            SelectedItems = Items.ToList();
+            SelectedItem = SelectedItems.First();
+            await UpdateSelected();
+        }
+
+        private async Task UpdateSelected()
+        {
+            await OnItemSelected.InvokeAsync(SelectedItem);
+            await SelectedItemsChanged.InvokeAsync(SelectedItems);
             await Update();
         }
 
         public async Task ClearSelectedItem()
         {
-            if (ChangedItem)
-            {
-                ChangedItem = false;
-                return;
-            }
+            //if (ChangedItem)
+            //{
+            //    ChangedItem = false;
+            //    return;
+            //}
 
-            SelectedItem = default;
-            await Update();
+            //SelectedItem = default;
+            //await Update();
         }
 
         public async Task CloseEdit()
@@ -285,7 +303,7 @@ namespace TabBlazor
             {
                 tableItem = (Item)Activator.CreateInstance(typeof(Item));
             }
-           
+
             Items.Add(tableItem);
 
             await LastPage();

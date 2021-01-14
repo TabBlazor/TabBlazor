@@ -1,4 +1,4 @@
-﻿<Table Item="Order" Items="orders" PageSize="10" AddItemFactory="AddItem" OnItemEdited="OnItemEdit" OnItemSelected="OnItemSelect" OnItemAdded="OnItemAdd" OnItemDeleted="OnItemDelete" ShowCheckboxes>
+﻿<Table Item="Order" Items="orders" PageSize="10" AddItemFactory="AddItem" OnItemEdited="OnItemEdit" OnItemSelected="OnItemSelect" OnItemAdded="OnItemAdd" OnItemDeleted="OnItemDelete" ShowCheckboxes MultiSelect>
     <HeaderTemplate>
         <strong>Orders</strong>
     </HeaderTemplate>
@@ -25,7 +25,7 @@
 
 @code {
 
-        [Inject] TabBlazor.Services.TablerService TablerService { get; set; }
+    [Inject] TabBlazor.Services.TablerService TablerService { get; set; }
     private static List<Order> orders = SampleData.GetOrders();
 
 
@@ -52,7 +52,7 @@
     private Order AddItem()
     {
 
-        return new Order { Customer = new Customer { CustomerName = "Magnus gillar nyrader" } };
+        return new Order { Customer = new Customer { CustomerName = "New customer" } };
 
     }
 }
