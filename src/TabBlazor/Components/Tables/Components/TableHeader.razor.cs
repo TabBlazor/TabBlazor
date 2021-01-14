@@ -35,10 +35,8 @@ namespace TabBlazor.Components.Tables
             }
             else
             {
-                Table.SelectedItems.Clear();
+                Table.UnSelectAll();
             }
-
-            Table.Update();
         }
 
     }

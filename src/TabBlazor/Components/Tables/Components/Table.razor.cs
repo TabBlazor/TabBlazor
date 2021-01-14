@@ -176,6 +176,11 @@ namespace TabBlazor
             }
             else
             {
+                if (!MultiSelect)
+                {
+                    SelectedItems.Clear();
+                }
+
                 SelectedItems.Add(item);
             }
 
@@ -183,6 +188,13 @@ namespace TabBlazor
             await UpdateSelected();
         }
 
+
+        public async Task UnSelectAll()
+        {
+            SelectedItems.Clear();
+            SelectedItem = default;
+            await UpdateSelected();
+        }
 
         public async Task SelectAll()
         {

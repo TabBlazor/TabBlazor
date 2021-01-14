@@ -5,9 +5,12 @@
     <tr class="no-hover-row">
         @if(Table.ShowCheckboxes)
         {
-            <th>
+        <th>
+            @if (Table.MultiSelect)
+            {
                 <CheckboxTriState Value="SelectedValue()" ValueChanged="ToogleSelected" />
-            </th>
+            }
+        </th>
         }
 
         @foreach (IColumn<TableItem> column in Table.VisibleColumns)

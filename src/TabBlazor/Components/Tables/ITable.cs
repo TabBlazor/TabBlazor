@@ -11,6 +11,7 @@ namespace TabBlazor.Components.Tables
         int PageSize { get; }
         bool ShowFooter { get; set; }
         bool ShowSearch { get; set; }
+        bool MultiSelect { get; set; }
         int PageNumber { get; }
         int TotalCount { get; }
         int VisibleColumnCount { get; }
@@ -32,6 +33,7 @@ namespace TabBlazor.Components.Tables
         Task RefreshItems(MouseEventArgs args);
         Task OnSearchChanged(ChangeEventArgs args);
         Task SelectAll();
+        Task UnSelectAll();
         Task Update();
         void SetPageSize(int pageSize);
         string SearchText { get; set; }

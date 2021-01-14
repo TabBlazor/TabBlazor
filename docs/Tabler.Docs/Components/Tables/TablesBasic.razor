@@ -1,4 +1,4 @@
-﻿<Table Item="Order" Items="orders" PageSize="10" AddItemFactory="AddItem" OnItemEdited="OnItemEdit" OnItemSelected="OnItemSelect" OnItemAdded="OnItemAdd" OnItemDeleted="OnItemDelete" ShowCheckboxes MultiSelect>
+﻿<Table Item="Order" Items="orders" PageSize="10" AddItemFactory="AddItem" OnItemEdited="OnItemEdit" @bind-SelectedItems="selectedOrders" OnItemAdded="OnItemAdd" OnItemDeleted="OnItemDelete" ShowCheckboxes MultiSelect>
     <HeaderTemplate>
         <strong>Orders</strong>
     </HeaderTemplate>
@@ -23,11 +23,19 @@
 
 </Table>
 
+
+<ul>
+    @foreach (var order in selectedOrders)
+    {
+        <li>@order.OrderId, @order.Customer.CustomerName</li>
+    }
+</ul>
+
 @code {
 
     [Inject] TabBlazor.Services.TablerService TablerService { get; set; }
     private static List<Order> orders = SampleData.GetOrders();
-
+    private static List<Order> selectedOrders = new List<Order>();
 
     private async Task OnItemEdit(Order order)
     {
@@ -38,11 +46,7 @@
     {
         await TablerService.ShowAlert($"Added order {order.OrderId}");
     }
-
-    private async Task OnItemSelect(Order order)
-    {
-        //await TablerService.ShowAlert($"Selected order {order.OrderId}");
-    }
+        
 
     private async Task OnItemDelete(Order order)
     {
