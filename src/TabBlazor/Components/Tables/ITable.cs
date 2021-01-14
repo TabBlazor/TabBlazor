@@ -16,7 +16,7 @@ namespace TabBlazor.Components.Tables
         int VisibleColumnCount { get; }
         TableItem SelectedItem { get; }
         RenderFragment<TableItem> RowActionTemplate { get; set; }
-        bool SelectCheckbox { get; set; }
+        bool ShowCheckboxes { get; set; }
         bool HasRowActions { get; }
          Task FirstPage();
         Task SetPage(int pageNumber);
@@ -65,7 +65,7 @@ namespace TabBlazor.Components.Tables
         List<IColumn<TableItem>> VisibleColumns { get; }
         IList<TableItem> Items { get; }
         TableItem SelectedItem { get; }
-        bool SelectCheckbox { get;  }
+        bool ShowCheckboxes { get;  }
         RenderFragment<TableItem> DetailsTemplate { get; }
         RenderFragment<TableItem> RowActionTemplate { get; set; }
         bool AllowEdit { get; }

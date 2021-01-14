@@ -2,7 +2,7 @@
 @inherits TableRowBase<TableItem>
 
 <tr class="@GetRowCssClass(Item) data-row">
-    @if (Table.SelectCheckbox)
+    @if (Table.ShowCheckboxes)
     {
         <td style="width:1%">
             <Checkbox Value="IsSelected(Item)" ValueChanged="(() => Table.SetSelectedItem(Item))" />

@@ -1,6 +1,6 @@
 ﻿<Navbar>
 
-    
+
     <a href="https://github.com/joadan/Blazor-Tabler" class="navbar-brand navbar-brand-autodark">
         <img src="_content/Tabler.Docs/img/TabBlazorLogoWhite.png" alt="Tabler" class="navbar-brand-image me-2">
         <h2 class="mt-2">TabBlazor</h2>
@@ -12,7 +12,7 @@
                 <Icon class="icon" Elements="@DemoIcons.Dashboard" />
             </MenuItemIcon>
         </NavbarMenuItem>
-       
+
         <NavbarMenuItem Text="Snippets">
             <MenuItemIcon>
                 <Icon class="icon" Elements="@DemoIcons.Code" />
@@ -22,6 +22,17 @@
                 <NavbarMenuItem Text="Profile" Href="snippets/profiles" />
             </SubMenu>
         </NavbarMenuItem>
+
+        <NavbarMenuItem Text="Utilites">
+            <MenuItemIcon>
+                <Icon class="icon" Elements="@DemoIcons.Exposure" />
+            </MenuItemIcon>
+            <SubMenu>
+                <NavbarMenuItem Text="Colors" Href="docs/utilities/colors" />
+            </SubMenu>
+        </NavbarMenuItem>
+
+
 
 
         <NavbarMenuItem Text="Components" Expanded>
@@ -36,7 +47,7 @@
                     </SubMenu>
 
                 </NavbarMenuItem>
-             
+
                 <NavbarMenuItem Text="TreeView" Href="docs/treeviews" />
                 <NavbarMenuItem Text="Dimmer" Href="docs/dimmers" />
                 <NavbarMenuItem Text="Table" Href="docs/tables" />

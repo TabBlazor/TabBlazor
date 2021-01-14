@@ -29,6 +29,10 @@ namespace TabBlazor
         [Parameter] public RenderFragment<Item> RowActionTemplate { get; set; }
         [Parameter] public Item SelectedItem { get; set; }
         [Parameter] public EventCallback<Item> SelectedItemChanged { get; set; }
+
+        [Parameter] public List<Item> SelectedItems { get; set; }
+        [Parameter] public EventCallback<List<Item>> SelectedItemsChanged{ get; set; }
+
         [Parameter] public Func<Task<IList<Item>>> OnRefresh { get; set; }
         [Parameter] public EventCallback<Item> OnItemEdited { get; set; }
         [Parameter] public EventCallback<Item> OnItemAdded { get; set; }
@@ -36,20 +40,18 @@ namespace TabBlazor
         [Parameter] public EventCallback<Item> OnItemSelected { get; set; }
         [Parameter] public Func<Item, bool> AllowDeleteExpression { get; set; }
         [Parameter] public int TotalCount { get; set; }
-
+        [Parameter] public bool ShowCheckboxes { get; set; }
         [Parameter] public Func<Item> AddItemFactory { get; set; }
 
 
         public bool HasRowActions => RowActionTemplate != null || AllowDelete || AllowEdit;
         public bool ShowSearch { get; set; } = true;
 
-        public bool SelectCheckbox { get; set; } = false;
-
         protected IEnumerable<TableResult<object, Item>> TempItems { get; set; } = Enumerable.Empty<TableResult<object, Item>>();
         public List<IColumn<Item>> Columns { get; } = new List<IColumn<Item>>();
         public List<IColumn<Item>> VisibleColumns => Columns.Where(x => x.Visible).ToList();
         public int PageNumber { get; set; }
-        public int VisibleColumnCount => Columns.Count(x => x.Visible) + (HasRowActions ? 1 : 0) + (SelectCheckbox ? 1 : 0);
+        public int VisibleColumnCount => Columns.Count(x => x.Visible) + (HasRowActions ? 1 : 0) + (ShowCheckboxes ? 1 : 0);
         public string SearchText { get; set; }
         public bool ResetPage { get; set; }
         public bool IsAddInProgress { get; set; }

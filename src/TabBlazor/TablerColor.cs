@@ -6,7 +6,9 @@ namespace TabBlazor
     {
         Default,
         Blue,
+        //BlueLight, 
         Azure,
+        //AzureLight,
         Indigo,
         Purple,
         Pink,
@@ -18,8 +20,8 @@ namespace TabBlazor
         Teal,
         Cyan,
         White,
-        Gray,
-        GrayDark,
+        //Gray,
+        //GrayDark,
         Primary,
         Secondary,
         Success,
@@ -39,22 +41,28 @@ namespace TabBlazor
 
     public static class ColorsExtensions
     {
-        public static string GetColorClass(this TablerColor colors, string type,
+        public static string GetColorClass(this TablerColor color, string type,
             ColorType colorType = ColorType.Default, string suffix = "")
         {
             var colorClass = $"{type}";
+
             colorClass += colorType switch
             {
                 ColorType.Default => "",
                 _ => $"-{Enum.GetName(typeof(ColorType), colorType)?.ToLower()}"
             };
 
-            colorClass = colors switch
+            colorClass = color switch
             {
                 TablerColor.Default => "",
-                TablerColor.GrayDark => $"{colorClass}-gray-dark",
-                _ => $"{colorClass}-{Enum.GetName(typeof(TablerColor), colors)?.ToLower()}"
+                //TablerColor.GrayDark => $"{colorClass}-gray-dark",
+                _ => $"{colorClass}-{Enum.GetName(typeof(TablerColor), color)?.ToLower()}"
             };
+
+            if (color != TablerColor.Light && colorClass.ToLower().EndsWith("light"))
+            {
+                colorClass = colorClass.Replace("light", "-lt", StringComparison.InvariantCultureIgnoreCase);
+            }
 
             if (!string.IsNullOrWhiteSpace(suffix) && !string.IsNullOrWhiteSpace(colorClass))
                 colorClass += $"-{suffix}";
