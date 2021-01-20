@@ -7,19 +7,23 @@
 
 <CascadingValue Value="(ITable<Item>) this" Name="Table">
     <Card>
-        <CardHeader>
 
-            @if (HeaderTemplate != null)
-            {
-                @HeaderTemplate
-            }
-            <GroupByButton Item="Item" />
-            <TableHeaderTools TableItem="Item" />
-        </CardHeader>
+        @if (ShowHeader)
+        {
+            <CardHeader>
+
+                @if (HeaderTemplate != null)
+                {
+                    @HeaderTemplate
+                }
+                <GroupByButton Item="Item" />
+                <TableHeaderTools TableItem="Item" />
+            </CardHeader>
+        }
 
         <CardBody>
             <div class="the-grid">
-                <TablerForm  Model="@CurrentEditItem" OnValidSubmit="@OnValidSubmit">
+                <TablerForm Model="@CurrentEditItem" OnValidSubmit="@OnValidSubmit">
                     @if (VisibleColumns.Any())
                     {
                         <div class="div-table-wrapper @GetTableCssClass()">
