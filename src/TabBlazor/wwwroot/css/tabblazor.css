@@ -6,8 +6,7 @@
 Dimmer
 */
 .dimmer {
-  position: relative;
-  min-height: 2.5rem; }
+  position: relative; }
 
 .dimmer .loader {
   display: none;

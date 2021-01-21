@@ -1,0 +1,44 @@
+﻿
+<Row>
+    <RowCol Auto>
+        <Checkbox Label="Disabled" @bind-Value="disabled" />
+    </RowCol>
+    <RowCol Auto>
+        <Checkbox Label="ShowCheckBoxes" @bind-Value="showCheckboxes" />
+    </RowCol>
+    <RowCol Auto>
+        <Checkbox Label="Clearable" @bind-Value="clearable" />
+    </RowCol>
+    <RowCol Auto>
+        <Checkbox Label="Remove Selected" @bind-Value="removeSelectedFromList" />
+    </RowCol>
+</Row>
+
+<ItemSelectMulti Items="customers" SelectedTextExpression="e=> e.CustomerName" @bind-SelectedItems="selectedCustomers" Clearable="clearable" ShowCheckBoxes="showCheckboxes" NoSelectedText="*Select Customers*" Disabled="disabled" RemoveSelectedFromList="removeSelectedFromList">
+    <Template>
+        @context.CustomerName
+    </Template>
+</ItemSelectMulti>
+
+@foreach (var selectedCustomer in selectedCustomers)
+{
+    <div>@selectedCustomer.CustomerName</div>
+}
+
+
+@code{
+    List<Customer> customers = Data.SampleData.GetCustomers();
+    List<Customer> selectedCustomers = new List<Customer>();
+    bool disabled;
+    bool showCheckboxes;
+    bool clearable;
+    bool removeSelectedFromList;
+
+
+
+    protected override void OnInitialized()
+    {
+        selectedCustomers.Add(customers.First());
+    }
+
+}

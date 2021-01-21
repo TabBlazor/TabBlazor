@@ -2,18 +2,26 @@
 
 @inherits TablerBaseComponent
 
-<HtmlElement Tag="div"
-             class="@ClassNames"
-             @onclick="OnClick"
-             @attributes="@UnmatchedParameters">
+@if (Active)
+{
+    <HtmlElement Tag="div"
+                 class="@ClassNames"
+                 @onclick="OnClick"
+                 @attributes="@UnmatchedParameters">
 
-    @if (ShowSpinner)
-    {
-        <div class="loader"></div>
-    }
+        @if (ShowSpinner)
+        {
+            <div class="loader"></div>
+        }
 
-    <div class="dimmer-content">
-        @ChildContent
-    </div>
-</HtmlElement>
+        <div class="dimmer-content" @onclick:stopPropagation @onclick:preventDefault>
+            @ChildContent
+        </div>
+    </HtmlElement>
+}
+else
+{
+    @ChildContent
+}
+
 

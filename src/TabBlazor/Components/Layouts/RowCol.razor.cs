@@ -9,6 +9,7 @@ namespace TabBlazor
         [Parameter] public int Sm { get; set; } = 0;
         [Parameter] public int Md { get; set; } = 0;
         [Parameter] public int Lg { get; set; } = 0;
+        [Parameter] public bool Auto { get; set; }
 
         protected override string ClassNames => ClassBuilder
             //.Add("col")
@@ -19,6 +20,7 @@ namespace TabBlazor
             .AddIf($"col-sm-{Sm}", Sm > 0)
             .AddIf($"col-md-{Md}", Md > 0)
             .AddIf($"col-lg-{Lg}", Lg > 0)
+            .AddIf("col-auto", Auto)
             .ToString();
     }
 }

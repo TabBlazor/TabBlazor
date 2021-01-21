@@ -1,0 +1,68 @@
+﻿@namespace TabBlazor
+@inherits TablerBaseComponent
+@typeparam TItem
+
+<Dimmer Active="Disabled" ShowSpinner="false">
+    <Dropdown @ref="dropdown">
+        <ChildContent>
+
+            <div class="input-group input-group-flat">
+                <div class="form-control form-select">
+
+                    @if (!selectedItems.Any())
+                    {
+                        @NoSelectedText
+                    }
+                    else
+                    {
+                        @foreach (var selectedItem in selectedItems)
+                        {
+                            <Badge class="me-2" BackgroundColor="TablerColor.Primary">@GetSelectedText(selectedItem) <span @onclick:stopPropagation @onclick="@(e=> RemoveSelected(selectedItem))"><Icon class="ms-2" Size="16" Elements="@InternalIcons.X"></Icon></span></Badge>
+                        }
+                    }
+                </div>
+
+                @if (Clearable)
+                {
+                    <span class="input-group-text" @onclick:stopPropagation @onclick="ClearSelected">
+                        <Icon class="icon cursor-pointer" Elements="@InternalIcons.X" />
+                    </span>
+                }
+            </div>
+        </ChildContent>
+
+        <DropdownTemplate>
+            <DropdownMenu>
+                <div @onclick:stopPropagation="true">
+
+                    @if (Items != null && Items.Any())
+                    {
+                        @foreach (var item in FilteredList())
+                        {
+                            <DropdownItem IsActive="IsSelected(item)" OnClick="(e=> ToogleSelected(item))" @key="item">
+                                @if (Template != null)
+                                {
+                                    @if (ShowCheckBoxes)
+                                    {
+                                        <input class="form-check-input m-0 me-2" checked="@IsSelected(item)" type="checkbox">
+                                    }
+                                    @Template(item)
+                                }
+                                else if (!string.IsNullOrEmpty(NoItemsText))
+                                {
+                                    <span>@NoItemsText</span>
+                                }
+                            </DropdownItem>
+                        }
+                    }
+                    else
+                    {
+                        <span>No Items</span>
+                    }
+
+
+                </div>
+            </DropdownMenu>
+        </DropdownTemplate>
+    </Dropdown>
+</Dimmer>
