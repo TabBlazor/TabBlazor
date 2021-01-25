@@ -2,7 +2,8 @@
             @bind-SelectedValue="selectedCustomer"
             TextExpression="e=>e.CustomerName"
             ValueExpression="e => e"
-            NoSelectedText="*Select Customer*" 
+            NoSelectedText="*Select Customer*"
+            DisabledExpression="@(e=>e.CustomerName.StartsWith("A"))"
              />
 
 

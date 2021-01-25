@@ -23,7 +23,7 @@
             }
             else
             {
-                <option value="@listItem.Id">@listItem.Text</option>
+                <option value="@listItem.Id"  disabled="@(listItem.Disabled)" >@listItem.Text</option>
             }
         }
     </select>

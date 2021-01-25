@@ -16,6 +16,7 @@ namespace TabBlazor
         [Parameter] public EventCallback Updated { get; set; }
         [Parameter] public Func<TItem, string> TextExpression { get; set; }
         [Parameter] public Func<TItem, TValue> ValueExpression { get; set; }
+        [Parameter] public Func<TItem, bool> DisabledExpression { get; set; }
         [Parameter] public string ItemListEmptyText { get; set; } = "*No items*";
         [Parameter] public string NoSelectedText { get; set; } = "*Select*";
         [Parameter] public bool Clearable { get; set; }
@@ -60,6 +61,12 @@ namespace TabBlazor
                         Value = GetValue(item),
                         Item = item
                     };
+
+                    if (DisabledExpression != null)
+                    {
+                        listItem.Disabled = DisabledExpression(item);
+                    }
+
                     itemList.Add(listItem);
                 }
             }
