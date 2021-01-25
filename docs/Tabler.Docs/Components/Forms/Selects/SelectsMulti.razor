@@ -15,9 +15,9 @@
 </Row>
 
 <ItemSelectMulti Items="customers" SelectedTextExpression="e=> e.CustomerName" @bind-SelectedItems="selectedCustomers" Clearable="clearable" ShowCheckBoxes="showCheckboxes" NoSelectedText="*Select Customers*" Disabled="disabled" RemoveSelectedFromList="removeSelectedFromList">
-    <Template>
+    <ListTemplate>
         @context.CustomerName
-    </Template>
+    </ListTemplate>
 </ItemSelectMulti>
 
 @foreach (var selectedCustomer in selectedCustomers)

@@ -16,7 +16,8 @@ namespace TabBlazor
         [Parameter] public List<TItem> SelectedItems { get; set; } = new List<TItem>();
         [Parameter] public EventCallback<List<TItem>> SelectedItemsChanged { get; set; }
         [Parameter] public Func<TItem, string> SelectedTextExpression { get; set; }
-        [Parameter] public RenderFragment<TItem> Template { get; set; }
+        [Parameter] public RenderFragment<TItem> ListTemplate { get; set; }
+        [Parameter] public RenderFragment<List<TItem>> SelectedTemplate { get; set; }
         [Parameter] public bool Clearable { get; set; }
         [Parameter] public bool Disabled { get; set; }
         [Parameter] public bool RemoveSelectedFromList { get; set; }
@@ -62,7 +63,7 @@ namespace TabBlazor
             await SelectedItemsChanged.InvokeAsync(selectedItems);
         }
 
-        protected async Task ClearSelected()
+        public async Task ClearSelected()
         {
             selectedItems.Clear();
             dropdown.Close();

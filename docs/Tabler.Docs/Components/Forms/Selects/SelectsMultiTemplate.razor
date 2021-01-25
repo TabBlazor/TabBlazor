@@ -1,0 +1,31 @@
+﻿<ItemSelectMulti Items="customers" @ref="multiSelect">
+
+    <ListTemplate>
+        @context.CustomerName
+    </ListTemplate>
+
+    <SelectedTemplate>
+        @if (context == null || !context.Any())
+        {
+            <Button>Select Customers...</Button>
+        }
+        else
+        {
+            <Button>
+                Customers
+                <Badge class="ms-2" BackgroundColor="TablerColor.Red">@context.Count</Badge>
+                <span @onclick="@(e => multiSelect.ClearSelected())" @onclick:stopPropagation>
+                    <Icon class="ms-2 icon" Elements="@DemoIcons.Trash"  />
+                </span>
+            </Button>
+        }
+
+    </SelectedTemplate>
+
+</ItemSelectMulti>
+
+@code {
+    List<Customer> customers = Data.SampleData.GetCustomers();
+    ItemSelectMulti<Customer> multiSelect;
+
+}
