@@ -3,73 +3,12 @@
 
 @if (Items != null)
 {
-    @if (IsRoot)
-    {
-        <div class="tree">
-            @{ Tree(); }
-        </div>
-    }
-    else
-    {
-        Tree();
-    }
-
-}
 
 
-@{
-
-    void Tree()
-    {
-        <ul class="@(IsRoot ? "tree": "")">
-            @foreach (var item in Items)
-            {
-                <li class="@(IsRoot ? "p-0":"")">
-                    <div class="d-flex align-items-center mb-2 tree-container">
-
-                        @if (HasChildren(item))
-                        {
-
-                            @if (isExpanded)
-                            {
-                                <svg xmlns="http://www.w3.org/2000/svg" @onclick="ToogleExpanded" class="icon me-2 cursor-pointer" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#607D8B" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                    <circle cx="12" cy="12" r="9" />
-                                    <line x1="9" y1="12" x2="15" y2="12" />
-                                </svg>
-                            }
-                            else
-                            {
-                                <svg xmlns="http://www.w3.org/2000/svg" @onclick="ToogleExpanded" class="icon me-2 cursor-pointer" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#607D8B" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                    <circle cx="12" cy="12" r="9" />
-                                    <line x1="9" y1="12" x2="15" y2="12" />
-                                    <line x1="12" y1="9" x2="12" y2="15" />
-                                </svg>
-                            }
-                        }
-                        else
-                        {
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#607D8B" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                               
-                            </svg>
-                        }
-
-
-                        @Template(item)
-                    </div>
-
-                    @if (HasChildren(item) && isExpanded)
-                    {
-                        <TreeView Items="@ChildSelector(item)" 
-                                  Template="@Template" 
-                                  ChildSelector="@ChildSelector" 
-                                  ExpandAll="ExpandAll"
-                                  IsRoot="false" />
-                    }
-                </li>
-
-            }
-        </ul>
-    }
+<CascadingValue Name="Root" Value="this">
+    <TabBlazor.Components.TreeViews.TreeViewNodes Items="Items"
+                                                  Template="Template"
+                                                  ChildSelector="ChildSelector"
+                                                  />
+</CascadingValue>
 }

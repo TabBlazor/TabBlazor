@@ -12,9 +12,12 @@
     <RowCol Auto>
         <Checkbox Label="Remove Selected" @bind-Value="removeSelectedFromList" />
     </RowCol>
+ 
 </Row>
 
-<ItemSelectMulti Items="customers" SelectedTextExpression="e=> e.CustomerName" @bind-SelectedItems="selectedCustomers" Clearable="clearable" ShowCheckBoxes="showCheckboxes" NoSelectedText="*Select Customers*" Disabled="disabled" RemoveSelectedFromList="removeSelectedFromList">
+<ItemSelectMulti Items="customers" SelectedTextExpression="e=> e.CustomerName" @bind-SelectedItems="selectedCustomers" Clearable="clearable" 
+                 ShowCheckBoxes="showCheckboxes" NoSelectedText="*Select Customers*" Disabled="disabled" RemoveSelectedFromList="removeSelectedFromList"
+                 MaxSelectableItems="4" SearchMethod="SearchCustomer" SearchPlaceholderText="Search...">
     <ListTemplate>
         @context.CustomerName
     </ListTemplate>
@@ -34,11 +37,13 @@
     bool clearable;
     bool removeSelectedFromList;
 
-
-
     protected override void OnInitialized()
     {
         selectedCustomers.Add(customers.First());
     }
 
+    private IEnumerable<Customer> SearchCustomer(string searchText)
+    {
+        return customers.Where(e => e.CustomerName.Contains(searchText, StringComparison.InvariantCultureIgnoreCase));
+    }
 }

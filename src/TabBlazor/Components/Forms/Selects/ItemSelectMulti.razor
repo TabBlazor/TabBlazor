@@ -9,7 +9,7 @@
 
             @if (SelectedTemplate != null)
             {
-            @SelectedTemplate(selectedItems)
+                @SelectedTemplate(selectedItems)
             }
             else
             {
@@ -47,9 +47,26 @@
 
                     @if (Items != null && Items.Any())
                     {
+                        @if (showSearch)
+                        {
+                            <div class="m-2">
+                                <div class="input-group input-group-flat">
+                                    <input class="form-control" @bind="searchText" type="text" @bind:event="oninput" placeholder="@SearchPlaceholderText">
+
+                                    <span class="input-group-text">
+                                        @if (!string.IsNullOrWhiteSpace(searchText))
+                                        {
+                                            <Icon Elements="@InternalIcons.X" class="icon" OnClick="ClearSearch" />
+                                        }
+                                    </span>
+                                </div>
+                            </div>
+                        }
+
+
                         @foreach (var item in FilteredList())
                         {
-                            <DropdownItem IsActive="IsSelected(item)" OnClick="(e=> ToogleSelected(item))" @key="item">
+                            <DropdownItem Active="IsSelected(item)" Disabled="!CanSelect() && !IsSelected(item)" OnClick="(e=> ToogleSelected(item))" @key="item">
                                 @if (ListTemplate != null)
                                 {
                                     @if (ShowCheckBoxes)

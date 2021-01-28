@@ -21,9 +21,15 @@ namespace TabBlazor
         [Parameter] public bool Clearable { get; set; }
         [Parameter] public bool Disabled { get; set; }
         [Parameter] public bool RemoveSelectedFromList { get; set; }
+        [Parameter] public int MaxSelectableItems { get; set; } = int.MaxValue;
+        [Parameter] public Func<string, IEnumerable<TItem>> SearchMethod { get; set; }
+        [Parameter] public string SearchPlaceholderText { get; set; }
+
+        private bool showSearch => SearchMethod != null;
 
         protected List<TItem> selectedItems = new List<TItem>();
         protected Dropdown dropdown;
+        private string searchText;
 
         protected override void OnInitialized()
         {
@@ -35,11 +41,22 @@ namespace TabBlazor
 
         protected List<TItem> FilteredList()
         {
+            var filtered = Items;
+            if (SearchMethod != null && !string.IsNullOrWhiteSpace(searchText))
+            {
+                filtered = SearchMethod(searchText).ToList();
+            }
+
             if (RemoveSelectedFromList)
             {
-                return Items.Where(e => !selectedItems.Contains(e)).ToList();
+                return filtered.Where(e => !selectedItems.Contains(e)).ToList();
             }
-            return Items;
+            return filtered;
+        }
+
+        private void ClearSearch()
+        {
+            searchText = string.Empty;
         }
 
         private string GetSelectedText(TItem item)
@@ -47,6 +64,11 @@ namespace TabBlazor
             if (SelectedTextExpression == null) return "No Selected Expresssion Set up!";
             return SelectedTextExpression.Invoke(item);
         }
+
+        private bool CanSelect()
+        {
+            return  MaxSelectableItems > selectedItems.Count;
+        } 
 
         private bool IsSelected(TItem item)
         {
@@ -79,6 +101,11 @@ namespace TabBlazor
             else
             {
                 selectedItems.Add(item);
+
+                if (!CanSelect())
+                {
+                    dropdown.Close();
+                }
             }
 
             await SelectedItemsChanged.InvokeAsync(selectedItems);

@@ -6,6 +6,25 @@
     text-decoration: underline;
 }
 
+//Treeview
+.tree, .tree ul {
+    margin: 0;
+    padding: 0;
+    list-style: none
+}
+
+/*.tree li {
+    margin: 0;
+}*/
+
+
+
+.tree-node-selected {
+    border-color: #206bc4;
+    border-style: solid;
+    border-width: thin;
+}
+
 
 /**
 Dimmer
