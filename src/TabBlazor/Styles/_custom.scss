@@ -13,16 +13,28 @@
     list-style: none
 }
 
-/*.tree li {
-    margin: 0;
-}*/
-
-
-
 .tree-node-selected {
     border-color: #206bc4;
     border-style: solid;
     border-width: thin;
+}
+
+//Override switch icon
+
+.switch-icon {
+    width: unset;
+    height: unset;
+
+    svg {
+        width: unset;
+        height: unset;
+    }
+}
+
+
+.switch-icon svg {
+    width: unset;
+    height: unset
 }
 
 
@@ -31,7 +43,7 @@ Dimmer
 */
 .dimmer {
     position: relative;
-   // min-height: 2.5rem;
+    // min-height: 2.5rem;
 }
 
 .dimmer .loader {

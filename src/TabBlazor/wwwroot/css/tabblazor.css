@@ -7,13 +7,21 @@
   padding: 0;
   list-style: none; }
 
-/*.tree li {
-    margin: 0;
-}*/
 .tree-node-selected {
   border-color: #206bc4;
   border-style: solid;
   border-width: thin; }
+
+.switch-icon {
+  width: unset;
+  height: unset; }
+  .switch-icon svg {
+    width: unset;
+    height: unset; }
+
+.switch-icon svg {
+  width: unset;
+  height: unset; }
 
 /**
 Dimmer

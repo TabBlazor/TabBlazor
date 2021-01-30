@@ -1,0 +1,11 @@
+﻿@namespace TabBlazor
+@inherits TablerBaseComponent
+
+    <button class="@ClassNames" @onclick="ToogleActive">
+        <span class="switch-icon-a">
+            @DefaultTemplate
+        </span>
+        <span class="switch-icon-b">
+            @ActiveTemplate
+        </span>
+    </button>
