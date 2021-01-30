@@ -6,10 +6,10 @@ namespace TabBlazor
     {
         [Parameter] public int Columns { get; set; } = 1;
         [Parameter] public bool Arrow { get; set; } = false;
-       
+
         protected override string ClassNames => ClassBuilder
             .Add("dropdown-menu")
-            .Add(BackgroundColor.GetColorClass("bg"))
+.Add(BackgroundColor.GetColorClass("bg"))
             .Add(TextColor.GetColorClass("text"))
             .Add($"show")
             .AddIf($"dropdown-menu-arrow", Arrow)

@@ -18,6 +18,7 @@ namespace TabBlazor
         [Parameter] public Func<TItem, string> SelectedTextExpression { get; set; }
         [Parameter] public RenderFragment<TItem> ListTemplate { get; set; }
         [Parameter] public RenderFragment<List<TItem>> SelectedTemplate { get; set; }
+        [Parameter] public RenderFragment FooterTemplate { get; set; }
         [Parameter] public bool Clearable { get; set; }
         [Parameter] public bool Disabled { get; set; }
         [Parameter] public bool RemoveSelectedFromList { get; set; }
@@ -31,13 +32,13 @@ namespace TabBlazor
         protected Dropdown dropdown;
         private string searchText;
 
-        protected override void OnInitialized()
+        protected override void OnParametersSet()
         {
-            base.OnInitializedAsync();
             selectedItems = SelectedItems;
             if (selectedItems == null) { selectedItems = new List<TItem>(); }
-
         }
+
+
 
         protected List<TItem> FilteredList()
         {

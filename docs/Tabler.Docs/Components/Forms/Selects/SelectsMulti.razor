@@ -23,6 +23,8 @@
     </ListTemplate>
 </ItemSelectMulti>
 
+<Button OnClick="Test" >Test</Button>
+
 @foreach (var selectedCustomer in selectedCustomers)
 {
     <div>@selectedCustomer.CustomerName</div>
@@ -45,5 +47,15 @@
     private IEnumerable<Customer> SearchCustomer(string searchText)
     {
         return customers.Where(e => e.CustomerName.Contains(searchText, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    private void Test()
+    {
+
+        if (selectedCustomers.Any())
+        {
+            selectedCustomers.RemoveAt(0);
+        }
+
     }
 }
