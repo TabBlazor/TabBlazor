@@ -25,6 +25,7 @@ namespace TabBlazor
         [Parameter] public int MaxSelectableItems { get; set; } = int.MaxValue;
         [Parameter] public Func<string, IEnumerable<TItem>> SearchMethod { get; set; }
         [Parameter] public string SearchPlaceholderText { get; set; }
+        [Parameter] public string MaxListHeight { get; set; }
 
         private bool showSearch => SearchMethod != null;
 

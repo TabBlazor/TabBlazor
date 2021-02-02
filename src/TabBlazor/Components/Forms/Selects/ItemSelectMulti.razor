@@ -63,24 +63,25 @@
                             </div>
                         }
 
-
-                        @foreach (var item in FilteredList())
-                        {
-                            <DropdownItem Active="IsSelected(item)" Disabled="!CanSelect() && !IsSelected(item)" OnClick="(e=> ToogleSelected(item))" @key="item">
-                                @if (ListTemplate != null)
+                <div style="@(string.IsNullOrWhiteSpace(MaxListHeight) ? "": $"max-height:{MaxListHeight};overflow-y:auto")">
+                    @foreach (var item in FilteredList())
+                    {
+                        <DropdownItem Active="IsSelected(item)" Disabled="!CanSelect() && !IsSelected(item)" OnClick="(e=> ToogleSelected(item))" @key="item">
+                            @if (ListTemplate != null)
+                            {
+                                @if (ShowCheckBoxes)
                                 {
-                                    @if (ShowCheckBoxes)
-                                    {
-                                        <input class="form-check-input m-0 me-2" checked="@IsSelected(item)" type="checkbox">
-                                    }
-                                    @ListTemplate(item)
+                                    <input class="form-check-input m-0 me-2" checked="@IsSelected(item)" type="checkbox">
                                 }
-                                else if (!string.IsNullOrEmpty(NoItemsText))
-                                {
-                                    <span>@NoItemsText</span>
-                                }
-                            </DropdownItem>
-                        }
+                                @ListTemplate(item)
+                            }
+                            else if (!string.IsNullOrEmpty(NoItemsText))
+                            {
+                                <span>@NoItemsText</span>
+                            }
+                        </DropdownItem>
+                    }
+                </div>
                     }
                     else
                     {

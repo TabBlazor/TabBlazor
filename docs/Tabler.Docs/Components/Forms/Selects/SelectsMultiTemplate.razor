@@ -1,4 +1,4 @@
-﻿<ItemSelectMulti Items="customers" @ref="multiSelect">
+﻿<ItemSelectMulti Items="customers" @ref="multiSelect" MaxListHeight="100px" RemoveSelectedFromList>
 
     <ListTemplate>
         @context.CustomerName
@@ -27,7 +27,7 @@
 
         <div class="d-flex justify-content-center">
             <Button Size="ButtonSize.Small">
-                <Icon class="icon me-1" Elements="@DemoIcons.Plus" />Add customer
+                <Icon class="icon me-1" Elements="@DemoIcons.Plus" />New customer
             </Button>
         </div>
        
