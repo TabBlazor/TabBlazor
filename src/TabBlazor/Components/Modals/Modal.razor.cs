@@ -55,6 +55,7 @@ namespace TabBlazor
                 .AddIf("modal-sm", modalOptions.Size == ModalSize.Small)
                 .AddIf("modal-lg", modalOptions.Size == ModalSize.Large)
                 .AddIf("modal-xl", modalOptions.Size == ModalSize.XLarge)
+                .AddIf("modal-max", modalOptions.Size == ModalSize.Maximized)
                 .AddIf("modal-fullscreen", modalOptions.Fullscreen == ModalFullscreen.Allways)
                 .AddIf("modal-fullscreen-sm-down", modalOptions.Fullscreen == ModalFullscreen.BelowSmall)
                 .AddIf("modal-fullscreen-md-down", modalOptions.Fullscreen == ModalFullscreen.BelowMedium)

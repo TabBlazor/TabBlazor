@@ -2,6 +2,9 @@
   cursor: pointer;
   text-decoration: underline; }
 
+.modal-max {
+  min-width: 99%; }
+
 .tree, .tree ul {
   margin: 0;
   padding: 0;

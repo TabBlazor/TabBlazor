@@ -5,7 +5,8 @@
         Small,
         Medium,
         Large,
-        XLarge
+        XLarge,
+        Maximized
     }
 
     public enum ModalFullscreen

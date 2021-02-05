@@ -92,9 +92,14 @@
 
     [Parameter] public string ReportName { get; set; }
 
-    private void CreateReport()
+    private async Task CreateReport()
     {
-        ModalService.Close(ModalResult.Ok());
+
+        var test = await ModalService.Show("Test Dialog", typeof(DialogTest));
+
+        var lle = test;
+
+      //  ModalService.Close(ModalResult.Ok());
     }
 
     private void Cancel()
