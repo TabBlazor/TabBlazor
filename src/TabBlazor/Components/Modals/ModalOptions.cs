@@ -5,8 +5,11 @@
         public bool ShowHeader { get; set; } = true;
         public bool Scrollable { get; set; } = true;
         public bool CloseOnClickOutside { get; set; } = false;
+        public bool BlurBackdrop { get; set; } = true;
         public bool CloseOnEsc { get; set; } = false;
         public ModalSize Size { get; set; } = ModalSize.Medium;
         public ModalFullscreen Fullscreen { get; set; } = ModalFullscreen.Never;
+
+        public TablerColor? Status { get; set; }
     }
 }

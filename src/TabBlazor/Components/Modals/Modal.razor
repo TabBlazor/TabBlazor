@@ -1,35 +1,27 @@
 ﻿@namespace TabBlazor
 
-@if (IsVisible)
-{
+<div class="modal-backdrop fade show" />
+<div class="modal @(ModalModel.Options.BlurBackdrop ? "modal-blur": "") fade show" id="tabblazor-modal-container" @ref="BlurContainer" @onkeydown="OnKeyDown" @onclick="OnClickOutside" tabindex="-1" style="display: block;" aria-hidden="true">
+    <div class="@GetModalCss()" role="document" @onclick:stopPropagation="true" @onkeydown:stopPropagation="true">
+        <div class="modal-content">
 
-    <div class="modal-backdrop fade show" />
-    <div class="modal modal-blur fade show" id="tabblazor-modal-container" @ref="BlurContainer" @onkeydown="OnKeyDown"  @onclick="OnClickOutside" tabindex="-1" style="display: block;" aria-hidden="true">
-        <div class="@GetModalCss()" role="document" @onclick:stopPropagation="true"  @onkeydown:stopPropagation="true" >
-            <div class="modal-content">
-                @if (modalOptions.ShowHeader)
-                {
-                    <div class="modal-header">
-                        <h5 class="modal-title">@Title</h5>
-                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" @onclick="ModalService.Cancel"></button>
-                    </div>
-                }
+            @if (ModalModel.Options.Status != null)
+            {
+                <div class="modal-status @(((TablerColor)ModalModel.Options.Status).GetColorClass("bg"))"></div>
+            }
 
-                <div class="modal-body">
-                    @Content
+            @if (ModalModel.Options.ShowHeader)
+            {
+                <div class="modal-header">
+                    <h5 class="modal-title">@ModalModel.Title</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" @onclick="ModalService.Close"></button>
                 </div>
-                <div class="modal-footer">
-                    @*<a href="#" class="btn btn-link link-secondary" data-dismiss="modal">
-                            Cancel
-                        </a>
-                        <a href="#" class="btn btn-primary ms-auto" data-dismiss="modal">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                            Create new report
-                        </a>*@
-                </div>
+            }
+
+            <div class="modal-body">
+                @ModalModel.ModalContents
             </div>
         </div>
-
     </div>
 
-}
+</div>

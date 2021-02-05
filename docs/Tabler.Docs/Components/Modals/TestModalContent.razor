@@ -95,11 +95,13 @@
     private async Task CreateReport()
     {
 
-        var test = await ModalService.Show("Test Dialog", typeof(DialogTest));
+        var test = await ModalService.Show("Test Dialog", typeof(DialogTest), null, new ModalOptions { Status = TablerColor.Danger });
 
-        var lle = test;
+        if (!test.Cancelled)
+        {
+              ModalService.Close(ModalResult.Ok());
+        }
 
-      //  ModalService.Close(ModalResult.Ok());
     }
 
     private void Cancel()

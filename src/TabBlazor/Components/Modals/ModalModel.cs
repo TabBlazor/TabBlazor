@@ -11,8 +11,8 @@ namespace TabBlazor
             TaskSource = new TaskCompletionSource<ModalResult>();
             DialogComponentType = dialogComponentType;
             Title = title;
-            Parameters = parameters;
-            Options = options;
+            Parameters = parameters ?? new ModalParameters();
+            Options = options ?? new ModalOptions();
         }
 
         private Type DialogComponentType { get; }
@@ -23,7 +23,7 @@ namespace TabBlazor
         public ModalParameters Parameters { get; }
         public ModalOptions Options { get; }
 
-        public RenderFragment DialogContents
+        public RenderFragment ModalContents
         {
             get
             {
@@ -31,8 +31,12 @@ namespace TabBlazor
                 {
                     int seq = 1;
                     x.OpenComponent(seq++, DialogComponentType);
-                    foreach (var parameter in Parameters)
-                        x.AddAttribute(seq++, parameter.Key, parameter.Value);
+                    if (Parameters != null)
+                    {
+                        foreach (var parameter in Parameters)
+                            x.AddAttribute(seq++, parameter.Key, parameter.Value);
+                    }
+
                     x.CloseComponent();
                 });
                 return content;
