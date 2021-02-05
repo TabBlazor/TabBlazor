@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TabBlazor.Services;
@@ -13,7 +14,8 @@ namespace TabBlazor.Components.Modals
         [Parameter] public ModalModel ModalModel { get; set; }
         public string HeaderCssClass { get; private set; }
 
-        protected ElementReference BlurContainer;
+        private ElementReference BlurContainer;
+        private string topOffset = "0";
 
         protected void OnKeyDown(KeyboardEventArgs e)
         {
@@ -31,6 +33,17 @@ namespace TabBlazor.Components.Modals
             }
         }
 
+        protected override void OnInitialized()
+        {
+            var modalCount = ModalService.Modals.Count();
+            if (modalCount > 1 && ModalModel.Options.VerticalPosition == ModalVerticalPosition.Default)
+            {
+                topOffset = (20 * (modalCount - 1)).ToString();
+            }
+
+            base.OnInitialized();
+        }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (!firstRender)
@@ -38,6 +51,8 @@ namespace TabBlazor.Components.Modals
                 await BlurContainer.FocusAsync();
             }
         }
+
+       
 
         protected string GetModalCss() => new ClassBuilder()
                 .Add("modal-dialog")

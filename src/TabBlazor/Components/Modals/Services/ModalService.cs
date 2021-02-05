@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,21 +8,23 @@ using System.Threading.Tasks;
 
 namespace TabBlazor.Services
 {
-    public class ModalService : IModalService
+    public class ModalService : IModalService, IDisposable
     {
-     
-        internal event Action<string, ModalOptions, RenderFragment, ModalParameters> OnShow;
+
+        public ModalService(NavigationManager navigationManager)
+        {
+            this.navigationManager = navigationManager;
+            this.navigationManager.LocationChanged += LocationChanged;
+        }
+
+   
         public event Action OnChanged;
 
         private Stack<ModalModel> modals = new Stack<ModalModel>();
         internal ModalModel modalModel;
+        private readonly NavigationManager navigationManager;
 
         public IEnumerable<ModalModel> Modals { get { return modals; } }
-
-        //public void SetTitle(string title)
-        //{
-        //    OnTitleSet?.Invoke(title);
-        //}
 
         public Task<ModalResult> ShowAsync(string title, Type componentType, ModalParameters parameters, ModalOptions modalOptions = null)
         {
@@ -31,40 +34,33 @@ namespace TabBlazor.Services
                 throw new ArgumentException($"{componentType.FullName} must be a Blazor Component");
             }
 
-            var content = new RenderFragment(x =>
-            {
-                x.OpenComponent(1, componentType);
-
-                if (parameters != null)
-                {
-                    var i = 1;
-                    foreach (var parameter in parameters)
-                    {
-                        x.AddAttribute(i, parameter.Key, parameter.Value);
-                        i++;
-                    }
-                }
-
-                x.CloseComponent();
-            });
-
-            if (modalOptions == null)
-            {
-                modalOptions = new ModalOptions();
-            }
-
-            OnShow?.Invoke(title, modalOptions, content, parameters);
-
             modals.Push(modalModel);
             OnChanged?.Invoke();
             return modalModel.Task;
 
         }
 
+        private void LocationChanged(object sender, LocationChangedEventArgs e)
+        {
+            CloseAll();
+        }
+
+        private void CloseAll()
+        {
+            foreach (var modal in modals.ToList())
+            {
+                Close();
+            }
+        }
+
         public void Close(ModalResult modalResult)
         {
-            ModalModel modalToClose = modals.Pop();
-            modalToClose.TaskSource.SetResult(modalResult);
+            if (modals.Any())
+            {
+                ModalModel modalToClose = modals.Pop();
+                modalToClose.TaskSource.SetResult(modalResult);
+            }
+            
             OnChanged?.Invoke();
 
         }
@@ -72,6 +68,11 @@ namespace TabBlazor.Services
         public void Close()
         {
             Close(ModalResult.Cancel());
+        }
+
+        public void Dispose()
+        {
+            navigationManager.LocationChanged -= LocationChanged;
         }
     }
 }
