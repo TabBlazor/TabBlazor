@@ -6,11 +6,9 @@ namespace TabBlazor.Services
 {
     public interface IModalService
     {
-        void SetTitle(string title);
-        event Action<ModalResult> OnClose;
-        event Action Changed;
+        event Action OnChanged;
         IEnumerable<ModalModel> Modals { get; }
-        Task<ModalResult> Show(string title, Type componentType, ModalParameters parameters = null, ModalOptions modalOptions = null);        
+        Task<ModalResult> ShowAsync(string title, Type componentType, ModalParameters parameters = null, ModalOptions modalOptions = null);        
         void Close(ModalResult modalResult);
         void Close();
     }

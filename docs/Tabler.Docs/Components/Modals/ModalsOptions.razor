@@ -11,12 +11,17 @@
 
     <RowCol Sm="12" Md="6" Lg="4">
         <label class="form-label">Status</label>
-        <ItemSelect Items="EnumInfo.GetList<TablerColor>()" @bind-SelectedValue="@modalOptions.Status" TextExpression="e=> e.ToString()" ValueExpression="e=> e" />
+        <ItemSelect Items="EnumInfo.GetList<TablerColor>()" @bind-SelectedValue="@modalOptions.StatusColor" TextExpression="e=> e.ToString()" ValueExpression="e=> e" />
+    </RowCol>
+
+    <RowCol Sm="12" Md="6" Lg="4">
+        <label class="form-label">Vertical position</label>
+        <ItemSelect Items="EnumInfo.GetList<ModalVerticalPosition>()" @bind-SelectedValue="@modalOptions.VerticalPosition" TextExpression="e=> e.ToString()" ValueExpression="e=> e" />
     </RowCol>
 
     <Row class="mt-2">
         <RowCol Sm="12" Md="4" Lg="3">
-            <Checkbox @bind-Value="@modalOptions.BlurBackdrop" Label="Blur backdrop" />
+            <Checkbox @bind-Value="@modalOptions.BlurBackground" Label="Blur backdrop" />
         </RowCol>
         <RowCol Sm="12" Md="4" Lg="3">
             <Checkbox @bind-Value="@modalOptions.CloseOnClickOutside" Label="Close on click outside" />
@@ -27,6 +32,7 @@
         <RowCol Sm="12" Md="4" Lg="3">
             <Checkbox @bind-Value="@modalOptions.ShowHeader" Label="Show Header" />
         </RowCol>
+
     </Row>
 </Row>
 <Row class="mt-2">
@@ -41,12 +47,12 @@
 @code {
     @inject IModalService ModalService
     private string message;
-    private ModalOptions modalOptions = new ModalOptions { CloseOnClickOutside = true };
+        private ModalOptions modalOptions = new ModalOptions { CloseOnClickOutside = true };
 
     protected async Task ShowModal()
     {
         message = string.Empty;
-        var result = await ModalService.Show("This is a Title", typeof(TestModalContent), null, modalOptions);
+        var result = await ModalService.ShowAsync("This is a Title", typeof(TestModalContent), null, modalOptions);
 
         if (result.Cancelled)
         {

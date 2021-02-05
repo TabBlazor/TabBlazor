@@ -4,13 +4,13 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TabBlazor.Services;
 
-namespace TabBlazor
+namespace TabBlazor.Components.Modals
 {
-    public partial class Modal : ComponentBase
+    public partial class ModalView : ComponentBase
     {
         [Inject] protected IModalService ModalService { get; set; }
 
-        [Parameter] public ModalModel ModalModel { get; set;}
+        [Parameter] public ModalModel ModalModel { get; set; }
         public string HeaderCssClass { get; private set; }
 
         protected ElementReference BlurContainer;
@@ -52,10 +52,11 @@ namespace TabBlazor
                 .AddIf("modal-fullscreen-xl-down", ModalModel.Options.Fullscreen == ModalFullscreen.BelowXLarge)
                 .AddIf("modal-fullscreen-xxl-down", ModalModel.Options.Fullscreen == ModalFullscreen.BelowXXLarge)
                 .AddIf("modal-dialog-scrollable", ModalModel.Options.Scrollable)
+                .AddIf("modal-dialog-centered", ModalModel.Options.VerticalPosition == ModalVerticalPosition.Centered)
                 .ToString();
 
 
-    
+
 
 
     }

@@ -1,27 +1,20 @@
-﻿@namespace TabBlazor
+﻿@implements IDisposable
+@inject TabBlazor.Services.IModalService ModalService
+@namespace TabBlazor
 
-<div class="modal-backdrop fade show" />
-<div class="modal @(ModalModel.Options.BlurBackdrop ? "modal-blur": "") fade show" id="tabblazor-modal-container" @ref="BlurContainer" @onkeydown="OnKeyDown" @onclick="OnClickOutside" tabindex="-1" style="display: block;" aria-hidden="true">
-    <div class="@GetModalCss()" role="document" @onclick:stopPropagation="true" @onkeydown:stopPropagation="true">
-        <div class="modal-content">
+@foreach (var modalModel in ModalService.Modals.Reverse())
+{
+    <TabBlazor.Components.Modals.ModalView @key="modalModel"  ModalModel="modalModel" />
+}
 
-            @if (ModalModel.Options.Status != null)
-            {
-                <div class="modal-status @(((TablerColor)ModalModel.Options.Status).GetColorClass("bg"))"></div>
-            }
+@code {
+    protected override void OnInitialized()
+    {
+        ModalService.OnChanged += StateHasChanged;
+    }
 
-            @if (ModalModel.Options.ShowHeader)
-            {
-                <div class="modal-header">
-                    <h5 class="modal-title">@ModalModel.Title</h5>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" @onclick="ModalService.Close"></button>
-                </div>
-            }
-
-            <div class="modal-body">
-                @ModalModel.ModalContents
-            </div>
-        </div>
-    </div>
-
-</div>
+    public void Dispose()
+    {
+        ModalService.OnChanged -= StateHasChanged;
+    }
+}

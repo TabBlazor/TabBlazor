@@ -1,0 +1,27 @@
+﻿
+
+<div class="modal-backdrop fade show" />
+<div class="modal @(ModalModel.Options.BlurBackground ? "modal-blur": "") fade show" id="tabblazor-modal-container" @ref="BlurContainer" @onkeydown="OnKeyDown" @onclick="OnClickOutside" tabindex="-1" style="display: block;" aria-hidden="true">
+    <div class="@GetModalCss()" role="document" @onclick:stopPropagation="true" @onkeydown:stopPropagation="true">
+        <div class="modal-content">
+
+            @if (ModalModel.Options.StatusColor != null)
+            {
+                <div class="modal-status @(((TablerColor)ModalModel.Options.StatusColor).GetColorClass("bg"))"></div>
+            }
+
+            @if (ModalModel.Options.ShowHeader)
+            {
+                <div class="modal-header">
+                    <h5 class="modal-title">@ModalModel.Title</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" @onclick="ModalService.Close"></button>
+                </div>
+            }
+
+            <div class="modal-body">
+                @ModalModel.ModalContents
+            </div>
+        </div>
+    </div>
+
+</div>
