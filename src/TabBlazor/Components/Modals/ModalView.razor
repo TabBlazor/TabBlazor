@@ -3,7 +3,7 @@
 <div class="modal-backdrop fade show" />
 <div class="modal @(ModalModel.Options.BlurBackground ? "modal-blur": "") fade show" id="tabblazor-modal-container" @ref="BlurContainer" @onkeydown="OnKeyDown" @onclick="OnClickOutside" tabindex="-1" style="display: block;" aria-hidden="true">
     <div class="@GetModalCss()" role="document" @onclick:stopPropagation="true" @onkeydown:stopPropagation="true" style="top:@(topOffset)px">
-        <div class="modal-content">
+        <div class="modal-content border">
 
             @if (ModalModel.Options.StatusColor != null)
             {
@@ -23,7 +23,5 @@
             </div>
         </div>
     </div>
-
-</div>
-
+    </div>
 }

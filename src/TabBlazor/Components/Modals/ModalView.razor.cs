@@ -52,7 +52,7 @@ namespace TabBlazor.Components.Modals
             }
         }
 
-       
+
 
         protected string GetModalCss() => new ClassBuilder()
                 .Add("modal-dialog")

@@ -11,7 +11,7 @@
 
     <RowCol Sm="12" Md="6" Lg="4">
         <label class="form-label">Status</label>
-        <ItemSelect Items="EnumInfo.GetList<TablerColor>()" @bind-SelectedValue="@modalOptions.StatusColor" TextExpression="e=> e.ToString()" ValueExpression="e=> e" />
+        <ItemSelect Items="EnumInfo.GetList<TablerColor>()" @bind-SelectedValue="@modalOptions.StatusColor" TextExpression="e=> e.ToString()" ValueExpression="e=> e" Clearable />
     </RowCol>
 
     <RowCol Sm="12" Md="6" Lg="4">
