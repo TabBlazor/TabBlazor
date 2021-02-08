@@ -6,8 +6,8 @@
 
 
 <div class="modal @(ModalModel.Options.BlurBackground ? "modal-blur": "") fade show" id="tabblazor-modal-container" @ref="BlurContainer" @onkeydown="OnKeyDown" @onclick="OnClickOutside" tabindex="-1" style="display: block;" aria-hidden="true">
-    <div draggable="true" @ondragend="OnDragEnd" @ondragstart="OnDragStart" class="@GetModalCss()" role="document" @onclick:stopPropagation @onkeydown:stopPropagation
-         style=@(GetModalStyle())>
+    <div class="@GetModalCss()" role="document" @onclick:stopPropagation @onkeydown:stopPropagation
+         style=@(GetModalStyle()) @ref="dragContainer">
         <div class="modal-content border">
 
             @if (ModalModel.Options.StatusColor != null)
@@ -17,13 +17,13 @@
 
             @if (ModalModel.Options.ShowHeader)
             {
-                <div class="modal-header @(ModalModel.Options.Draggable ? "cursor-move": "")">
+                <div class="modal-header @(ModalModel.Options.Draggable ? "cursor-move": "")"  draggable="@(ModalModel.Options.Draggable.ToString())" @ondragend="OnDragEnd" @ondragstart="OnDragStart" >
                     <h5 class="modal-title">@ModalModel.Title</h5>
                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" @onclick="ModalService.Close"></button>
                 </div>
             }
 
-            <div class="modal-body" draggable="false" @ondragstart="OnDragPrevent" @ondragend="OnDragPrevent">
+            <div class="modal-body" >
                 @ModalModel.ModalContents
             </div>
         </div>

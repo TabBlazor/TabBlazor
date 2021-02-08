@@ -10,12 +10,16 @@ namespace TabBlazor.Components.Modals
     public partial class ModalView : ComponentBase
     {
         [Inject] protected IModalService ModalService { get; set; }
+        [Inject] protected TablerService TablerService { get; set; }
 
         [Parameter] public ModalModel ModalModel { get; set; }
         public string HeaderCssClass { get; private set; }
         private ElementReference BlurContainer;
+        protected ElementReference dragContainer { get; set; }
         private string topOffset = "0";
         private bool isDragged;
+        
+
         private double startX, startY, offsetX, offsetY;
 
         private string GetModalStyle()
@@ -23,12 +27,7 @@ namespace TabBlazor.Components.Modals
             return isDragged ? $"position:absolute; top: {offsetY}px; left: {offsetX}px;" : "";
         }
 
-        private void OnDragPrevent(DragEventArgs args)
-        {
-            var kalle = "";
-        }
-
-            private void OnDragStart(DragEventArgs args)
+        private void OnDragStart(DragEventArgs args)
         {
             if (!ModalModel.Options.Draggable) { return; }
 
@@ -37,18 +36,26 @@ namespace TabBlazor.Components.Modals
                 offsetX = args.ClientX - args.OffsetX;
                 offsetY = args.ClientY - args.OffsetY;
             }
-                startX = args.ClientX;
-                startY = args.ClientY;
+            startX = args.ClientX;
+            startY = args.ClientY;
         }
-
-       
 
         private void OnDragEnd(DragEventArgs args)
         {
             if (!ModalModel.Options.Draggable) { return; }
+
             isDragged = true;
             offsetX += args.ClientX - startX;
             offsetY += args.ClientY - startY;
+        }
+
+        protected async Task PreventDraggable()
+        {
+           await TablerService.SetElementProperty(dragContainer, "draggable", false);
+        }
+        protected async Task SetDraggable()
+        {
+            await TablerService.SetElementProperty(dragContainer, "draggable", true);
         }
 
         protected void OnKeyDown(KeyboardEventArgs e)
