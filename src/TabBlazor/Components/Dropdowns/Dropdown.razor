@@ -12,7 +12,10 @@
 
         @if (isExpanded)
         {
+        <div  @onclick:stopPropagation="!CloseOnClick">
             @DropdownTemplate
+        </div>
+           
         }
     </HtmlElement>
 

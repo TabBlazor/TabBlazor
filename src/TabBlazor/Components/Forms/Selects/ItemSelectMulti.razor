@@ -2,11 +2,14 @@
 @inherits TablerBaseComponent
 @typeparam TItem
 
+@if (!string.IsNullOrWhiteSpace(Label))
+{
+    <label class="form-label">@Label</label>
+}
+
 <Dimmer Active="Disabled" ShowSpinner="false">
-    <Dropdown @ref="dropdown">
+    <Dropdown @ref="dropdown" CloseOnClick="false">
         <ChildContent>
-
-
             @if (SelectedTemplate != null)
             {
                 @SelectedTemplate(selectedItems)
@@ -18,6 +21,10 @@
                         @if (!selectedItems.Any())
                         {
                             @NoSelectedText
+                        }
+                        else if (singleSelect)
+                        {
+                            <span>@GetSelectedText(selectedItems.First())</span>
                         }
                         else
                         {
@@ -37,62 +44,57 @@
                 </div>
             }
 
-
-
         </ChildContent>
 
         <DropdownTemplate>
             <DropdownMenu>
-                <div @onclick:stopPropagation>
-
-                    @if (Items != null && Items.Any())
+                @if (Items != null && Items.Any())
+                {
+                    @if (showSearch)
                     {
-                        @if (showSearch)
-                        {
-                            <div class="m-2">
-                                <div class="input-group input-group-flat">
-                                    <input class="form-control" @bind="searchText" type="text" @bind:event="oninput" placeholder="@SearchPlaceholderText">
+                        <div class="m-2">
+                            <div class="input-group input-group-flat">
+                                <input class="form-control" @bind="searchText" type="text" @bind:event="oninput" placeholder="@SearchPlaceholderText">
 
-                                    <span class="input-group-text">
-                                        @if (!string.IsNullOrWhiteSpace(searchText))
-                                        {
-                                            <Icon Elements="@InternalIcons.X" class="icon" OnClick="ClearSearch" />
-                                        }
-                                    </span>
-                                </div>
+                                <span class="input-group-text">
+                                    @if (!string.IsNullOrWhiteSpace(searchText))
+                                    {
+                                        <Icon Elements="@InternalIcons.X" class="icon" OnClick="ClearSearch" />
+                                    }
+                                </span>
                             </div>
-                        }
+                        </div>
+                    }
 
-                <div style="@(string.IsNullOrWhiteSpace(MaxListHeight) ? "": $"max-height:{MaxListHeight};overflow-y:auto")">
-                    @foreach (var item in FilteredList())
-                    {
-                        <DropdownItem Active="IsSelected(item)" Disabled="!CanSelect() && !IsSelected(item)" OnClick="(e=> ToogleSelected(item))" @key="item">
-                            @if (ListTemplate != null)
-                            {
-                                @if (ShowCheckBoxes)
+                    <div style="@(string.IsNullOrWhiteSpace(MaxListHeight) ? "": $"max-height:{MaxListHeight};overflow-y:auto")">
+                        @foreach (var item in FilteredList())
+                        {
+                            <DropdownItem Active="IsSelected(item)" Disabled="!CanSelect() && !IsSelected(item)" OnClick="(e=> ToogleSelected(item))" @key="item">
+                                @if (ListTemplate != null)
                                 {
-                                    <input class="form-check-input m-0 me-2" checked="@IsSelected(item)" type="checkbox">
+                                    @if (ShowCheckBoxes)
+                                    {
+                                        <input class="form-check-input m-0 me-2" checked="@IsSelected(item)" type="checkbox">
+                                    }
+                                    @ListTemplate(item)
                                 }
-                                @ListTemplate(item)
-                            }
-                            else if (!string.IsNullOrEmpty(NoItemsText))
-                            {
-                                <span>@NoItemsText</span>
-                            }
-                        </DropdownItem>
-                    }
-                </div>
-                    }
-                    else
-                    {
-                        <span>No Items</span>
-                    }
+                                else if (!string.IsNullOrEmpty(NoItemsText))
+                                {
+                                    <span>@NoItemsText</span>
+                                }
+                            </DropdownItem>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <span>No Items</span>
+                }
                 <div class="cursor-auto">
                     @FooterTemplate
                 </div>
-                    
 
-                </div>
+
             </DropdownMenu>
         </DropdownTemplate>
     </Dropdown>

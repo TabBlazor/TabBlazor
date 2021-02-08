@@ -1,0 +1,75 @@
+﻿@namespace TabBlazor
+@inherits TablerBaseComponent
+@typeparam TValue
+@using Microsoft.AspNetCore.Components.Web
+
+@if (!string.IsNullOrWhiteSpace(Label))
+{
+    <label class="form-label">@Label</label>
+}
+
+@if (Inline)
+{
+    @RenderCalender
+}
+else
+{
+    <Dropdown CloseOnClick="false" @ref="dropdown">
+        <ChildContent>
+            <div class="input-icon">
+                <input type="text" class="form-control cursor-pointer" value="@selectedDate?.ToString(Format)" placeholder="Search…">
+                <span class="input-icon-addon cursor-pointer">
+                    <Icon class="icon"
+                          Elements="@InternalIcons.Calendar" />
+                </span>
+            </div>
+        </ChildContent>
+
+        <DropdownTemplate>
+            <DropdownMenu>
+                <div class="m-2">
+                    @RenderCalender
+                </div>
+            </DropdownMenu>
+
+        </DropdownTemplate>
+    </Dropdown>
+}
+
+@code{
+
+    protected RenderFragment RenderCalender => __builder =>
+    {
+    <div class="datepicker @(!Inline ? "datepicker-dropdown": "")">
+        <div class="datepicker-month">
+            <span class="float-start">
+                <Icon OnClick="SetPreviousMonth" class="cursor-pointer"
+                      Elements="@InternalIcons.Arrow_left" />
+            </span>
+            <span>@GetCurrentMonth()</span>
+            <span>@currentDate.Year</span>
+            <span class="float-end">
+                <Icon OnClick="SetNextMonth" class="cursor-pointer"
+                      Elements="@InternalIcons.Arrow_right" />
+            </span>
+        </div>
+        <div class="datepicker-weekdays">
+            @foreach (var weekday in GetWeekdays())
+                {
+                <div>
+                    @weekday
+                </div>
+                }
+        </div>
+        <div class="datepicker-days">
+
+            @foreach (var date in GetDates())
+                {
+                <span @onclick="(() => SetSelected(date))" class="@DayCss(date)">@date.Day</span>
+                }
+
+        </div>
+    </div>
+    };
+}
+

@@ -26,9 +26,10 @@ namespace TabBlazor
         [Parameter] public Func<string, IEnumerable<TItem>> SearchMethod { get; set; }
         [Parameter] public string SearchPlaceholderText { get; set; }
         [Parameter] public string MaxListHeight { get; set; }
+        [Parameter] public string Label { get; set; }
 
         private bool showSearch => SearchMethod != null;
-
+        private bool singleSelect => MaxSelectableItems == 1;
         protected List<TItem> selectedItems = new List<TItem>();
         protected Dropdown dropdown;
         private string searchText;
@@ -69,7 +70,7 @@ namespace TabBlazor
 
         private bool CanSelect()
         {
-            return  MaxSelectableItems > selectedItems.Count;
+            return singleSelect || MaxSelectableItems > selectedItems.Count;
         } 
 
         private bool IsSelected(TItem item)
@@ -96,6 +97,11 @@ namespace TabBlazor
 
             protected async Task ToogleSelected(TItem item)
         {
+            if (singleSelect)
+            {
+                selectedItems.Clear();
+            }
+
             if (IsSelected(item))
             {
                 selectedItems.Remove(item);
@@ -104,7 +110,7 @@ namespace TabBlazor
             {
                 selectedItems.Add(item);
 
-                if (!CanSelect())
+                if (singleSelect || !CanSelect())
                 {
                     dropdown.Close();
                 }

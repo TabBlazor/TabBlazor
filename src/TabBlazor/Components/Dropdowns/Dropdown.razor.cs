@@ -7,6 +7,7 @@ namespace TabBlazor
     public partial class Dropdown : TablerBaseComponent
     {
         [Parameter] public RenderFragment DropdownTemplate { get; set; }
+        [Parameter] public bool CloseOnClick { get; set; } = true;
 
         protected bool isExpanded;
 
