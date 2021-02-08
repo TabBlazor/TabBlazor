@@ -49,7 +49,7 @@ namespace TabBlazor
             }
             else if (type == typeof(DateTime) || type == typeof(DateTime?))
             {
-               return (TValue)(object)value?.DateTime;
+                return (TValue)(object)value?.DateTime;
             }
 
             return default;
@@ -147,6 +147,7 @@ namespace TabBlazor
             .Add("datepicker-day")
             .AddIf("datepicker-not-month", !IsCurrentMonth(date))
             .AddIf("datepicker-day-dropdown", !Inline)
+               .AddIf("border", date?.Date == DateTimeOffset.Now.Date)
             .AddIf(selectedColor.GetColorClass("bg") + " text-white", IsSelected(date))
             .ToString();
 
