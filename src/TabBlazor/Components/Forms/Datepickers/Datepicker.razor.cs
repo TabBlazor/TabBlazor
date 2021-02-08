@@ -147,7 +147,7 @@ namespace TabBlazor
             .Add("datepicker-day")
             .AddIf("datepicker-not-month", !IsCurrentMonth(date))
             .AddIf("datepicker-day-dropdown", !Inline)
-               .AddIf("border", date?.Date == DateTimeOffset.Now.Date)
+            .AddIf("strong", date?.Date == DateTimeOffset.Now.Date)
             .AddIf(selectedColor.GetColorClass("bg") + " text-white", IsSelected(date))
             .ToString();
 
