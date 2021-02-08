@@ -21,7 +21,10 @@
 
     <Row class="mt-2">
         <RowCol Sm="12" Md="4" Lg="3">
-            <Checkbox @bind-Value="@modalOptions.BlurBackground" Label="Blur backdrop" />
+            <Checkbox @bind-Value="@modalOptions.BlurBackground" Label="Blur background" />
+        </RowCol>
+        <RowCol Sm="12" Md="4" Lg="3">
+            <Checkbox @bind-Value="@modalOptions.Backdrop" Label="Backdrop" />
         </RowCol>
         <RowCol Sm="12" Md="4" Lg="3">
             <Checkbox @bind-Value="@modalOptions.CloseOnClickOutside" Label="Close on click outside" />
@@ -31,6 +34,9 @@
         </RowCol>
         <RowCol Sm="12" Md="4" Lg="3">
             <Checkbox @bind-Value="@modalOptions.ShowHeader" Label="Show Header" />
+        </RowCol>
+        <RowCol Sm="12" Md="4" Lg="3">
+            <Checkbox @bind-Value="@modalOptions.Draggable" Label="Draggable" />
         </RowCol>
 
     </Row>

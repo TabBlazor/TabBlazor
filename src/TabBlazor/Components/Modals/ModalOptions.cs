@@ -6,7 +6,10 @@
         public bool Scrollable { get; set; } = true;
         public bool CloseOnClickOutside { get; set; } = false;
         public bool BlurBackground { get; set; } = true;
+        public bool Backdrop { get; set; } = true;
         public bool CloseOnEsc { get; set; } = false;
+        public bool Draggable { get; set; } = true;
+
         public ModalVerticalPosition VerticalPosition { get; set; }
 
         public ModalSize Size { get; set; } = ModalSize.Medium;
