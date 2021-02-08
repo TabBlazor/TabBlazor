@@ -6,7 +6,7 @@
 
 
 <div class="modal @(ModalModel.Options.BlurBackground ? "modal-blur": "") fade show" id="tabblazor-modal-container" @ref="BlurContainer" @onkeydown="OnKeyDown" @onclick="OnClickOutside" tabindex="-1" style="display: block;" aria-hidden="true">
-    <div class="@GetModalCss()" role="document" @onclick:stopPropagation @onkeydown:stopPropagation
+    <div class="@GetModalCss()" role="document" 
          style=@(GetModalStyle()) @ref="dragContainer">
         <div class="modal-content border">
 
@@ -23,7 +23,7 @@
                 </div>
             }
 
-            <div class="modal-body" >
+            <div class="modal-body" @onclick:stopPropagation @onkeydown:stopPropagation>
                 @ModalModel.ModalContents
             </div>
         </div>
