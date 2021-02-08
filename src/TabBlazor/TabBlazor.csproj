@@ -16,6 +16,10 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
+  <!--<ItemGroup>
+    <None Update="Components/**/*.razor.css" CssScope="tabblazor" />
+  </ItemGroup>-->
+
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
   </ItemGroup>
