@@ -8,7 +8,7 @@ using TabBlazor.Components.Selects;
 
 namespace TabBlazor
 {
-    public partial class ItemSelect<TItem, TValue> : TablerBaseComponent
+    public partial class Select<TItem, TValue> : TablerBaseComponent
     {
         [Parameter] public List<TItem> Items { get; set; }
         [Parameter] public TValue SelectedValue { get; set; }

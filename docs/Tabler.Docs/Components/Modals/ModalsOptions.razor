@@ -1,22 +1,22 @@
 ﻿<Row>
     <RowCol Sm="12" Md="6" Lg="4">
         <label class="form-label">Size</label>
-        <ItemSelect Items="EnumInfo.GetList<ModalSize>()" @bind-SelectedValue="@modalOptions.Size" TextExpression="e=> e.ToString()" ValueExpression="e=> e" />
+        <Select Items="EnumInfo.GetList<ModalSize>()" @bind-SelectedValue="@modalOptions.Size" TextExpression="e=> e.ToString()" ValueExpression="e=> e" />
     </RowCol>
 
     <RowCol Sm="12" Md="6" Lg="4">
         <label class="form-label">Fullscreen</label>
-        <ItemSelect Items="EnumInfo.GetList<ModalFullscreen>()" @bind-SelectedValue="@modalOptions.Fullscreen" TextExpression="e=> e.ToString()" ValueExpression="e=> e" />
+        <Select Items="EnumInfo.GetList<ModalFullscreen>()" @bind-SelectedValue="@modalOptions.Fullscreen" TextExpression="e=> e.ToString()" ValueExpression="e=> e" />
     </RowCol>
 
     <RowCol Sm="12" Md="6" Lg="4">
         <label class="form-label">Status</label>
-        <ItemSelect Items="EnumInfo.GetList<TablerColor>()" @bind-SelectedValue="@modalOptions.StatusColor" TextExpression="e=> e.ToString()" ValueExpression="e=> e" Clearable />
+        <Select Items="EnumInfo.GetList<TablerColor>()" @bind-SelectedValue="@modalOptions.StatusColor" TextExpression="e=> e.ToString()" ValueExpression="e=> e" Clearable />
     </RowCol>
 
     <RowCol Sm="12" Md="6" Lg="4">
         <label class="form-label">Vertical position</label>
-        <ItemSelect Items="EnumInfo.GetList<ModalVerticalPosition>()" @bind-SelectedValue="@modalOptions.VerticalPosition" TextExpression="e=> e.ToString()" ValueExpression="e=> e" />
+        <Select Items="EnumInfo.GetList<ModalVerticalPosition>()" @bind-SelectedValue="@modalOptions.VerticalPosition" TextExpression="e=> e.ToString()" ValueExpression="e=> e" />
     </RowCol>
 
     <Row class="mt-2">

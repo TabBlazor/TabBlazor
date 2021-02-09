@@ -16,7 +16,7 @@
         </Column>
         <Column Item="Order" Property="e=>e.OrderType" Title="Order type" Sortable Searchable Groupable>
             <EditorTemplate>
-                <ItemSelect Items="EnumInfo.GetList<OrderType>()" @bind-SelectedValue="@context.OrderType" TextExpression="e=> e.ToString()" ValueExpression="e=> e" Clearable />
+                <Select Items="EnumInfo.GetList<OrderType>()" @bind-SelectedValue="@context.OrderType" TextExpression="e=> e.ToString()" ValueExpression="e=> e" Clearable />
             </EditorTemplate>
         </Column>
     </ChildContent>
