@@ -16,11 +16,28 @@ namespace TabBlazor.Components.Modals
         public string HeaderCssClass { get; private set; }
         private ElementReference BlurContainer;
         protected ElementReference dragContainer { get; set; }
+        protected ElementReference contentContainer { get; set; }
         private string topOffset = "0";
         private bool isDragged;
-        
+        private bool isInitialized;
 
         private double startX, startY, offsetX, offsetY;
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
+
+            if(!isInitialized)
+            {
+                await BlurContainer.FocusAsync();
+                if (ModalModel.Options.Draggable)
+                {
+                    await TablerService.SetElementProperty(dragContainer, "draggable", true);
+                    await TablerService.DisableDraggable(dragContainer, contentContainer);
+                }
+                isInitialized = true;
+            }
+        }
 
         private string GetModalStyle()
         {
@@ -49,14 +66,14 @@ namespace TabBlazor.Components.Modals
             offsetY += args.ClientY - startY;
         }
 
-        protected async Task PreventDraggable()
-        {
-           await TablerService.SetElementProperty(dragContainer, "draggable", false);
-        }
-        protected async Task SetDraggable()
-        {
-            await TablerService.SetElementProperty(dragContainer, "draggable", true);
-        }
+        //protected async Task PreventDraggable()
+        //{
+        //   await TablerService.SetElementProperty(dragContainer, "draggable", false);
+        //}
+        //protected async Task SetDraggable()
+        //{
+        //    await TablerService.SetElementProperty(dragContainer, "draggable", true);
+        //}
 
         protected void OnKeyDown(KeyboardEventArgs e)
         {
@@ -85,13 +102,6 @@ namespace TabBlazor.Components.Modals
             base.OnInitialized();
         }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            if (!firstRender)
-            {
-                await BlurContainer.FocusAsync();
-            }
-        }
 
 
 

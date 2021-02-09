@@ -28,6 +28,22 @@
         return "";
     },
 
+    disableDraggable: (container, element) => {
+
+        element.addEventListener("mousedown", (e) => {
+            e.stopPropagation();
+            container['draggable'] = false;
+        });
+
+        element.addEventListener("mouseup", (e) => {
+            container['draggable'] = true;
+        });
+
+        element.addEventListener("mouseleave", (e) => {
+            container['draggable'] = true;
+        });
+    },
+
     setPropByElement: (element, property, value) => {
         element[property] = value;
         return "";

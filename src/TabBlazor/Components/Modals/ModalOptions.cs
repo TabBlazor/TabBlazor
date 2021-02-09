@@ -8,7 +8,7 @@
         public bool BlurBackground { get; set; } = true;
         public bool Backdrop { get; set; } = true;
         public bool CloseOnEsc { get; set; } = false;
-        public bool Draggable { get; set; } = true;
+        public bool Draggable { get; set; } = false;
 
         public ModalVerticalPosition VerticalPosition { get; set; }
 

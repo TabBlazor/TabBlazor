@@ -27,6 +27,11 @@ namespace TabBlazor.Services
             await jsRuntime.InvokeVoidAsync("blazorTabler.showAlert", message);
         }
 
+        public async Task DisableDraggable(ElementReference container, ElementReference element)
+        {
+            await jsRuntime.InvokeVoidAsync("blazorTabler.disableDraggable", container, element);
+        }
+
         public  async Task SetElementProperty(ElementReference element, string property, object value)
         {
             await jsRuntime.InvokeVoidAsync("blazorTabler.setPropByElement", element, property, value);
