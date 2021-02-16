@@ -1,0 +1,34 @@
+﻿<div class="toast show me-1 mb-1" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" data-toggle="toast">
+
+    @if (Toast.Options.ShowHeader)
+    {
+        <div class="toast-header">
+            <strong class="me-auto">@Toast.Title</strong>
+            <small>@Toast.SubTitle</small>
+            <button type="button" class="ms-2 btn-close" data-dismiss="toast" aria-label="Close" @onclick="() => ToastService.RemoveToastAsync(Toast)">
+            </button>
+        </div>
+    }
+
+    <div class="toast-body">
+
+        @if (Toast.Component != null)
+        {
+            <CascadingValue Value="Toast" Name="Toast">
+                @Toast.Component.Contents
+            </CascadingValue>
+        }
+        else
+        {
+            @Toast.Message
+        }
+
+    </div>
+
+
+    @if (Toast.Options.AutoClose && Toast.Options.ShowProgress)
+    {
+        <Progress Size="ProgressSize.Small" Precentage="_progress"></Progress>
+    }
+
+</div>

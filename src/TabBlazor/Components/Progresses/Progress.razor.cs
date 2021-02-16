@@ -20,8 +20,6 @@ namespace TabBlazor
         [Parameter] public int Precentage { get; set; }
         [Parameter] public string Text { get; set; }
 
-        //protected string HtmlTag => "span";
-        //.progress-bar-indeterminate
         protected override string ClassNames => ClassBuilder
               .Add("progress")
               .Add(BackgroundColor.GetColorClass("bg", ColorType.Default))

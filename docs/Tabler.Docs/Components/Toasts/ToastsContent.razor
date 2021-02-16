@@ -1,5 +1,4 @@
 ﻿@using TabBlazor.Services
-
 @inject ToastService ToastService
 
 <Button BackgroundColor="TablerColor.Primary" @onclick="ShowToast">Show Toast</Button>
@@ -15,10 +14,7 @@
         parameters.Add("Shipped", 123);
 
         var component = new DynamicComponent(typeof(CustomToast), parameters);
-
-        await ToastService.AddToastAsync(
-            new Toast("New Order!", "Odio Coperation", component));
-      
+        await ToastService.AddToastAsync(new ToastModel("New Order!", "Odio Coperation", component));
 
         orders++;
     }

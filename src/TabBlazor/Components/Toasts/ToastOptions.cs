@@ -10,5 +10,7 @@ namespace TabBlazor
     {
         public int Delay { get; set; } = 3000;
         public bool ShowHeader { get; set; } = true;
+        public bool ShowProgress { get; set; } = true;
+        public bool AutoClose => Delay > 0;
     }
 }

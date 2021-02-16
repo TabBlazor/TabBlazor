@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace TabBlazor
 {
-   public class Toast
+   public class ToastModel
     {
 
-        public Toast()
+        public ToastModel()
         {}
 
-        public Toast(string title, string subTitle, string message)
+        public ToastModel(string title, string subTitle, string message)
         {
             Title = title;
             SubTitle = subTitle;
             Message = message;
         }
 
-        public Toast(string title, string subTitle, DynamicComponent component)
+        public ToastModel(string title, string subTitle, DynamicComponent component)
         {
             Title = title;
             SubTitle = subTitle;
