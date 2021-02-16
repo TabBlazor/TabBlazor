@@ -8,34 +8,35 @@ namespace TabBlazor.Services
 {
     public class ToastService
     {
-        public class Toast
-        {
-            public string Title { get; set; }
-            public string SubTitle { get; set; }
-            public string Message { get; set; }
-            public int Delay { get; set; } = 3000;
-            public RenderFragment Body { get; set; }
-            public RenderFragment Header { get; set; }
-        }
+        private List<Toast> toasts = new List<Toast>();
 
-        public List<Toast> Toasts { get; set; } = new List<Toast>();
+        public IEnumerable<Toast> Toasts => toasts;
 
         public async Task AddToastAsync(Toast toast)
         {
-            Toasts.Add(toast);
+            toasts.Add(toast);
             await Changed();
-            if (toast.Delay > 0)
+            if (toast.Options.Delay > 0)
             {
 
 #pragma warning disable 4014
                 Task.Run(async () =>
 #pragma warning restore 4014
                 {
-                    await Task.Delay(toast.Delay);
-                    Toasts.Remove(toast);
-                    await Changed();
+                    await Task.Delay(toast.Options.Delay);
+                    await RemoveToastAsync(toast);
+                   
                 });
             }
+        }
+
+        public async Task RemoveToastAsync(Toast toast)
+        {
+            if (toasts.Contains(toast))
+            {
+                toasts.Remove(toast);
+            }
+            await Changed();
         }
 
         public async Task Changed()

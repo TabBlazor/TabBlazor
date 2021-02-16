@@ -8,7 +8,7 @@ namespace TabBlazor.Services
     {
         event Action OnChanged;
         IEnumerable<ModalModel> Modals { get; }
-        Task<ModalResult> ShowAsync(string title, Type componentType, ModalParameters parameters = null, ModalOptions modalOptions = null);        
+        Task<ModalResult> ShowAsync(string title, DynamicComponent component, ModalOptions modalOptions = null);        
         void Close(ModalResult modalResult);
         void Close();
     }

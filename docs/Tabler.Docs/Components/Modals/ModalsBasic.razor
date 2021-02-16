@@ -9,10 +9,9 @@
     {
         message = string.Empty;
 
-        var modalParameters = new ModalParameters();
-        modalParameters.Add("ReportName", "Report name from parameter");
-
-        var result = await ModalService.ShowAsync("This is a Title", typeof(TestModalContent), modalParameters, new ModalOptions { Size = ModalSize.Large });
+     
+        var component = new DynamicComponent(typeof(TestModalContent), new ComponentParameters{{"ReportName","Report Name"}});
+        var result = await ModalService.ShowAsync("This is a Title", component, new ModalOptions { Size = ModalSize.Large });
 
         if (result.Cancelled)
         {

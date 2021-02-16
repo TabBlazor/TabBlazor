@@ -26,14 +26,9 @@ namespace TabBlazor.Services
 
         public IEnumerable<ModalModel> Modals { get { return modals; } }
 
-        public Task<ModalResult> ShowAsync(string title, Type componentType, ModalParameters parameters, ModalOptions modalOptions = null)
+        public Task<ModalResult> ShowAsync(string title, DynamicComponent component, ModalOptions modalOptions = null)
         {
-            modalModel = new ModalModel(componentType, title, parameters, modalOptions);
-            if (!typeof(ComponentBase).IsAssignableFrom(componentType))
-            {
-                throw new ArgumentException($"{componentType.FullName} must be a Blazor Component");
-            }
-
+            modalModel = new ModalModel(component, title, modalOptions);
             modals.Push(modalModel);
             OnChanged?.Invoke();
             return modalModel.Task;
@@ -47,7 +42,7 @@ namespace TabBlazor.Services
 
         private void CloseAll()
         {
-            foreach (var modal in modals.ToList())
+            foreach (var x in modals.ToList())
             {
                 Close();
             }
@@ -62,7 +57,6 @@ namespace TabBlazor.Services
             }
             
             OnChanged?.Invoke();
-
         }
 
         public void Close()

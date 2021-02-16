@@ -4,7 +4,7 @@ using TabBlazor.Services;
 
 namespace TabBlazor
 {
-    public partial class ToastServiceComp : ComponentBase
+    public partial class ToastContainer : ComponentBase
     {
         [Inject] public ToastService ToastService { get; set; }
 

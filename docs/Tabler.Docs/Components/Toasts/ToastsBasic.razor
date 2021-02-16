@@ -7,12 +7,12 @@
 @code {
     private async Task ShowToast()
     {
-        await ToastService.AddToastAsync(new ToastService.Toast { Title = "Toast", SubTitle = "Sub title", Message = "This is a Tabler toast message that will be automatically removed after 3 seconds" });
+        await ToastService.AddToastAsync(new Toast { Title = "Toast", SubTitle = "Sub title", Message = "This is a Tabler toast message that will be automatically removed after 3 seconds" });
     }
 
     private async Task ShowToastManual()
     {
-        await ToastService.AddToastAsync(new ToastService.Toast { Title = "Manual remove", SubTitle = "Sub title", Message = "This is a Tabler toast message. Manual remove...", Delay = 0 });
+        await ToastService.AddToastAsync(new Toast { Title = "Manual remove", SubTitle = "Sub title", Message = "This is a Tabler toast message. Manual remove...", Options = new ToastOptions { Delay = 0 } });
 
     }
 }

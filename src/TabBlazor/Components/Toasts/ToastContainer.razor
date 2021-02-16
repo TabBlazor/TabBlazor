@@ -1,0 +1,39 @@
+﻿@using TabBlazor.Services 
+
+@namespace TabBlazor
+
+@if (ToastService.Toasts.Any())
+{
+    <div  class="mt-1 toast-container" style="position: fixed; right: 0; z-index: 999999;">
+        @foreach (var toast in ToastService.Toasts)
+        {
+        <div class="toast show me-1 mb-1" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" data-toggle="toast">
+
+            @if (toast.Options.ShowHeader)
+            {
+                <div class="toast-header">
+                    <strong class="me-auto">@toast.Title</strong>
+                    <small>@toast.SubTitle</small>
+                    <button type="button" class="ms-2 btn-close" data-dismiss="toast" aria-label="Close" @onclick="() => ToastService.RemoveToastAsync(toast)">
+                    </button>
+                </div>
+            }
+
+            <div class="toast-body">
+
+                @if (toast.Component != null)
+                {
+                <CascadingValue Value="toast" Name="Toast">
+                    @toast.Component.Contents
+                </CascadingValue>
+                }
+                else
+                {
+                    @toast.Message
+                }
+
+            </div>
+        </div>
+        }
+    </div>
+}

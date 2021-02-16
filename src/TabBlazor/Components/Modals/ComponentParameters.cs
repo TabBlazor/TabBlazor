@@ -2,7 +2,7 @@
 
 namespace TabBlazor
 {
-    public class ModalParameters : Dictionary<string, object>
+    public class ComponentParameters : Dictionary<string, object>
     {
     }
 }

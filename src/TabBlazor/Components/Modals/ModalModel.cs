@@ -6,41 +6,24 @@ namespace TabBlazor
 {
     public class ModalModel
     {
-        public ModalModel(Type dialogComponentType, string title, ModalParameters parameters, ModalOptions options)
+        public ModalModel(DynamicComponent component, string title, ModalOptions options)
         {
             TaskSource = new TaskCompletionSource<ModalResult>();
-            DialogComponentType = dialogComponentType;
+            Component = component;
             Title = title;
-            Parameters = parameters ?? new ModalParameters();
             Options = options ?? new ModalOptions();
         }
 
-        private Type DialogComponentType { get; }
+   
         internal TaskCompletionSource<ModalResult> TaskSource { get; }
 
         public Task<ModalResult> Task { get { return TaskSource.Task; } }
         public string Title { get; }
-        public ModalParameters Parameters { get; }
+        private DynamicComponent Component { get; set; }
+       
         public ModalOptions Options { get; }
 
-        public RenderFragment ModalContents
-        {
-            get
-            {
-                RenderFragment content = new RenderFragment(x =>
-                {
-                    int seq = 1;
-                    x.OpenComponent(seq++, DialogComponentType);
-                    if (Parameters != null)
-                    {
-                        foreach (var parameter in Parameters)
-                            x.AddAttribute(seq++, parameter.Key, parameter.Value);
-                    }
-
-                    x.CloseComponent();
-                });
-                return content;
-            }
-        }
+        public RenderFragment ModalContents => Component.Contents;
+        
     }
 }
