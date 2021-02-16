@@ -1,20 +1,4 @@
-﻿@using System.Globalization
-
-@*<ItemSelect MaxSelectableItems="1"
-                 Label ="Set Culture"
-                 SearchMethod="SearchCulture"
-                 TItem="CultureInfo"
-                 Items="@(cultures)" 
-                 SelectedTextExpression="e=>e.EnglishName" 
-                 SelectedItemsChanged="CultureChanged"
-                 MaxListHeight="300px">
-    <ListTemplate>
-        @context.EnglishName
-    </ListTemplate>
-</ItemSelect>*@
-<div class="mt-3" />
-
-<Datepicker @bind-SelectedDate="selectedDate" Inline />
+﻿<Datepicker @bind-SelectedDate="selectedDate" Inline />
 
 <div class="mt-3">
     Selected Date: @selectedDate?.ToString("d")
@@ -22,21 +6,4 @@
 
 @code {
     private DateTimeOffset? selectedDate = DateTimeOffset.Now.AddDays(14).Date;
-    List<CultureInfo> cultures = CultureInfo.GetCultures(CultureTypes.NeutralCultures).ToList();
-
-    private List<CultureInfo> SearchCulture(string searchText)
-    {
-        return cultures.Where(e => e.EnglishName.Contains(searchText, StringComparison.InvariantCultureIgnoreCase)).ToList();
-    }
-
-    private void CultureChanged(List<CultureInfo> cultures)
-    {
-
-        if (cultures.Any())
-        {
-            CultureInfo.DefaultThreadCurrentCulture = cultures.First();
-        }
-
-    }
-
 }

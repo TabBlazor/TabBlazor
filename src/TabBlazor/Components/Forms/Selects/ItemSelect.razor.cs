@@ -115,7 +115,7 @@ namespace TabBlazor
 
         private string GetSelectedText(TItem item)
         {
-            if (SelectedTextExpression == null) return "No Selected Expresssion Set up!";
+            if (SelectedTextExpression == null) return item.ToString();
             return SelectedTextExpression.Invoke(item);
         }
 

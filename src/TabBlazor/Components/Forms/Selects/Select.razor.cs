@@ -15,13 +15,26 @@ namespace TabBlazor
         [Parameter] public EventCallback<TValue> SelectedValueChanged { get; set; }
         [Parameter] public EventCallback Updated { get; set; }
         [Parameter] public Func<TItem, string> TextExpression { get; set; }
-        [Parameter] public Func<TItem, TValue> ValueExpression { get; set; }
+        [Parameter] public Func<TItem, TValue> ConvertExpression { get; set; }
         [Parameter] public Func<TItem, bool> DisabledExpression { get; set; }
         [Parameter] public string ItemListEmptyText { get; set; } = "*No items*";
         [Parameter] public string NoSelectedText { get; set; } = "*Select*";
         [Parameter] public bool Clearable { get; set; }
 
         protected List<ListItem<TItem, TValue>> itemList = new();
+
+        protected override void OnInitialized()
+        {
+            if (ConvertExpression == null)
+            {
+                if (typeof(TItem) != typeof(TValue))
+                {
+                    throw new InvalidOperationException($"{GetType()} requires a {nameof(ConvertExpression)} parameter.");
+                }
+
+                ConvertExpression = item => item is TValue value ? value : default;
+            }
+        }
 
         protected override void OnParametersSet()
         {
@@ -93,9 +106,9 @@ namespace TabBlazor
 
         protected TValue GetValue(TItem item)
         {
-            if (ValueExpression == null) return default;
+            if (ConvertExpression == null) return default;
 
-            return ValueExpression.Invoke(item);
+            return ConvertExpression.Invoke(item);
         }
 
         private string GetText(TItem item)
