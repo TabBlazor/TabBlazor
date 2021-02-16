@@ -14,7 +14,8 @@
         parameters.Add("Shipped", 123);
 
         var component = new DynamicComponent(typeof(CustomToast), parameters);
-        await ToastService.AddToastAsync(new ToastModel("New Order!", "Odio Coperation", component));
+        
+        await ToastService.AddToastAsync(new ToastModel("New Order!", "Odio Coperation", component, new ToastOptions { Delay = 20000}));
 
         orders++;
     }

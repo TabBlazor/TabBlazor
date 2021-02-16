@@ -33,6 +33,7 @@ namespace TabBlazor.Components.Toasts
         {
             _progress = 100 - percentComplete;
             await InvokeAsync(StateHasChanged);
+            await Task.Delay(1);
             if (percentComplete >= 100)
             {
                 await Close();

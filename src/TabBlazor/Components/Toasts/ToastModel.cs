@@ -12,18 +12,20 @@ namespace TabBlazor
         public ToastModel()
         {}
 
-        public ToastModel(string title, string subTitle, string message)
+        public ToastModel(string title, string subTitle, string message, ToastOptions options = null)
         {
             Title = title;
             SubTitle = subTitle;
             Message = message;
+            Options = options ?? new ToastOptions();
         }
 
-        public ToastModel(string title, string subTitle, DynamicComponent component)
+        public ToastModel(string title, string subTitle, DynamicComponent component, ToastOptions options = null)
         {
             Title = title;
             SubTitle = subTitle;
             Component = component;
+            Options = options ?? new ToastOptions();
         }
 
         public string Title { get; set; }
