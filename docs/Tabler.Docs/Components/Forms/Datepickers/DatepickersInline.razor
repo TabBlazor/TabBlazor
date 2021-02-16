@@ -1,6 +1,6 @@
 ﻿@using System.Globalization
 
-<ItemSelectMulti MaxSelectableItems="1"
+<ItemSelect MaxSelectableItems="1"
                  Label ="Set Culture"
                  SearchMethod="SearchCulture"
                  TItem="CultureInfo"
@@ -11,7 +11,7 @@
     <ListTemplate>
         @context.EnglishName
     </ListTemplate>
-</ItemSelectMulti>
+</ItemSelect>
 <div class="mt-3" />
 
 <Datepicker @bind-SelectedDate="selectedDate" Inline />

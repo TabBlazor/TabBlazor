@@ -1,0 +1,15 @@
+﻿<h3>ItemSelectsBasic</h3>
+
+@code {
+        List<Customer> customers = Data.SampleData.GetCustomers();
+        List<Customer> selectedCustomers = new List<Customer>();
+        bool disabled;
+        bool showCheckboxes;
+        bool clearable;
+        bool removeSelectedFromList;
+
+        protected override void OnInitialized()
+        {
+            selectedCustomers.Add(customers.First());
+        }
+    }

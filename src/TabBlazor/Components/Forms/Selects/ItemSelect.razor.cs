@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TabBlazor
 {
-    public partial class ItemSelectMulti<TItem> : TablerBaseComponent
+    public partial class ItemSelect<TItem> : TablerBaseComponent
     {
         [Parameter] public List<TItem> Items { get; set; }
         [Parameter] public string NoSelectedText { get; set; } = "*Select*";

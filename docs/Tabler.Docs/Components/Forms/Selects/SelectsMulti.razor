@@ -15,13 +15,13 @@
  
 </Row>
 
-<ItemSelectMulti Items="customers" SelectedTextExpression="e=> e.CustomerName" @bind-SelectedItems="selectedCustomers" Clearable="clearable" 
+<ItemSelect Items="customers" SelectedTextExpression="e=> e.CustomerName" @bind-SelectedItems="selectedCustomers" Clearable="clearable" 
                  ShowCheckBoxes="showCheckboxes" NoSelectedText="*Select Customers*" Disabled="disabled" RemoveSelectedFromList="removeSelectedFromList"
                  MaxSelectableItems="4" SearchMethod="SearchCustomer" SearchPlaceholderText="Search...">
     <ListTemplate>
         @context.CustomerName
     </ListTemplate>
-</ItemSelectMulti>
+</ItemSelect>
 
 <Button OnClick="Test" >Test</Button>
 

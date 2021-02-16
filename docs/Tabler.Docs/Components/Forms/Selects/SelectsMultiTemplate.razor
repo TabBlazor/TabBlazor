@@ -1,4 +1,4 @@
-﻿<ItemSelectMulti Items="customers" @ref="multiSelect" MaxListHeight="100px" RemoveSelectedFromList>
+﻿<ItemSelect Items="customers" @ref="multiSelect" MaxListHeight="100px" RemoveSelectedFromList>
 
     <ListTemplate>
         @context.CustomerName
@@ -33,10 +33,10 @@
        
     </FooterTemplate>
 
-</ItemSelectMulti>
+</ItemSelect>
 
 @code {
     List<Customer> customers = Data.SampleData.GetCustomers();
-    ItemSelectMulti<Customer> multiSelect;
+    ItemSelect<Customer> multiSelect;
 
 }
