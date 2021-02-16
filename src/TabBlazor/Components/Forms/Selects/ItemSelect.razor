@@ -1,6 +1,7 @@
 ﻿@namespace TabBlazor
 @inherits TablerBaseComponent
 @typeparam TItem
+@typeparam TValue
 
 @if (!string.IsNullOrWhiteSpace(Label))
 {
@@ -53,13 +54,21 @@
                     @if (showSearch)
                     {
                         <div class="m-2">
+
+                     
+
                             <div class="input-group input-group-flat">
                                 <input class="form-control" @bind="searchText" type="text" @bind:event="oninput" placeholder="@SearchPlaceholderText">
 
                                 <span class="input-group-text">
+                              
                                     @if (!string.IsNullOrWhiteSpace(searchText))
                                     {
                                         <Icon Elements="@InternalIcons.X" class="icon" OnClick="ClearSearch" />
+                                    }
+                                    else
+                                    {
+                                        <Icon Elements="@InternalIcons.Search" class="icon cursor-auto"  />
                                     }
                                 </span>
                             </div>

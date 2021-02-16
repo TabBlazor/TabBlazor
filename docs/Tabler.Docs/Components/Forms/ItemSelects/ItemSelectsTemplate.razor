@@ -1,4 +1,5 @@
-﻿<ItemSelect Items="customers" @ref="multiSelect" MaxListHeight="100px" RemoveSelectedFromList>
+﻿
+<ItemSelect SelectedValues="selectedCustomers" Items="customers" @ref="select" MaxListHeight="200px" RemoveSelectedFromList MultiSelect>
 
     <ListTemplate>
         @context.CustomerName
@@ -14,12 +15,11 @@
             <Button>
                 Customers
                 <Badge class="ms-2" BackgroundColor="TablerColor.Red">@context.Count</Badge>
-                <span @onclick="@(e => multiSelect.ClearSelected())" @onclick:stopPropagation>
+                <span @onclick="@(e => select.ClearSelected())" @onclick:stopPropagation>
                     <Icon class="ms-2 icon" Elements="@DemoIcons.Trash" />
                 </span>
             </Button>
         }
-
     </SelectedTemplate>
 
     <FooterTemplate>
@@ -37,6 +37,8 @@
 
 @code {
     List<Customer> customers = Data.SampleData.GetCustomers();
-    ItemSelect<Customer> multiSelect;
+    List<Customer> selectedCustomers = new List<Customer>();
+
+    ItemSelect<Customer, Customer> select;
 
 }

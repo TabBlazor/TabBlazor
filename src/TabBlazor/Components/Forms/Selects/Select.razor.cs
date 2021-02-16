@@ -21,7 +21,7 @@ namespace TabBlazor
         [Parameter] public string NoSelectedText { get; set; } = "*Select*";
         [Parameter] public bool Clearable { get; set; }
 
-        protected List<ListItem<TItem, TValue>> itemList = new List<ListItem<TItem, TValue>>();
+        protected List<ListItem<TItem, TValue>> itemList = new();
 
         protected override void OnParametersSet()
         {
