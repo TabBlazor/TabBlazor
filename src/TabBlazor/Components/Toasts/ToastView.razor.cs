@@ -32,20 +32,15 @@ namespace TabBlazor.Components.Toasts
         private async void CalculateProgress(int percentComplete)
         {
             _progress = 100 - percentComplete;
-            await InvokeAsync(StateHasChanged);
-            await Task.Delay(1);
             if (percentComplete >= 100)
             {
                 await Close();
             }
-           
-           
-
+            await InvokeAsync(StateHasChanged);
         }
 
         private async Task Close()
         {
-            //ToastsContainer.RemoveToast(ToastId);
             await ToastService.RemoveToastAsync(Toast);
         }
 
