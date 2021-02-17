@@ -15,7 +15,7 @@ namespace TabBlazor.Components.Toasts
         internal Action<int> OnTick;
         internal Action OnElapsed;
 
-        const int multiplier = 3;
+        const int multiplier = 10;
 
         internal CountdownTimer(int timeout)
         {
