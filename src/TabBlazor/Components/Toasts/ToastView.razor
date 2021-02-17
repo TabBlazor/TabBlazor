@@ -14,7 +14,7 @@
 
         @if (Toast.Component != null)
         {
-            <CascadingValue Value="Toast" Name="Toast">
+            <CascadingValue Value="this">
                 @Toast.Component.Contents
             </CascadingValue>
         }

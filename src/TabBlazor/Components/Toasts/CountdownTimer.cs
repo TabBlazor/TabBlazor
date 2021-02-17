@@ -15,13 +15,13 @@ namespace TabBlazor.Components.Toasts
         internal Action<int> OnTick;
         internal Action OnElapsed;
 
-        const int multiplier = 1;
+       
 
         internal CountdownTimer(int timeout)
         {
             _timer = new Timer(timeout)
             {
-                Interval = (timeout  / 100) * multiplier,
+                Interval = (timeout  / 100),
                 AutoReset = true
             };
 
@@ -37,7 +37,7 @@ namespace TabBlazor.Components.Toasts
 
         private void HandleTick(object sender, ElapsedEventArgs args)
         {
-            _percentComplete += multiplier;
+            _percentComplete += 1;
             OnTick?.Invoke(_percentComplete);
 
             if (_percentComplete >= 100)
