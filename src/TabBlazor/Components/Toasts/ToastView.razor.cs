@@ -21,10 +21,7 @@ namespace TabBlazor.Components.Toasts
             if (Toast.Options.AutoClose)
             {
                 _countdownTimer = new CountdownTimer(Toast.Options.Delay);
-                //_countdownTimer.OnTick += async (e) => { await CalculateProgress(e); };
                 _countdownTimer.OnTick += CalculateProgress;
-                //_countdownTimer.OnElapsed += async () =>  { await Close(); };
-                //_countdownTimer.OnElapsed += Close; ;
                 _countdownTimer.Start();
             } 
         }
@@ -42,11 +39,6 @@ namespace TabBlazor.Components.Toasts
         private async Task Close()
         {
             await ToastService.RemoveToastAsync(Toast);
-        }
-
-        private void ToastClick()
-        {
-           // ToastSettings.OnClick?.Invoke();
         }
 
         public void Dispose()
