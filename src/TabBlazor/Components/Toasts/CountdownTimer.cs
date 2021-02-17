@@ -10,8 +10,6 @@ namespace TabBlazor.Components.Toasts
     internal class CountdownTimer : IDisposable
     {
         private Timer _timer;
-        private int _timeout;
-        private int _countdownTotal;
         private int _percentComplete;
 
         internal Action<int> OnTick;
@@ -19,10 +17,15 @@ namespace TabBlazor.Components.Toasts
 
         internal CountdownTimer(int timeout)
         {
-            _countdownTotal = timeout;
-            _timeout = _countdownTotal / 100;
+            _timer = new Timer(timeout)
+            {
+                Interval = timeout  / 100,
+                AutoReset = true
+            };
+
+            _timer.Elapsed += HandleTick;
+
             _percentComplete = 0;
-            SetupTimer();
         }
 
         internal void Start()
@@ -30,26 +33,14 @@ namespace TabBlazor.Components.Toasts
             _timer.Start();
         }
 
-        private void SetupTimer()
-        {
-            _timer = new Timer(_timeout);
-            _timer.Elapsed += HandleTick;
-            _timer.AutoReset = false;
-        }
-
         private void HandleTick(object sender, ElapsedEventArgs args)
         {
-            _percentComplete++;
+            _percentComplete += 1;
             OnTick?.Invoke(_percentComplete);
 
-            if (_percentComplete == 100)
+            if (_percentComplete >= 100)
             {
                 OnElapsed?.Invoke();
-            }
-            else
-            {
-                SetupTimer();
-                Start();
             }
         }
 
