@@ -29,7 +29,7 @@
     @if (Toast.Options.AutoClose && Toast.Options.ShowProgress)
     {
         <div class="progress progress-sm">
-            <div class="progress-bar" style="width: @(_progress)%;"  />
+            <div class="progress-bar" style="width: @(_progress)%; transition:none"  />
         </div>
         <span>@_progress</span>
     }
