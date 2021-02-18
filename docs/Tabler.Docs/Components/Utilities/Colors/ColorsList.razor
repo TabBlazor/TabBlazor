@@ -1,5 +1,5 @@
 ﻿<ButtonList>
-    @foreach (var color in EnumInfo.GetList<TablerColor>())
+    @foreach (var color in EnumHelper.GetList<TablerColor>())
     {
         <Button BackgroundColor="color">@color.ToString()</Button>
     }

@@ -10,7 +10,7 @@
         message = string.Empty;
 
      
-        var component = new DynamicComponent(typeof(TestModalContent), new ComponentParameters{{"ReportName","Report Name"}});
+        var component = new RenderComponent(typeof(TestModalContent), new Dictionary<string, object>{{"ReportName","Report Name"}});
         var result = await ModalService.ShowAsync("This is a Title", component, new ModalOptions { Size = ModalSize.Large });
 
         if (result.Cancelled)

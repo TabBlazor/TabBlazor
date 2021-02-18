@@ -7,11 +7,11 @@
     private int orders = 33;
     private async Task ShowToast()
     {
-        var parameters = new ComponentParameters();
+        var parameters = new Dictionary<string, object>();
         parameters.Add("Orders", orders);
         parameters.Add("Shipped", 123);
 
-        var component = new DynamicComponent(typeof(CustomToast), parameters);
+        var component = new RenderComponent(typeof(CustomToast), parameters);
         await ToastService.AddToastAsync(new ToastModel("", "", component, new ToastOptions { Delay = 5, ShowHeader = false}));
 
         orders++;

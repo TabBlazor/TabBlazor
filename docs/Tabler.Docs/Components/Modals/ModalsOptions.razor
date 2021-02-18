@@ -1,22 +1,22 @@
 ﻿<Row>
     <RowCol Sm="12" Md="6" Lg="4">
         <label class="form-label">Size</label>
-        <Select Items="EnumInfo.GetList<ModalSize>()" @bind-SelectedValue="@modalOptions.Size" TextExpression="e=> e.ToString()" ValueExpression="e=> e" />
+        <Select Items="EnumHelper.GetList<ModalSize>()" @bind-SelectedValue="@modalOptions.Size" TextExpression="e=> e.ToString()" />
     </RowCol>
 
     <RowCol Sm="12" Md="6" Lg="4">
         <label class="form-label">Fullscreen</label>
-        <Select Items="EnumInfo.GetList<ModalFullscreen>()" @bind-SelectedValue="@modalOptions.Fullscreen" TextExpression="e=> e.ToString()" ValueExpression="e=> e" />
+        <Select Items="EnumHelper.GetList<ModalFullscreen>()" @bind-SelectedValue="@modalOptions.Fullscreen" TextExpression="e=> e.ToString()"  />
     </RowCol>
 
     <RowCol Sm="12" Md="6" Lg="4">
         <label class="form-label">Status</label>
-        <Select Items="EnumInfo.GetList<TablerColor>()" @bind-SelectedValue="@modalOptions.StatusColor" TextExpression="e=> e.ToString()" ValueExpression="e=> e" Clearable />
+        <Select Items="EnumHelper.GetNullableList<TablerColor>()" @bind-SelectedValue="@modalOptions.StatusColor" TextExpression="e=> e.ToString()" Clearable />
     </RowCol>
 
     <RowCol Sm="12" Md="6" Lg="4">
         <label class="form-label">Vertical position</label>
-        <Select Items="EnumInfo.GetList<ModalVerticalPosition>()" @bind-SelectedValue="@modalOptions.VerticalPosition" TextExpression="e=> e.ToString()" ValueExpression="e=> e" />
+        <Select Items="EnumHelper.GetList<ModalVerticalPosition>()" @bind-SelectedValue="@modalOptions.VerticalPosition"   />
     </RowCol>
 
     <Row class="mt-2">
@@ -58,7 +58,7 @@
     protected async Task ShowModal()
     {
         message = string.Empty;
-        var result = await ModalService.ShowAsync("This is a Title", new DynamicComponent(typeof(TestModalContent)), modalOptions);
+        var result = await ModalService.ShowAsync("This is a Title", new RenderComponent(typeof(TestModalContent)), modalOptions);
 
         if (result.Cancelled)
         {

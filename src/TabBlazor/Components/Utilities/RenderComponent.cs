@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace TabBlazor
 {
-    public class DynamicComponent
+    public class RenderComponent
     {
-        public DynamicComponent(Type componentType, ComponentParameters parameters = null)
+        public RenderComponent(Type componentType, Dictionary<string,object> parameters = null)
         {
             if (!typeof(ComponentBase).IsAssignableFrom(componentType))
             {
@@ -21,7 +21,7 @@ namespace TabBlazor
         }
 
         public Type ComponentType { get; set; }
-        public ComponentParameters Parameters { get; }
+        public Dictionary<string, object> Parameters { get; }
 
         public RenderFragment Contents
         {

@@ -113,7 +113,7 @@ namespace TabBlazor
 
         private string GetText(TItem item)
         {
-            if (TextExpression == null) return "No Expresssion Set up!";
+            if (TextExpression == null) { return item.ToString(); }
             return TextExpression.Invoke(item);
         }
 

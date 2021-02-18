@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace TabBlazor
 {
-    public static class EnumInfo
+    public static class EnumHelper
     {
         public static List<TEnum> GetList<TEnum>() where TEnum : struct, Enum
         {

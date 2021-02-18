@@ -6,7 +6,7 @@ namespace TabBlazor
 {
     public class ModalModel
     {
-        public ModalModel(DynamicComponent component, string title, ModalOptions options)
+        public ModalModel(RenderComponent component, string title, ModalOptions options)
         {
             TaskSource = new TaskCompletionSource<ModalResult>();
             Component = component;
@@ -19,7 +19,7 @@ namespace TabBlazor
 
         public Task<ModalResult> Task { get { return TaskSource.Task; } }
         public string Title { get; }
-        private DynamicComponent Component { get; set; }
+        private RenderComponent Component { get; set; }
        
         public ModalOptions Options { get; }
 
