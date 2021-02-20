@@ -2,30 +2,46 @@
 
 @inherits ComponentBase
 
-@if (string.IsNullOrEmpty(Label) && string.IsNullOrEmpty(Description) && !Switch)
+
+
+
+@if (string.IsNullOrEmpty(Label) && string.IsNullOrEmpty(Description) && !Switch && !isSelectGroup)
 {
-   
+
     RenderCheckBox();
 }
 else
 {
 <label class="@ClassNames">
     @{ RenderCheckBox(); }
-    @if (!string.IsNullOrEmpty(Label))
+
+    @if (!isSelectGroup)
     {
-        <span class="form-check-label">@Label</span>
+        @if (!string.IsNullOrEmpty(Label))
+        {
+            <span class="form-check-label">@Label</span>
+        }
+        @if (!string.IsNullOrEmpty(Description))
+        {
+            <span class="form-check-description">@Description</span>
+        }
     }
-    @if (!string.IsNullOrEmpty(Description))
-    {
-        <span class="form-check-description">@Description</span>
-    }
+
 </label>
 }
 
 @{
     void RenderCheckBox()
     {
-        <input type="checkbox" class="form-check-input cursor-pointer" checked="@Value" @onclick="ToggleState" disabled="@Disabled">
+        <input type="checkbox" class="@inputCss" checked="@Value" @onclick="ToggleState" disabled="@Disabled">
+
+        @if (ChildContent != null)
+        {
+            <span class="form-selectgroup-label">
+                @ChildContent
+            </span>
+        }
+
     }
 }
 
