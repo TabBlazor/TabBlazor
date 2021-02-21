@@ -19,22 +19,22 @@ namespace TabBlazor.Services
 
         public async Task ScrollToFragment(string fragmentId)
         {
-             await jsRuntime.InvokeVoidAsync("blazorTabler.scrollToFragment", fragmentId);
+             await jsRuntime.InvokeVoidAsync("tabBlazor.scrollToFragment", fragmentId);
         }
 
         public async Task ShowAlert(string message)
         {
-            await jsRuntime.InvokeVoidAsync("blazorTabler.showAlert", message);
+            await jsRuntime.InvokeVoidAsync("tabBlazor.showAlert", message);
         }
 
         public async Task DisableDraggable(ElementReference container, ElementReference element)
         {
-            await jsRuntime.InvokeVoidAsync("blazorTabler.disableDraggable", container, element);
+            await jsRuntime.InvokeVoidAsync("tabBlazor.disableDraggable", container, element);
         }
 
         public  async Task SetElementProperty(ElementReference element, string property, object value)
         {
-            await jsRuntime.InvokeVoidAsync("blazorTabler.setPropByElement", element, property, value);
+            await jsRuntime.InvokeVoidAsync("tabBlazor.setPropByElement", element, property, value);
         }
 
     }

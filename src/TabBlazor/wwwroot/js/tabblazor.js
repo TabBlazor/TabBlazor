@@ -1,4 +1,4 @@
-﻿window.blazorTabler = {
+﻿window.tabBlazor = {
 
     scrollToFragment: (elementId) => {
         var element = document.getElementById(elementId);
