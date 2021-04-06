@@ -27,7 +27,7 @@ namespace TabBlazor
         [Parameter] public RenderFragment ChildContent { get; set; }
         [Parameter] public RenderFragment<Item> DetailsTemplate { get; set; }
         [Parameter] public RenderFragment<Item> RowActionTemplate { get; set; }
-        
+
         [Parameter] public List<Item> SelectedItems { get; set; }
         [Parameter] public EventCallback<List<Item>> SelectedItemsChanged { get; set; }
         [Parameter] public bool MultiSelect { get; set; }
@@ -148,7 +148,7 @@ namespace TabBlazor
             await CloseEdit();
         }
 
-      
+
         public bool IsSelected(Item item)
         {
             if (SelectedItems == null) { return false; }
@@ -317,6 +317,7 @@ namespace TabBlazor
             }
 
             Items.Add(tableItem);
+            TotalCount++;
 
             await LastPage();
             EditItem(tableItem);
@@ -331,7 +332,6 @@ namespace TabBlazor
             Items.Remove(item);
             await OnItemDeleted.InvokeAsync(item);
             //}
-
             await CloseEdit();
         }
 
