@@ -28,6 +28,10 @@
         return "";
     },
 
+    copyToClipboard: (text) => {
+        navigator.clipboard.writeText(text)
+    },
+
     disableDraggable: (container, element) => {
 
         element.addEventListener("mousedown", (e) => {

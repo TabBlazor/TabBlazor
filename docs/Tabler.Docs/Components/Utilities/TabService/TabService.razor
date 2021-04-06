@@ -1,0 +1,18 @@
+﻿@page "/docs/utilities/tabservice"
+
+@inject TablerService tabService
+
+<Button OnClick="CopyToClipboard">Copy to clipboard</Button>
+
+
+@code {
+    private async Task CopyToClipboard()
+    {
+        var text = "This is a sample text";
+
+        await tabService.CopyToClipboard(text);
+        await tabService.ShowAlert($"'{text}' has been copied to clipboard");
+
+    }
+
+}

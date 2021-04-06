@@ -27,6 +27,11 @@ namespace TabBlazor.Services
             await jsRuntime.InvokeVoidAsync("tabBlazor.showAlert", message);
         }
 
+        public async Task CopyToClipboard(string text)
+        {
+            await jsRuntime.InvokeVoidAsync("tabBlazor.copyToClipboard", text);
+        }
+
         public async Task DisableDraggable(ElementReference container, ElementReference element)
         {
             await jsRuntime.InvokeVoidAsync("tabBlazor.disableDraggable", container, element);

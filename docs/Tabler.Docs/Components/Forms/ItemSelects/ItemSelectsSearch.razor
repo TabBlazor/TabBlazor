@@ -1,0 +1,29 @@
+﻿<ItemSelect Items="customers" @bind-SelectedValue="selectedCustomer" SelectedTextExpression="e=>e.CustomerName" SearchMethod="SearchCustomers">
+    <ListTemplate>
+        @context.CustomerName
+    </ListTemplate>
+</ItemSelect>
+
+<div class="mt-3">
+    @if (selectedCustomer != null)
+    {
+        <div>@selectedCustomer.CustomerName [@selectedCustomer.CustomerId]</div>
+    }
+</div>
+
+@code {
+    List<Customer> customers = Data.SampleData.GetCustomers();
+    Customer selectedCustomer;
+
+    private IEnumerable<Customer> SearchCustomers(string searchString) {
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            return customers;
+        }
+        else
+        {
+            return customers.Where(e => e.CustomerName.Contains(searchString, StringComparison.InvariantCultureIgnoreCase));
+        }
+    }
+
+}
