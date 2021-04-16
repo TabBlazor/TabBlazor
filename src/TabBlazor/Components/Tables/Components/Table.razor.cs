@@ -31,7 +31,7 @@ namespace TabBlazor
         [Parameter] public List<Item> SelectedItems { get; set; }
         [Parameter] public EventCallback<List<Item>> SelectedItemsChanged { get; set; }
         [Parameter] public bool MultiSelect { get; set; }
-
+        [Parameter] public EventCallback<Item> OnRowClicked { get; set; }
 
         [Parameter] public Func<Task<IList<Item>>> OnRefresh { get; set; }
         [Parameter] public EventCallback<Item> OnItemEdited { get; set; }
@@ -163,6 +163,16 @@ namespace TabBlazor
         protected bool ShowDetailsRow(Item item)
         {
             return DetailsTemplate != null && IsSelected(item);
+        }
+
+        public async Task RowClicked(Item item)
+        {
+            if (!ShowCheckboxes)
+            {
+                await SetSelectedItem(item);
+            }
+
+            await OnRowClicked.InvokeAsync(item);
         }
 
         public async Task SetSelectedItem(Item item)

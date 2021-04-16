@@ -18,12 +18,13 @@ namespace TabBlazor.Components.Tables
                .ToString();
         }
 
-        public void RowClick()
+        public async Task RowClick()
         {
-            if (!Table.ShowCheckboxes)
-            {
-                Table.SetSelectedItem(Item);
-            }
+            await Table.RowClicked(Item);
+            //if (!Table.ShowCheckboxes)
+            //{
+            //    Table.SetSelectedItem(Item);
+            //}
           
         }
 

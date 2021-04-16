@@ -82,6 +82,7 @@ namespace TabBlazor.Components.Tables
         Task OnDeleteItem(TableItem item);
         void EditItem(TableItem item);
         Task SetSelectedItem(TableItem item);
+        Task RowClicked(TableItem item);
     }
 
     public interface ITableRowActions<TableItem>
