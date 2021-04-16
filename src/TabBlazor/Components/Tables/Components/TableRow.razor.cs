@@ -21,11 +21,6 @@ namespace TabBlazor.Components.Tables
         public async Task RowClick()
         {
             await Table.RowClicked(Item);
-            //if (!Table.ShowCheckboxes)
-            //{
-            //    Table.SetSelectedItem(Item);
-            //}
-          
         }
 
         public bool IsSelected(TableItem item)

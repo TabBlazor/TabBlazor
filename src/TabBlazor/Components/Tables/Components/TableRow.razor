@@ -36,12 +36,12 @@
 
                 @if (Table.AllowEdit)
                 {
-                    <Icon class="cursor-pointer icon" Elements="@InternalIcons.Edit" />
+                    <Icon OnClick="Edit" class="cursor-pointer icon" Elements="@InternalIcons.Edit" />
                 }
 
                 @if (Table.AllowDelete)
                 {
-                    <Icon class="cursor-pointer icon" Elements="@InternalIcons.Trash" />
+                    <Icon OnClick="Delete" class="cursor-pointer icon" Elements="@InternalIcons.Trash" />
                 }
             </div>
         </td>
