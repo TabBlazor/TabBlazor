@@ -94,7 +94,7 @@
 
     private async Task CreateReport()
     {
-        var result = await ModalService.ShowAsync($"Create: {ReportName}", new RenderComponent(typeof(DialogTest)), new ModalOptions { StatusColor = TablerColor.Danger, BlurBackground = false });
+        var result = await ModalService.ShowAsync($"Create: {ReportName}", new RenderComponent<DialogTest>(), new ModalOptions { StatusColor = TablerColor.Danger, BlurBackground = false });
         if (!result.Cancelled)
         {
             ModalService.Close(ModalResult.Ok());

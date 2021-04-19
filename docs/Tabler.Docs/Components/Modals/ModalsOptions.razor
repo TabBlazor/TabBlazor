@@ -58,7 +58,8 @@
     protected async Task ShowModal()
     {
         message = string.Empty;
-        var result = await ModalService.ShowAsync("This is a Title", new RenderComponent(typeof(TestModalContent)), modalOptions);
+        var component = new RenderComponent<TestModalContent>();
+        var result = await ModalService.ShowAsync("This is a Title", component, modalOptions);
 
         if (result.Cancelled)
         {

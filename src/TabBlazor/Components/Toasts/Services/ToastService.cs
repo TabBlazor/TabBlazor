@@ -18,6 +18,13 @@ namespace TabBlazor.Services
             await Changed();
         }
 
+        public async Task AddToastAsync<TComponent>(string title, string subTitle, RenderComponent<TComponent> component, ToastOptions options = null) where TComponent : IComponent
+        {
+            var toast = new ToastModel(title, subTitle, component?.Contents, options);
+            toasts.Add(toast);
+            await Changed();
+        }
+
         public async Task RemoveToastAsync(ToastModel toast)
         {
             if (toasts.Contains(toast))

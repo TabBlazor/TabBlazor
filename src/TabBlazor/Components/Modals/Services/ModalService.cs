@@ -26,9 +26,9 @@ namespace TabBlazor.Services
 
         public IEnumerable<ModalModel> Modals { get { return modals; } }
 
-        public Task<ModalResult> ShowAsync(string title, RenderComponent component, ModalOptions modalOptions = null)
+        public Task<ModalResult> ShowAsync<TComponent>(string title, RenderComponent<TComponent> component, ModalOptions modalOptions = null) where TComponent : IComponent
         {
-            modalModel = new ModalModel(component, title, modalOptions);
+            modalModel = new ModalModel(component.Contents, title, modalOptions);
             modals.Push(modalModel);
             OnChanged?.Invoke();
             return modalModel.Task;

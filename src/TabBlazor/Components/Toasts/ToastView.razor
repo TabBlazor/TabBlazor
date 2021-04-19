@@ -12,10 +12,10 @@
 
     <div class="toast-body">
 
-        @if (Toast.Component != null)
+        @if (Toast.Contents != null)
         {
             <CascadingValue Value="this">
-                @Toast.Component.Contents
+                @Toast.Contents
             </CascadingValue>
         }
         else

@@ -6,10 +6,10 @@ namespace TabBlazor
 {
     public class ModalModel
     {
-        public ModalModel(RenderComponent component, string title, ModalOptions options)
+        public ModalModel(RenderFragment contents, string title, ModalOptions options)
         {
             TaskSource = new TaskCompletionSource<ModalResult>();
-            Component = component;
+            ModalContents = contents;
             Title = title;
             Options = options ?? new ModalOptions();
         }
@@ -19,11 +19,11 @@ namespace TabBlazor
 
         public Task<ModalResult> Task { get { return TaskSource.Task; } }
         public string Title { get; }
-        private RenderComponent Component { get; set; }
-       
+       // private RenderComponent Component { get; set; }
+       public RenderFragment ModalContents { get; private set; }
         public ModalOptions Options { get; }
 
-        public RenderFragment ModalContents => Component.Contents;
+       // public RenderFragment ModalContents => Component.Contents;
         
     }
 }

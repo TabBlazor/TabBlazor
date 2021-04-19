@@ -11,8 +11,11 @@
         parameters.Add("Orders", orders);
         parameters.Add("Shipped", 123);
 
-        var component = new RenderComponent(typeof(CustomToast), parameters);
-        await ToastService.AddToastAsync(new ToastModel("", "", component, new ToastOptions { Delay = 5, ShowHeader = false}));
+        var component = new RenderComponent<CustomToast>()
+            .Set(e => e.Orders, orders)
+            .Set(e => e.Shipped, 123);
+        
+        await ToastService.AddToastAsync("", "", component, new ToastOptions { Delay = 5, ShowHeader = false});
 
         orders++;
     }

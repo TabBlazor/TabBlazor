@@ -1,39 +1,57 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace TabBlazor
 {
-    public class RenderComponent
+    public class RenderComponent<TComponent> where TComponent : IComponent
     {
-        public RenderComponent(Type componentType, Dictionary<string,object> parameters = null)
-        {
-            if (!typeof(ComponentBase).IsAssignableFrom(componentType))
-            {
-                throw new ArgumentException($"{componentType.FullName} must be a Blazor Component");
-            }
+        private static readonly Type TComponentType = typeof(TComponent);
+        private readonly Dictionary<string, object> parameters = new(StringComparer.Ordinal);
 
-            ComponentType = componentType;
-            Parameters = parameters;
+        public RenderComponent<TComponent> Set<TValue>(Expression<Func<TComponent, TValue>> parameterSelector, TValue value)
+        {
+            if (value is null)
+                throw new ArgumentNullException(nameof(value));
+
+            parameters.Add(GetParameterName(parameterSelector), value);
+            return this;
         }
 
-        public Type ComponentType { get; set; }
-        public Dictionary<string, object> Parameters { get; }
+        private static string GetParameterName<TValue>(Expression<Func<TComponent, TValue>> parameterSelector)
+        {
+            if (parameterSelector is null)
+                throw new ArgumentNullException(nameof(parameterSelector));
+
+            if (parameterSelector.Body is not MemberExpression memberExpression ||
+                memberExpression.Member is not PropertyInfo propInfoCandidate)
+                throw new ArgumentException($"The parameter selector '{parameterSelector}' does not resolve to a public property on the component '{typeof(TComponent)}'.", nameof(parameterSelector));
+
+            var propertyInfo = propInfoCandidate.DeclaringType != TComponentType
+                ? TComponentType.GetProperty(propInfoCandidate.Name, propInfoCandidate.PropertyType)
+                : propInfoCandidate;
+
+            var paramAttr = propertyInfo?.GetCustomAttribute<ParameterAttribute>(inherit: true);
+
+            if (propertyInfo is null || paramAttr is null)
+                throw new ArgumentException($"The parameter selector '{parameterSelector}' does not resolve to a public property on the component '{typeof(TComponent)}' with a [Parameter] or [CascadingParameter] attribute.", nameof(parameterSelector));
+
+            return propertyInfo.Name;
+        }
 
         public RenderFragment Contents
         {
             get
             {
-                RenderFragment content = new RenderFragment(x =>
+                RenderFragment content = new(x =>
                 {
                     int seq = 1;
-                    x.OpenComponent(seq++, ComponentType);
-                    if (Parameters != null)
+                    x.OpenComponent(seq++, TComponentType);
+                    if (parameters != null)
                     {
-                        foreach (var parameter in Parameters)
+                        foreach (var parameter in parameters)
                             x.AddAttribute(seq++, parameter.Key, parameter.Value);
                     }
 
@@ -42,5 +60,7 @@ namespace TabBlazor
                 return content;
             }
         }
+
+
     }
 }

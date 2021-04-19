@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Components;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,11 +21,11 @@ namespace TabBlazor
             Options = options ?? new ToastOptions();
         }
 
-        public ToastModel(string title, string subTitle, RenderComponent component, ToastOptions options = null)
+        public ToastModel(string title, string subTitle, RenderFragment contents, ToastOptions options = null)
         {
             Title = title;
             SubTitle = subTitle;
-            Component = component;
+            Contents = contents;
             Options = options ?? new ToastOptions();
         }
 
@@ -32,6 +33,6 @@ namespace TabBlazor
         public string SubTitle { get; set; }
         public string Message { get; set; }
         public ToastOptions Options { get; set; } = new ToastOptions();
-        public RenderComponent Component { get; set; }
+        public RenderFragment Contents { get; internal set; }
     }
 }

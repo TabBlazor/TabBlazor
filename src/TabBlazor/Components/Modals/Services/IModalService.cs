@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Components;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,7 +9,7 @@ namespace TabBlazor.Services
     {
         event Action OnChanged;
         IEnumerable<ModalModel> Modals { get; }
-        Task<ModalResult> ShowAsync(string title, RenderComponent component, ModalOptions modalOptions = null);        
+        Task<ModalResult> ShowAsync<TComponent>(string title, RenderComponent<TComponent> component, ModalOptions modalOptions = null) where TComponent : IComponent;        
         void Close(ModalResult modalResult);
         void Close();
     }
