@@ -1,4 +1,4 @@
-﻿<ItemSelect Items="customers" @bind-SelectedValues="selectedCustomers" SelectedTextExpression="e=>e.CustomerName" ConvertExpression="e=>e.CustomerId" MultiSelect>
+﻿<ItemSelect Items="customers" @bind-SelectedValues="selectedCustomers" SelectedTextExpression="e=>e.CustomerName" ConvertExpression="e=>e.CustomerId" MultiSelect >
     <ListTemplate>
         @context.CustomerName
     </ListTemplate>
@@ -14,10 +14,11 @@
 @code {
     List<Customer> customers = Data.SampleData.GetCustomers();
     List<Guid> selectedCustomers = new List<Guid>();
-   
+
 
     protected override void OnInitialized()
     {
+   
         selectedCustomers.Add(customers.First().CustomerId);
     }
 }

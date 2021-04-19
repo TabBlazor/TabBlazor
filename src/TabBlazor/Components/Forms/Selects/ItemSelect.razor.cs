@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace TabBlazor
@@ -24,6 +25,7 @@ namespace TabBlazor
         [Parameter] public EventCallback Changed { get; set; }
 
         [Parameter] public Func<TItem, string> SelectedTextExpression { get; set; }
+        [Parameter] public Func<TItem, string> IdExpression { get; set; }
         [Parameter] public Func<TItem, TValue> ConvertExpression { get; set; }
         [Parameter] public RenderFragment<TItem> ListTemplate { get; set; }
         [Parameter] public RenderFragment<List<TItem>> SelectedTemplate { get; set; }
@@ -131,7 +133,11 @@ namespace TabBlazor
 
         private bool IsSelected(TItem item)
         {
-
+            if (IdExpression!= null)
+            {
+                return selectedItems.FirstOrDefault(e => IdExpression.Invoke(e) == IdExpression.Invoke(item)) != null;
+            }
+           
             return selectedItems.Contains(item);
         }
 
