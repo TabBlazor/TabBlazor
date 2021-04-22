@@ -1,14 +1,17 @@
 ﻿@inherits LayoutComponentBase
 
-<ModalContainer />
-<ToastContainer />
+    <div class="  @(darkMode ? "theme-dark": "")">
 
-<MainNavigation></MainNavigation>
+        <ModalContainer />
+        <ToastContainer />
 
-<div class="page">
-    <div class="content">
-        <div class="container-fluid">
-            @Body
+        <MainNavigation @bind-DarkMode="darkMode"></MainNavigation>
+
+        <div class="page">
+            <div class="content">
+                <div class="container-fluid">
+                    @Body
+                </div>
+            </div>
         </div>
     </div>
-</div>

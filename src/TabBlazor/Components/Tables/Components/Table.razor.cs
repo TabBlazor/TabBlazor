@@ -18,7 +18,7 @@ namespace TabBlazor
         [Parameter] public bool ShowTableHeader { get; set; } = true;
         [Parameter] public bool Selectable { get; set; }
         [Parameter] public bool ShowNoItemsLabel { get; set; } = true;
-        [Parameter] public string TableClass { get; set; } = "table card-table table-striped table-vcenter datatable dataTable no-footer";
+        [Parameter] public string TableClass { get; set; } = "table card-table table-hover table-vcenter datatable dataTable no-footer";
         [Parameter] public string ValidationRuleSet { get; set; } = "default";
         [Parameter] public int PageSize { get; set; } = 20;
         [Parameter] public IList<Item> Items { get; set; }

@@ -1,6 +1,5 @@
-﻿<Table Item="Order" Items="orders" PageSize="10" AddItemFactory="AddItem" OnItemEdited="OnItemEdit" 
-       @bind-SelectedItems="selectedOrders" OnItemAdded="OnItemAdd" OnItemDeleted="OnItemDelete" ShowCheckboxes MultiSelect
-       OnRowClicked="OnRowClicked">
+﻿<Table Item="Order" Items="orders" PageSize="10" AddItemFactory="AddItem" OnItemEdited="OnItemEdit"
+       @bind-SelectedItems="selectedOrders" OnItemAdded="OnItemAdd" OnItemDeleted="OnItemDelete" ShowCheckboxes MultiSelect>
     <HeaderTemplate>
         <strong>Orders</strong>
     </HeaderTemplate>
@@ -47,11 +46,6 @@
     private async Task OnItemAdd(Order order)
     {
         await TablerService.ShowAlert($"Added order {order.OrderId}");
-    }
-
-    private async Task OnRowClicked(Order order)
-    {
-        await TablerService.ShowAlert($"RowClicked order {order.OrderId}");
     }
 
     private async Task OnItemDelete(Order order)

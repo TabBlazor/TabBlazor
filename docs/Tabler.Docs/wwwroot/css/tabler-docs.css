@@ -60,9 +60,6 @@ pre.highlight,
   flex: 1;
   max-width: 100%; }
 
-.example-bg {
-  background-color: #f5f7fb; }
-
 .example-code {
   margin: 2rem 0;
   border-top: none; }
@@ -82,20 +79,3 @@ pre.highlight,
 
 .example-column-2 {
   max-width: 40rem; }
-
-/*.example-modal-backdrop {
-  background: $modal-backdrop-bg;
-  opacity: $modal-backdrop-opacity;
-  position: absolute;
-  width: 100%;
-  left: 0;
-  top: 0;
-  height: 100%;
-  border-radius: 2px 2px 0 0;
-}
-
-@include dark-mode {
-  .example-code {
-    border: 1px solid $border-color;
-    border-top: none;
-  }*/
