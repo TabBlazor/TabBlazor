@@ -9,6 +9,12 @@
     min-width: 99%;
 }
 
+//dropdown
+.dropdown-item.highlight {
+    /*  background-color : var(--tblr-light);*/
+    background-color: lightgray;
+}
+
 //Treeview
 .tree, .tree ul {
     margin: 0;

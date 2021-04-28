@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +45,8 @@ namespace TabBlazor
         private List<TItem> selectedItems = new();
         private Dropdown dropdown;
         private string searchText;
+        private ElementReference myDiv;
+        private TItem highlighted;
 
         protected override void OnInitialized()
         {
@@ -82,9 +85,8 @@ namespace TabBlazor
             {
                 AddSelectItemFromValue(SelectedValue);
             }
-
-
         }
+
 
         private void AddSelectItemFromValue(TValue value)
         {
@@ -115,6 +117,58 @@ namespace TabBlazor
             searchText = string.Empty;
         }
 
+        private async Task OnKey(KeyboardEventArgs e)
+        {
+
+            if (!dropdown.IsExpanded && e.Key == "ArrowDown")
+            {
+                highlighted = default;
+                dropdown.Open();
+                SetHighlighted(1);
+                return;
+            }
+
+            if (dropdown.IsExpanded)
+            {
+                if (e.Key == "Escape")
+                {
+                    highlighted = default;
+                    dropdown.Close();
+                }
+                else if (e.Key == "ArrowDown")
+                {
+                    SetHighlighted(1);
+                }
+                else if (e.Key == "ArrowUp")
+                {
+                    SetHighlighted(-1);
+                }
+                else if (e.Key == "Enter" && highlighted != null)
+                {
+                    await ToogleSelected(highlighted);
+                }
+            }
+        }
+        private void SetHighlighted(int step)
+        {
+            var myList = FilteredList();
+            if (highlighted == null)
+            {
+                highlighted = myList.FirstOrDefault();
+            }
+            else
+            {
+                var pos = myList.IndexOf(highlighted);
+                pos += step;
+                highlighted = myList.ElementAtOrDefault(pos);
+            }
+
+            if (!CanSelect() && highlighted != null && !IsSelected(highlighted))
+            {
+                    SetHighlighted(step);
+            }
+        }
+
         private string GetSelectedText(TItem item)
         {
             if (SelectedTextExpression == null) return item.ToString();
@@ -131,13 +185,25 @@ namespace TabBlazor
             return ConvertExpression.Invoke(item);
         }
 
+        private bool IsHighlighted(TItem item)
+        {
+            if (highlighted == null) { return false; }
+
+            if (IdExpression != null)
+            {
+                return IdExpression.Invoke(highlighted) == IdExpression.Invoke(item);
+            }
+
+            return highlighted.Equals(item);
+        }
+
         private bool IsSelected(TItem item)
         {
-            if (IdExpression!= null)
+            if (IdExpression != null)
             {
                 return selectedItems.FirstOrDefault(e => IdExpression.Invoke(e) == IdExpression.Invoke(item)) != null;
             }
-           
+
             return selectedItems.Contains(item);
         }
 

@@ -9,6 +9,8 @@ namespace TabBlazor
         [Parameter] public RenderFragment DropdownTemplate { get; set; }
         [Parameter] public bool CloseOnClick { get; set; } = true;
 
+        public bool IsExpanded => isExpanded;
+
         protected bool isExpanded;
 
         private double top;

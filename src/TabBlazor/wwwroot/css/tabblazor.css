@@ -5,6 +5,10 @@
 .modal-max {
   min-width: 99%; }
 
+.dropdown-item.highlight {
+  /*  background-color : var(--tblr-light);*/
+  background-color: lightgray; }
+
 .tree, .tree ul {
   margin: 0;
   padding: 0;
