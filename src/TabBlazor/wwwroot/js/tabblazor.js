@@ -1,5 +1,60 @@
 ﻿window.tabBlazor = {
 
+    preventDefaultKey: (element, event, keys) => {
+        element.addEventListener(event, (e) => {
+            if (keys.includes(e.key)) {
+                e.preventDefault();
+            }
+        });
+    },
+
+
+    navigateTable: (td, key) => {
+        var tr = td.closest('tr');
+        var pos = td.cellIndex;
+        var moveToRow;
+
+
+        if (key == 'ArrowUp') {
+            moveToRow = tr.parentNode.rows[tr.rowIndex - 2];
+        }
+        else if (key == 'ArrowDown') {
+            moveToRow = tr.parentNode.rows[tr.rowIndex];
+        }
+        else {
+            moveToRow = tr;
+        }
+
+        if (!moveToRow) {
+            return;
+        }
+
+        if (key == 'ArrowLeft') {
+            pos = pos - 1;
+        }
+        else if (key == 'ArrowRight') {
+            pos = pos + 1;
+        }
+
+        var moveToCell = moveToRow.cells[pos];
+        if (!moveToCell) {
+            return;
+        }
+
+        var focusElement = Array.from(moveToCell.getElementsByTagName("*")).find(x => x.tabIndex >= 0);
+
+        if (focusElement) {
+            focusElement.focus();
+            if (focusElement.select) {
+                focusElement.select();
+            }
+        }
+        else {
+            //Try next
+            window.tabBlazor.navigateTable(moveToCell, key);
+        }
+    },
+
     scrollToFragment: (elementId) => {
         var element = document.getElementById(elementId);
 
@@ -52,6 +107,7 @@
         element[property] = value;
         return "";
     },
+
 
 
     clickOutsideHandler: {

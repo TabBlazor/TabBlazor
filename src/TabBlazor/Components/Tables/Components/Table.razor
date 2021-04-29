@@ -28,7 +28,7 @@
                     {
                         <div class="div-table-wrapper @GetTableCssClass()">
                             <div class="div-table-table">
-                                <table @attributes="Attributes">
+                                <table @attributes="Attributes" @ref="table">
                                     @if (ShowTableHeader)
                                     {
                                         <TableHeader TableItem="Item"></TableHeader>

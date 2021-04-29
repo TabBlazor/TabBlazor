@@ -45,7 +45,6 @@ namespace TabBlazor
         private List<TItem> selectedItems = new();
         private Dropdown dropdown;
         private string searchText;
-        private ElementReference myDiv;
         private TItem highlighted;
 
         protected override void OnInitialized()
@@ -120,7 +119,7 @@ namespace TabBlazor
         private async Task OnKey(KeyboardEventArgs e)
         {
 
-            if (!dropdown.IsExpanded && e.Key == "ArrowDown")
+            if (!dropdown.IsExpanded && (e.Key == "Enter" || e.Key == " "))
             {
                 highlighted = default;
                 dropdown.Open();
@@ -146,6 +145,7 @@ namespace TabBlazor
                 else if (e.Key == "Enter" && highlighted != null)
                 {
                     await ToogleSelected(highlighted);
+                    SetHighlighted(1);
                 }
             }
         }
@@ -165,7 +165,7 @@ namespace TabBlazor
 
             if (!CanSelect() && highlighted != null && !IsSelected(highlighted))
             {
-                    SetHighlighted(step);
+                SetHighlighted(step);
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.VisualBasic;
+using System.Threading.Tasks;
 
 namespace TabBlazor
 {
@@ -26,7 +27,11 @@ namespace TabBlazor
 
         protected void OnClickOutside()
         {
-            isExpanded = false;
+            if(isExpanded)
+            {
+                isExpanded = false;
+            }
+          
         }
 
         private string GetSyle()
@@ -39,9 +44,9 @@ namespace TabBlazor
             return "";
         }
 
-        protected void OnDropdownClick(MouseEventArgs e)
+        protected async Task OnDropdownClick(MouseEventArgs e)
         {
-            OnClick.InvokeAsync(e);
+            await OnClick.InvokeAsync(e);
             Toogle();
         }
 

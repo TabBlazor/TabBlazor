@@ -9,10 +9,10 @@
 }
 
 <Dimmer Active="Disabled" ShowSpinner="false">
-    <div @onkeydown="OnKey" >
+    <div @onkeydown="OnKey" @onkeydown:stopPropagation="dropdown?.IsExpanded==true" >
         <Dropdown @ref="dropdown" CloseOnClick="false">
             <ChildContent>
-                <div @onkeydown:preventDefault>
+                <div @onkeydown:preventDefault="dropdown?.IsExpanded==true">
                     @if (SelectedTemplate != null)
                     {
                         @SelectedTemplate(selectedItems)
@@ -20,7 +20,7 @@
                     else
                     {
                         <div class="input-group input-group-flat">
-                            <div class="form-control form-select" tabindex="0" @ref="myDiv">
+                            <div class="form-control form-select" tabindex="0">
                                 @if (!selectedItems.Any())
                                 {
                                     @NoSelectedText

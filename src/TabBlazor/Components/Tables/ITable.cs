@@ -83,6 +83,7 @@ namespace TabBlazor.Components.Tables
         void EditItem(TableItem item);
         Task SetSelectedItem(TableItem item);
         Task RowClicked(TableItem item);
+        bool KeyboardNavigation { get; }
     }
 
     public interface ITableRowActions<TableItem>

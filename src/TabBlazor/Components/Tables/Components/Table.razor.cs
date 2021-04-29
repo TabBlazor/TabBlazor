@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Web;
 using TabBlazor.Components.Tables.Components;
 using TabBlazor.Components.Tables;
+using TabBlazor.Services;
 
 namespace TabBlazor
 {
     public class TableBase<Item> : ComponentBase, ITable<Item>, IInlineEditTable<Item>, IDetailsTable<Item>, ITableRow<Item>, ITableState // ITableRowActions<Item>
     {
+        [Inject] private TablerService tabService { get; set; }
+
         [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> UnknownParameters { get; set; }
         [Parameter] public bool ShowHeader { get; set; } = true;
         [Parameter] public bool ShowFooter { get; set; } = true;
@@ -42,7 +45,7 @@ namespace TabBlazor
         [Parameter] public int TotalCount { get; set; }
         [Parameter] public bool ShowCheckboxes { get; set; }
         [Parameter] public Func<Item> AddItemFactory { get; set; }
-
+        [Parameter] public bool KeyboardNavigation { get; set; }
 
         public bool HasRowActions => RowActionTemplate != null || AllowDelete || AllowEdit;
         public bool ShowSearch { get; set; } = true;
@@ -65,13 +68,27 @@ namespace TabBlazor
         public bool HasGrouping => Columns.Any(x => x.GroupBy);
         public TheGridDataFactory<Item> DataFactory { get; set; }
         public Item SelectedItem { get; set; }
+
+        protected ElementReference table;
+        private bool tableInitialized;
+
         protected async override Task OnParametersSetAsync()
         {
             await Update();
         }
 
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (KeyboardNavigation && !firstRender && !tableInitialized)
+            {
+                await tabService.PreventDefaultKey(table, "keydown", new string[] { "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight" });
+                tableInitialized = true;
+            }
+        }
+
         protected async override Task OnInitializedAsync()
         {
+
             DataFactory = new TheGridDataFactory<Item>(Columns, this);
             var baseAttributes = new Dictionary<string, object>()
             {

@@ -17,6 +17,16 @@ namespace TabBlazor.Services
             this.jsRuntime = jSRuntime;
         }
 
+        public async Task PreventDefaultKey(ElementReference element, string eventName, string[] keys)
+        {
+            await jsRuntime.InvokeVoidAsync("tabBlazor.preventDefaultKey", element, eventName, keys);
+        }
+       
+        public async Task NavigateTable(ElementReference tableCell, string key)
+        {
+            await jsRuntime.InvokeVoidAsync("tabBlazor.navigateTable", tableCell, key);
+        }
+
         public async Task ScrollToFragment(string fragmentId)
         {
              await jsRuntime.InvokeVoidAsync("tabBlazor.scrollToFragment", fragmentId);
@@ -43,4 +53,13 @@ namespace TabBlazor.Services
         }
 
     }
+
+    public enum KeyboardDirection
+    {
+        Up,
+        Down,
+        Left,
+        Right
+    }
+
 }

@@ -6,20 +6,22 @@
     </ListTemplate>
 
     <SelectedTemplate>
-            <Button>
-                @if (context == null || !context.Any())
-                {
-                    <span>Customers</span>
-                }
-                else
-                {
-                    <span>Select Customers...</span>
-                    <Badge class="ms-2" BackgroundColor="TablerColor.Red">@context.Count</Badge>
-                    <span @onclick="@(e => select.ClearSelected())" @onclick:stopPropagation>
-                        <Icon class="ms-2 icon" Elements="@DemoIcons.Trash" />
-                    </span>
-                }
-            </Button>
+        <Button @onkeydown:preventDefault>
+           
+            @if (context == null || !context.Any())
+            {
+                <span>Customers</span>
+            }
+            else
+            {
+                <span>Select Customers...</span>
+                <Badge class="ms-2" BackgroundColor="TablerColor.Red">@context.Count</Badge>
+                <span @onclick="@(e => select.ClearSelected())" @onclick:stopPropagation>
+                    <Icon class="ms-2 icon" Elements="@DemoIcons.Trash" />
+                </span>
+            }
+          
+        </Button>
     </SelectedTemplate>
 
     <FooterTemplate>

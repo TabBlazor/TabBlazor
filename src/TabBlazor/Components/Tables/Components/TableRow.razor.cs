@@ -1,21 +1,59 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TabBlazor.Components.Tables;
+using TabBlazor.Services;
 
 namespace TabBlazor.Components.Tables
 {
     public class TableRowBase<TableItem> : TableRowComponentBase<TableItem>
     {
+        [Inject] private TablerService tabService { get; set; }
+
         [Parameter] public ITableRow<TableItem> Table { get; set; }
         [Parameter] public TableItem Item { get; set; }
         [Parameter] public ITableRowActions<TableItem> Actions { get; set; }
+
+        protected ElementReference[] tableCells;
+
+        protected override void OnInitialized()
+        {
+            tableCells = new ElementReference[Table.VisibleColumns.Count + 2];
+        }
 
         public string GetRowCssClass(TableItem item)
         {
             return new ClassBuilder()
                .AddIf("table-active", IsSelected(item) && (Table.OnItemSelected.HasDelegate || Table.SelectedItemsChanged.HasDelegate))
                .ToString();
+        }
+
+        protected async Task OnKeyDown(KeyboardEventArgs e, ElementReference tableCell)
+        {
+            KeyboardDirection direction;
+            switch (e.Key)
+            {
+                case "ArrowUp":
+                    direction = KeyboardDirection.Up;
+                    break;
+                case "ArrowDown":
+                    direction = KeyboardDirection.Down;
+                    break;
+                case "ArrowLeft":
+                    direction = KeyboardDirection.Left;
+                    break;
+                case "ArrowRight":
+                    direction = KeyboardDirection.Right;
+                    break;
+
+                default:
+                    return;
+            }
+
+            await tabService.NavigateTable(tableCell, e.Key);
+
         }
 
         public async Task RowClick()
