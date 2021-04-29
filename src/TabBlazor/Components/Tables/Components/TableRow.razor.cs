@@ -32,28 +32,10 @@ namespace TabBlazor.Components.Tables
 
         protected async Task OnKeyDown(KeyboardEventArgs e, ElementReference tableCell)
         {
-            KeyboardDirection direction;
-            switch (e.Key)
+            if (e.Key == "ArrowUp" || e.Key == "ArrowDown" || e.Key == "ArrowLeft" || e.Key == "ArrowRight")
             {
-                case "ArrowUp":
-                    direction = KeyboardDirection.Up;
-                    break;
-                case "ArrowDown":
-                    direction = KeyboardDirection.Down;
-                    break;
-                case "ArrowLeft":
-                    direction = KeyboardDirection.Left;
-                    break;
-                case "ArrowRight":
-                    direction = KeyboardDirection.Right;
-                    break;
-
-                default:
-                    return;
+                await tabService.NavigateTable(tableCell, e.Key);
             }
-
-            await tabService.NavigateTable(tableCell, e.Key);
-
         }
 
         public async Task RowClick()

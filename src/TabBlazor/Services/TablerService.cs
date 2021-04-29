@@ -54,12 +54,5 @@ namespace TabBlazor.Services
 
     }
 
-    public enum KeyboardDirection
-    {
-        Up,
-        Down,
-        Left,
-        Right
-    }
 
 }
