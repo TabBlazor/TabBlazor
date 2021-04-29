@@ -53,10 +53,10 @@
         await TablerService.ShowAlert($"Order deleted {order.OrderId}");
     }
 
-    private Order AddItem()
+    private Task<Order> AddItem()
     {
 
-        return new Order { Customer = new Customer { CustomerName = "New customer" } };
+        return Task.FromResult(new Order { Customer = new Customer { CustomerName = "New customer" } });
 
     }
 }

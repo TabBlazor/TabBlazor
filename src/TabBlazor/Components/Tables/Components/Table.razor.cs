@@ -44,7 +44,7 @@ namespace TabBlazor
         [Parameter] public Func<Item, bool> AllowDeleteExpression { get; set; }
         [Parameter] public int TotalCount { get; set; }
         [Parameter] public bool ShowCheckboxes { get; set; }
-        [Parameter] public Func<Item> AddItemFactory { get; set; }
+        [Parameter] public Func<Task<Item>> AddItemFactory { get; set; }
         [Parameter] public bool KeyboardNavigation { get; set; }
 
         public bool HasRowActions => RowActionTemplate != null || AllowDelete || AllowEdit;
@@ -336,7 +336,7 @@ namespace TabBlazor
             Item tableItem;
             if (AddItemFactory != null)
             {
-                tableItem = AddItemFactory();
+                tableItem = await AddItemFactory();
             }
             else
             {
