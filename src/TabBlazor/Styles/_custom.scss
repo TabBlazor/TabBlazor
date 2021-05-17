@@ -19,7 +19,12 @@
 .tree, .tree ul {
     margin: 0;
     padding: 0;
-    list-style: none
+    list-style: none;
+
+}
+
+.tree-node-expand-icon {
+    flex: 0 0 auto;
 }
 
 .tree-node-selected {

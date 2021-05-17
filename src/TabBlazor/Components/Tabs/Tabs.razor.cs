@@ -26,6 +26,8 @@ namespace TabBlazor
         {
             if (tab == null)
             {
+                ActiveTab = null;
+                StateHasChanged();
                 return;
             }
 
