@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace TabBlazor.Components.Tables
 {
-    internal static class Utillities
+    internal static class Utilities
     {
         public static IEnumerable<T> OrEmptyIfNull<T>(this IEnumerable<T> source)
         {
