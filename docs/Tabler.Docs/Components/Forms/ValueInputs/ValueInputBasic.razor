@@ -1,14 +1,17 @@
 ﻿
-<ValueInput class="mb-2" @bind-Value="stringValue" Label="string value" />
-
-<span class="mb-3">String Value: @stringValue</span>
+@*<ValueInput class="mb-2" @bind-Value="stringValue" Label="string value" />
+<span class="mb-3">String Value: @stringValue</span>*@
 
 <ValueInput class="mb-2" @bind-Value="intValue" Label="int value" />
 <span class="mb-3">Int Value: @intValue</span>
 
 
-<ValueInput class="mb-2" @bind-Value="intNullValue" Label="int null value" />
+@*<ValueInput class="mb-2" @bind-Value="intNullValue" Label="int null value" />
 <span class="mb-3">Int null Value: @intNullValue</span>
+
+<ValueInput class="mb-2" @bind-Value="guidValue" Label="Guid value" />
+<span class="mb-3">Guid Value: @guidValue</span>*@
+
 
 
 @code {
@@ -16,6 +19,8 @@
     string stringValue = "Test String";
     int intValue = 1234;
     int? intNullValue = null;
+
+    Guid guidValue = Guid.NewGuid();
 
 
 }

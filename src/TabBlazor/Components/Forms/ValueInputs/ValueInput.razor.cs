@@ -25,15 +25,26 @@ namespace TabBlazor
             set
             {
                 currentValue = value;
-                // IsValid = TryParseInput(value, out var newValue);
-                //https://github.com/dotnet/aspnetcore/blob/52eff90fbcfca39b7eb58baad597df6a99a542b0/src/Components/Web/src/Forms/InputExtensions.cs
-                IsValid = BindConverter.TryConvertTo<TValue>(value, CultureInfo.CurrentCulture, out var newValue);
-
-                if (IsValid)
+                TValue newValue;
+                if (typeof(TValue) == typeof(Guid))
                 {
-                    //currentValue = newValue.;
-                    ValueChanged.InvokeAsync(newValue);
+                    IsValid = Guid.TryParse(value, out var guidValue);
+                    newValue = (TValue)(object)guidValue;
                 }
+                else
+                {
+                    //https://github.com/dotnet/aspnetcore/blob/52eff90fbcfca39b7eb58baad597df6a99a542b0/src/Components/Web/src/Forms/InputExtensions.cs
+                    IsValid = BindConverter.TryConvertTo<TValue>(value, CultureInfo.CurrentCulture, out newValue);
+
+                }
+
+
+                //if (IsValid)
+                //{
+                //    ValueChanged.InvokeAsync(newValue);
+                //}
+
+
 
             }
         }
@@ -48,7 +59,7 @@ namespace TabBlazor
         .Add("form-control")
         .AddIf("is-invalid", !IsValid)
         .ToString();
-                    
+
 
     }
 }

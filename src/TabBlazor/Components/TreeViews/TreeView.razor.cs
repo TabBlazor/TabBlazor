@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,6 +35,22 @@ namespace TabBlazor
             if (DefaultExpanded != null)
             {
                 SetDefaultExpanded(Items);
+            }
+        }
+
+        protected override void OnParametersSet()
+        {
+            if (MultiSelect)
+            {
+                selectedItems = SelectedItems;
+            }
+            else
+            {
+                selectedItems.Clear();
+                if (SelectedItem != null)
+                {
+                    selectedItems.Add(SelectedItem);
+                }
             }
         }
 
@@ -89,7 +106,7 @@ namespace TabBlazor
             {
                 selectedItems.Add(item);
             }
-           
+
             if (removed)
             {
                 await SelectedItemChanged.InvokeAsync(default);
