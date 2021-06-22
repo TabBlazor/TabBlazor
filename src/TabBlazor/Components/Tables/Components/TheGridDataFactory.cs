@@ -16,17 +16,20 @@ namespace TabBlazor.Components.Tables
             this.state = state;
         }
 
-        public IEnumerable<TableResult<object, Item>> GetData(IEnumerable<Item> items, bool resetPage = false)
+        public IEnumerable<TableResult<object, Item>> GetData(IEnumerable<Item> items, bool resetPage = false, bool addSorting = true)
         {
             var viewResult = new List<TableResult<object, Item>>();
             if (items != null)
             {
                 var query = items.AsQueryable();
                 query = AddSearch(query);
-                query = AddSorting(query);
+                if (addSorting)
+                {
+                    query = AddSorting(query);
+                }
                 state.TotalCount = query.Count();
 
-                if (resetPage)
+                if (resetPage || state.TotalCount < state.PageSize * state.PageNumber)
                 {
                     state.PageNumber = 0;
                 }

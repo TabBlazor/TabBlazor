@@ -74,16 +74,26 @@ namespace TabBlazor
 
         protected async override Task OnParametersSetAsync()
         {
-            await Update();
+            if (tableInitialized)
+            {
+                await Update();
+            }
         }
+
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (KeyboardNavigation && !firstRender && !tableInitialized)
+            if (!firstRender && !tableInitialized)
             {
-                await tabService.PreventDefaultKey(table, "keydown", new string[] { "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight" });
+                if (KeyboardNavigation)
+                {
+                    await tabService.PreventDefaultKey(table, "keydown", new string[] { "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight" });
+                   
+                }
                 tableInitialized = true;
+                await Update();
             }
+        
         }
 
         protected async override Task OnInitializedAsync()
@@ -102,7 +112,7 @@ namespace TabBlazor
             }
 
             Attributes = baseAttributes;
-            await Update();
+           
         }
 
         public async Task RefreshItems(MouseEventArgs args)
@@ -348,7 +358,9 @@ namespace TabBlazor
 
             await LastPage();
             EditItem(tableItem);
-            await Update();
+
+            TempItems = DataFactory.GetData(Items, false, false);
+
         }
 
         public async Task OnDeleteItem(Item item)

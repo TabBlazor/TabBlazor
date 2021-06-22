@@ -5,7 +5,7 @@
     </HeaderTemplate>
 
     <ChildContent>
-        <Column Item="Order" Property="e=>e.Customer.CustomerName" Title="Customer" Sortable Searchable Groupable>
+        <Column Item="Order" Property="e=>e.Customer.CustomerName" Title="Customer" Sortable Searchable Groupable Sort>
             <EditorTemplate>
                 <input type="text" class="form-control" @bind-value="@context.Customer.CustomerName" />
             </EditorTemplate>
@@ -42,7 +42,7 @@
     {
         await TablerService.ShowAlert($"Edited order {order.OrderId}");
     }
-
+      
     private async Task OnItemAdd(Order order)
     {
         await TablerService.ShowAlert($"Added order {order.OrderId}");
