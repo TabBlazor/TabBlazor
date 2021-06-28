@@ -78,13 +78,24 @@ Dimmer
 .grouped-table tr td {
   padding-left: 0.5rem; }
 
-.tabler-table tr:hover .row-action {
+.tabler-table tr:hover .row-action, .tabler-table tr:focus-within .row-action {
   transition: opacity 0.3s ease-in;
   opacity: 1; }
+
+.tabler-table tr:focus-within {
+  --tblr-table-accent-bg: var(--tblr-table-active-bg);
+  color: var(--tblr-table-active-color); }
 
 .tabler-table .row-action {
   text-align: right;
   opacity: 0; }
+  .tabler-table .row-action button {
+    background-color: unset;
+    border: none;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    padding-right: 0; }
 
 .tabler-table .row-action-edit {
   text-align: right; }

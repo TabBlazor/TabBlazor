@@ -22,7 +22,7 @@ namespace TabBlazor
         [Parameter] public bool ShowTableHeader { get; set; } = true;
         [Parameter] public bool Selectable { get; set; }
         [Parameter] public bool ShowNoItemsLabel { get; set; } = true;
-        [Parameter] public string TableClass { get; set; } = "table card-table table-hover table-vcenter datatable dataTable no-footer";
+        [Parameter] public string TableClass { get; set; } = "table card-table table-vcenter no-footer";
         [Parameter] public string ValidationRuleSet { get; set; } = "default";
         [Parameter] public int PageSize { get; set; } = 20;
         [Parameter] public IList<Item> Items { get; set; }
@@ -45,6 +45,8 @@ namespace TabBlazor
         [Parameter] public Func<Item, bool> AllowDeleteExpression { get; set; }
         [Parameter] public int TotalCount { get; set; }
         [Parameter] public bool ShowCheckboxes { get; set; }
+        [Parameter] public bool Hover { get; set; }
+        [Parameter] public bool Responsive { get; set; }
         [Parameter] public Func<Task<Item>> AddItemFactory { get; set; }
         [Parameter] public bool KeyboardNavigation { get; set; }
 
@@ -96,10 +98,17 @@ namespace TabBlazor
 
         }
 
-        protected async override Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
 
             DataFactory = new TheGridDataFactory<Item>(Columns, this);
+
+            if (Hover)
+            {
+                TableClass += " table-hover";
+            }
+                   
+
             var baseAttributes = new Dictionary<string, object>()
             {
                 { "class", TableClass }
@@ -150,6 +159,7 @@ namespace TabBlazor
             return classBuileder
                 .Add("tabler-table")
                 .AddIf("grouped-table", HasGrouping)
+                .AddIf("table-responsive", Responsive)
                 .ToString();
             //grouped-table
 

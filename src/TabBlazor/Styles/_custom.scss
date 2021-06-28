@@ -20,7 +20,6 @@
     margin: 0;
     padding: 0;
     list-style: none;
-
 }
 
 .tree-node-expand-icon {
@@ -109,16 +108,30 @@ Dimmer
 }
 
 .tabler-table {
-    tr:hover {
+    tr:hover, tr:focus-within {
         .row-action {
             transition: opacity 0.3s ease-in;
             opacity: 1;
         }
     }
 
+    tr:focus-within {
+        --tblr-table-accent-bg: var(--tblr-table-active-bg);
+        color: var(--tblr-table-active-color);
+    }
+
     .row-action {
         text-align: right;
         opacity: 0;
+
+        button {
+            background-color: unset;
+            border: none;
+            padding-top: 0;
+            padding-bottom: 0;
+            padding-left: 0;
+            padding-right: 0;
+        }
     }
 
     .row-action-edit {

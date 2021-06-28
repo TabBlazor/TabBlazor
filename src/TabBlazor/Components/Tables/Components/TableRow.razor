@@ -39,14 +39,19 @@
                     @Table.RowActionTemplate(Item)
                 }
 
+
                 @if (Table.AllowEdit)
                 {
-                    <Icon OnClick="Edit" tabindex="0" class="cursor-pointer icon" Elements="@InternalIcons.Edit" />
+                    <Button class="btn-icon" Size="ButtonSize.Small" OnClick="Edit">
+                        <Icon class="icon" Elements="@InternalIcons.Edit" />
+                    </Button>
                 }
 
                 @if (Table.AllowDelete)
                 {
-                    <Icon OnClick="Delete" tabindex="0" class="cursor-pointer icon" Elements="@InternalIcons.Trash" />
+                    <Button class="btn-icon" Size="ButtonSize.Small" OnClick="Delete">
+                        <Icon class="icon" Elements="@InternalIcons.Trash" />
+                    </Button>
                 }
             </div>
         </td>
