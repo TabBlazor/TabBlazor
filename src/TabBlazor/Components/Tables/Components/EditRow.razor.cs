@@ -25,7 +25,7 @@ namespace TabBlazor.Components.Tables
             {
                 InlineEditTable.Items.Remove(InlineEditTable.CurrentEditItem);
             }
-
+            
             await InlineEditTable.CloseEdit();
         }
 

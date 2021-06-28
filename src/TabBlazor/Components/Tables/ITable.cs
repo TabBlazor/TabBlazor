@@ -20,7 +20,7 @@ namespace TabBlazor.Components.Tables
         RenderFragment<TableItem> RowActionTemplate { get; set; }
         bool ShowCheckboxes { get; set; }
         bool HasRowActions { get; }
-         Task FirstPage();
+        Task FirstPage();
         Task SetPage(int pageNumber);
         Task NextPage();
         Task PreviousPage();
@@ -31,10 +31,11 @@ namespace TabBlazor.Components.Tables
         void AddColumn(IColumn<TableItem> column);
         void RemoveColumn(IColumn<TableItem> column);
         Task RefreshItems(MouseEventArgs args);
-        Task OnSearchChanged(ChangeEventArgs args);
+        //Task OnSearchChanged(ChangeEventArgs args);
+        Task Search(string searchText);
         Task SelectAll();
         Task UnSelectAll();
-        Task Update();
+        Task Update(bool resetPage = false);
         void SetPageSize(int pageSize);
         string SearchText { get; set; }
         //List<MenuDropdownItem<TableItem>> AllRowActions { get; }
@@ -51,6 +52,7 @@ namespace TabBlazor.Components.Tables
         int PageNumber { get; set; }
         int TotalCount { get; set; }
         int VisibleColumnCount { get; }
+        Task Update(bool resetPage = false);
     }
 
     public interface IInlineEditTable<TableItem>
@@ -71,7 +73,7 @@ namespace TabBlazor.Components.Tables
         IList<TableItem> Items { get; }
         TableItem SelectedItem { get; }
         List<TableItem> SelectedItems { get; }
-        bool ShowCheckboxes { get;  }
+        bool ShowCheckboxes { get; }
         RenderFragment<TableItem> DetailsTemplate { get; }
         RenderFragment<TableItem> RowActionTemplate { get; set; }
         bool AllowEdit { get; }

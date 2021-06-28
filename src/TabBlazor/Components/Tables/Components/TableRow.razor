@@ -10,7 +10,7 @@
     }
 
     @{
-        var i = 1;
+        var i = 2;
         @foreach (IColumn<TableItem> column in Table.VisibleColumns)
         {
             var j = i;
@@ -31,7 +31,7 @@
 
     @if (Table.HasRowActions)
     {
-        <td>
+        <td @onkeydown="@(Table.KeyboardNavigation ? (e) => OnKeyDown(e, tableCells[1]): null)" @ref="tableCells[1]">
             <div class="row-action">
 
                 @if (Table.RowActionTemplate != null)
@@ -41,12 +41,12 @@
 
                 @if (Table.AllowEdit)
                 {
-                    <Icon OnClick="Edit" class="cursor-pointer icon" Elements="@InternalIcons.Edit" />
+                    <Icon OnClick="Edit" tabindex="0" class="cursor-pointer icon" Elements="@InternalIcons.Edit" />
                 }
 
                 @if (Table.AllowDelete)
                 {
-                    <Icon OnClick="Delete" class="cursor-pointer icon" Elements="@InternalIcons.Trash" />
+                    <Icon OnClick="Delete" tabindex="0" class="cursor-pointer icon" Elements="@InternalIcons.Trash" />
                 }
             </div>
         </td>

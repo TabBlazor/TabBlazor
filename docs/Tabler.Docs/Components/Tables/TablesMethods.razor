@@ -1,6 +1,25 @@
 ﻿
-<Table Item="Order" Items="orders" PageSize="10" AddItemFactory="AddItem" OnItemEdited="OnItemEdit"
-       @bind-SelectedItems="selectedOrders" OnItemAdded="OnItemAdd" OnItemDeleted="OnItemDelete" ShowCheckboxes MultiSelect>
+<Row class="mb-3">
+    <RowCol Auto>
+        <Button Size="ButtonSize.Small" BackgroundColor="TablerColor.Primary" OnClick="SelectOrder">Select Order</Button>
+    </RowCol>
+    <RowCol Auto>
+        <Button Size="ButtonSize.Small" BackgroundColor="TablerColor.Primary" OnClick="SelectAndMoveOrder">Select/Move Order</Button>
+    </RowCol>
+
+    <RowCol Auto>
+        <Button Size="ButtonSize.Small" BackgroundColor="TablerColor.Primary" OnClick="SetLastPage">Set Last Page</Button>
+    </RowCol>
+
+    <RowCol Auto>
+        <Button Size="ButtonSize.Small" BackgroundColor="TablerColor.Primary" OnClick="Search">Search</Button>
+    </RowCol>
+
+</Row>
+
+
+
+<Table Item="Order" @ref="table" Items="orders" PageSize="10"   @bind-SelectedItems="selectedOrders" ShowCheckboxes>
     <HeaderTemplate>
         <strong>Orders</strong>
     </HeaderTemplate>
@@ -36,6 +55,7 @@
 @code {
 
     [Inject] TabBlazor.Services.TablerService TablerService { get; set; }
+    private Table<Order> table;
     private static List<Order> orders = SampleData.GetOrders();
     private static List<Order> selectedOrders = new List<Order>();
 
@@ -44,20 +64,27 @@
         await TablerService.ShowAlert($"Edited order {order.OrderId}");
     }
 
-    private async Task OnItemAdd(Order order)
+    private async Task Search()
     {
-        await TablerService.ShowAlert($"Added order {order.OrderId}");
+        await table.Search("Odi");
     }
 
-    private async Task OnItemDelete(Order order)
+    private async Task SetLastPage()
     {
-        await TablerService.ShowAlert($"Order deleted {order.OrderId}");
+        await table.LastPage();
     }
 
-    private Task<Order> AddItem()
+    private void SelectOrder()
     {
-
-        return Task.FromResult(new Order { Customer = new Customer { CustomerName = "New customer" } });
-
+        var order = orders.Skip(14).First();
+        selectedOrders = new List<Order> { order };
     }
+
+    private async Task SelectAndMoveOrder()
+    {
+        var order = orders.Skip(14).First();
+        selectedOrders = new List<Order> { order };
+        await table.MoveToItem(order);
+    }
+
 }

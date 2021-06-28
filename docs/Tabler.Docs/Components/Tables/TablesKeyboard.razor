@@ -1,7 +1,7 @@
 ﻿
 
 <p>
-    Use <kbd>Arrow</kbd> keys to navigate the table, <kbd>Enter</kbd> or <kbd>Space</kbd> will expand the ItemSelect component.
+    Use <kbd>Arrow &#8593</kbd> and <kbd>Arrow &#8595;</kbd> between rows, <kbd>Enter</kbd> or <kbd>Space</kbd> will expand the ItemSelect component.
 </p>
 
 
@@ -16,11 +16,11 @@
 </Alert>
 
 
-<Table Item="Order" Items="orders" PageSize="10"  ShowCheckboxes MultiSelect KeyboardNavigation >
+<Table Item="Order" Items="orders" PageSize="10"  ShowCheckboxes MultiSelect KeyboardNavigation OnItemDeleted="ItemDeleted" >
     <HeaderTemplate>
         <strong>Orders</strong>
     </HeaderTemplate>
-
+ 
     <ChildContent>
         <Column Item="Order" Property="e=>e.Customer.CustomerName" Title="Customer" Sortable Searchable Groupable>
             <Template>
@@ -51,4 +51,11 @@
 
 @code {
     private  List<Order> orders = SampleData.GetOrders();
+
+
+    private void ItemDeleted(Order order)
+        {
+
+        }
+
 }

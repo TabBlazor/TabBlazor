@@ -1,4 +1,5 @@
 ﻿using LinqKit;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TabBlazor.Components.Tables.Components;
@@ -16,7 +17,7 @@ namespace TabBlazor.Components.Tables
             this.state = state;
         }
 
-        public IEnumerable<TableResult<object, Item>> GetData(IEnumerable<Item> items, bool resetPage = false, bool addSorting = true)
+        public IEnumerable<TableResult<object, Item>> GetData(IEnumerable<Item> items, bool resetPage = false, bool addSorting = true, Item moveToItem = default)
         {
             var viewResult = new List<TableResult<object, Item>>();
             if (items != null)
@@ -29,9 +30,22 @@ namespace TabBlazor.Components.Tables
                 }
                 state.TotalCount = query.Count();
 
-                if (resetPage || state.TotalCount < state.PageSize * state.PageNumber)
+                if (resetPage)
                 {
                     state.PageNumber = 0;
+                }
+                else if ((state.TotalCount - 1) < state.PageSize * state.PageNumber)
+                {
+                    state.PageNumber = (int)Math.Floor((decimal)(state.TotalCount / state.PageSize)) - 1;
+                }
+                else if (moveToItem != null)
+                {
+                    var pos = query.ToList().IndexOf(moveToItem);
+                    if (pos > 0)
+                    {
+                        state.PageNumber = (int)Math.Floor((decimal)(pos / state.PageSize));
+                    }
+
                 }
 
                 query = query.Skip(state.PageNumber * state.PageSize).Take(state.PageSize);

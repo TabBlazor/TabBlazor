@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.Web;
 using TabBlazor.Components.Tables.Components;
 using TabBlazor.Components.Tables;
 using TabBlazor.Services;
+using System.Runtime.CompilerServices;
 
 namespace TabBlazor
 {
@@ -55,8 +56,6 @@ namespace TabBlazor
         public List<IColumn<Item>> VisibleColumns => Columns.Where(x => x.Visible).ToList();
         public int PageNumber { get; set; }
         public int VisibleColumnCount => Columns.Count(x => x.Visible) + (HasRowActions ? 1 : 0) + (ShowCheckboxes ? 1 : 0);
-        public string SearchText { get; set; }
-        public bool ResetPage { get; set; }
         public bool IsAddInProgress { get; set; }
         public bool ReloadingItems { get; set; }
         public Item CurrentEditItem { get; private set; }
@@ -71,6 +70,7 @@ namespace TabBlazor
 
         protected ElementReference table;
         private bool tableInitialized;
+        public string SearchText { get; set; }
 
         protected async override Task OnParametersSetAsync()
         {
@@ -87,13 +87,13 @@ namespace TabBlazor
             {
                 if (KeyboardNavigation)
                 {
-                    await tabService.PreventDefaultKey(table, "keydown", new string[] { "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight" });
-                   
+                    await tabService.PreventDefaultKey(table, "keydown", new string[] { "ArrowUp", "ArrowDown" });
+
                 }
                 tableInitialized = true;
                 await Update();
             }
-        
+
         }
 
         protected async override Task OnInitializedAsync()
@@ -112,7 +112,7 @@ namespace TabBlazor
             }
 
             Attributes = baseAttributes;
-           
+
         }
 
         public async Task RefreshItems(MouseEventArgs args)
@@ -126,14 +126,15 @@ namespace TabBlazor
             await Update();
         }
 
-        public async Task OnSearchChanged(ChangeEventArgs args)
+
+
+        public async Task Search(string searchText)
         {
             try
             {
-                SearchText = args.Value.ToString();
-                ResetPage = true;
-                await Update();
-                ResetPage = false;
+                SearchText = searchText;
+                await Update(true);
+
             }
             catch (Exception e)
             {
@@ -268,11 +269,11 @@ namespace TabBlazor
             await Update();
         }
 
-        public async Task Update()
+        public async Task Update(bool resetPage = false)
         {
             if (CurrentEditItem == null || !TempItems.Any())
             {
-                TempItems = DataFactory.GetData(Items, ResetPage);
+                TempItems = DataFactory.GetData(Items, resetPage);
                 await Refresh();
             }
         }
@@ -289,6 +290,12 @@ namespace TabBlazor
         {
             Columns.Remove(column);
             StateHasChanged();
+        }
+
+        public async Task MoveToItem(Item item)
+        {
+            TempItems = DataFactory.GetData(Items, false, true, item);
+            await Refresh();
         }
 
         public async Task SetPage(int pageNumber)

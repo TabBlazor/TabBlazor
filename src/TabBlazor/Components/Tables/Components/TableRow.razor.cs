@@ -32,7 +32,7 @@ namespace TabBlazor.Components.Tables
 
         protected async Task OnKeyDown(KeyboardEventArgs e, ElementReference tableCell)
         {
-            if (e.Key == "ArrowUp" || e.Key == "ArrowDown" || e.Key == "ArrowLeft" || e.Key == "ArrowRight")
+            if (e.Key == "ArrowUp" || e.Key == "ArrowDown")
             {
                 await tabService.NavigateTable(tableCell, e.Key);
             }

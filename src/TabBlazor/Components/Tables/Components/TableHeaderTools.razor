@@ -4,8 +4,19 @@
 @if (Table.ShowSearch)
 {
     <div class="ms-auto text-muted">
-        <div class="ms-2 d-inline-block">
-            <input type="text" class="form-control form-control-sm" placeholder="search..." @oninput="@(x => Table.OnSearchChanged(x))">
+                <div class="input-group input-group-flat">
+                    <input type="text" class="form-control form-control-sm" placeholder="search..." value="@Table.SearchText" @oninput="@(x => Table.Search(x.Value.ToString()))">
+                    <span class="input-group-text">
+
+                        @if (!string.IsNullOrWhiteSpace(Table.SearchText))
+                        {
+                            <Icon Size="16" Elements="@InternalIcons.X" OnClick="@(() => Table.Search(""))" />
+                        }
+                        else
+                        {
+                            <Icon Size="16" Elements="@InternalIcons.Search" />
+                        }
+                    </span>
         </div>
     </div>
 }

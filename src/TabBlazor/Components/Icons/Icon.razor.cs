@@ -12,8 +12,9 @@ namespace TabBlazor
         [Parameter] public bool Filled { get; set; }
 
         protected override string ClassNames => ClassBuilder
-             .AddIf($"{TextColor.GetColorClass("text")}", string.IsNullOrWhiteSpace(Color))
+            .AddIf($"{TextColor.GetColorClass("text")}", string.IsNullOrWhiteSpace(Color))
             .AddIf("icon-filled", Filled)
+            .AddIf("cursor-pointer", OnClick.HasDelegate)
             .ToString();
     }
 }
