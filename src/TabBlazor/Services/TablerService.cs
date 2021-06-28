@@ -21,7 +21,13 @@ namespace TabBlazor.Services
         {
             await jsRuntime.InvokeVoidAsync("tabBlazor.preventDefaultKey", element, eventName, keys);
         }
-       
+
+
+        public async Task FocusFirstInTableRow(ElementReference tableRow)
+        {
+            await jsRuntime.InvokeVoidAsync("tabBlazor.focusFirstInTableRow", tableRow, "");
+        }
+
         public async Task NavigateTable(ElementReference tableCell, string key)
         {
             await jsRuntime.InvokeVoidAsync("tabBlazor.navigateTable", tableCell, key);
@@ -29,7 +35,7 @@ namespace TabBlazor.Services
 
         public async Task ScrollToFragment(string fragmentId)
         {
-             await jsRuntime.InvokeVoidAsync("tabBlazor.scrollToFragment", fragmentId);
+            await jsRuntime.InvokeVoidAsync("tabBlazor.scrollToFragment", fragmentId);
         }
 
         public async Task ShowAlert(string message)
@@ -47,7 +53,7 @@ namespace TabBlazor.Services
             await jsRuntime.InvokeVoidAsync("tabBlazor.disableDraggable", container, element);
         }
 
-        public  async Task SetElementProperty(ElementReference element, string property, object value)
+        public async Task SetElementProperty(ElementReference element, string property, object value)
         {
             await jsRuntime.InvokeVoidAsync("tabBlazor.setPropByElement", element, property, value);
         }

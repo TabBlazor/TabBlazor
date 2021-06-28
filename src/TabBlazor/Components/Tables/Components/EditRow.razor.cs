@@ -1,22 +1,26 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Threading.Tasks;
+using TabBlazor.Services;
 
 namespace TabBlazor.Components.Tables
 {
     public class EditRowBase<TableItem> : TableRowComponentBase<TableItem>
     {
+        [Inject] private TablerService tabService { get; set; }
         [Parameter] public IInlineEditTable<TableItem> InlineEditTable { get; set; }
         [Parameter] public TableItem Item { get; set; }
-            
-        protected override async Task OnInitializedAsync()
-        {
-            await base.OnInitializedAsync();
 
+        protected ElementReference editRow;
+        private bool isInitialized;
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (!isInitialized)
+            {
+                await tabService.FocusFirstInTableRow(editRow);
+                isInitialized = true;
+            }
+           
         }
 
         public async Task OnEditItemCanceled()
@@ -25,7 +29,7 @@ namespace TabBlazor.Components.Tables
             {
                 InlineEditTable.Items.Remove(InlineEditTable.CurrentEditItem);
             }
-            
+
             await InlineEditTable.CloseEdit();
         }
 

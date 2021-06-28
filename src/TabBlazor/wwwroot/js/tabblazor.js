@@ -8,6 +8,10 @@
         });
     },
 
+    focusFirstInTableRow: (tr) => {
+        var td = tr.cells[0];
+        window.tabBlazor.navigateTable(td, '');
+    },
 
     navigateTable: (td, key) => {
         var tr = td.closest('tr');
@@ -34,6 +38,9 @@
         }
         else if (key == 'ArrowRight') {
             pos = pos + 1;
+        }
+        else if (key == '') {
+            key = 'ArrowRight';
         }
 
         var moveToCell = moveToRow.cells[pos];

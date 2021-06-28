@@ -3,7 +3,7 @@
 
 @namespace  TabBlazor.Components.Tables
 
-<tr class="is-inline-edit data-row">
+<tr class="is-inline-edit data-row" @ref="editRow">
 
     @if (InlineEditTable.ShowCheckboxes) {
         <td></td>
