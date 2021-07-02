@@ -121,6 +121,9 @@ Dimmer
     }
 
     .row-action {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
         text-align: right;
         opacity: 0;
 
