@@ -31,27 +31,33 @@
 
     @if (Table.HasRowActions)
     {
-        <td @onkeydown="@(Table.KeyboardNavigation ? (e) => OnKeyDown(e, tableCells[1]): null)" @ref="tableCells[1]">
+        <td @onkeydown="@(Table.KeyboardNavigation ? (e) => OnKeyDown(e, tableCells[1]): null)" @onclick="RowClick" @ref="tableCells[1]">
             <div class="row-action">
 
                 @if (Table.RowActionTemplate != null)
                 {
-                    @Table.RowActionTemplate(Item)
+                    <div style="width: fit-content;" @onclick:stopPropagation>
+                        @Table.RowActionTemplate(Item)
+                    </div>
                 }
 
 
                 @if (Table.AllowEdit)
                 {
-                    <Button class="btn-icon" Size="ButtonSize.Small" OnClick="Edit">
-                        <Icon class="icon" Elements="@InternalIcons.Edit" />
-                    </Button>
+                    <div style="width: fit-content;" @onclick:stopPropagation>
+                        <Button class="btn-icon" Size="ButtonSize.Small" OnClick="Edit">
+                            <Icon class="icon" Elements="@InternalIcons.Edit" />
+                        </Button>
+                    </div>
                 }
 
                 @if (Table.AllowDelete)
                 {
-                    <Button class="btn-icon" Size="ButtonSize.Small" OnClick="Delete">
-                        <Icon class="icon" Elements="@InternalIcons.Trash" />
-                    </Button>
+                    <div style="width: fit-content;" @onclick:stopPropagation>
+                        <Button class="btn-icon" Size="ButtonSize.Small" OnClick="Delete">
+                            <Icon class="icon" Elements="@InternalIcons.Trash" />
+                        </Button>
+                    </div>
                 }
             </div>
         </td>
