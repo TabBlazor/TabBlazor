@@ -76,10 +76,7 @@ namespace TabBlazor
 
         protected async override Task OnParametersSetAsync()
         {
-            if (tableInitialized)
-            {
                 await Update();
-            }
         }
 
 
