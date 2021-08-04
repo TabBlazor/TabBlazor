@@ -20,17 +20,12 @@ namespace TabBlazor.Components.Tables
                 await tabService.FocusFirstInTableRow(editRow);
                 isInitialized = true;
             }
-           
+
         }
 
         public async Task OnEditItemCanceled()
         {
-            if (InlineEditTable.IsAddInProgress)
-            {
-                InlineEditTable.Items.Remove(InlineEditTable.CurrentEditItem);
-            }
-
-            await InlineEditTable.CloseEdit();
+            await InlineEditTable.CancelEdit();
         }
 
 

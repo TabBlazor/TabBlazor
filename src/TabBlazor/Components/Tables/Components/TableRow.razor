@@ -29,7 +29,7 @@
         }
     }
 
-    @if (Table.HasRowActions)
+    @if (Table.HasRowActions && !Table.HasActionColumn)
     {
         <td @onkeydown="@(Table.KeyboardNavigation ? (e) => OnKeyDown(e, tableCells[1]): null)" @onclick="RowClick" @ref="tableCells[1]">
             <div class="row-action">
@@ -57,6 +57,13 @@
                         <Button class="btn-icon" Size="ButtonSize.Small" OnClick="Delete">
                             <Icon class="icon" Elements="@InternalIcons.Trash" />
                         </Button>
+                    </div>
+                }
+
+                @if (Table.RowActionEndTemplate != null)
+                {
+                    <div style="width: fit-content;" @onclick:stopPropagation>
+                        @Table.RowActionEndTemplate(Item)
                     </div>
                 }
             </div>

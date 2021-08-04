@@ -30,5 +30,6 @@ namespace TabBlazor.Components.Tables
         RenderFragment<Item> Template { get; set; }
         RenderFragment<TableResult<object, Item>> GroupingTemplate { get; set; }
         bool SortColumn { get; set; }
+        bool ActionColumn { get; set; }
     }
 }

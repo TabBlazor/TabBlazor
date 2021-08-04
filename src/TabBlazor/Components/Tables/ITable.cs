@@ -41,6 +41,7 @@ namespace TabBlazor.Components.Tables
         //List<MenuDropdownItem<TableItem>> AllRowActions { get; }
         string GetColumnWidth();
         Func<Task<IList<TableItem>>> OnRefresh { get; set; }
+        bool HasActionColumn { get; }
     }
 
     public interface ITableState
@@ -59,11 +60,14 @@ namespace TabBlazor.Components.Tables
     {
         List<IColumn<TableItem>> Columns { get; }
         List<IColumn<TableItem>> VisibleColumns { get; }
-        bool IsAddInProgress { get; }
+        //bool IsAddInProgress { get; }
         bool ShowCheckboxes { get; }
         IList<TableItem> Items { get; }
         TableItem CurrentEditItem { get; }
         Task CloseEdit();
+        Task CancelEdit();
+
+        bool HasActionColumn { get; }
     }
 
     public interface ITableRow<TableItem>
@@ -76,6 +80,7 @@ namespace TabBlazor.Components.Tables
         bool ShowCheckboxes { get; }
         RenderFragment<TableItem> DetailsTemplate { get; }
         RenderFragment<TableItem> RowActionTemplate { get; set; }
+        RenderFragment<TableItem> RowActionEndTemplate { get; set; }
         bool AllowEdit { get; }
         bool AllowDelete { get; }
         bool HasRowActions { get; }
@@ -86,6 +91,7 @@ namespace TabBlazor.Components.Tables
         Task SetSelectedItem(TableItem item);
         Task RowClicked(TableItem item);
         bool KeyboardNavigation { get; }
+        bool HasActionColumn { get; }
     }
 
     public interface ITableRowActions<TableItem>

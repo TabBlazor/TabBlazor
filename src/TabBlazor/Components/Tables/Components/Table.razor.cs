@@ -31,6 +31,7 @@ namespace TabBlazor
         [Parameter] public RenderFragment ChildContent { get; set; }
         [Parameter] public RenderFragment<Item> DetailsTemplate { get; set; }
         [Parameter] public RenderFragment<Item> RowActionTemplate { get; set; }
+        [Parameter] public RenderFragment<Item> RowActionEndTemplate { get; set; }
 
         [Parameter] public List<Item> SelectedItems { get; set; }
         [Parameter] public EventCallback<List<Item>> SelectedItemsChanged { get; set; }
@@ -50,7 +51,11 @@ namespace TabBlazor
         [Parameter] public Func<Task<Item>> AddItemFactory { get; set; }
         [Parameter] public bool KeyboardNavigation { get; set; }
 
-        public bool HasRowActions => RowActionTemplate != null || AllowDelete || AllowEdit;
+        public bool HasRowActions => RowActionTemplate != null || RowActionEndTemplate != null || AllowDelete || AllowEdit;
+
+        public bool HasActionColumn => Columns.Any(e => e.ActionColumn);
+
+
         public bool ShowSearch { get; set; } = true;
 
         protected IEnumerable<TableResult<object, Item>> TempItems { get; set; } = Enumerable.Empty<TableResult<object, Item>>();
@@ -269,7 +274,17 @@ namespace TabBlazor
             //await Update();
         }
 
-        public async Task CloseEdit()
+        public async Task CancelEdit()
+        {
+            if (IsAddInProgress)
+            {
+                Items.Remove(CurrentEditItem);
+            }
+
+            await CloseEdit();
+        }
+
+            public async Task CloseEdit()
         {
             CurrentEditItem = default;
             IsAddInProgress = false;

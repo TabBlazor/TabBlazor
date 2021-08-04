@@ -5,7 +5,8 @@
 
 <tr class="is-inline-edit data-row" @ref="editRow">
 
-    @if (InlineEditTable.ShowCheckboxes) {
+    @if (InlineEditTable.ShowCheckboxes)
+    {
         <td></td>
     }
 
@@ -26,12 +27,15 @@
             }
         </td>
     }
-    <td>
 
-        <div class="row-action-edit">
-            <button class="btn btn-primary btn-sm" @onclick:stopPropagation type="submit">Save</button>
-            <button class="btn btn-secondary btn-sm" @onclick:stopPropagation type="button" @onclick="OnEditItemCanceled">Cancel</button>
-        </div>
+    @if (!InlineEditTable.HasActionColumn)
+    {
+        <td>
+            <div class="row-action-edit">
+                <button class="btn btn-primary btn-sm" @onclick:stopPropagation type="submit">Save</button>
+                <button class="btn btn-secondary btn-sm" @onclick:stopPropagation type="button" @onclick="OnEditItemCanceled">Cancel</button>
+            </div>
+        </td>
 
-    </td>
+    }
 </tr>
