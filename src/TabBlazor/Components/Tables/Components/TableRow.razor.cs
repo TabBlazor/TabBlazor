@@ -23,6 +23,11 @@ namespace TabBlazor.Components.Tables
             tableCells = new ElementReference[Table.VisibleColumns.Count + 2];
         }
 
+        protected int GetTabIndex()
+        {
+            return Table.KeyboardNavigation ? 0 : -1;
+        }
+
         public string GetRowCssClass(TableItem item)
         {
             return new ClassBuilder()

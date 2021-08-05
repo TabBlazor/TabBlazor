@@ -1,4 +1,24 @@
-﻿.clickable-text {
+﻿.tabicon {
+  border: none;
+  background: none;
+  outline: none;
+  transition: transform 0.15s linear; }
+  .tabicon:focus {
+    outline: none;
+    box-shadow: 0 0 0 .25rem #b9cce2;
+    border-radius: 2px; }
+  .tabicon:hover {
+    transform: scale(1.1); }
+  .tabicon::-moz-focus-inner {
+    border: 0; }
+
+.sr-only {
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  width: 1px; }
+
+.clickable-text {
   cursor: pointer;
   text-decoration: underline; }
 

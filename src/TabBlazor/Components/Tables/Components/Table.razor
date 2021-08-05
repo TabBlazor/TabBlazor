@@ -57,7 +57,7 @@
                                                 var group = group1;
                                                 @if (HasGrouping)
                                                 {
-                                                    <GroupHeaderTableRow @bind-Group="group"></GroupHeaderTableRow>
+                                                    <GroupHeaderTableRow @key="group" @bind-Group="group"></GroupHeaderTableRow>
                                                 }
                                                 @if (!HasGrouping || group.Expanded)
                                                 {
@@ -69,7 +69,7 @@
                                                         }
                                                         else
                                                         {
-                                                            <TableRow Item="item" Table="this"></TableRow>
+                                                            <TableRow @key="item" Item="item" Table="this" />
 
                                                             @if (ShowDetailsRow(item))
                                                             {

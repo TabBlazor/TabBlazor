@@ -32,39 +32,32 @@
     @if (Table.HasRowActions && !Table.HasActionColumn)
     {
         <td @onkeydown="@(Table.KeyboardNavigation ? (e) => OnKeyDown(e, tableCells[1]): null)" @onclick="RowClick" @ref="tableCells[1]">
-            <div class="row-action">
+            <div class="row-action" @onclick:stopPropagation>
 
                 @if (Table.RowActionTemplate != null)
                 {
-                    <div style="width: fit-content;" @onclick:stopPropagation>
-                        @Table.RowActionTemplate(Item)
-                    </div>
+                    @Table.RowActionTemplate(Item)
                 }
 
 
                 @if (Table.AllowEdit)
                 {
-                    <div style="width: fit-content;" @onclick:stopPropagation>
-                        <Button class="btn-icon" Size="ButtonSize.Small" OnClick="Edit">
-                            <Icon class="icon" Elements="@InternalIcons.Edit" />
-                        </Button>
-                    </div>
+                    <button class="tabicon" aria-label="Button" @onclick="Edit" tabindex="@GetTabIndex()">
+                        <Icon class="icon tabicon" Elements="@InternalIcons.Edit" />
+                    </button>
+
                 }
 
                 @if (Table.AllowDelete)
                 {
-                    <div style="width: fit-content;" @onclick:stopPropagation>
-                        <Button class="btn-icon" Size="ButtonSize.Small" OnClick="Delete">
-                            <Icon class="icon" Elements="@InternalIcons.Trash" />
-                        </Button>
-                    </div>
+                    <button class="tabicon" aria-label="Button" @onclick="Delete" tabindex="@GetTabIndex()">
+                        <Icon class="icon tabicon" Elements="@InternalIcons.Trash" />
+                    </button>
                 }
 
                 @if (Table.RowActionEndTemplate != null)
                 {
-                    <div style="width: fit-content;" @onclick:stopPropagation>
-                        @Table.RowActionEndTemplate(Item)
-                    </div>
+                    @Table.RowActionEndTemplate(Item)
                 }
             </div>
         </td>

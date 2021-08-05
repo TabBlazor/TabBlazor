@@ -1,8 +1,38 @@
 ﻿
+.tabicon {
+    border: none;
+    background: none;
+    outline: none;
+    transition: transform 0.15s linear;
+
+    &:focus {
+        outline: none;
+        //box-shadow: 0 0 0 .25rem rgba(var(--tblr-btn-color,32,107,196),.25);
+        box-shadow: 0 0 0 .25rem #b9cce2;
+        border-radius: 2px;
+    }
+
+    &:hover {
+        transform: scale(1.1);
+    }
+
+    &::-moz-focus-inner {
+        border: 0;
+    }
+}
+
+.sr-only {
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    width: 1px;
+}
+
 .clickable-text {
     cursor: pointer;
     text-decoration: underline;
 }
+
 
 //Modal
 .modal-max {
