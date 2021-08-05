@@ -127,7 +127,7 @@ namespace TabBlazor
                     Visible = false;
                 }
 
-                await Table.Update();
+                await Table.Update(true);
             }
         }
 
