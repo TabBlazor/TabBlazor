@@ -33,19 +33,29 @@
         @if (selectedIcons.Any())
         {
             <span>@selectedIcons.Count icons selected</span>
-            <Button class="ms-1" Size="ButtonSize.Small" OnClick="CopyToClipboard">Copy to clipboard</Button>
+            <Button class="ms-1" Size="ButtonSize.Small" BackgroundColor="TablerColor.Primary" OnClick="CopyToClipboard">Copy to clipboard</Button>
+            <Button class="ms-1" Size="ButtonSize.Small" BackgroundColor="TablerColor.Danger" OnClick="ClearSelected">Clear selected</Button>
+        }
+        else
+        {
+            <span>Click icons to select..</span>
         }
     </div>
 </div>
 
-<div class="row iconlist-container">
-    @foreach (var icon in filteredIcons)
-    {
-        <div class="col-auto mb-3" title="@icon.Name">
-            <div class="iconlist-item text-center cursor-pointer @(IsSelected(icon) ? "iconlist-item-selected": "")" @onclick="@(() => SelectIcon(icon))">
-                <Icon Size="@size" Elements="@icon.Elements" StrokeWidth="strokeWidth" Color="@color" />
-                <div><small>@icon.Name</small></div>
-            </div>
-        </div>
-    }
+
+
+<div class="iconlist-container">
+
+    <div class="form-selectgroup">
+
+        <Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize Items="@filteredIcons" Context="icon">
+            <span title="@icon.Name">
+                <Checkbox Value="@IsSelected(icon)" ValueChanged="@(() => SelectIcon(icon))">
+                    <Icon Size="@size" Elements="@icon.Elements" StrokeWidth="strokeWidth" Color="@color" />
+                </Checkbox>
+            </span>
+        </Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize>
+        
+    </div>
 </div>

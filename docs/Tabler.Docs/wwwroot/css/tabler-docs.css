@@ -37,12 +37,6 @@ pre.highlight,
 .iconlist-container {
   min-height: 800px; }
 
-.iconlist-item {
-  min-width: 150px; }
-
-.iconlist-item-selected {
-  background-color: lightblue; }
-
 .example {
   padding: 2rem;
   margin: 2rem 0;

@@ -62,7 +62,12 @@ namespace Tabler.Docs.Components.Icons
             {
                 selectedIcons.Add(icon);
             }
-           
+
+        }
+
+        private void ClearSelected()
+        {
+            selectedIcons = new List<Icon>();
         }
 
         private async Task CopyToClipboard()
@@ -74,7 +79,7 @@ namespace Tabler.Docs.Components.Icons
             }
 
             await tabService.CopyToClipboard(iconlist);
-            await toastService.AddToastAsync(new TabBlazor.ToastModel { Title = $"{selectedIcons.Count}' copied to clipboard", Options = new TabBlazor.ToastOptions { Delay = 2 } });
+            await toastService.AddToastAsync(new TabBlazor.ToastModel { Title = $"{selectedIcons.Count} icons copied to clipboard", Options = new TabBlazor.ToastOptions { Delay = 2 } });
         }
 
     }
