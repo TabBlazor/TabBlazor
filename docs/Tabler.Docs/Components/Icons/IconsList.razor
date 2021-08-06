@@ -28,14 +28,24 @@
     </div>
 </div>
 
+<div class="row mb-3">
+    <div class="col-auto">
+        @if (selectedIcons.Any())
+        {
+            <span>@selectedIcons.Count icons selected</span>
+            <Button class="ms-1" Size="ButtonSize.Small" OnClick="CopyToClipboard">Copy to clipboard</Button>
+        }
+    </div>
+</div>
+
 <div class="row iconlist-container">
     @foreach (var icon in filteredIcons)
     {
         <div class="col-auto mb-3" title="@icon.Name">
-            <div class="iconlist-item text-center ">
+            <div class="iconlist-item text-center cursor-pointer @(IsSelected(icon) ? "iconlist-item-selected": "")" @onclick="@(() => SelectIcon(icon))">
                 <Icon Size="@size" Elements="@icon.Elements" StrokeWidth="strokeWidth" Color="@color" />
                 <div><small>@icon.Name</small></div>
             </div>
         </div>
-      }
+    }
 </div>

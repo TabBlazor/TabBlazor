@@ -40,6 +40,9 @@ pre.highlight,
 .iconlist-item {
   min-width: 150px; }
 
+.iconlist-item-selected {
+  background-color: lightblue; }
+
 .example {
   padding: 2rem;
   margin: 2rem 0;
