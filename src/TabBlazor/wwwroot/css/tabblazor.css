@@ -8,7 +8,7 @@
     box-shadow: 0 0 0 .25rem #b9cce2;
     border-radius: 2px; }
   .tabicon:hover {
-    transform: scale(1.1); }
+    transform: scale(1.15); }
   .tabicon::-moz-focus-inner {
     border: 0; }
 

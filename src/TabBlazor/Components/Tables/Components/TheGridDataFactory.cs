@@ -34,6 +34,11 @@ namespace TabBlazor.Components.Tables
                 {
                     state.PageNumber = 0;
                 }
+                else if (state.TotalCount == 0)
+                {
+                    state.PageNumber = 0;
+                }
+
                 else if ((state.TotalCount - 1) < state.PageSize * state.PageNumber)
                 {
                     state.PageNumber = (int)Math.Floor((decimal)(state.TotalCount / state.PageSize)) - 1;

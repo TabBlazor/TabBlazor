@@ -43,7 +43,7 @@
                 @if (Table.AllowEdit)
                 {
                     <button class="tabicon" aria-label="Button" @onclick="Edit" tabindex="@GetTabIndex()">
-                        <Icon class="icon tabicon" Elements="@InternalIcons.Edit" />
+                        <Icon class="icon" Elements="@InternalIcons.Edit" />
                     </button>
 
                 }
@@ -51,7 +51,7 @@
                 @if (Table.AllowDelete)
                 {
                     <button class="tabicon" aria-label="Button" @onclick="Delete" tabindex="@GetTabIndex()">
-                        <Icon class="icon tabicon" Elements="@InternalIcons.Trash" />
+                        <Icon class="icon" Elements="@InternalIcons.Trash" />
                     </button>
                 }
 

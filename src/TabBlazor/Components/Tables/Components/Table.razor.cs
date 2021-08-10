@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Components.Web;
 using TabBlazor.Components.Tables.Components;
 using TabBlazor.Components.Tables;
 using TabBlazor.Services;
-using System.Runtime.CompilerServices;
 
 namespace TabBlazor
 {
@@ -26,18 +25,15 @@ namespace TabBlazor
         [Parameter] public string ValidationRuleSet { get; set; } = "default";
         [Parameter] public int PageSize { get; set; } = 20;
         [Parameter] public IList<Item> Items { get; set; }
-
         [Parameter] public RenderFragment HeaderTemplate { get; set; }
         [Parameter] public RenderFragment ChildContent { get; set; }
         [Parameter] public RenderFragment<Item> DetailsTemplate { get; set; }
         [Parameter] public RenderFragment<Item> RowActionTemplate { get; set; }
         [Parameter] public RenderFragment<Item> RowActionEndTemplate { get; set; }
-
         [Parameter] public List<Item> SelectedItems { get; set; }
         [Parameter] public EventCallback<List<Item>> SelectedItemsChanged { get; set; }
         [Parameter] public bool MultiSelect { get; set; }
         [Parameter] public EventCallback<Item> OnRowClicked { get; set; }
-
         [Parameter] public Func<Task<IList<Item>>> OnRefresh { get; set; }
         [Parameter] public EventCallback<Item> OnItemEdited { get; set; }
         [Parameter] public EventCallback<Item> OnItemAdded { get; set; }
@@ -81,9 +77,8 @@ namespace TabBlazor
 
         protected async override Task OnParametersSetAsync()
         {
-                await Update();
+            await Update();
         }
-
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -97,19 +92,16 @@ namespace TabBlazor
                 tableInitialized = true;
                 await Update();
             }
-
         }
 
         protected override void OnInitialized()
         {
-
             DataFactory = new TheGridDataFactory<Item>(Columns, this);
 
             if (Hover)
             {
                 TableClass += " table-hover";
             }
-                   
 
             var baseAttributes = new Dictionary<string, object>()
             {
@@ -123,7 +115,6 @@ namespace TabBlazor
             }
 
             Attributes = baseAttributes;
-
         }
 
         public async Task RefreshItems(MouseEventArgs args)
@@ -284,7 +275,7 @@ namespace TabBlazor
             await CloseEdit();
         }
 
-            public async Task CloseEdit()
+        public async Task CloseEdit()
         {
             CurrentEditItem = default;
             IsAddInProgress = false;
@@ -394,12 +385,8 @@ namespace TabBlazor
 
         public async Task OnDeleteItem(Item item)
         {
-            //var result = await AppService.ShowDialog("", title: L.GetString(x => x.DeleteConfirmItem), DialogType.Warning);
-            //if (result.Ok)
-            //{
             Items.Remove(item);
             await OnItemDeleted.InvokeAsync(item);
-            //}
             await CloseEdit();
         }
 
