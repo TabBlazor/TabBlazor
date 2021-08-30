@@ -9,9 +9,9 @@ namespace TabBlazor.Components.Tables
     public class TheGridDataFactory<Item>
     {
         private readonly List<IColumn<Item>> columns;
-        private readonly ITableState state;
+        private readonly ITableState<Item> state;
 
-        public TheGridDataFactory(List<IColumn<Item>> columns, ITableState state)
+        public TheGridDataFactory(List<IColumn<Item>> columns, ITableState<Item> state)
         {
             this.columns = columns;
             this.state = state;
@@ -24,6 +24,12 @@ namespace TabBlazor.Components.Tables
             {
                 var query = items.AsQueryable();
                 query = AddSearch(query);
+                //if (state.CurrentEditItem == null)
+                //{
+                //    query = AddSearch(query);
+                //}
+
+
                 if (addSorting)
                 {
                     query = AddSorting(query);
@@ -73,6 +79,7 @@ namespace TabBlazor.Components.Tables
                 }
             }
 
+
             return viewResult;
         }
 
@@ -91,6 +98,12 @@ namespace TabBlazor.Components.Tables
 
         private IQueryable<Item> AddSearch(IQueryable<Item> query)
         {
+
+            if (string.IsNullOrEmpty(state.SearchText))
+            {
+                return query;
+            }
+
             var predicate = PredicateBuilder.New<Item>();
             foreach (var column in columns.Where(c => c.Searchable))
             {
@@ -101,10 +114,12 @@ namespace TabBlazor.Components.Tables
                 }
             }
 
-            if (!string.IsNullOrEmpty(state.SearchText))
+            if (state.CurrentEditItem != null)
             {
-                query = query.Where(predicate);
+                predicate = predicate.Or(e => e.Equals(state.CurrentEditItem));
             }
+
+            query = query.Where(predicate);
 
             return query;
         }

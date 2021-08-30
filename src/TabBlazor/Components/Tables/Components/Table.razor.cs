@@ -11,7 +11,7 @@ using TabBlazor.Services;
 
 namespace TabBlazor
 {
-    public class TableBase<Item> : ComponentBase, ITable<Item>, IInlineEditTable<Item>, IDetailsTable<Item>, ITableRow<Item>, ITableState // ITableRowActions<Item>
+    public class TableBase<Item> : ComponentBase, ITable<Item>, IInlineEditTable<Item>, IDetailsTable<Item>, ITableRow<Item>, ITableState<Item> // ITableRowActions<Item>
     {
         [Inject] private TablerService tabService { get; set; }
 
@@ -374,13 +374,14 @@ namespace TabBlazor
             }
 
             Items.Add(tableItem);
-            TotalCount++;
+            //TotalCount++;
 
-            await LastPage();
+            //await LastPage();
             EditItem(tableItem);
 
-            TempItems = DataFactory.GetData(Items, false, false);
-
+            TempItems = DataFactory.GetData(Items, false, false, tableItem);
+           // await LastPage();
+            // await MoveToItem(tableItem);
         }
 
         public async Task OnDeleteItem(Item item)

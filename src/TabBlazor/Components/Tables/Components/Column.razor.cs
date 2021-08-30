@@ -78,7 +78,7 @@ namespace TabBlazor
             Type = Property?.GetPropertyMemberInfo().GetMemberUnderlyingType();
         }
 
-        public Expression<Func<Item, bool>> GetFilter(ITableState state)
+        public Expression<Func<Item, bool>> GetFilter(ITableState<Item> state)
         {
             if ((Searchable || SearchExpression != null) && Property != null && !string.IsNullOrEmpty(state.SearchText))
             {
@@ -87,8 +87,6 @@ namespace TabBlazor
                 {
                     return null;
                 }
-
-
 
                 return PredicateBuilder
                     .New<Item>()

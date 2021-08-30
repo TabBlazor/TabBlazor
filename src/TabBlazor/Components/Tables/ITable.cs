@@ -44,7 +44,7 @@ namespace TabBlazor.Components.Tables
         bool HasActionColumn { get; }
     }
 
-    public interface ITableState
+    public interface ITableState<TableItem>
     {
         string SearchText { get; set; }
         int PageSize { get; set; }
@@ -54,6 +54,8 @@ namespace TabBlazor.Components.Tables
         int TotalCount { get; set; }
         int VisibleColumnCount { get; }
         Task Update(bool resetPage = false);
+        TableItem CurrentEditItem { get; }
+
     }
 
     public interface IInlineEditTable<TableItem>
