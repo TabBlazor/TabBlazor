@@ -77,7 +77,7 @@
                         <div style="@(string.IsNullOrWhiteSpace(MaxListHeight) ? "": $"max-height:{MaxListHeight};overflow-y:auto")">
                             @foreach (var item in FilteredList())
                             {
-                                <DropdownItem class="@(IsHighlighted(item) ? "highlight":"")" Active="IsSelected(item)" Disabled="!CanSelect() && !IsSelected(item)" OnClick="(e=> ToogleSelected(item))" @key="item">
+                                <DropdownItem class="@(IsHighlighted(item) ? "highlight":"")" Active="IsSelected(item)" Disabled="(!CanSelect() && !IsSelected(item)) || IsDisabled(item)" OnClick="(e=> ToogleSelected(item))" @key="item">
 
                                     @if (ShowCheckBoxes)
                                     {

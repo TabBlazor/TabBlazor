@@ -28,6 +28,7 @@ namespace TabBlazor
         [Parameter] public Func<TItem, string> SelectedTextExpression { get; set; }
         [Parameter] public Func<TItem, string> IdExpression { get; set; }
         [Parameter] public Func<TItem, TValue> ConvertExpression { get; set; }
+        [Parameter] public Func<TItem, bool> DisabledExpression { get; set; }
         [Parameter] public RenderFragment<TItem> ListTemplate { get; set; }
         [Parameter] public RenderFragment<List<TItem>> SelectedTemplate { get; set; }
         [Parameter] public RenderFragment FooterTemplate { get; set; }
@@ -173,6 +174,11 @@ namespace TabBlazor
         {
             if (SelectedTextExpression == null) return item.ToString();
             return SelectedTextExpression.Invoke(item);
+        }
+
+        private bool IsDisabled(TItem item)
+        {
+            return DisabledExpression != null ? DisabledExpression(item) : false;
         }
 
         private bool CanSelect()
