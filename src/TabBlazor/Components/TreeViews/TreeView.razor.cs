@@ -14,7 +14,7 @@ namespace TabBlazor
         [Parameter] public Func<TItem, IList<TItem>> ChildSelector { get; set; } = node => null;
 
         [Parameter] public RenderFragment<TItem> Template { get; set; }
-        [Parameter] public bool ExpandAll { get; set; }
+        [Parameter] public bool AllwaysExpanded { get; set; }
         [Parameter] public Func<TItem, bool> DefaultExpanded { get; set; }
         [Parameter] public bool MultiSelect { get; set; }
 
@@ -54,6 +54,29 @@ namespace TabBlazor
             }
         }
 
+        public void ExpandAll()
+        {
+            ExpandAll(Items);
+        }
+
+        public void CollapseAll()
+        {
+            expandedItems.Clear();
+        }
+
+        private void ExpandAll(IList<TItem> items)
+        {
+            foreach (var item in items)
+            {
+                if (!IsExpanded(item))
+                {
+                    expandedItems.Add(item);
+                }
+
+                ExpandAll(ChildSelector(item));
+            }
+        }
+
         private void SetDefaultExpanded(IList<TItem> items)
         {
             foreach (var item in items)
@@ -88,6 +111,13 @@ namespace TabBlazor
                 expandedItems.Add(item);
             }
         }
+
+        //public void ExpandAll()
+        //{
+        //    expandedItems = Items.ToList();
+        //    StateHasChanged();
+        //}
+
 
         public async Task ToogleSelected(TItem item)
         {

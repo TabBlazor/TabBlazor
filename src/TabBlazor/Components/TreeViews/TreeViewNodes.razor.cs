@@ -13,8 +13,9 @@ namespace TabBlazor.Components.TreeViews
         [Parameter] public IList<TItem> Items { get; set; }
         [Parameter] public Func<TItem, IList<TItem>> ChildSelector { get; set; } = node => null;
         [Parameter] public RenderFragment<TItem> Template { get; set; }
+        
         [Parameter] public int Level { get; set; }
-
+      
         private bool isRoot => Level == 0;
 
         protected bool HasChildren(TItem item)

@@ -3,12 +3,14 @@
 <ul class="@(isRoot ? "tree": "")">
     @foreach (var item in Items)
     {
+        var isExpanded = Root.AllwaysExpanded || Root.IsExpanded(item);
+
         <li>
             <div class="d-flex align-items-center mb-2 tree-container" style="padding-left:@(Level*20)px">
 
                 @if (HasChildren(item))
                 {
-                    <Icon Elements="@(Root.IsExpanded(item) ? InternalIcons.Circle_minus : InternalIcons.Circle_plus)" OnClick="@(() => Root.ToogleExpanded(item))" class="icon me-2 cursor-pointer tree-node-expand-icon" />
+                    <Icon Elements="@(isExpanded ? InternalIcons.Circle_minus : InternalIcons.Circle_plus)" OnClick="@(() => Root.ToogleExpanded(item))" class="icon me-2 tree-node-expand-icon" />
                 }
                 else
                 {
@@ -21,7 +23,7 @@
             </div>
 
 
-            @if (HasChildren(item) && Root.IsExpanded(item))
+            @if (HasChildren(item) && isExpanded)
             {
                 <TabBlazor.Components.TreeViews.TreeViewNodes Items="ChildSelector(item)"
                                                               Template="Template"
