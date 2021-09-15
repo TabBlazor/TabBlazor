@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30615.102
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31710.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{BC1B6966-CBEF-4107-A708-0C6DC37D606D}"
 EndProject
@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tabler.Docs.Wasm", "docs\Ta
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TabBlazor", "src\TabBlazor\TabBlazor.csproj", "{12670973-FFE5-4B66-A898-1689AA02BF77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IconGenerator", "Icons\IconGenerator\IconGenerator.csproj", "{4132F8E3-B0F0-40B3-BEA2-87FCBB8EAC8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IconGenerator", "Icons\IconGenerator\IconGenerator.csproj", "{4132F8E3-B0F0-40B3-BEA2-87FCBB8EAC8E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Icons", "Icons", "{512C1DEA-9A7A-4881-B38D-2BE3E5DA7926}"
 EndProject

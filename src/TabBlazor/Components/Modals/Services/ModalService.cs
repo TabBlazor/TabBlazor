@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TabBlazor.Components.Modals.Standard;
 
 namespace TabBlazor.Services
 {
@@ -32,8 +33,17 @@ namespace TabBlazor.Services
             modals.Push(modalModel);
             OnChanged?.Invoke();
             return modalModel.Task;
-
         }
+
+        public async Task<bool> ShowConfirmDialogAsync(ConfirmOptions options)
+        {
+            var component = new RenderComponent<ConfirmModal>().
+                Set(e=> e.Options, options);
+            var result = await ShowAsync("", component, new ModalOptions { Size = ModalSize.Small, ShowHeader = false, StatusColor = TablerColor.Danger });
+            return !result.Cancelled;
+        }
+                
+
 
         private void LocationChanged(object sender, LocationChangedEventArgs e)
         {

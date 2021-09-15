@@ -14,6 +14,7 @@ namespace TabBlazor
     public class TableBase<Item> : ComponentBase, ITable<Item>, IInlineEditTable<Item>, IDetailsTable<Item>, ITableRow<Item>, ITableState<Item> // ITableRowActions<Item>
     {
         [Inject] private TablerService tabService { get; set; }
+        [Inject] private IModalService modalService { get; set; }
 
         [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> UnknownParameters { get; set; }
         [Parameter] public bool ShowHeader { get; set; } = true;
@@ -46,7 +47,9 @@ namespace TabBlazor
         [Parameter] public bool Hover { get; set; }
         [Parameter] public bool Responsive { get; set; }
         [Parameter] public Func<Task<Item>> AddItemFactory { get; set; }
+        [Parameter] public Func<Item, Task<bool>> ConfirmDeleteFunction { get; set; }
         [Parameter] public bool KeyboardNavigation { get; set; }
+        [Parameter] public bool ConfirmDelete { get; set; } = true;
 
         public bool HasRowActions => RowActionTemplate != null || RowActionEndTemplate != null || AllowDelete || AllowEdit;
 
@@ -387,6 +390,28 @@ namespace TabBlazor
 
         public async Task OnDeleteItem(Item item)
         {
+            if(ConfirmDeleteFunction !=null)
+            {
+                if (!await ConfirmDeleteFunction(item))
+                {
+                    return;
+                } 
+            }
+
+            else if (ConfirmDelete)
+            {
+                var result = await modalService.ShowConfirmDialogAsync(new Components.Modals.Standard.ConfirmOptions
+                {
+                    MainText = "Are you sure you want to delete?",
+                    IconElements = InternalIcons.Alert_triangle
+                });
+
+                if (!result)
+                {
+                    return;
+                }
+            }
+            
             Items.Remove(item);
             await OnItemDeleted.InvokeAsync(item);
             await CloseEdit();

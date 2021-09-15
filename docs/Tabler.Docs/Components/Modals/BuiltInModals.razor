@@ -1,0 +1,27 @@
+﻿<Button @onclick="ShowModal" BackgroundColor="TablerColor.Primary">Show Confirm</Button>
+<div>@message</div>
+
+
+@code {
+    @inject IModalService ModalService
+    private string message;
+    protected async Task ShowModal()
+    {
+        message = string.Empty;
+        var result = await ModalService.ShowConfirmDialogAsync(new TabBlazor.Components.Modals.Standard.ConfirmOptions
+            {
+                MainText = "Are you sure?",
+                SubText = "Please note this can not be undone",
+                IconElements = DemoIcons.Alert_triangle
+            });
+    
+        if (result)
+        {
+            message = "Ok to continue";
+        }
+        else
+        {
+            message = "Do not continue";
+        }
+    }
+}

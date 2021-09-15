@@ -21,8 +21,7 @@ namespace TabBlazor.Services
         {
             await jsRuntime.InvokeVoidAsync("tabBlazor.preventDefaultKey", element, eventName, keys);
         }
-
-
+       
         public async Task FocusFirstInTableRow(ElementReference tableRow)
         {
             await jsRuntime.InvokeVoidAsync("tabBlazor.focusFirstInTableRow", tableRow, "");

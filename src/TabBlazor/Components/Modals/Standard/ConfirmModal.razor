@@ -1,0 +1,22 @@
+﻿
+<div class="text-center">
+
+    <Icon class="mb-2 text-danger icon-lg" Elements=@Options.IconElements />
+
+    <h3>@Options.MainText</h3>
+    <div class="text-muted">@Options.SubText</div>
+</div>
+<div class="modal-footer pb-0">
+    <div class="w-100">
+        <div class="row">
+            <div class="col">
+                <Button class="w-100" OnClick="@Cancel">@Options.CancelText</Button>
+            </div>
+            <div class="col">
+                <Button class="w-100" BackgroundColor=TablerColor.Danger OnClick="@Ok">@Options.OkText</Button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TabBlazor.Components.Modals.Standard;
 
 namespace TabBlazor.Services
 {
@@ -12,5 +13,6 @@ namespace TabBlazor.Services
         Task<ModalResult> ShowAsync<TComponent>(string title, RenderComponent<TComponent> component, ModalOptions modalOptions = null) where TComponent : IComponent;        
         void Close(ModalResult modalResult);
         void Close();
+        Task<bool> ShowConfirmDialogAsync(ConfirmOptions options);
     }
 }
