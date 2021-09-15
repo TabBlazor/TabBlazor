@@ -40,7 +40,7 @@
                 }
 
 
-                @if (Table.AllowEdit)
+                @if (CanEdit())
                 {
                     <button class="tabicon" aria-label="Button" @onclick="Edit" tabindex="@GetTabIndex()">
                         <Icon class="icon" Elements="@InternalIcons.Edit" />
@@ -48,7 +48,7 @@
 
                 }
 
-                @if (Table.AllowDelete)
+                @if (CanDelete())
                 {
                     <button class="tabicon" aria-label="Button" @onclick="Delete" tabindex="@GetTabIndex()">
                         <Icon class="icon" Elements="@InternalIcons.Trash" />

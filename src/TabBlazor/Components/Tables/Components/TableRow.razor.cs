@@ -28,6 +28,37 @@ namespace TabBlazor.Components.Tables
             return Table.KeyboardNavigation ? 0 : -1;
         }
 
+        protected bool CanDelete()
+        {
+            if (!Table.AllowDelete)
+            {
+                return false;
+            }
+
+            if (Table.AllowDeleteExpression == null)
+            {
+                return true;
+            }
+
+            return Table.AllowDeleteExpression(Item);
+        }
+
+        protected bool CanEdit()
+        {
+            if (!Table.AllowEdit)
+            {
+                return false;
+            }
+
+            if (Table.AllowEditExpression == null)
+            {
+                return true;
+            }
+
+            return Table.AllowEditExpression(Item);
+        }
+
+
         public string GetRowCssClass(TableItem item)
         {
             return new ClassBuilder()

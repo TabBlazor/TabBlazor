@@ -94,6 +94,8 @@ namespace TabBlazor.Components.Tables
         Task RowClicked(TableItem item);
         bool KeyboardNavigation { get; }
         bool HasActionColumn { get; }
+        Func<TableItem, bool> AllowDeleteExpression { get; set; }
+        Func<TableItem, bool> AllowEditExpression { get; set; }
     }
 
     public interface ITableRowActions<TableItem>

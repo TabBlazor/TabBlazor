@@ -40,6 +40,7 @@ namespace TabBlazor
         [Parameter] public EventCallback<Item> OnItemDeleted { get; set; }
         [Parameter] public EventCallback<Item> OnItemSelected { get; set; }
         [Parameter] public Func<Item, bool> AllowDeleteExpression { get; set; }
+        [Parameter] public Func<Item, bool> AllowEditExpression { get; set; }
         [Parameter] public int TotalCount { get; set; }
         [Parameter] public bool ShowCheckboxes { get; set; }
         [Parameter] public bool Hover { get; set; }
