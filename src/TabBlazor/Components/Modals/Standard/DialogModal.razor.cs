@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Components;
 using TabBlazor.Services;
 
-namespace TabBlazor.Components.Modals.Standard
+namespace TabBlazor.Components.Modals
 {
-    public partial class ConfirmModal : ComponentBase
+    public partial class DialogModal : ComponentBase
     {
         [Inject] private IModalService modalService { get; set; }
 
-        [Parameter] public ConfirmOptions Options { get; set; }
+        [Parameter] public DialogOptions Options { get; set; }
         private void Cancel()
         {
             modalService.Close();

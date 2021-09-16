@@ -400,10 +400,11 @@ namespace TabBlazor
 
             else if (ConfirmDelete)
             {
-                var result = await modalService.ShowConfirmDialogAsync(new Components.Modals.Standard.ConfirmOptions
+                var result = await modalService.ShowDialogAsync(new Components.Modals.DialogOptions
                 {
                     MainText = "Are you sure you want to delete?",
-                    IconElements = InternalIcons.Alert_triangle
+                    IconElements = InternalIcons.Alert_triangle,
+                    StatusColor = TablerColor.Danger
                 });
 
                 if (!result)

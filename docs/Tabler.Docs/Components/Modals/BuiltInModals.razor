@@ -1,18 +1,24 @@
-﻿<Button @onclick="ShowModal" BackgroundColor="TablerColor.Primary">Show Confirm</Button>
-<div>@message</div>
+﻿<Button @onclick="ShowConfirmModal" BackgroundColor="TablerColor.Primary">Show Confirm</Button>
+<div class=mb-3>@message</div>
+
+
+<Button @onclick="ShowInfoModal" BackgroundColor="TablerColor.Primary">Show Info</Button>
 
 
 @code {
     @inject IModalService ModalService
     private string message;
-    protected async Task ShowModal()
+   
+    
+    protected async Task ShowConfirmModal()
     {
         message = string.Empty;
-        var result = await ModalService.ShowConfirmDialogAsync(new TabBlazor.Components.Modals.Standard.ConfirmOptions
+        var result = await ModalService.ShowDialogAsync(new TabBlazor.Components.Modals.DialogOptions
             {
                 MainText = "Are you sure?",
                 SubText = "Please note this can not be undone",
-                IconElements = DemoIcons.Alert_triangle
+                IconElements = DemoIcons.Alert_triangle,
+                StatusColor = TablerColor.Danger
             });
     
         if (result)
@@ -24,4 +30,20 @@
             message = "Do not continue";
         }
     }
+
+        protected async Task ShowInfoModal()
+    {
+
+        await ModalService.ShowDialogAsync(new TabBlazor.Components.Modals.DialogOptions
+            {
+                MainText = "You have a new message",
+                SubText = "Check your inbox for more information",
+                IconElements = DemoIcons.Message,
+                CancelText = "",
+                StatusColor = TablerColor.Primary
+            });
+    
+     
+    }
+
 }

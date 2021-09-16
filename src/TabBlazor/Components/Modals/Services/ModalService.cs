@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Components.Routing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using TabBlazor.Components.Modals.Standard;
+using TabBlazor.Components.Modals;
+
 
 namespace TabBlazor.Services
 {
@@ -35,11 +35,11 @@ namespace TabBlazor.Services
             return modalModel.Task;
         }
 
-        public async Task<bool> ShowConfirmDialogAsync(ConfirmOptions options)
+        public async Task<bool> ShowDialogAsync(DialogOptions options)
         {
-            var component = new RenderComponent<ConfirmModal>().
+            var component = new RenderComponent<DialogModal>().
                 Set(e=> e.Options, options);
-            var result = await ShowAsync("", component, new ModalOptions { Size = ModalSize.Small, ShowHeader = false, StatusColor = TablerColor.Danger });
+            var result = await ShowAsync("", component, new ModalOptions { Size = ModalSize.Small, ShowHeader = false, StatusColor = options.StatusColor });
             return !result.Cancelled;
         }
                 

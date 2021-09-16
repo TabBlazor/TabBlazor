@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TabBlazor.Components.Modals.Standard
+namespace TabBlazor.Components.Modals
 {
-    public class ConfirmOptions
+    public class DialogOptions
     {
         public string MainText { get; set; }
         public string SubText { get; set; }
@@ -14,6 +14,8 @@ namespace TabBlazor.Components.Modals.Standard
 
         public string CancelText { get; set; } = "Cancel";
         public string OkText { get; set; } = "Ok";
+
+        public TablerColor StatusColor = TablerColor.Default;
 
     }
 }
