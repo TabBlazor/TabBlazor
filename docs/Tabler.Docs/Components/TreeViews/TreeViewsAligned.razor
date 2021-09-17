@@ -1,0 +1,61 @@
+﻿<div class="wrapper" style="width: 300px;">
+    <TreeView @ref="treeView" Items="@folders" AlignTreeNodes ChildSelector="e=>e.SubFolders" DefaultExpanded="e=>e.FolderName.StartsWith('D')" @bind-SelectedItem="selectedFolder">
+        <Template>
+            <Card StatusStart="TablerColor.Danger" Size="CardSize.Small">
+                <CardBody>
+                    <span>@context.FolderName (@context.SubFolders.Count)</span>
+                </CardBody>
+            </Card>
+        </Template>
+    </TreeView>
+</div>
+
+<div class="mt-3">Selected Folders:</div>
+<ul>
+    <li>@selectedFolder.FolderName</li>
+</ul>
+
+@code {
+    private TreeView<FileFolder> treeView;
+    List<FileFolder> folders = new List<FileFolder>();
+    public FileFolder selectedFolder { get; set; }
+    protected override void OnInitialized()
+    {
+
+        var drawings = new FileFolder("Drawings");
+
+        var architecture = new FileFolder("Arcitecture");
+        architecture.SubFolders.Add(new FileFolder("Folder1"));
+        architecture.SubFolders.Add(new FileFolder("Folder2"));
+        drawings.SubFolders.Add(architecture);
+
+        drawings.SubFolders.Add(new FileFolder("HVAC"));
+        drawings.SubFolders.Add(new FileFolder("Floorplans"));
+        folders.Add(drawings);
+
+        var documents = new FileFolder("Documents");
+        documents.SubFolders.Add(new FileFolder("Instructions"));
+        documents.SubFolders.Add(new FileFolder("History"));
+
+        folders.Add(documents);
+        folders.Add(new FileFolder("Images"));
+
+        selectedFolder = architecture;
+
+    }
+
+    public class FileFolder
+    {
+        public FileFolder() { }
+
+        public FileFolder(string folderName)
+        {
+            FolderName = folderName;
+        }
+
+        public string FolderName { get; set; }
+        public List<FileFolder> SubFolders { get; set; } = new List<FileFolder>();
+
+    }
+
+}

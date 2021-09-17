@@ -17,6 +17,7 @@ namespace TabBlazor
         [Parameter] public bool AllwaysExpanded { get; set; }
         [Parameter] public Func<TItem, bool> DefaultExpanded { get; set; }
         [Parameter] public bool MultiSelect { get; set; }
+        [Parameter] public bool AlignTreeNodes { get; set; }
 
         [Parameter] public TItem SelectedItem { get; set; }
         [Parameter] public EventCallback<TItem> SelectedItemChanged { get; set; }
