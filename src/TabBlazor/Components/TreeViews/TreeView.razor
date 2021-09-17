@@ -3,12 +3,10 @@
 
 @if (Items != null)
 {
-
-
-<CascadingValue Name="Root" Value="this">
-    <TabBlazor.Components.TreeViews.TreeViewNodes Items="Items"
-                                                  Template="Template"
-                                                  ChildSelector="ChildSelector"
-                                                  />
-</CascadingValue>
+    <CascadingValue Name="Root" Value="this">
+        <TabBlazor.Components.TreeViews.TreeViewNodes Items="Items"
+                                                      Template="Template"
+                                                      ChildSelector="ChildSelector"
+                                                      />
+    </CascadingValue>
 }

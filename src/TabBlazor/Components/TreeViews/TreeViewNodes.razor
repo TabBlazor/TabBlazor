@@ -17,7 +17,7 @@
                     <Icon class="icon me-2" />
                 }
 
-                <div @onclick="@(() => Root.ToogleSelected(item))" class="cursor-pointer @(Root.IsSelected(item) ? "tree-node-selected": "")">
+                <div @onclick="@(() => Root.ToogleSelected(item))" class="cursor-pointer @(Root.IsSelected(item) ? "tree-node-selected": "") @(Root.AlignTreeNodes ? "tree-node-aligned" : "")">
                     @Template(item)
                 </div>
             </div>

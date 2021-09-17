@@ -42,6 +42,9 @@
   border-style: solid;
   border-width: thin; }
 
+.tree-node-aligned {
+    width: 100%; }
+
 .switch-icon {
   width: unset;
   height: unset; }
