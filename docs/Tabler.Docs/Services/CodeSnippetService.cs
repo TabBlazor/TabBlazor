@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Tabler.Docs.Services
@@ -47,7 +44,9 @@ namespace Tabler.Docs.Services
     public class GitHubSnippetService : ICodeSnippetService
     {
         const string repo = "joadan/Blazor-Tabler";
-        const string baseUrl = "https://raw.githubusercontent.com/joadan/TabBlazor/master/docs/Tabler.Docs";
+        //const string baseUrl = "https://raw.githubusercontent.com/joadan/TabBlazor/master/docs/Tabler.Docs";
+        const string baseUrl = "https://tabblazor.com/_content/razor_source";
+     
         private readonly IHttpClientFactory httpClientFactory;
 
         private Dictionary<string, string> cachedCode = new Dictionary<string, string>();
@@ -56,7 +55,6 @@ namespace Tabler.Docs.Services
         {
             this.httpClientFactory = httpClientFactory;
         }
-
 
         public async Task<string> GetCodeSnippet(string className)
         {
