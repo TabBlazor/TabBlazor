@@ -1,6 +1,7 @@
 ﻿@inherits TablerBaseComponent
 @namespace TabBlazor
 <ClickOutside OnClickOutside="OnClickOutside">
+    <CascadingValue Name=Dropdown Value=this>
     <HtmlElement Tag="div"
                  class="@ClassNames"
                  @onclick="OnDropdownClick"
@@ -18,5 +19,5 @@
 
         }
     </HtmlElement>
-
+    </CascadingValue>
 </ClickOutside>

@@ -1,8 +1,10 @@
 ﻿@inherits TablerBaseComponent
 @namespace TabBlazor
-<HtmlElement Tag="ul" 
-             class="@ClassNames" 
-             @onclick="OnClick"
-             @attributes="@UnmatchedParameters">
-    @ChildContent
-</HtmlElement>
+<CascadingValue Name="DropdownMenu" Value=this>
+    <HtmlElement Tag="ul"
+                 class="@ClassNames"
+                 @onclick="MenuClicked"
+                 @attributes="@UnmatchedParameters">
+        @ChildContent
+    </HtmlElement>
+    </CascadingValue>

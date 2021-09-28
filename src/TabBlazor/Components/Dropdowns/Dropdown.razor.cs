@@ -73,6 +73,7 @@ namespace TabBlazor
         public void Close()
         {
             isExpanded = false;
+            StateHasChanged();
         }
     }
 }
