@@ -16,6 +16,7 @@ namespace TabBlazor
 
         protected ClassBuilder ClassBuilder => new ClassBuilder(GetUnmatchedParameter("Class")?.ToString());
 
+
         protected virtual string ClassNames => ClassBuilder.ToString();
 
         protected object GetUnmatchedParameter(string key)

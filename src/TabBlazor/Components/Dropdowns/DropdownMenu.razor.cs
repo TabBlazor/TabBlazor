@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace TabBlazor
 {
-    public partial class DropdownMenu : TablerBaseComponent
+    public partial class DropdownMenu : TablerBaseComponent, IDisposable
     {
         //[Parameter] public int Columns { get; set; } = 1;
         [Parameter] public bool Arrow { get; set; } = false;
@@ -59,7 +60,6 @@ namespace TabBlazor
                 subMenus.Add(menu);
             }
 
-           // StateHasChanged();
         }
 
         public void RemoveSubMenu(DropdownMenu menu)
@@ -69,7 +69,12 @@ namespace TabBlazor
                 subMenus.Add(menu);
             }
 
-          //  StateHasChanged();
+        }
+
+        public void Dispose()
+        {
+            ParentItem?.RemoveSubMenu(this);
+            ParentMenu?.RemoveSubMenu(this);
         }
 
         protected override string ClassNames => ClassBuilder
