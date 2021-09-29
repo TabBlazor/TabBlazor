@@ -16,12 +16,19 @@
                     <div class="d-flex align-items-center pt-4 mt-auto">
                         <Avatar Url="_content/Tabler.Docs/img/avatars/002f.jpg" />
                         <div class="ms-3">
-                            <a  class="text-body">Maryjo Lebarree</a>
+                            <a class="text-body">Maryjo Lebarree</a>
                             <div class="text-muted">3 days ago</div>
                         </div>
                         <div class="ms-auto">
                             <span class="d-none d-md-inline-block ms-3 text-muted">
-                                <Icon class="icon" Elements="@DemoIcons.Heart" Filled TextColor="TablerColor.Red" />
+                                <SwitchContent Animation="SwitchAnimation.Scale">
+                                    <DefaultTemplate>
+                                        <Icon class="icon" Elements="@DemoIcons.Heart" />
+                                    </DefaultTemplate>
+                                    <ActiveTemplate>
+                                        <Icon class="icon" Elements="@DemoIcons.Heart" Filled TextColor="TablerColor.Red" />
+                                    </ActiveTemplate>
+                                </SwitchContent>
                             </span>
                         </div>
                     </div>

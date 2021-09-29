@@ -37,7 +37,7 @@ namespace TabBlazor
 
         private void MenuClicked(MouseEventArgs e)
         {
-            if (isSubMenu)
+            if (isSubMenu && Dropdown.CloseOnClick)
             {
                 Dropdown.Close();
             }
@@ -59,7 +59,6 @@ namespace TabBlazor
             {
                 subMenus.Add(menu);
             }
-
         }
 
         public void RemoveSubMenu(DropdownMenu menu)
