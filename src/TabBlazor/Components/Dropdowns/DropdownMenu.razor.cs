@@ -6,83 +6,44 @@ using System.Linq;
 
 namespace TabBlazor
 {
-    public partial class DropdownMenu : TablerBaseComponent, IDisposable
+    public partial class DropdownMenu : TablerBaseComponent
     {
-        //[Parameter] public int Columns { get; set; } = 1;
         [Parameter] public bool Arrow { get; set; } = false;
-        [CascadingParameter(Name = "Dropdown")] public Dropdown Dropdown { get; set; }
-        [CascadingParameter(Name = "DropdownItem")] public DropdownItem ParentItem { get; set; }
-        [CascadingParameter(Name = "DropdownMenu")] public DropdownMenu ParentMenu { get; set; }
+      
+        private List<DropdownItem> subMenuItems = new();
 
-        private List<DropdownMenu> subMenus = new();
+        protected override string ClassNames => ClassBuilder
+           .Add("dropdown-menu")
+           .Add(BackgroundColor.GetColorClass("bg"))
+           .Add(TextColor.GetColorClass("text"))
+           .AddIf("show", true)
+           .AddIf($"dropdown-menu-arrow", Arrow)
+           .ToString();
 
-        private bool isSubMenu => ParentItem != null;
-        private bool isVisible = true;
-        protected override void OnInitialized()
+        public void CloseAllSubMenus()
         {
-    
-            ParentItem?.AddSubMenu(this);
-            ParentMenu?.AddSubMenu(this);
-            isVisible = !isSubMenu;
-        }
-
-        public void ToogleVisible()
-        {
-            isVisible = !isVisible;
-        }
-        public void Close()
-        {
-            isVisible = false;
-        }
-
-        private void MenuClicked(MouseEventArgs e)
-        {
-            if (isSubMenu && Dropdown.CloseOnClick)
+            foreach (var item in subMenuItems)
             {
-                Dropdown.Close();
-            }
-            OnClick.InvokeAsync(e);
-        }
-
-        public void CloseAllOtherSubMenus(DropdownItem parent)
-        {
-            foreach(var subMenu in subMenus.Where(e=> e.ParentItem != parent))
-            {
-                subMenu.Close();
+                item.CloseSubMenu();
             }
             StateHasChanged();
         }
 
-        public void AddSubMenu(DropdownMenu menu)
+        public void AddSubMenuItem(DropdownItem item)
         {
-            if (menu != null && !subMenus.Contains(menu))
+            if (item != null && !subMenuItems.Contains(item))
             {
-                subMenus.Add(menu);
+                subMenuItems.Add(item);
             }
         }
 
-        public void RemoveSubMenu(DropdownMenu menu)
+        public void RemoveSubMenuItem(DropdownItem item)
         {
-            if (menu != null && !subMenus.Contains(menu))
+            if (item != null && subMenuItems.Contains(item))
             {
-                subMenus.Add(menu);
+                subMenuItems.Remove(item);
             }
-
         }
-
-        public void Dispose()
-        {
-            ParentItem?.RemoveSubMenu(this);
-            ParentMenu?.RemoveSubMenu(this);
-        }
-
-        protected override string ClassNames => ClassBuilder
-            .Add("dropdown-menu")
-            .Add(BackgroundColor.GetColorClass("bg"))
-            .Add(TextColor.GetColorClass("text"))
-            .AddIf("show", isVisible)
-            .AddIf($"dropdown-menu-arrow", Arrow)
-            //.AddIf($"dropdown-menu-columns dropdown-menu-columns-{Columns}", Columns > 1)
-            .ToString();
+     
     }
 }

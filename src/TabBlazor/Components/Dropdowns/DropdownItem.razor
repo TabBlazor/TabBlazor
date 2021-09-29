@@ -1,14 +1,21 @@
 ﻿@inherits TablerBaseComponent
 @namespace TabBlazor
 
-<CascadingValue Name="DropdownItem" Value=this>
-    <div class="@GetWrapperClass()" @onclick="@(e => { if (hasSubMenus) ToogleSubMenus(e);})" @onclick:stopPropagation=hasSubMenus>
-       
-        <HtmlElement Tag="a"
-                     class="@ClassNames"
-                     @onclick="OnClick"
-                     @attributes="@UnmatchedParameters">
-            @ChildContent
-        </HtmlElement>
-    </div>
-</CascadingValue>
+
+<div class="@GetWrapperClass()" @onclick:stopPropagation="hasSubMenu">
+
+    <HtmlElement Tag="a"
+                 class="@ClassNames"
+                 @onclick="ItemClicked"
+                 @attributes="@UnmatchedParameters">
+        @ChildContent
+
+        @if (hasSubMenu && subMenuVisible)
+        {
+            <DropdownMenu>
+                @SubMenu
+            </DropdownMenu>
+        }
+
+    </HtmlElement>
+</div>
