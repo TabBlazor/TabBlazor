@@ -2,7 +2,7 @@
 @namespace TabBlazor
 <ClickOutside OnClickOutside="OnClickOutside">
     <CascadingValue Name=Dropdown Value=this>
-    <HtmlElement Tag="div"
+    <HtmlElement Tag="@(Direction==DropdownDirection.Down ? "div": "span")"
                  class="@ClassNames"
                  @onclick="OnDropdownClick"
                  @attributes="@UnmatchedParameters"

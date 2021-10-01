@@ -27,7 +27,7 @@ namespace TabBlazor
             }
 
         }
-
+     
         private void ItemClicked(MouseEventArgs e)
         {
             if (hasSubMenu)
@@ -70,7 +70,15 @@ namespace TabBlazor
         {
             if (hasSubMenu)
             {
-                return "dropend";
+                if(Dropdown.SubMenusDirection == DropdownDirection.Down)
+                {
+                    return "dropdown";
+                }
+                else
+                {
+                    return "dropend";
+                }
+                
             }
             return "";
         }

@@ -6,7 +6,7 @@
              @onclick="OnClick"
              @attributes="@UnmatchedParameters">
 
-    <a class="nav-link @(IsDropdown ? "dropdown-toggle": "")" @onclick="ToogleDropdown" href="@Href">
+    <a class="@(isSubMenu ? "dropdown-item":"nav-link") @(IsDropdown ? "dropdown-toggle": "")" @onclick="ToogleDropdown" href="@Href">
 
         @if (MenuItemIcon != null)
         {
@@ -30,7 +30,7 @@
     @if (SubMenu != null && isExpanded && Expandable)
     {
         <CascadingValue Value="this" Name="Parent">
-            <ul class="dropdown-menu dropdown-menu-columns show dropdown-menu-columns-3 ps-3">
+            <ul class="dropdown-menu show">
                 @SubMenu
             </ul>
         </CascadingValue>

@@ -9,6 +9,8 @@ namespace TabBlazor
     {
         [Parameter] public RenderFragment DropdownTemplate { get; set; }
         [Parameter] public bool CloseOnClick { get; set; } = true;
+        [Parameter] public DropdownDirection Direction { get; set; }
+        [Parameter] public DropdownDirection SubMenusDirection { get; set; } = DropdownDirection.End;
 
         public bool IsExpanded => isExpanded;
 
@@ -19,7 +21,10 @@ namespace TabBlazor
         private bool isContextMenu;
 
         protected override string ClassNames => ClassBuilder
-            .Add("dropdown")
+            .AddIf("dropdown", Direction == DropdownDirection.Down)
+            .AddIf("dropend", Direction == DropdownDirection.End)
+            .Add("cursor-pointer")
+            .Add(BackgroundColor.GetColorClass("bg"))
             .Add("cursor-pointer")
             .Add(BackgroundColor.GetColorClass("bg"))
             .Add(TextColor.GetColorClass("text"))
@@ -27,11 +32,11 @@ namespace TabBlazor
 
         protected void OnClickOutside()
         {
-            if(isExpanded)
+            if (isExpanded)
             {
                 isExpanded = false;
             }
-          
+
         }
 
         private string GetSyle()

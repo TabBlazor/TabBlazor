@@ -1,0 +1,21 @@
+﻿@page "/app-settings"
+
+<h3>Edit Application Settings</h3>
+
+<EditForm Model="@appService.Settings">
+
+    <Checkbox Switch Label="Dark mode" @bind-Value=@appService.Settings.DarkMode />
+
+    <Checkbox Switch Label="Navbar Dark" @bind-Value=@appService.Settings.NavbarDark />
+
+    <InputRadioGroup @bind-Value="appService.Settings.NavbarDirection">
+        @foreach (var option in EnumHelper.GetList<NavbarDirection>())
+        {
+        <InputRadio class="" Value="option" /> @option.ToString() <br />
+        }
+    </InputRadioGroup>
+
+    <Button OnClick=Update>Update</Button>
+</EditForm>
+
+

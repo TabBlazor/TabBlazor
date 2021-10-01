@@ -1,18 +1,25 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System.Threading.Tasks;
+using Tabler.Docs.Services;
 
 namespace Tabler.Docs.Shared
 {
     public partial class MainNavigation : ComponentBase
     {
-        [Parameter] public bool DarkMode { get; set; }
-        [Parameter] public EventCallback<bool> DarkModeChanged { get; set; }
+        [Inject] private AppService appService { get; set; }
 
 
-        private async Task DarkModeUpdated(bool value)
+        protected override void OnInitialized()
         {
-            DarkMode = value;
-            await DarkModeChanged.InvokeAsync(value);
+            appService.OnSettingsUpdated += SettingsUpdated;
+        }
+
+        private void SettingsUpdated()
+        {
+            InvokeAsync(() => StateHasChanged());
+        }
+        public void Dispose()
+        {
+            appService.OnSettingsUpdated -= SettingsUpdated;
         }
     }
 }

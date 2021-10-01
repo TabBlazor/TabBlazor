@@ -26,10 +26,8 @@ namespace Tabler.Docs.Server
             services.AddRazorPages();
             services.AddServerSideBlazor();
            
-            //services.AddHttpClient("GitHub", client => client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Blazor-Tabler", "1")));
-            //services.AddScoped<ICodeSnippetService, GitHubSnippetService>();
             services.AddScoped<ICodeSnippetService, LocalSnippetService>();
-            services.AddTabler();
+            services.AddDocs();
            
         }
 
