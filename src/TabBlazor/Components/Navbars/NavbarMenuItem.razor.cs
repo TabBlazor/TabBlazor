@@ -5,6 +5,7 @@ namespace TabBlazor
     public partial class NavbarMenuItem : TablerBaseComponent
     {
         [CascadingParameter(Name = "Parent")] NavbarMenuItem ParentMenuItem { get; set; }
+        [CascadingParameter(Name = "Navbar")] Navbar Navbar { get; set; }
         [Parameter] public string Href { get; set; }
         [Parameter] public string Text { get; set; }
         [Parameter] public RenderFragment MenuItemIcon { get; set; }
@@ -23,11 +24,13 @@ namespace TabBlazor
             isExpanded = Expanded;
         }
 
+        private bool isDropEnd => Navbar.Direction == NavbarDirection.Horizontal && ParentMenuItem?.IsDropdown == true;
+
         protected override string ClassNames => ClassBuilder
             .Add("nav-item")
-            //.AddIf("show", isExpanded)
-            .Add("cursor-pointer")
-            .AddIf("dropdown", IsDropdown)
+                  .Add("cursor-pointer")
+            .AddIf("dropdown", IsDropdown && !isDropEnd)
+            .AddIf("dropend", IsDropdown && isDropEnd)
             .ToString();
 
 

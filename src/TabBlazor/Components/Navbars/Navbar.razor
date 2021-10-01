@@ -1,22 +1,24 @@
 ﻿@inherits TablerBaseComponent
 @namespace TabBlazor
 
-<HtmlElement Tag="@HtmlTag"
-             class="@ClassNames"
-             @onclick="OnClick"
-             @attributes="@UnmatchedParameters">
+<CascadingValue Name="Navbar" Value=this>
+    <HtmlElement Tag="@HtmlTag"
+                 class="@ClassNames"
+                 @onclick="OnClick"
+                 @attributes="@UnmatchedParameters">
 
-    <div class="container">
+        <div class="container">
 
-        <button class="navbar-toggler" type="button" @onclick="ToogleExpand">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            <button class="navbar-toggler" type="button" @onclick="ToogleExpand">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
 
-        @if (isExpanded)
-        {
-            @ChildContent
-        }
+            @if (isExpanded)
+            {
+                @ChildContent
+            }
 
-    </div>
-</HtmlElement>
+        </div>
+    </HtmlElement>
+</CascadingValue>

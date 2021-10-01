@@ -11,7 +11,8 @@ namespace TabBlazor
 
         protected override string ClassNames => ClassBuilder
               .Add("navbar navbar-expand-md")
-              .AddIf("navbar-dark theme-dark", Darkmode)
+              .AddIf("navbar-dark", Darkmode)
+            .AddIf("navbar-light", !Darkmode)
               .AddIf("navbar-vertical", Direction == NavbarDirection.Vertical)
               .ToString();
 
