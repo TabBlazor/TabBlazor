@@ -7,7 +7,7 @@ namespace TabBlazor
         [Parameter] public bool Darkmode { get; set; }
         [Parameter] public NavbarDirection Direction { get; set; }
         protected string HtmlTag => "aside";
-        protected bool isExpanded = true;
+        public bool IsExpanded = true;
 
         protected override string ClassNames => ClassBuilder
               .Add("navbar navbar-expand-md")
@@ -16,10 +16,12 @@ namespace TabBlazor
               .AddIf("navbar-vertical", Direction == NavbarDirection.Vertical)
               .ToString();
 
-        protected void ToogleExpand()
+        public void ToogleExpand()
         {
-            isExpanded = !isExpanded;
+            IsExpanded = !IsExpanded;
         }
+
+        
     }
 
 }

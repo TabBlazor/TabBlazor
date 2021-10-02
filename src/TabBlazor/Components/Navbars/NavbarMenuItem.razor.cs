@@ -4,8 +4,9 @@ namespace TabBlazor
 {
     public partial class NavbarMenuItem : TablerBaseComponent
     {
-        [CascadingParameter(Name = "Parent")] NavbarMenuItem ParentMenuItem { get; set; }
         [CascadingParameter(Name = "Navbar")] Navbar Navbar { get; set; }
+        [CascadingParameter(Name = "Parent")] NavbarMenuItem ParentMenuItem { get; set; }
+        
         [Parameter] public string Href { get; set; }
         [Parameter] public string Text { get; set; }
         [Parameter] public RenderFragment MenuItemIcon { get; set; }

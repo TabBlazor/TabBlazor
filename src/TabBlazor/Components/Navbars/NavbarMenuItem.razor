@@ -6,7 +6,7 @@
              @onclick="OnClick"
              @attributes="@UnmatchedParameters">
 
-    <a class="@(isSubMenu ? "dropdown-item":"nav-link") @(IsDropdown ? "dropdown-toggle": "")" @onclick="ToogleDropdown" href="@Href">
+    <a class="@(isSubMenu ? "dropdown-item":"nav-link") @(IsDropdown ? "dropdown-toggle": "")" @onclick="ToogleDropdown" href="@Href" @onclick:stopPropagation=IsDropdown>
 
         @if (MenuItemIcon != null)
         {
