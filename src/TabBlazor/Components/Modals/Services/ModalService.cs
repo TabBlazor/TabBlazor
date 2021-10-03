@@ -42,9 +42,7 @@ namespace TabBlazor.Services
             var result = await ShowAsync("", component, new ModalOptions { Size = ModalSize.Small, ShowHeader = false, StatusColor = options.StatusColor });
             return !result.Cancelled;
         }
-                
-
-
+         
         private void LocationChanged(object sender, LocationChangedEventArgs e)
         {
             CloseAll();
@@ -77,6 +75,16 @@ namespace TabBlazor.Services
         public void Dispose()
         {
             navigationManager.LocationChanged -= LocationChanged;
+        }
+
+        public void UpdateTitle(string title)
+        {
+            var modal = Modals.LastOrDefault();
+            if (modal != null)
+            {
+                modal.Title = title;
+                OnChanged?.Invoke();
+            }
         }
     }
 }

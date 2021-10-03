@@ -3,16 +3,22 @@ using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace TabBlazor
 {
     public partial class ItemSelect<TItem, TValue> : TablerBaseComponent
     {
+        /// <summary>
+        /// List of items 
+        /// </summary>
         [Parameter] public IEnumerable<TItem> Items { get; set; }
+
+        /// <summary>
+        /// Text to be displayed when no item is selected
+        /// </summary>
         [Parameter] public string NoSelectedText { get; set; } = "*Select*";
+        
         [Parameter] public string NoItemsText { get; set; }
         [Parameter] public bool ShowCheckBoxes { get; set; }
         [Parameter] public bool MultiSelect { get; set; }

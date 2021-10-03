@@ -1,57 +1,57 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <PackageId>TabBlazor</PackageId>
-    <Description>Blazor dashboard admin theme based on Tabler UI. Minimal Javascript</Description>
-    <Authors>Joakim Dangården</Authors>
-    <Product>TabBlazor</Product>
-    <PackageTags>Blazor Tabler Admin Theme</PackageTags>
-    <RepositoryUrl>https://github.com/joadan/TabBlazor</RepositoryUrl>
-    <PackageProjectUrl>https://joadan.github.io/TabBlazor</PackageProjectUrl>
-    <Version>0.0.1-alpha</Version>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryType>git</RepositoryType>
-    <PackageIcon>TabBlazorLogo.png</PackageIcon>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<PackageId>TabBlazor</PackageId>
+		<Description>Blazor dashboard admin theme based on Tabler UI. Minimal Javascript</Description>
+		<Authors>Joakim Dangården</Authors>
+		<Product>TabBlazor</Product>
+		<PackageTags>Blazor Tabler Admin Theme</PackageTags>
+		<RepositoryUrl>https://github.com/joadan/TabBlazor</RepositoryUrl>
+		<PackageProjectUrl>https://joadan.github.io/TabBlazor</PackageProjectUrl>
+		<Version>0.0.1-alpha</Version>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryType>git</RepositoryType>
+		<PackageIcon>TabBlazorLogo.png</PackageIcon>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+	</PropertyGroup>
 
-  <!--<ItemGroup>
-    <None Update="Components/**/*.razor.css" CssScope="tabblazor" />
-  </ItemGroup>-->
+	<!--<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>-->
 
-  <ItemGroup>
-    <Content Remove="compilerconfig.json" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Remove="compilerconfig.json" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="TabBlazorLogo.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="TabBlazorLogo.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 
-  
-  <ItemGroup>
-    <SupportedPlatform Include="browser" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="LinqKit.Core" Version="1.1.23" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="5.0.3" />
-  </ItemGroup>
+	<ItemGroup>
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="compilerconfig.json" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="LinqKit.Core" Version="1.1.23" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.3" />
+		<PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="5.0.3" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="TabBlazorLogo.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="compilerconfig.json" />
+	</ItemGroup>
 
- 
+	<ItemGroup>
+		<None Update="TabBlazorLogo.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+
 
 </Project>

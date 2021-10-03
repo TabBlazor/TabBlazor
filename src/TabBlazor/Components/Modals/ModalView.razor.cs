@@ -66,15 +66,7 @@ namespace TabBlazor.Components.Modals
             offsetY += args.ClientY - startY;
         }
 
-        //protected async Task PreventDraggable()
-        //{
-        //   await TablerService.SetElementProperty(dragContainer, "draggable", false);
-        //}
-        //protected async Task SetDraggable()
-        //{
-        //    await TablerService.SetElementProperty(dragContainer, "draggable", true);
-        //}
-
+   
         protected void OnKeyDown(KeyboardEventArgs e)
         {
             if (e.Key == "Escape" && ModalModel.Options.CloseOnEsc)
@@ -101,9 +93,6 @@ namespace TabBlazor.Components.Modals
 
             base.OnInitialized();
         }
-
-
-
 
         protected string GetModalCss() => new ClassBuilder()
                 .Add("modal-dialog")
