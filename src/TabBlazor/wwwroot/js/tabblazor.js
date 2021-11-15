@@ -15,8 +15,11 @@
 
     navigateTable: (td, key) => {
         var tr = td.closest('tr');
-        var moveToRow;
+        if (!tr) {
+            return;
+        }
 
+        var moveToRow;
 
         if (key == 'ArrowUp') {
             moveToRow = tr.parentNode.rows[tr.rowIndex - 2];
