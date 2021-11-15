@@ -15,7 +15,6 @@
 
     navigateTable: (td, key) => {
         var tr = td.closest('tr');
-        var pos = td.cellIndex;
         var moveToRow;
 
 
@@ -33,6 +32,7 @@
             return;
         }
 
+        var pos = td.cellIndex;
         if (key == 'ArrowLeft') {
             pos = pos - 1;
         }
