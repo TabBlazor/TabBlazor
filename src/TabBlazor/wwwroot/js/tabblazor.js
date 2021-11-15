@@ -19,16 +19,12 @@
             return;
         }
 
-        var moveToRow;
-
+        var moveToRow = tr;
         if (key == 'ArrowUp') {
             moveToRow = tr.parentNode.rows[tr.rowIndex - 2];
         }
         else if (key == 'ArrowDown') {
             moveToRow = tr.parentNode.rows[tr.rowIndex];
-        }
-        else {
-            moveToRow = tr;
         }
 
         if (!moveToRow) {
