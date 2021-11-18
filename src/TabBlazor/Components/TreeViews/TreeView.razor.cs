@@ -25,10 +25,15 @@ namespace TabBlazor
         [Parameter] public List<TItem> SelectedItems { get; set; }
         [Parameter] public EventCallback<List<TItem>> SelectedItemsChanged { get; set; }
 
+        [Parameter] public List<TItem> CheckedItems { get; set; }
+        [Parameter] public EventCallback<List<TItem>> CheckedItemsChanged { get; set; }
+
+        [Parameter] public CheckboxMode CheckboxMode { get; set; }
 
         protected bool isExpanded = false;
         private List<TItem> selectedItems = new List<TItem>();
         private List<TItem> expandedItems = new List<TItem>();
+        private List<TItem> checkedItems = new List<TItem>();
 
 
         protected override void OnInitialized()
@@ -78,6 +83,30 @@ namespace TabBlazor
             }
         }
 
+        private void CheckAll(IList<TItem> items, bool setChecked)
+        {
+            foreach (var item in items)
+            {
+                if (setChecked)
+                {
+                    if (!checkedItems.Contains(item))
+                    {
+                        checkedItems.Add(item);
+                    }
+                }
+                else
+                {
+                    if (checkedItems.Contains(item))
+                    {
+                        checkedItems.Remove(item);
+                    }
+                }
+
+                CheckAll(ChildSelector(item), setChecked);
+            }
+        }
+
+
         private void SetDefaultExpanded(IList<TItem> items)
         {
             foreach (var item in items)
@@ -94,6 +123,11 @@ namespace TabBlazor
         public bool IsSelected(TItem item)
         {
             return selectedItems.Contains(item);
+        }
+
+        public bool? IsChecked(TItem item)
+        {
+            return checkedItems.Contains(item);
         }
 
         public bool IsExpanded(TItem item)
@@ -113,11 +147,22 @@ namespace TabBlazor
             }
         }
 
-        //public void ExpandAll()
-        //{
-        //    expandedItems = Items.ToList();
-        //    StateHasChanged();
-        //}
+        public async Task ToogleChecked(TItem item)
+        {
+            if (IsChecked(item) == true)
+            {
+                checkedItems.Remove(item);
+                CheckAll(ChildSelector(item), false);
+            }
+            else
+            {
+                checkedItems.Add(item);
+                CheckAll(ChildSelector(item), true);
+            }
+
+            await CheckedItemsChanged.InvokeAsync(checkedItems);
+            StateHasChanged();
+        }
 
 
         public async Task ToogleSelected(TItem item)
