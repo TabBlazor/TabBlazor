@@ -18,10 +18,11 @@ namespace TabBlazor
         /// Text to be displayed when no item is selected
         /// </summary>
         [Parameter] public string NoSelectedText { get; set; } = "*Select*";
-        
+
         [Parameter] public string NoItemsText { get; set; }
         [Parameter] public bool ShowCheckBoxes { get; set; }
         [Parameter] public bool MultiSelect { get; set; }
+        [Parameter] public bool Virtualize { get; set; }
 
         [Parameter] public List<TValue> SelectedValues { get; set; }
         [Parameter] public EventCallback<List<TValue>> SelectedValuesChanged { get; set; }
@@ -45,6 +46,7 @@ namespace TabBlazor
         [Parameter] public Func<string, IEnumerable<TItem>> SearchMethod { get; set; }
         [Parameter] public string SearchPlaceholderText { get; set; }
         [Parameter] public string MaxListHeight { get; set; }
+        [Parameter] public string ListWidth { get; set; }
         [Parameter] public string Label { get; set; }
 
         private bool showSearch => SearchMethod != null;
@@ -93,6 +95,22 @@ namespace TabBlazor
             }
         }
 
+        private string GetListStyle()
+        {
+            var style = "";
+
+            if (!string.IsNullOrWhiteSpace(MaxListHeight))
+            {
+                style = $"max-height:{MaxListHeight}; overflow-y:auto;";
+            }
+
+            if (!string.IsNullOrWhiteSpace(ListWidth))
+            {
+                style += $"width:{ListWidth}; overflow-x:auto;border:none";
+            }
+
+            return style;
+        }
 
         private void AddSelectItemFromValue(TValue value)
         {
@@ -125,7 +143,6 @@ namespace TabBlazor
 
         private async Task OnKey(KeyboardEventArgs e)
         {
-
             if (!dropdown.IsExpanded && (e.Key == "Enter" || e.Key == " "))
             {
                 highlighted = default;

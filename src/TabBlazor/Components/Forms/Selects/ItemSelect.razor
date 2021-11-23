@@ -9,7 +9,7 @@
 }
 
 <Dimmer Active="Disabled" ShowSpinner="false">
-    <div @onkeydown="OnKey" @onkeydown:stopPropagation="dropdown?.IsExpanded==true" >
+    <div @onkeydown="OnKey" @onkeydown:stopPropagation="dropdown?.IsExpanded==true">
         <Dropdown @ref="dropdown" CloseOnClick="false">
             <ChildContent>
                 <div @onkeydown:preventDefault="dropdown?.IsExpanded==true">
@@ -50,7 +50,7 @@
             </ChildContent>
 
             <DropdownTemplate>
-                <DropdownMenu>
+                <DropdownMenu style="@GetListStyle()">
                     @if (showSearch)
                     {
                         <div class="m-2">
@@ -73,28 +73,45 @@
 
                     @if (Items != null && Items.Any())
                     {
+                            <VirtualizeOptional Items="FilteredList()" Virtualize=Virtualize>
+                                <DropdownItem class="@(IsHighlighted(context) ? "highlight":"")" Active="IsSelected(context)" Disabled="(!CanSelect() && !IsSelected(context)) || IsDisabled(context)" OnClick="(e=> ToogleSelected(context))" @key="context">
 
-                        <div style="@(string.IsNullOrWhiteSpace(MaxListHeight) ? "": $"max-height:{MaxListHeight};overflow-y:auto")">
-                            @foreach (var item in FilteredList())
+                                @if (ShowCheckBoxes)
+                                {
+                                    <input class="form-check-input m-0 me-2" checked="@IsSelected(context)" type="checkbox">
+                                }
+                                @if (ListTemplate == null)
+                                {
+                                    @context.ToString()
+                                }
+                                else
+                                {
+                                    @ListTemplate(context)
+                                }
+
+                            </DropdownItem>
+                        </VirtualizeOptional>
+
+                        @* @foreach (var item in FilteredList())
                             {
-                                <DropdownItem class="@(IsHighlighted(item) ? "highlight":"")" Active="IsSelected(item)" Disabled="(!CanSelect() && !IsSelected(item)) || IsDisabled(item)" OnClick="(e=> ToogleSelected(item))" @key="item">
+                            <DropdownItem class="@(IsHighlighted(item) ? "highlight":"")" Active="IsSelected(item)" Disabled="(!CanSelect() && !IsSelected(item)) || IsDisabled(item)" OnClick="(e=> ToogleSelected(item))" @key="item">
 
-                                    @if (ShowCheckBoxes)
-                                    {
-                                        <input class="form-check-input m-0 me-2" checked="@IsSelected(item)" type="checkbox">
-                                    }
-                                    @if (ListTemplate == null)
-                                    {
-                                        @item.ToString()
-                                    }
-                                    else
-                                    {
-                                        @ListTemplate(item)
-                                    }
-
-                                </DropdownItem>
+                            @if (ShowCheckBoxes)
+                            {
+                            <input class="form-check-input m-0 me-2" checked="@IsSelected(item)" type="checkbox">
                             }
-                        </div>
+                            @if (ListTemplate == null)
+                            {
+                            @item.ToString()
+                            }
+                            else
+                            {
+                            @ListTemplate(item)
+                            }
+
+                            </DropdownItem>
+                            }*@
+                  
                     }
                     else
                     {
