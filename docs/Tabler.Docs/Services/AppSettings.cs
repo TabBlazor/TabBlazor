@@ -11,6 +11,7 @@ namespace Tabler.Docs.Services
     {
         public bool DarkMode { get; set; }
         public NavbarDirection NavbarDirection { get; set; } = NavbarDirection.Vertical;
-        public bool NavbarDark { get; set; } = true;
+        public NavbarBackground NavbarBackground { get; set; } = NavbarBackground.Dark;
+        
     }
 }
