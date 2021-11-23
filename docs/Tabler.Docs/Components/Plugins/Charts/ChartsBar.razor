@@ -1,16 +1,15 @@
 ﻿<div class="row">
     <div class="col-auto">
         <ApexChart TItem="Order"
-                   ChartType="ChartType.Bar"
-                   XAxisType="XaxisType.Category"
-                   >
+                   XAxisType="XAxisType.Category">
 
-            <ApexSeries TItem="Order"
-                        Items="SampleData.GetOrders()"
-                        Name="Net Value"
-                        XValue="@(e => e.OrderType)"
-                        YAggregate="@(e => e.Sum(e => e.NetValue))"
-                        OrderBy="e=>e.X" />
+            <ApexPointSeries TItem="Order"
+                             Items="SampleData.GetOrders()"
+                             SeriesType="SeriesType.Bar"
+                             Name="Net Value"
+                             XValue="@(e => e.OrderType)"
+                             YAggregate="@(e => e.Sum(e => e.NetValue))"
+                             OrderBy="e=>e.X" />
 
         </ApexChart>
     </div>
