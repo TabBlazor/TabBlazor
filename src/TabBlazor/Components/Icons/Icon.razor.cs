@@ -10,11 +10,18 @@ namespace TabBlazor
         [Parameter] public double StrokeWidth { get; set; } = 2;
         [Parameter] public string Elements { get; set; }
         [Parameter] public bool Filled { get; set; }
+        [Parameter] public int? Rotate { get; set; }
 
         protected override string ClassNames => ClassBuilder
             .AddIf($"{TextColor.GetColorClass("text")}", string.IsNullOrWhiteSpace(Color))
             .AddIf("icon-filled", Filled)
             .AddIf("cursor-pointer", OnClick.HasDelegate)
             .ToString();
+
+        private string GetRotate()
+        {
+            return "";
+
+        }
     }
 }
