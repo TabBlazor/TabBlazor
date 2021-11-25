@@ -17,11 +17,5 @@ namespace TabBlazor
             .AddIf("icon-filled", Filled)
             .AddIf("cursor-pointer", OnClick.HasDelegate)
             .ToString();
-
-        private string GetRotate()
-        {
-            return "";
-
-        }
     }
 }
