@@ -15,24 +15,23 @@
 
     navigateTable: (td, key) => {
         var tr = td.closest('tr');
-        var pos = td.cellIndex;
-        var moveToRow;
+        if (!tr) {
+            return;
+        }
 
-
+        var moveToRow = tr;
         if (key == 'ArrowUp') {
             moveToRow = tr.parentNode.rows[tr.rowIndex - 2];
         }
         else if (key == 'ArrowDown') {
             moveToRow = tr.parentNode.rows[tr.rowIndex];
         }
-        else {
-            moveToRow = tr;
-        }
 
         if (!moveToRow) {
             return;
         }
 
+        var pos = td.cellIndex;
         if (key == 'ArrowLeft') {
             pos = pos - 1;
         }
