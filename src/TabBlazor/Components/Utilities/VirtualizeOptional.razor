@@ -1,0 +1,17 @@
+﻿@namespace TabBlazor
+@typeparam TItem
+
+@if (Virtualize)
+{
+    <Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize 
+    Items=Items.ToList() TItem=TItem ChildContent=ChildContent />
+}
+else
+{
+    @foreach (var item in Items)
+    {
+        @ChildContent(item)
+    }
+
+}
+

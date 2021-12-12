@@ -1,17 +1,16 @@
 ﻿<div class="row">
     <div class="col-auto">
         <ApexChart TItem="Order"
-                   ChartType="ChartType.Bar"
-                   XAxisType="XaxisType.Datetime"
-                   Options="GetOptions()"
-                   >
+                   XAxisType="XAxisType.Datetime"
+                   Options="GetOptions()">
 
-            <ApexSeries TItem="Order"
-                        Items="SampleData.GetOrders()"
-                        Name="Net Value"
-                        XValue="@(e => e.OrderDate.FirstDayOfMonth())"
-                        YAggregate="@(e => e.Sum(e => e.NetValue))"
-                        OrderBy="e=>e.X" />
+            <ApexPointSeries TItem="Order"
+                             SeriesType="SeriesType.Bar"
+                             Items="SampleData.GetOrders()"
+                             Name="Net Value"
+                             XValue="@(e => e.OrderDate.FirstDayOfMonth())"
+                             YAggregate="@(e => e.Sum(e => e.NetValue))"
+                             OrderBy="e=>e.X" />
 
         </ApexChart>
     </div>
@@ -24,7 +23,7 @@
     {
         var options = new ApexCharts.ApexChartOptions<Order>();
         options.Colors = new List<string> { "#206bc4" };
-      //  options.Chart = new Chart { Sparkline = new ChartSparkline { Enabled = true } };
+        //  options.Chart = new Chart { Sparkline = new ChartSparkline { Enabled = true } };
         return options;
     }
 

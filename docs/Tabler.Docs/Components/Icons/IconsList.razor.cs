@@ -17,6 +17,7 @@ namespace Tabler.Docs.Components.Icons
         private List<Icon> filteredIcons = new List<Icon>();
         private List<Icon> selectedIcons = new List<Icon>();
         private int size = 24;
+        private int rotate = 0;
         private double strokeWidth = 2;
         private string searchText;
         private string color;
