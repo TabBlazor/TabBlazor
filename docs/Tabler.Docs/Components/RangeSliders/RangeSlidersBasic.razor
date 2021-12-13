@@ -1,0 +1,19 @@
+﻿<RangeSlider TValue="int" @bind-Value="value" />
+<span>Default: @value</span>
+
+<RangeSlider TValue="int" @bind-Value="otherValue" Min="0" Max="50" />
+<span>With max / min value: @otherValue</span>
+
+<RangeSlider TValue="decimal" @bind-Value="decimalValue" Step="0.1" />
+<span>Default decimal: @decimalValue</span>
+
+<RangeSlider TValue="decimal" @bind-Value="otherDecimalValue" Step="0.1" Min="0.5" Max="5.4" />
+<span>With max / min decimal value: @otherDecimalValue</span>
+
+@code {
+    int value = 0;
+    int otherValue = 0;
+
+    decimal decimalValue = 0.0M;
+    decimal otherDecimalValue = 0.0M;
+}
