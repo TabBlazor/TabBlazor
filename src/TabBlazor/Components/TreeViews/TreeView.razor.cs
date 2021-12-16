@@ -30,6 +30,8 @@ namespace TabBlazor
 
         [Parameter] public CheckboxMode CheckboxMode { get; set; }
 
+        [Parameter] public EventCallback<List<TItem>> ExpandedItemsChanged { get; set; }
+
         protected bool isExpanded = false;
         private List<TItem> selectedItems = new List<TItem>();
         private List<TItem> expandedItems = new List<TItem>();
@@ -135,7 +137,7 @@ namespace TabBlazor
             return expandedItems.Contains(item);
         }
 
-        public void ToggleExpanded(TItem item)
+        public async void ToggleExpanded(TItem item)
         {
             if (IsExpanded(item))
             {
@@ -144,6 +146,11 @@ namespace TabBlazor
             else
             {
                 expandedItems.Add(item);
+            }
+
+            if (ExpandedItemsChanged.HasDelegate)
+            {
+                await ExpandedItemsChanged.InvokeAsync(expandedItems);
             }
         }
 
