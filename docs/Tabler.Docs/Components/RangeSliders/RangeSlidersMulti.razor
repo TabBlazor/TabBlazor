@@ -1,0 +1,33 @@
+﻿<div class="d-flex flex-column mb-2">
+    <RangeSlider TValue="int" @bind-Values="values" />
+    <span>Value 1: @values[0]</span>
+    <span>Value 2: @values[1]</span>
+    <span>Value 3: @values[2]</span>
+</div>
+
+<div class="d-flex flex-column mb-2">
+    <RangeSlider TValue="decimal" @bind-Values="decimalValues" Step="0.1" />
+    <span>Decimal value 1: @decimalValues[0]</span>
+    <span>Decimal value 2: @decimalValues[1]</span>
+</div>
+
+<div class="d-flex flex-column mb-2">
+    <span class="mb-2">Generic</span>
+    <RangeSlider TValue="Customer" @bind-Values="selectedCustomers" Range="customers" />
+    <span>Generic value 1: @selectedCustomers[0].CustomerName</span>
+    <span>Generic value 2: @selectedCustomers[1].CustomerName</span>
+</div>
+
+@code {
+    List<int> values = new() { 5, 10, 8 };
+    List<decimal> decimalValues = new() { 5.0M, 10.0M };
+
+    private List<Customer> selectedCustomers = new();
+    private List<Customer> customers = new List<Customer>();
+
+    protected override void OnInitialized()
+    {
+        customers = Data.SampleData.GetCustomers();
+        selectedCustomers = new() { customers.First(), customers.Last() };
+    }
+}
