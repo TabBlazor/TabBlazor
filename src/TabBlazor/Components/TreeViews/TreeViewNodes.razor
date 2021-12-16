@@ -10,7 +10,7 @@
 
                 @if (HasChildren(item))
                 {
-                    <Icon Elements="@(isExpanded ? InternalIcons.Circle_minus : InternalIcons.Circle_plus)" OnClick="@(() => Root.ToogleExpanded(item))" class="icon me-2" />
+                    <Icon Elements="@(isExpanded ? InternalIcons.Circle_minus : InternalIcons.Circle_plus)" OnClick="@(() => Root.ToggleExpanded(item))" class="icon me-2" />
                 }
                 else
                 {
@@ -20,7 +20,7 @@
                 @if (Root.CheckboxMode != CheckboxMode.None)
                 {
                     <span class="me-2">
-                        <CheckboxTriState Value=@Root.IsChecked(item) ValueChanged="(() => Root.ToogleChecked(item))" />
+                        <CheckboxTriState Value=@Root.IsChecked(item) ValueChanged="(() => Root.ToggleChecked(item))" />
                     </span>
                 }
 

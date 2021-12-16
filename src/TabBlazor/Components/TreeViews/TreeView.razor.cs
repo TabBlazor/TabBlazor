@@ -135,7 +135,7 @@ namespace TabBlazor
             return expandedItems.Contains(item);
         }
 
-        public void ToogleExpanded(TItem item)
+        public void ToggleExpanded(TItem item)
         {
             if (IsExpanded(item))
             {
@@ -147,7 +147,7 @@ namespace TabBlazor
             }
         }
 
-        public async Task ToogleChecked(TItem item)
+        public async Task ToggleChecked(TItem item)
         {
             if (IsChecked(item) == true)
             {
