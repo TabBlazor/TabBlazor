@@ -18,7 +18,6 @@
 
 	<ItemGroup>
     <PackageReference Include="Blazor-ApexCharts" Version="0.6.0-alpha" />
-    <PackageReference Include="Blazored.Typeahead" Version="4.5.1" />
     <PackageReference Include="ColorCode.HTML" Version="2.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.9" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />

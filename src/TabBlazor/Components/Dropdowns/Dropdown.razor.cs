@@ -71,14 +71,16 @@ namespace TabBlazor
             top = e.ClientY;
             left = e.ClientX;
             isExpanded = true;
-            StateHasChanged();
+            // StateHasChanged();
+            InvokeAsync(StateHasChanged);
 
         }
 
         public void Close()
         {
             isExpanded = false;
-            StateHasChanged();
+            //StateHasChanged();
+            InvokeAsync(StateHasChanged);
         }
     }
 }

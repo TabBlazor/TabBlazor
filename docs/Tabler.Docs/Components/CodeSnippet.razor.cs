@@ -45,7 +45,7 @@ namespace Tabler.Docs.Components
 
                 if (!string.IsNullOrWhiteSpace(cSharp))
                 {
-                    code = code + formatter.GetHtmlString(cSharp, Languages.CSharp);
+                    code += "<div class='mt-1'>" + formatter.GetHtmlString(cSharp, Languages.CSharp) + "</div>";
                 }
 
 
