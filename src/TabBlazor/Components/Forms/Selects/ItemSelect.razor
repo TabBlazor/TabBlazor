@@ -91,27 +91,6 @@
 
                             </DropdownItem>
                         </VirtualizeOptional>
-
-                        @* @foreach (var item in FilteredList())
-                            {
-                            <DropdownItem class="@(IsHighlighted(item) ? "highlight":"")" Active="IsSelected(item)" Disabled="(!CanSelect() && !IsSelected(item)) || IsDisabled(item)" OnClick="(e=> ToogleSelected(item))" @key="item">
-
-                            @if (ShowCheckBoxes)
-                            {
-                            <input class="form-check-input m-0 me-2" checked="@IsSelected(item)" type="checkbox">
-                            }
-                            @if (ListTemplate == null)
-                            {
-                            @item.ToString()
-                            }
-                            else
-                            {
-                            @ListTemplate(item)
-                            }
-
-                            </DropdownItem>
-                            }*@
-                  
                     }
                     else
                     {
