@@ -56,13 +56,13 @@ namespace TabBlazor
 
         }
 
-        protected override void OnAfterRender(bool firstRender)
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            base.OnAfterRender(firstRender);
+            await base.OnAfterRenderAsync(firstRender);
 
             if (setFocus)
             {
-                input.FocusAsync();
+                await input.FocusAsync();
                 setFocus = false;
             }
 
@@ -72,6 +72,12 @@ namespace TabBlazor
         {
             isInput = value;
             setFocus = value;
+
+            if ((listItems == null || !listItems.Any()))
+            {
+                ClearSearch();
+            }
+
         }
 
         private string SearchText

@@ -1,19 +1,15 @@
-﻿<Typeahead SearchMethod="SearchCustomers" @bind-SelectedValue=selectedCustomer
+﻿<div class="mb-2">
+    Selected Customer: @selectedCustomer?.CustomerName
+</div>
+
+<Typeahead SearchMethod="SearchCustomers" @bind-SelectedValue=selectedCustomer
            Debounce="1" MinimumLength=1 SearchPlaceholderText="Search customer..." ListWidth="100%"
            SelectedTextExpression="e=>e.CustomerName">
 
     <ListTemplate>
         @context.CustomerName
     </ListTemplate>
-
-
 </Typeahead>
-
-
-<div class="mt-2">
-    Selected Customer: @selectedCustomer?.CustomerName
-</div>
-
 
 @code {
     private Customer selectedCustomer;
