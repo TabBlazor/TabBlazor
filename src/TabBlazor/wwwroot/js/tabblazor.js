@@ -1,5 +1,14 @@
 ﻿window.tabBlazor = {
 
+    saveAsFile: function (filename, href) {
+        var link = document.createElement('a');
+        link.download = filename;
+        link.href = href; //"data:application/octet-stream;base64," + bytesBase64;
+        document.body.appendChild(link); // Needed for Firefox
+        link.click();
+        document.body.removeChild(link);
+    },
+
     preventDefaultKey: (element, event, keys) => {
         element.addEventListener(event, (e) => {
             if (keys.includes(e.key)) {
@@ -91,6 +100,10 @@
 
     copyToClipboard: (text) => {
         navigator.clipboard.writeText(text)
+    },
+
+    readFromClipboard: () => {
+        return navigator.clipboard.readText();
     },
 
     disableDraggable: (container, element) => {
