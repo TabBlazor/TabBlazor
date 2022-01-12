@@ -1,5 +1,8 @@
 name: 'Publish to Github pages'
-on: push
+on:
+  push:
+    branches:
+      - master
 env:
   PUBLISH_DIR: docs/Tabler.Docs.Wasm/bin/Release/net5.0/publish/wwwroot
 
