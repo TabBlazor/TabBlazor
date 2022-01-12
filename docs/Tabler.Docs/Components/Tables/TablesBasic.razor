@@ -1,8 +1,7 @@
 ﻿
 <Table Item="Order" Items="orders" PageSize="10" AddItemFactory="AddItem" OnItemEdited="OnItemEdit"
        @bind-SelectedItems="selectedOrders" OnItemAdded="OnItemAdd" OnItemDeleted="OnItemDelete"
-       ShowCheckboxes MultiSelect Hover Responsive
-       >
+       ShowCheckboxes MultiSelect Hover Responsive>
     <HeaderTemplate>
         <strong>Orders</strong>
     </HeaderTemplate>
@@ -38,27 +37,39 @@
 @code {
 
     [Inject] TabBlazor.Services.TablerService TablerService { get; set; }
+    [Inject] TabBlazor.Services.IModalService ModalService { get; set; }
     private static List<Order> orders = SampleData.GetOrders();
     private static List<Order> selectedOrders = new List<Order>();
 
     private async Task OnItemEdit(Order order)
     {
-        await TablerService.ShowAlert($"Edited order {order.OrderId}");
+        await ShowDialog($"Edited order {order.OrderId}");
     }
 
     private async Task OnItemAdd(Order order)
     {
-        await TablerService.ShowAlert($"Added order {order.OrderId}");
+        await ShowDialog($"Added order {order.OrderId}");
     }
 
     private async Task OnItemDelete(Order order)
     {
-        await TablerService.ShowAlert($"Order deleted {order.OrderId}");
+        await ShowDialog($"Order deleted {order.OrderId}");
     }
+
+    private async Task ShowDialog(string title)
+    {
+        await ModalService.ShowDialogAsync(new TabBlazor.Components.Modals.DialogOptions
+            {
+                CancelText = "",
+                StatusColor = TablerColor.Primary,
+                IconElements = @DemoIcons.Info_circle,
+                MainText = title
+            });
+    }
+
 
     private Task<Order> AddItem()
     {
-
         return Task.FromResult(new Order { Customer = new Customer { CustomerName = "New customer" } });
 
     }

@@ -1,0 +1,37 @@
+﻿@typeparam TItem
+
+@if (Table.CurrentEditItem != null)
+{
+    <TablerForm Model="@Table.CurrentEditItem" OnValidSubmit="@Table.OnValidSubmit">
+
+        @foreach (var column in Table.VisibleColumns)
+        {
+            <div class="form-group mb-3 row">
+                <label class="form-label col-3 col-form-label">@column.Title</label>
+                <div class="col">
+                    @if (column.EditorTemplate != null)
+                    {
+                        @column.EditorTemplate(Table.CurrentEditItem)
+                    }
+                  
+                        else if (column.Template != null)
+                        {
+                        @column.Template(Table.CurrentEditItem)
+                        }
+                        else
+                        {
+                        @column.GetValue(Table.CurrentEditItem)
+                        }
+                </div>
+            </div>
+
+        }
+        <div class="form-footer">
+
+            <div class="d-flex">
+                <Button BackgroundColor=TablerColor.Secondary OnClick="CancelEdit">Cancel</Button>
+                <button class="btn btn-primary ms-auto" type="submit" @onclick="@(()=> modalService.Close())">Save</button>
+            </div>
+        </div>
+    </TablerForm>
+}

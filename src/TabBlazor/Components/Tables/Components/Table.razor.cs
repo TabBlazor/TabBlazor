@@ -11,7 +11,7 @@ using TabBlazor.Services;
 
 namespace TabBlazor
 {
-    public class TableBase<Item> : ComponentBase, ITable<Item>, IInlineEditTable<Item>, IDetailsTable<Item>, ITableRow<Item>, ITableState<Item> // ITableRowActions<Item>
+    public class TableBase<Item> : ComponentBase, IPopupEditTable<Item>, ITable<Item>, IInlineEditTable<Item>, IDetailsTable<Item>, ITableRow<Item>, ITableState<Item> // ITableRowActions<Item>
     {
         [Inject] private TablerService tabService { get; set; }
         [Inject] private IModalService modalService { get; set; }
@@ -50,6 +50,7 @@ namespace TabBlazor
         [Parameter] public Func<Item, Task<bool>> ConfirmDeleteFunction { get; set; }
         [Parameter] public bool KeyboardNavigation { get; set; }
         [Parameter] public bool ConfirmDelete { get; set; } = true;
+        [Parameter] public TableEditMode EditMode { get; set; }
 
         public bool HasRowActions => RowActionTemplate != null || RowActionEndTemplate != null || AllowDelete || AllowEdit;
 
@@ -158,15 +159,6 @@ namespace TabBlazor
                 .AddIf("grouped-table", HasGrouping)
                 .AddIf("table-responsive", Responsive)
                 .ToString();
-            //grouped-table
-
-            //return new CssBuilder()
-            //    .AddClass("")
-            //    .AddClass("details-enabled", DetailsTemplate != null)
-            //    .AddClass("details-enabled", OnItemSelected.HasDelegate)
-            //    .AddClass("details-active", SelectedItem != null)
-            //    .AddClass("grouped-table", HasGrouping)
-            //    .Build();
         }
 
         public async Task OnValidSubmit(EditContext editContext)
@@ -378,24 +370,20 @@ namespace TabBlazor
             }
 
             Items.Add(tableItem);
-            //TotalCount++;
-
-            //await LastPage();
             EditItem(tableItem);
 
             TempItems = DataFactory.GetData(Items, false, false, tableItem);
-           // await LastPage();
-            // await MoveToItem(tableItem);
+         
         }
 
         public async Task OnDeleteItem(Item item)
         {
-            if(ConfirmDeleteFunction !=null)
+            if (ConfirmDeleteFunction != null)
             {
                 if (!await ConfirmDeleteFunction(item))
                 {
                     return;
-                } 
+                }
             }
 
             else if (ConfirmDelete)
@@ -412,7 +400,7 @@ namespace TabBlazor
                     return;
                 }
             }
-            
+
             Items.Remove(item);
             await OnItemDeleted.InvokeAsync(item);
             await CloseEdit();
@@ -421,6 +409,13 @@ namespace TabBlazor
         public void EditItem(Item tableItem)
         {
             CurrentEditItem = tableItem;
+         
+            if (EditMode == TableEditMode.Popup)
+            {
+                var renderComponent = new RenderComponent<PopupEdit<Item>>().Set(e => e.Table, this);
+                var result = modalService.ShowAsync("Edit", renderComponent, new ModalOptions { Size = ModalSize.Large, ShowCloseButton=false });
+            }
+          
             StateHasChanged();
         }
 
