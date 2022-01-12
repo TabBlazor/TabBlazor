@@ -3,6 +3,7 @@
     public class ModalOptions
     {
         public bool ShowHeader { get; set; } = true;
+        public bool ShowCloseButton { get; set; } = true;
         public bool Scrollable { get; set; } = true;
         public bool CloseOnClickOutside { get; set; } = false;
         public bool BlurBackground { get; set; } = true;

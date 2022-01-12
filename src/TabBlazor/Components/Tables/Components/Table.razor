@@ -63,7 +63,7 @@
                                                 {
                                                     foreach (var item in group)
                                                     {
-                                                        @if (IsEditingItem(item))
+                                                        @if (IsEditingItem(item) && EditMode == TableEditMode.Inline)
                                                         {
                                                             <EditRow InlineEditTable="this" Item="item"></EditRow>
                                                         }
