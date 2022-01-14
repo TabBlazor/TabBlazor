@@ -13,21 +13,19 @@
                     {
                         @column.EditorTemplate(Table.CurrentEditItem)
                     }
-                  
-                        else if (column.Template != null)
-                        {
+                    else if (column.Template != null)
+                    {
                         @column.Template(Table.CurrentEditItem)
-                        }
-                        else
-                        {
+                    }
+                    else
+                    {
                         @column.GetValue(Table.CurrentEditItem)
-                        }
+                    }
                 </div>
             </div>
 
         }
         <div class="form-footer">
-
             <div class="d-flex">
                 <Button BackgroundColor=TablerColor.Secondary OnClick="CancelEdit">Cancel</Button>
                 <button class="btn btn-primary ms-auto" type="submit" @onclick="@(()=> modalService.Close())">Save</button>

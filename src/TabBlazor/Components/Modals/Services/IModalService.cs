@@ -16,5 +16,6 @@ namespace TabBlazor.Services
         Task<bool> ShowDialogAsync(DialogOptions options);
 
        void UpdateTitle(string title);
+        void Refresh();
     }
 }

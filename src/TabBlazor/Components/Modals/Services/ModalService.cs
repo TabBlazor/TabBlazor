@@ -86,5 +86,14 @@ namespace TabBlazor.Services
                 OnChanged?.Invoke();
             }
         }
+
+        public void Refresh()
+        {
+            var modal = Modals.LastOrDefault();
+            if (modal != null)
+            {
+                OnChanged?.Invoke();
+            }
+        }
     }
 }

@@ -16,11 +16,5 @@ namespace TabBlazor.Components.Tables.Components
             modalService.Close();
         }
 
-        private async Task CloseEdit()
-        {
-          //  await Table.CloseEdit();
-            modalService.Close();
-        }
-
     }
 }

@@ -22,7 +22,7 @@ namespace Tabler.Docs.Components.TypeBrowsers
         {
             if (Type == null)
             {
-                Type = typeof(ItemSelect<,>);
+                return;
             }
 
             modalService.UpdateTitle(Type.GetFriendlyName());

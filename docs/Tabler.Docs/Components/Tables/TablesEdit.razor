@@ -1,0 +1,127 @@
+﻿
+<Table Item="Order" Items="orders" PageSize="10" AddItemFactory="AddItem" OnItemEdited="OnItemEdit"
+       @bind-SelectedItems="selectedOrders" OnItemAdded="OnItemAdd" OnItemDeleted="OnItemDelete"
+       ShowCheckboxes MultiSelect Hover Responsive EditMode=TableEditMode.Popup>
+    <HeaderTemplate>
+        <strong>Orders</strong>
+    </HeaderTemplate>
+
+    <ChildContent>
+
+        <Column Item="Order" Title="Test">
+            <EditorTemplate>
+                
+                <ItemSelect Items=GetOrders(context) SelectedValue=testOrder TItem=Order TValue=Order SelectedValueChanged="TestOrderUpdated" SearchMethod="SearchOrders">
+                    <FooterTemplate>
+                        <Checkbox Switch Value=testValue ValueChanged=SetTestValue />
+                    </FooterTemplate>
+                    <ListTemplate Context=order>
+                        @order.OrderId
+                    </ListTemplate>
+                </ItemSelect>
+            </EditorTemplate>
+        </Column>
+
+        <Column Item="Order" Property="e=>e.Customer.CustomerName" Title="Customer" Sortable Searchable Groupable>
+            <EditorTemplate>
+                <input type="text" class="form-control" @bind-value="@context.Customer.CustomerName" />
+            </EditorTemplate>
+        </Column>
+        <Column Item="Order" Property="e=>e.Country" Title="Country" Sortable Searchable Groupable>
+            <EditorTemplate>
+                @GetTestString()
+                <input type="text" class="form-control" @bind-value="@context.Country" />
+            </EditorTemplate>
+        </Column>
+        <Column Item="Order" Property="e=>e.OrderType" Title="Order type" Sortable Searchable Groupable>
+            <EditorTemplate>
+                <Select Items="EnumHelper.GetList<OrderType>()" @bind-SelectedValue="@context.OrderType" TextExpression="e=> e.ToString()" ValueExpression="e=> e" Clearable />
+            </EditorTemplate>
+        </Column>
+    </ChildContent>
+
+</Table>
+
+
+<ul>
+    @foreach (var order in selectedOrders)
+    {
+        <li>@order.OrderId, @order.Customer.CustomerName</li>
+    }
+</ul>
+
+@code {
+
+    [Inject] TabBlazor.Services.TablerService TablerService { get; set; }
+    [Inject] TabBlazor.Services.IModalService ModalService { get; set; }
+    private static List<Order> orders = SampleData.GetOrders();
+    private static List<Order> selectedOrders = new List<Order>();
+    private bool testValue;
+
+    private Order testOrder;
+
+    private string GetTestString()
+    {
+        return "Kalle";
+    }
+
+    private void TestOrderUpdated(Order order)
+    {
+        testOrder = order;
+    }
+
+    private void SetTestValue(bool value)
+    {
+        testValue = value;
+        ModalService.Refresh();
+    }
+
+    private List<Order> SearchOrders(string searchText)
+    {
+
+        return orders;
+    }
+
+    private List<Order> GetOrders(Order order)
+    {
+        if (testValue)
+        {
+            return orders.Take(3).ToList();
+        }
+
+        return orders;
+    }
+
+    private async Task OnItemEdit(Order order)
+    {
+        await ShowDialog($"Edited order {order.OrderId}");
+    }
+
+    private async Task OnItemAdd(Order order)
+    {
+        await ShowDialog($"Added order {order.OrderId}");
+    }
+
+    private async Task OnItemDelete(Order order)
+    {
+        await ShowDialog($"Order deleted {order.OrderId}");
+    }
+
+    private async Task ShowDialog(string title)
+    {
+        await ModalService.ShowDialogAsync(new TabBlazor.Components.Modals.DialogOptions
+            {
+                CancelText = "",
+                StatusColor = TablerColor.Primary,
+                IconElements = @DemoIcons.Info_circle,
+                MainText = title
+            });
+    }
+
+
+    private Task<Order> AddItem()
+    {
+        return Task.FromResult(new Order { Customer = new Customer { CustomerName = "New customer" } });
+
+    }
+}
