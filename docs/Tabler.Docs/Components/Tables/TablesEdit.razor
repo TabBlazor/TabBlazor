@@ -10,7 +10,7 @@
 
         <Column Item="Order" Title="Test">
             <EditorTemplate>
-                
+                <h3>@context.OrderType</h3>
                 <ItemSelect Items=GetOrders(context) SelectedValue=testOrder TItem=Order TValue=Order SelectedValueChanged="TestOrderUpdated" SearchMethod="SearchOrders">
                     <FooterTemplate>
                         <Checkbox Switch Value=testValue ValueChanged=SetTestValue />
