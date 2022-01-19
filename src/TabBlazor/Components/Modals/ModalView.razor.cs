@@ -1,16 +1,14 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using System;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TabBlazor.Services;
 
-namespace TabBlazor.Components.Modals
+namespace TabBlazor
 {
     public partial class ModalView : ComponentBase, IDisposable
     {
-    
+
         [Inject] protected TablerService TablerService { get; set; }
         [Inject] private IModalService ModalService { get; set; }
         [Parameter] public string Title { get; set; }
@@ -22,10 +20,10 @@ namespace TabBlazor.Components.Modals
         private ElementReference BlurContainer;
         protected ElementReference dragContainer { get; set; }
         protected ElementReference contentContainer { get; set; }
-     
+
         private bool isDragged;
         private bool isInitialized;
-      
+
         private double startX, startY, offsetX, offsetY;
         private ModalViewSettings modalViewSettings;
 
@@ -38,9 +36,9 @@ namespace TabBlazor.Components.Modals
         {
             await base.OnAfterRenderAsync(firstRender);
 
-            if(!isInitialized)
+            if (!isInitialized)
             {
-               
+
                 await BlurContainer.FocusAsync();
                 if (Options.Draggable)
                 {
@@ -82,7 +80,7 @@ namespace TabBlazor.Components.Modals
             offsetX += args.ClientX - startX;
             offsetY += args.ClientY - startY;
         }
-   
+
         protected void OnKeyDown(KeyboardEventArgs e)
         {
             if (e.Key == "Escape" && Options.CloseOnEsc)

@@ -3,9 +3,7 @@
 @if (Table.CurrentEditItem != null)
 {
 
-    <TabBlazor.Components.Modals.ModalView @ref="modalView" Title="Test Edit" Options="options" OnClosed=CancelEdit >
-
-
+    <ModalView Title="@title" Options="options" OnClosed=CancelEdit >
         @foreach (var column in Table.VisibleColumns)
         {
             <div class="form-group mb-3 row">
@@ -34,5 +32,5 @@
             </div>
         </div>
 
-    </TabBlazor.Components.Modals.ModalView>
+    </ModalView>
 }

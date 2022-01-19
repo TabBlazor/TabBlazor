@@ -1,6 +1,6 @@
 ﻿
-<Table Item="Order" Items="orders" PageSize="10" AddItemFactory="AddItem" OnItemEdited="OnItemEdit"
-       @bind-SelectedItems="selectedOrders" OnItemAdded="OnItemAdd" OnItemDeleted="OnItemDelete"
+<Table Item="Order" Items="orders" PageSize="10" 
+       @bind-SelectedItems="selectedOrders" OnItemDeleted="OnItemDelete"
        ShowCheckboxes MultiSelect Hover Responsive>
     <HeaderTemplate>
         <strong>Orders</strong>
@@ -23,7 +23,6 @@
             </EditorTemplate>
         </Column>
     </ChildContent>
-
 </Table>
 
 
@@ -41,16 +40,7 @@
     private static List<Order> orders = SampleData.GetOrders();
     private static List<Order> selectedOrders = new List<Order>();
 
-    private async Task OnItemEdit(Order order)
-    {
-        await ShowDialog($"Edited order {order.OrderId}");
-    }
-
-    private async Task OnItemAdd(Order order)
-    {
-        await ShowDialog($"Added order {order.OrderId}");
-    }
-
+   
     private async Task OnItemDelete(Order order)
     {
         await ShowDialog($"Order deleted {order.OrderId}");
@@ -68,9 +58,4 @@
     }
 
 
-    private Task<Order> AddItem()
-    {
-        return Task.FromResult(new Order { Customer = new Customer { CustomerName = "New customer" } });
-
-    }
 }

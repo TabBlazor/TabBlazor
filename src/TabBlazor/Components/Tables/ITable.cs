@@ -67,12 +67,11 @@ namespace TabBlazor.Components.Tables
         bool ShowCheckboxes { get; }
         TItem CurrentEditItem { get; }
         Task OnValidSubmit(EditContext editContext);
-       
+        bool IsAddInProgress { get; }
         Task CloseEdit();
-            Task CancelEdit();
+        Task CancelEdit();
 
-        //    bool HasActionColumn { get; }
-        //}}
+       
     }
 
     public interface IInlineEditTable<TableItem>

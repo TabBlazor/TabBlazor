@@ -15,21 +15,6 @@
 
     <ChildContent>
 
-        <Column Item="Order" Title="Test">
-            <EditorTemplate>
-                <h3>@context.OrderType</h3>
-                <Button BackgroundColor=TablerColor.Primary OnClick="TestModals">Test Modals</Button>
-                <ItemSelect Items=GetOrders(context) SelectedValue=testOrder TItem=Order TValue=Order SelectedValueChanged="TestOrderUpdated" SearchMethod="SearchOrders">
-                    <FooterTemplate>
-                        <Checkbox Switch Value=testValue ValueChanged=SetTestValue />
-                    </FooterTemplate>
-                    <ListTemplate Context=order>
-                        @order.OrderId
-                    </ListTemplate>
-                </ItemSelect>
-            </EditorTemplate>
-        </Column>
-
         <Column Item="Order" Property="e=>e.Customer.CustomerName" Title="Customer" Sortable Searchable Groupable>
             <EditorTemplate>
                 <input type="text" class="form-control" @bind-value="@context.Customer.CustomerName" />
@@ -37,7 +22,6 @@
         </Column>
         <Column Item="Order" Property="e=>e.Country" Title="Country" Sortable Searchable Groupable>
             <EditorTemplate>
-                @GetTestString()
                 <input type="text" class="form-control" @bind-value="@context.Country" />
             </EditorTemplate>
         </Column>
@@ -64,49 +48,10 @@
     [Inject] TabBlazor.Services.IModalService ModalService { get; set; }
     private static List<Order> orders = SampleData.GetOrders();
     private static List<Order> selectedOrders = new List<Order>();
-    private bool testValue;
 
-    private Order testOrder;
     private TableEditMode tableEditMode;
 
-    private async Task TestModals()
-    {
-        var renderComponent = new RenderComponent<Modals.ModalsBasic>();
-        var result = await ModalService.ShowAsync("Edit", renderComponent, new ModalOptions { Size = ModalSize.Large });
-    }
-
-    private string GetTestString()
-    {
-        return "Kalle";
-    }
-
-    private void TestOrderUpdated(Order order)
-    {
-        testOrder = order;
-    }
-
-    private void SetTestValue(bool value)
-    {
-        testValue = value;
-        ModalService.Refresh();
-    }
-
-    private List<Order> SearchOrders(string searchText)
-    {
-
-        return orders;
-    }
-
-    private List<Order> GetOrders(Order order)
-    {
-        if (testValue)
-        {
-            return orders.Take(3).ToList();
-        }
-
-        return orders;
-    }
-
+   
     private async Task OnItemEdit(Order order)
     {
         await ShowDialog($"Edited order {order.OrderId}");

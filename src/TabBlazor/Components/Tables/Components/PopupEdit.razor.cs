@@ -10,13 +10,13 @@ namespace TabBlazor.Components.Tables.Components
         [Parameter] public IPopupEditTable<TItem> Table { get; set; }
 
         private ModalOptions options = new ModalOptions { Size = ModalSize.Large };
-        private ModalView modalView;
+        private string title => Table.IsAddInProgress ? "Add" : "Edit";
 
         private async Task CancelEdit()
         {
             await Table.CancelEdit();
         }
 
- 
+
     }
 }
