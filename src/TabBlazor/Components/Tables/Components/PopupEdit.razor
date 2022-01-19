@@ -2,7 +2,9 @@
 
 @if (Table.CurrentEditItem != null)
 {
-    <TablerForm Model="@Table.CurrentEditItem" OnValidSubmit="@Table.OnValidSubmit">
+
+    <TabBlazor.Components.Modals.ModalView @ref="modalView" Title="Test Edit" Options="options" OnClosed=CancelEdit >
+
 
         @foreach (var column in Table.VisibleColumns)
         {
@@ -28,8 +30,9 @@
         <div class="form-footer">
             <div class="d-flex">
                 <Button BackgroundColor=TablerColor.Secondary OnClick="CancelEdit">Cancel</Button>
-                <button class="btn btn-primary ms-auto" type="submit" @onclick="@(()=> modalService.Close())">Save</button>
+                <button class="btn btn-primary ms-auto" type="submit">Save</button>
             </div>
         </div>
-    </TablerForm>
+
+    </TabBlazor.Components.Modals.ModalView>
 }

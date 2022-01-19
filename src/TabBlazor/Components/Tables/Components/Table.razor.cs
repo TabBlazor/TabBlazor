@@ -410,11 +410,11 @@ namespace TabBlazor
         {
             CurrentEditItem = tableItem;
          
-            if (EditMode == TableEditMode.Popup)
-            {
-                var renderComponent = new RenderComponent<PopupEdit<Item>>().Set(e => e.Table, this);
-                var result = modalService.ShowAsync("Edit", renderComponent, new ModalOptions { Size = ModalSize.Large, ShowCloseButton=false });
-            }
+            //if (EditMode == TableEditMode.Popup)
+            //{
+            //    var renderComponent = new RenderComponent<PopupEdit<Item>>().Set(e => e.Table, this);
+            //    var result = modalService.ShowAsync("Edit", renderComponent, new ModalOptions { Size = ModalSize.Large, ShowCloseButton=false });
+            //}
           
             StateHasChanged();
         }

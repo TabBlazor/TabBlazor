@@ -1,7 +1,14 @@
-﻿
+﻿<Row class="mb-3">
+    <RowCol Sm="12" Md="6" Lg="4">
+        <label class="form-label">Edit Mode</label>
+        <Select Items="EnumHelper.GetList<TableEditMode>()" @bind-SelectedValue="@tableEditMode" TextExpression="e=> e.ToString()" />
+    </RowCol>
+</Row>
+
+
 <Table Item="Order" Items="orders" PageSize="10" AddItemFactory="AddItem" OnItemEdited="OnItemEdit"
        @bind-SelectedItems="selectedOrders" OnItemAdded="OnItemAdd" OnItemDeleted="OnItemDelete"
-       ShowCheckboxes MultiSelect Hover Responsive EditMode=TableEditMode.Popup>
+       ShowCheckboxes MultiSelect Hover Responsive EditMode=tableEditMode>
     <HeaderTemplate>
         <strong>Orders</strong>
     </HeaderTemplate>
@@ -11,6 +18,7 @@
         <Column Item="Order" Title="Test">
             <EditorTemplate>
                 <h3>@context.OrderType</h3>
+                <Button BackgroundColor=TablerColor.Primary OnClick="TestModals">Test Modals</Button>
                 <ItemSelect Items=GetOrders(context) SelectedValue=testOrder TItem=Order TValue=Order SelectedValueChanged="TestOrderUpdated" SearchMethod="SearchOrders">
                     <FooterTemplate>
                         <Checkbox Switch Value=testValue ValueChanged=SetTestValue />
@@ -59,6 +67,13 @@
     private bool testValue;
 
     private Order testOrder;
+    private TableEditMode tableEditMode;
+
+    private async Task TestModals()
+    {
+        var renderComponent = new RenderComponent<Modals.ModalsBasic>();
+        var result = await ModalService.ShowAsync("Edit", renderComponent, new ModalOptions { Size = ModalSize.Large });
+    }
 
     private string GetTestString()
     {
