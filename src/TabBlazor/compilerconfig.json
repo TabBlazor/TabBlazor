@@ -2,5 +2,9 @@
   {
     "outputFile": "wwwroot/css/tabblazor.css",
     "inputFile": "Styles/tabblazor.scss"
+  },
+  {
+    "outputFile": "Styles/_custom.css",
+    "inputFile": "Styles/_custom.scss"
   }
 ]

@@ -31,10 +31,12 @@
                                 }
                                 else
                                 {
-                                    @foreach (var selectedItem in selectedItems)
-                                    {
-                                        <Badge class="me-2" BackgroundColor="TablerColor.Primary">@GetSelectedText(selectedItem) <span @onclick:stopPropagation @onclick="@(e=> RemoveSelected(selectedItem))"><Icon class="ms-2" Size="16" Elements="@InternalIcons.X"></Icon></span></Badge>
-                                    }
+                                    <div class="badge-list">
+                                        @foreach (var selectedItem in selectedItems)
+                                        {
+                                            <Badge BackgroundColor="TablerColor.Primary">@GetSelectedText(selectedItem) <span @onclick:stopPropagation @onclick="@(e=> RemoveSelected(selectedItem))"><Icon class="ms-2" Size="16" Elements="@InternalIcons.X"></Icon></span></Badge>
+                                        }
+                                    </div>
                                 }
                             </div>
 
@@ -73,24 +75,24 @@
 
                     @if (Items != null && Items.Any())
                     {
-                            <VirtualizeOptional Items="FilteredList()" Virtualize=Virtualize>
-                                <DropdownItem class="@(IsHighlighted(context) ? "highlight":"")" Active="IsSelected(context)" Disabled="(!CanSelect() && !IsSelected(context)) || IsDisabled(context)" OnClick="(e=> ToogleSelected(context))" @key="context">
+                        <VirtualizeOptional Items="FilteredList()" Virtualize=Virtualize>
+                            <DropdownItem class="@(IsHighlighted(context) ? "highlight":"")" Active="IsSelected(context)" Disabled="(!CanSelect() && !IsSelected(context)) || IsDisabled(context)" OnClick="(e=> ToogleSelected(context))" @key="context">
 
                                 @if (ShowCheckBoxes)
-                                {
-                                    <input class="form-check-input m-0 me-2" checked="@IsSelected(context)" type="checkbox">
-                                }
-                                @if (ListTemplate == null)
-                                {
-                                    @context.ToString()
-                                }
-                                else
-                                {
-                                    @ListTemplate(context)
-                                }
+                            {
+                                <input class="form-check-input m-0 me-2" checked="@IsSelected(context)" type="checkbox">
+                            }
+                            @if (ListTemplate == null)
+                            {
+                                @context.ToString()
+                            }
+                            else
+                            {
+                                @ListTemplate(context)
+                            }
 
-                            </DropdownItem>
-                        </VirtualizeOptional>
+                        </DropdownItem>
+                    </VirtualizeOptional>
                     }
                     else
                     {
