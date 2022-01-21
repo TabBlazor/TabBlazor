@@ -31,6 +31,7 @@ namespace TabBlazor
         [Parameter] public EventCallback<TValue> SelectedValueChanged { get; set; }
 
         [Parameter] public EventCallback Changed { get; set; }
+        [Parameter] public EventCallback<bool> OnExpanded { get; set; }
 
         [Parameter] public Func<TItem, string> SelectedTextExpression { get; set; }
         [Parameter] public Func<TItem, string> IdExpression { get; set; }
@@ -93,6 +94,13 @@ namespace TabBlazor
             {
                 AddSelectItemFromValue(SelectedValue);
             }
+        }
+
+        public bool IsExpanded => dropdown?.IsExpanded == true;
+
+        private void DropdownExpanded(bool expanded)
+        {
+             OnExpanded.InvokeAsync(expanded);
         }
 
         private string GetListStyle()

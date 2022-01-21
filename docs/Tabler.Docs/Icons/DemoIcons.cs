@@ -1449,5 +1449,8 @@
         public static string Zoom_out { get => @"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><circle cx='10' cy='10' r='7' /><line x1='7' y1='10' x2='13' y2='10' /><line x1='21' y1='21' x2='15' y2='15' />"; }
         public static string Zoom_question { get => @"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><circle cx='10' cy='10' r='7' /><path d='M21 21l-6 -6' /><line x1='10' y1='13' x2='10' y2='13.01' /><path d='M10 10a1.5 1.5 0 1 0 -1.14 -2.474' />"; }
 
+
+        public static string X_Large { get => @"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><line x1='23' y1='1' x2='1' y2='23' /><line x1='1' y1='1' x2='23' y2='23' />"; }
+
     }
 }
