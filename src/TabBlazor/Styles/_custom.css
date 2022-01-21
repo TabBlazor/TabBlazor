@@ -77,6 +77,11 @@
   width: 100%;
 }
 
+/*//fix input-grpup
+.input-group-text {
+    background-color: white
+}
+*/
 .switch-icon {
   width: unset;
   height: unset;
