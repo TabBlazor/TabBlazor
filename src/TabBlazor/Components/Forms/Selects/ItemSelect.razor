@@ -73,6 +73,14 @@
                         </div>
                     }
 
+                    @if (HeaderTemplate != null)
+                    {
+                        <div class="cursor-auto">
+                            @HeaderTemplate
+                        </div>
+                    }
+
+
                     @if (Items != null && Items.Any())
                     {
                         <VirtualizeOptional Items="FilteredList()" Virtualize=Virtualize>
@@ -98,10 +106,13 @@
                     {
                         <span>@NoItemsText</span>
                     }
-                    <div class="cursor-auto">
-                        @FooterTemplate
-                    </div>
 
+                    @if (FooterTemplate != null)
+                    {
+                        <div class="cursor-auto">
+                            @FooterTemplate
+                        </div>
+                    }
 
                 </DropdownMenu>
             </DropdownTemplate>

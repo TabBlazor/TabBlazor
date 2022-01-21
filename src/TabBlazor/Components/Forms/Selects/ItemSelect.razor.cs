@@ -40,6 +40,7 @@ namespace TabBlazor
         [Parameter] public RenderFragment<TItem> ListTemplate { get; set; }
         [Parameter] public RenderFragment<List<TItem>> SelectedTemplate { get; set; }
         [Parameter] public RenderFragment FooterTemplate { get; set; }
+        [Parameter] public RenderFragment HeaderTemplate { get; set; }
         [Parameter] public bool Clearable { get; set; }
         [Parameter] public bool Disabled { get; set; }
         [Parameter] public bool RemoveSelectedFromList { get; set; }
@@ -109,12 +110,12 @@ namespace TabBlazor
 
             if (!string.IsNullOrWhiteSpace(MaxListHeight))
             {
-                style = $"max-height:{MaxListHeight}; overflow-y:auto;";
+                style = $"max-height:{MaxListHeight}; overflow-y:overlay;";
             }
 
             if (!string.IsNullOrWhiteSpace(ListWidth))
             {
-                style += $"width:{ListWidth}; overflow-x:auto;border:none";
+                style += $"width:{ListWidth}; overflow-x:overlay;border:none";
             }
 
             return style;
