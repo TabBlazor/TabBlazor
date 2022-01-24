@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace TabBlazor
@@ -77,7 +75,9 @@ namespace TabBlazor
 
         private string[] GetWeekdays()
         {
-            return culture.DateTimeFormat.AbbreviatedDayNames;
+            var names = culture.DateTimeFormat.AbbreviatedDayNames;
+            var first = (int)culture.DateTimeFormat.FirstDayOfWeek;
+            return names.Skip(first).Take(names.Length - first).Concat(names.Take(first)).ToArray();
         }
 
         private string GetCurrentMonth()
