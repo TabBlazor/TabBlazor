@@ -77,7 +77,7 @@ namespace TabBlazor
         {
             var names = culture.DateTimeFormat.AbbreviatedDayNames;
             var first = (int)culture.DateTimeFormat.FirstDayOfWeek;
-            return names.Skip(first).Take(names.Length - first).ToList().Concat(names.Take(first)).ToArray();
+            return names.Skip(first).Take(names.Length - first).Concat(names.Take(first)).ToArray();
         }
 
         private string GetCurrentMonth()
