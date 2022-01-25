@@ -64,6 +64,12 @@
     background-color: lightgray;
 }
 
+//Navbar
+.nav-item, dropdown-menu {
+    z-index: 1029;
+}
+
+
 //Treeview
 .tree, .tree ul {
     margin: 0;
@@ -85,11 +91,6 @@
     width: 100%;
 }
 
-/*//fix input-grpup
-.input-group-text {
-    background-color: white
-}
-*/
 //Override switch icon
 .switch-icon {
     width: unset;

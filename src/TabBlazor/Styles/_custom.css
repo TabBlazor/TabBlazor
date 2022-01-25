@@ -57,6 +57,10 @@
   background-color: lightgray;
 }
 
+.nav-item, dropdown-menu {
+  z-index: 1029;
+}
+
 .tree, .tree ul {
   margin: 0;
   padding: 0;
@@ -77,11 +81,6 @@
   width: 100%;
 }
 
-/*//fix input-grpup
-.input-group-text {
-    background-color: white
-}
-*/
 .switch-icon {
   width: unset;
   height: unset;
