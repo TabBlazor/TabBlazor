@@ -3,10 +3,25 @@
     saveAsFile: function (filename, href) {
         var link = document.createElement('a');
         link.download = filename;
-        link.href = href; //"data:application/octet-stream;base64," + bytesBase64;
+        link.href = href; 
         document.body.appendChild(link); // Needed for Firefox
         link.click();
         document.body.removeChild(link);
+    },
+
+    addResizeObserver: (element, dotNetReference) => {
+        const resizeObserver = new ResizeObserver(onResize);
+        resizeObserver.observe(element);
+
+        function onResize(entries) {
+            const entry = entries[0];
+          
+            const result = {
+                contentRect: entry.contentRect,
+            };
+
+            dotNetReference.invokeMethodAsync("ElementResized", result);
+        }
     },
 
     preventDefaultKey: (element, event, keys) => {

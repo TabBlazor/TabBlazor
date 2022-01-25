@@ -15,10 +15,10 @@
         </div>
     </div>
 
-      <div class="col-sm-12 col-md-6 col-lg-2">
+    <div class="col-sm-12 col-md-6 col-lg-2">
         <div class="form-group">
             <label>Rotate</label>
-            <input class="form-control" type="number"  step="1" @bind-value="@rotate" />
+            <input class="form-control" type="number" step="1" @bind-value="@rotate" />
         </div>
     </div>
 
@@ -34,6 +34,20 @@
             <input class="form-control" type="text" value="@searchText" @oninput="SearchIcons" />
         </div>
     </div>
+</div>
+
+<div class="row mb-3">
+    <ResizeObserver OnResized=IconContainerResized>
+       
+            <ul>
+                <li>X: @iconContainerRect?.X</li>
+                <li>Y: @iconContainerRect?.Y</li>
+                <li>Width: @iconContainerRect?.Width</li>
+                <li>Height: @iconContainerRect?.Height</li>
+            </ul>
+       
+
+    </ResizeObserver>
 </div>
 
 <div class="row mb-3">
@@ -55,7 +69,7 @@
 
 <div class="iconlist-container">
     <div class="form-selectgroup">
-    
+
         <Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize Items="@filteredIcons" Context="icon">
             <span title="@icon.Name">
                 <Checkbox Value="@IsSelected(icon)" ValueChanged="@(() => SelectIcon(icon))">

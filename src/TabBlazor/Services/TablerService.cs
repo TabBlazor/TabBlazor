@@ -18,11 +18,13 @@ namespace TabBlazor.Services
             await jsRuntime.InvokeVoidAsync("tabBlazor.saveAsFile", fileName, href);
         }
 
+   
+
         public async Task PreventDefaultKey(ElementReference element, string eventName, string[] keys)
         {
             await jsRuntime.InvokeVoidAsync("tabBlazor.preventDefaultKey", element, eventName, keys);
         }
-       
+
         public async Task FocusFirstInTableRow(ElementReference tableRow)
         {
             await jsRuntime.InvokeVoidAsync("tabBlazor.focusFirstInTableRow", tableRow, "");
@@ -50,7 +52,7 @@ namespace TabBlazor.Services
 
         public async Task<string> ReadFromClipboard()
         {
-           return await jsRuntime.InvokeAsync<string>("tabBlazor.readFromClipboard");
+            return await jsRuntime.InvokeAsync<string>("tabBlazor.readFromClipboard");
         }
 
         public async Task DisableDraggable(ElementReference container, ElementReference element)

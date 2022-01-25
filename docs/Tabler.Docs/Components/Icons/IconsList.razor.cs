@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using TabBlazor;
 using TabBlazor.Services;
 
 namespace Tabler.Docs.Components.Icons
@@ -21,6 +22,7 @@ namespace Tabler.Docs.Components.Icons
         private double strokeWidth = 2;
         private string searchText;
         private string color;
+        private ContentRect iconContainerRect;
         protected override void OnInitialized()
         {
             LoadIcons();
@@ -36,6 +38,11 @@ namespace Tabler.Docs.Components.Icons
                 var value = property.GetValue(null).ToString();
                 icons.Add(new Icon { Name = property.Name, Elements = value });
             }
+        }
+
+        private void IconContainerResized(ResizeObserverEntry resizeObserverEntry)
+        {
+            iconContainerRect = resizeObserverEntry.ContentRect;
         }
 
         private void SearchIcons(ChangeEventArgs e)
