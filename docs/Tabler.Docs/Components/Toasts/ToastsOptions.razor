@@ -1,0 +1,35 @@
+﻿@using TabBlazor.Services
+@inject ToastService ToastService
+
+<Row>
+    <Row>
+        <RowCol Sm="12" Md="6" Lg="4">
+            <label class="form-label">Delay</label>
+            <Input @bind-Value="toastOptions.Delay" />
+        </RowCol>
+        <RowCol Sm="12" Md="4" Lg="3">
+            <Checkbox @bind-Value="@toastOptions.ShowHeader" Label="Show header" />
+        </RowCol>
+        <RowCol Sm="12" Md="4" Lg="3">
+            <Checkbox @bind-Value="@toastOptions.ShowProgress" Label="Show progress" />
+        </RowCol>
+    </Row>
+</Row>
+<Row class="mt-2">
+    <RowCol>
+        <Button BackgroundColor="TablerColor.Primary" @onclick="ShowToast">Show Toast</Button>
+    </RowCol>
+</Row>
+
+@code {
+    private ToastOptions toastOptions = new ToastOptions();
+
+    private async Task ShowToast()
+    {
+        await ToastService.AddToastAsync(new ToastModel {
+            Title = "Toast options",
+            SubTitle = "Many options",
+            Message = "This is a toast with options",
+            Options = toastOptions });
+    }
+}
