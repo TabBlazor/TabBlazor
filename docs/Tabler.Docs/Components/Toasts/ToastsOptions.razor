@@ -2,11 +2,15 @@
 @inject ToastService ToastService
 
 <Row>
+    <RowCol Sm="12" Md="6" Lg="4">
+        <label class="form-label">Delay</label>
+        <input @bind-value="@toastOptions.Delay" />
+    </RowCol>
+    <RowCol Sm="12" Md="6" Lg="4">
+        <label class="form-label">Position</label>
+        <Select Items="EnumHelper.GetList<ToastPosition>()" @bind-SelectedValue="@toastOptions.Position" TextExpression="e => e.ToString()" />
+    </RowCol>
     <Row>
-        <RowCol Sm="12" Md="6" Lg="4">
-            <label class="form-label">Delay</label>
-            <Input @bind-Value="toastOptions.Delay" />
-        </RowCol>
         <RowCol Sm="12" Md="4" Lg="3">
             <Checkbox @bind-Value="@toastOptions.ShowHeader" Label="Show header" />
         </RowCol>
