@@ -13,7 +13,6 @@ namespace TabBlazor.Components.Toasts
         [Inject] ToastService ToastService { get;set;}
         [Parameter] public ToastModel Toast { get; set; }
 
-        private string PositionClassNames => GetPositionClassNames();
         private CountdownTimer _countdownTimer;
         private int _progress = 100;
 
@@ -35,17 +34,6 @@ namespace TabBlazor.Components.Toasts
                 await Close();
             }
             await InvokeAsync(StateHasChanged);
-        }
-
-        private string GetPositionClassNames()
-        {
-            return Toast.Options.Position switch {
-                ToastPosition.TopRight => "end-0",
-                ToastPosition.BottomRight => "end-0 bottom-0",
-                ToastPosition.BottomLeft => "bottom-0",
-                ToastPosition.TopLeft => "start-0",
-                _ => "end-0"
-            };
         }
 
         public async Task Close()
