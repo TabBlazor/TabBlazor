@@ -15,6 +15,15 @@ namespace TabBlazor
         public int Delay { get; set; } = 3;
         public bool ShowHeader { get; set; } = true;
         public bool ShowProgress { get; set; } = true;
+        public ToastPosition Position { get; set; } = ToastPosition.TopRight;
         public bool AutoClose => Delay > 0;
+    }
+
+    public enum ToastPosition
+    {
+        TopRight,
+        TopLeft,
+        BottomRight,
+        BottomLeft
     }
 }
