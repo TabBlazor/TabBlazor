@@ -15,7 +15,7 @@
 
         function onResize(entries) {
             const entry = entries[0];
-          
+            console.log(entry);
             const result = {
                 contentRect: entry.contentRect,
             };

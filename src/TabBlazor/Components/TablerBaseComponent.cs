@@ -14,8 +14,7 @@ namespace TabBlazor
         [Parameter(CaptureUnmatchedValues = true)]
         public IDictionary<string, object> UnmatchedParameters { get; set; }
 
-        //protected ClassBuilder ClassBuilder => new ClassBuilder(GetUnmatchedParameter("Class")?.ToString());
-       protected ClassBuilder ClassBuilder => new ClassBuilder(ProvidedCssClasses);
+        protected ClassBuilder ClassBuilder => new ClassBuilder(ProvidedCssClasses);
         private string providedCssClasses;
         protected string ProvidedCssClasses
         {
