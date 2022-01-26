@@ -1,5 +1,5 @@
 # TabBlazor
-A blazor admin template built on [Tabler](https://preview-dev.tabler.io/)
+A blazor admin template built on [Tabler](https://preview.tabler.io/)
 
 Minimal javascript!
 
