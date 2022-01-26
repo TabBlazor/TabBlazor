@@ -1,7 +1,7 @@
 ﻿<ResizeObserver class="p-1 border" OnResized=ElementResized OnWidthResized=WidthResized OnHeightResized=HeightResized>
     <h4>Container Size:</h4>
     <Row>
-        <RowCol Auto>
+        <RowCol Xs=12 Md=6>
             <ul>
                 <li>X: @containerSize?.X</li>
                 <li>Y: @containerSize?.Y</li>
@@ -10,7 +10,7 @@
             </ul>
         </RowCol>
 
-           <RowCol Auto>
+           <RowCol Xs=12 Md=6>
             <ul>
                 <li>Left: @containerSize?.Left</li>
                 <li>Right: @containerSize?.Right</li>
@@ -20,7 +20,6 @@
         </RowCol>
 
     </Row>
-
 </ResizeObserver>
 
 <h3>@widthMessage</h3>
@@ -45,5 +44,4 @@
     {
         heightMessage = $"Height is {resizeObserverEntry?.ContentRect?.Height}";
     }
-
 }
