@@ -1,4 +1,6 @@
-﻿<h3>@icons.Count Tabler Icons</h3>
+﻿@page "/docs/icons-list"
+
+<h3>@icons.Count Tabler Icons</h3>
 <a href="https://github.com/tabler/tabler-icons">tabler-icons</a>
 
 <div class="row mb-3">
@@ -37,20 +39,6 @@
 </div>
 
 <div class="row mb-3">
-    <ResizeObserver OnResized=IconContainerResized>
-       
-            <ul>
-                <li>X: @iconContainerRect?.X</li>
-                <li>Y: @iconContainerRect?.Y</li>
-                <li>Width: @iconContainerRect?.Width</li>
-                <li>Height: @iconContainerRect?.Height</li>
-            </ul>
-       
-
-    </ResizeObserver>
-</div>
-
-<div class="row mb-3">
     <div class="col-auto">
         @if (selectedIcons.Any())
         {
@@ -65,17 +53,23 @@
     </div>
 </div>
 
+<div class="row mb-3">
+    <div style="height:500px;overflow-y:auto">
+        <ResizeObserver OnWidthResized=IconContainerResized>
+            <Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize Items="@filteredIcons.Batch(GetRowCount()).ToList()" Context="icons">
+                @foreach (var icon in icons)
+                {
+                    <span title="@icon.Name">
+                        <label class="me-1 mb-1">
+                            <input type="checkbox" class="form-selectgroup-input" checked="@IsSelected(icon)" @onchange="@((e) => SelectIcon(icon))">
+                            <span class="form-selectgroup-label">
+                                <Icon Size="@size" Rotate=@rotate Elements="@icon.Elements" StrokeWidth="strokeWidth" Color="@color" />
+                            </span>
+                        </label>
+                    </span>
+                }
 
-
-<div class="iconlist-container">
-    <div class="form-selectgroup">
-
-        <Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize Items="@filteredIcons" Context="icon">
-            <span title="@icon.Name">
-                <Checkbox Value="@IsSelected(icon)" ValueChanged="@(() => SelectIcon(icon))">
-                    <Icon Size="@size" Rotate=@rotate Elements="@icon.Elements" StrokeWidth="strokeWidth" Color="@color" />
-                </Checkbox>
-            </span>
-        </Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize>
+            </Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize>
+        </ResizeObserver>
     </div>
 </div>

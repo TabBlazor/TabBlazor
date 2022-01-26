@@ -60,6 +60,16 @@ namespace Tabler.Docs.Components.Icons
 
         private bool IsSelected(Icon icon) => selectedIcons.Contains(icon);
 
+        private int GetRowCount()
+        {
+            var iconSize = size + 30;
+            var width = iconContainerRect?.Width ?? 100;
+
+            return  (int)Math.Floor((width/iconSize));
+
+
+        }
+
         private void SelectIcon(Icon icon)
         {
             if (IsSelected(icon))
