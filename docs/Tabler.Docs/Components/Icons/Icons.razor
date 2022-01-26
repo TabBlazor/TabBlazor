@@ -1,43 +1,57 @@
 ﻿@page "/docs/icons"
 
-    <Page>
-        <DocsExample Title="Icon" ComponentType="typeof(Icon)">
-         Icons are not include by default. The Icon takes a ..
+<Page>
+    <DocsExample Title="Icons" ComponentType="typeof(Icon)">
 
-            <CodeSnippet ClassName="@typeof(IconsBasic).ToString()" Title="Basics">
-                <Description>
-                    <p>Basic Icon</p>
-                </Description>
-                <Example>
-                    <IconsBasic />
-                </Example>
-            </CodeSnippet>
+        <div class="mb-1">
+            <p>
+                Icons are not include by default. Just create a static class and select/copy the icons from the list below.
+                If you want all icons you will find them <a href="https://github.com/joadan/TabBlazor/blob/master/docs/Tabler.Docs/Icons/DemoIcons.cs" target="_blank">here</a>
+            </p>
+        </div>
+        
+        <div class="mb-2">
+            All icons come from the Tabler Icons set and are MIT-licensed
+            <a href="https://tabler-icons.io" target="_blank" rel="noopener">tabler-icons.io</a>
+            <Icon class="align-text-top" Size=16 Elements="@DemoIcons.Heart" TextColor="TablerColor.Red" Filled />
+        </div>
 
-            <CodeSnippet ClassName="@typeof(IconsColorSize).ToString()" Title="Settings">
-                <Description>
-                    <p>Set size and color for each icon</p>
-                </Description>
-                <Example>
-                    <IconsColorSize />
-                </Example>
-            </CodeSnippet>
+     
 
-            <CodeSnippet ClassName="@typeof(IconsCSS).ToString()" Title="CSS">
-                <Description>
-                    <p>Use css for icons</p>
-                </Description>
-                <Example>
-                    <IconsCSS />
-                </Example>
-            </CodeSnippet>
+        <CodeSnippet ClassName="@typeof(IconsBasic).ToString()" Title="Basics">
+            <Description>
+                <p>Basic Icon</p>
+            </Description>
+            <Example>
+                <IconsBasic />
+            </Example>
+        </CodeSnippet>
 
-            <CodeSnippet  Title="Tabler icons">
-                <Example>
-                    <IconsList />
-                </Example>
-            </CodeSnippet>
+        <CodeSnippet ClassName="@typeof(IconsColorSize).ToString()" Title="Settings">
+            <Description>
+                <p>Set size and color for each icon</p>
+            </Description>
+            <Example>
+                <IconsColorSize />
+            </Example>
+        </CodeSnippet>
 
-        </DocsExample>
-    </Page>
+        <CodeSnippet ClassName="@typeof(IconsCSS).ToString()" Title="CSS">
+            <Description>
+                <p>Use css for icons</p>
+            </Description>
+            <Example>
+                <IconsCSS />
+            </Example>
+        </CodeSnippet>
 
-   
+        <CodeSnippet Title="Tabler icons">
+            <Example>
+                <IconsList />
+            </Example>
+        </CodeSnippet>
+
+    </DocsExample>
+</Page>
+
+
