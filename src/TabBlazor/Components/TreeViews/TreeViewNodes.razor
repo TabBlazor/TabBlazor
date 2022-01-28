@@ -3,7 +3,7 @@
 <ul class="@(isRoot ? "tree": "")">
     @foreach (var item in Items)
     {
-        var isExpanded = Root.AllwaysExpanded || Root.IsExpanded(item);
+        var isExpanded = Root.AlwaysExpanded || Root.IsExpanded(item);
 
         <li>
             <div class="d-flex align-items-center mb-2 tree-container" style="padding-left:@(Level*20)px">
