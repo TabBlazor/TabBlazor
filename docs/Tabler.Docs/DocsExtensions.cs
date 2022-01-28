@@ -14,7 +14,6 @@ namespace Tabler.Docs
             return services
                .AddTabler()
                .AddSingleton<AppService>();
-
         }
 
         public static IEnumerable<IEnumerable<T>> Batch<T>(this IEnumerable<T> source, int size)
