@@ -45,7 +45,7 @@ namespace IconGenerator
                     iconName = iconName.FirstCharacterToUpperCase();
                 }
 
-                fileOutput.AppendLine($"public static string {iconName} {"{"} get => @\"{elementsString}\"; {"}"} ");
+                fileOutput.AppendLine($"public static string {iconName} => @\"{elementsString}\"; ");
             }
 
             File.WriteAllText(Path.Combine(directory.FullName, "Generated", "TablerIcons.txt"), fileOutput.ToString());

@@ -65,9 +65,7 @@ namespace Tabler.Docs.Components.Icons
             var iconSize = size + 30;
             var width = iconContainerRect?.Width ?? 100;
 
-            return  (int)Math.Floor((width/iconSize));
-
-
+            return (int)Math.Floor((width / iconSize));
         }
 
         private void SelectIcon(Icon icon)
@@ -109,7 +107,7 @@ namespace Tabler.Docs.Components.Icons
 
         public string GetStaticProperty()
         {
-            return $"public static string {Name} {"{"} get => @\"{Elements}\"; {"}"} ";
+            return $"public static string {Name} => @\"{Elements}\";";
         }
     }
 
