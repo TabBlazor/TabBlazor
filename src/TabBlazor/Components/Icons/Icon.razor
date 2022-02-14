@@ -13,10 +13,11 @@
      stroke-linejoin="round"
      @onclick="OnClick"
      @attributes="UnmatchedParameters"
-     transform="rotate(@Rotate)">
-     
-     @if (Elements != null)
-     {
+     transform="rotate(@Rotate)"
+     >
+
+    @if (Elements != null)
+    {
         @((MarkupString)Elements)
-     }
+    }
 </svg>

@@ -20,6 +20,7 @@ namespace Tabler.Docs.Components.Icons
         private int size = 24;
         private int rotate = 0;
         private double strokeWidth = 2;
+        private bool filled = false;
         private string searchText;
         private string color;
         private ContentRect iconContainerRect;
@@ -31,7 +32,8 @@ namespace Tabler.Docs.Components.Icons
 
         private void LoadIcons()
         {
-            var properties = typeof(DemoIcons).GetProperties(BindingFlags.Public | BindingFlags.Static);
+            //var properties = typeof(DemoIcons).GetProperties(BindingFlags.Public | BindingFlags.Static);
+            var properties = typeof(MatOutlineIcons).GetProperties(BindingFlags.Public | BindingFlags.Static);
 
             foreach (var property in properties)
             {

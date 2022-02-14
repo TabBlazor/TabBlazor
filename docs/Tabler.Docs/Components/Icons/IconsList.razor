@@ -27,6 +27,11 @@
             <input class="form-control form-control-color" type="color" @bind="@color" @bind:event="oninput" />
         </div>
     </div>
+      <div class="col-sm-12 col-md-6 col-lg-2">
+        <div class="form-group">
+            <Checkbox Switch Label="Filled" @bind-Value="@filled"></Checkbox>
+        </div>
+    </div>
     <div class="col-sm-12 col-md-6 col-lg-2">
         <div class="form-group">
             <label>Search</label>
@@ -60,7 +65,7 @@
                         <label class="me-1 mb-1">
                             <input type="checkbox" class="form-selectgroup-input" checked="@IsSelected(icon)" @onchange="@((e) => SelectIcon(icon))">
                             <span class="form-selectgroup-label">
-                                <Icon Size="@size" Rotate=@rotate Elements="@icon.Elements" StrokeWidth="strokeWidth" Color="@color" />
+                                <Icon Size="@size" Rotate=@rotate Filled="@filled" Elements="@icon.Elements" StrokeWidth="strokeWidth" Color="@color" />
                             </span>
                         </label>
                     </span>

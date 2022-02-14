@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IconGenerator.Material;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,7 +13,18 @@ namespace IconGenerator
     {
         static void Main(string[] args)
         {
-            GenerateTablerIcons();
+            //GenerateTablerIcons();
+            GenerateMaterialIcons();
+        }
+
+        private static void GenerateMaterialIcons()
+        {
+            var directory = Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).Parent.Parent;
+            var iconsPath = Path.Combine(directory.FullName, @"Material\Icons");
+            //materialiconsoutlined
+            //materialicons
+            MaterialIconGenerator.Generate(iconsPath, "materialiconsoutlined");
+
         }
 
         private static void GenerateTablerIcons()
@@ -24,7 +36,8 @@ namespace IconGenerator
             StringBuilder fileOutput = new StringBuilder();
 
             XElement svg = XDocument.Load(svgPath).Root;
-            RemoveAllNamespaces(svg);
+            svg.RemoveAllNamespaces();
+            //RemoveAllNamespaces(svg);
             var iconElements = svg.Descendants().Where(e => e.Name.LocalName == "symbol");
 
             foreach (var iconElement in iconElements)
@@ -35,36 +48,15 @@ namespace IconGenerator
 
                 var iconName = iconElement.Attributes().First(e => e.Name == "id").Value;
                 iconName = iconName.Replace("tabler-", "");
-                iconName = iconName.Replace("-", "_");
-                if (char.IsDigit(iconName.ToCharArray().First()))
-                {
-                    iconName = "_" + iconName;
-                }
-                else
-                {
-                    iconName = iconName.FirstCharacterToUpperCase();
-                }
-
-                fileOutput.AppendLine($"public static string {iconName} => @\"{elementsString}\"; ");
+                iconName = iconName.GetIconName();
+                fileOutput.AppendLine($"public static string {iconName} => @\"{elementsString}\";");
             }
 
             File.WriteAllText(Path.Combine(directory.FullName, "Generated", "TablerIcons.txt"), fileOutput.ToString());
 
         }
 
-        private static void RemoveAllNamespaces(XElement element)
-        {
-            element.Name = element.Name.LocalName;
-
-            foreach (var node in element.DescendantNodes())
-            {
-                var xElement = node as XElement;
-                if (xElement != null)
-                {
-                    RemoveAllNamespaces(xElement);
-                }
-            }
-        }
+        
 
     }
 }
