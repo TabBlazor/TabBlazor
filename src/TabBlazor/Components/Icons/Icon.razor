@@ -6,9 +6,9 @@
      width="@Size"
      height="@Size"
      viewBox="0 0 24 24"
-     stroke-width="@StrokeWidth"
+     stroke-width="@strokeWidth"
      stroke="currentColor"
-     fill="none"
+     fill="@FilledString"
      stroke-linecap="round"
      stroke-linejoin="round"
      @onclick="OnClick"
@@ -16,8 +16,8 @@
      transform="rotate(@Rotate)"
      >
 
-    @if (Elements != null)
+    @if (elements != null)
     {
-        @((MarkupString)Elements)
+        @((MarkupString)elements)
     }
 </svg>

@@ -1,20 +1,34 @@
-﻿using IconGenerator.Material;
+﻿using IconGenerator.MaterialDesign;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace IconGenerator
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             //GenerateTablerIcons();
-            GenerateMaterialIcons();
+            await GenerateMaterialDesignIcons();
+        }
+
+        private static async Task GenerateMaterialDesignIcons()
+        {
+
+            var icons = await MaterialDesignGenerator.GenerateIcons();
+
+            foreach (var icon in icons)
+            {
+                var kalle = "anka";
+            }
+
+
         }
 
         private static void GenerateMaterialIcons()
@@ -23,7 +37,7 @@ namespace IconGenerator
             var iconsPath = Path.Combine(directory.FullName, @"Material\Icons");
             //materialiconsoutlined
             //materialicons
-            MaterialIconGenerator.Generate(iconsPath, "materialiconsoutlined");
+            //MaterialIconGenerator.Generate(iconsPath, "materialiconsoutlined");
 
         }
 
@@ -56,7 +70,7 @@ namespace IconGenerator
 
         }
 
-        
+
 
     }
 }

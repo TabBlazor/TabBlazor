@@ -32,8 +32,8 @@ namespace Tabler.Docs.Components.Icons
 
         private void LoadIcons()
         {
-            //var properties = typeof(DemoIcons).GetProperties(BindingFlags.Public | BindingFlags.Static);
-            var properties = typeof(MatOutlineIcons).GetProperties(BindingFlags.Public | BindingFlags.Static);
+            var properties = typeof(DemoIcons).GetProperties(BindingFlags.Public | BindingFlags.Static);
+            //var properties = typeof(MDIcons).GetProperties(BindingFlags.Public | BindingFlags.Static);
 
             foreach (var property in properties)
             {
