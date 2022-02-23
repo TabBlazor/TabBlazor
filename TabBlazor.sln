@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IconGenerator", "Icons\Icon
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Icons", "Icons", "{512C1DEA-9A7A-4881-B38D-2BE3E5DA7926}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TabBlazor.Tests", "TabBlazor.Tests\TabBlazor.Tests.csproj", "{DD4D7CA5-DF81-4D84-BBB6-EFF0B273A66B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{4132F8E3-B0F0-40B3-BEA2-87FCBB8EAC8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4132F8E3-B0F0-40B3-BEA2-87FCBB8EAC8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4132F8E3-B0F0-40B3-BEA2-87FCBB8EAC8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD4D7CA5-DF81-4D84-BBB6-EFF0B273A66B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD4D7CA5-DF81-4D84-BBB6-EFF0B273A66B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD4D7CA5-DF81-4D84-BBB6-EFF0B273A66B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD4D7CA5-DF81-4D84-BBB6-EFF0B273A66B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
