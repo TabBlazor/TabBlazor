@@ -1,26 +1,33 @@
-﻿<h3>@icons.Count Tabler Icons</h3>
-<a href="https://github.com/tabler/tabler-icons">tabler-icons</a>
+﻿<h3>@icons.Count Icons</h3>
 
 <div class="row mb-3">
-    <div class="col-sm-12 col-md-6 col-lg-3">
+    <div class="col-sm-12 col-md-6 col-lg-2">
         <div class="form-group">
             <label>Size</label>
             <input class="form-control" type="number" min="1" @bind-value="@size" />
         </div>
     </div>
-    <div class="col-sm-12 col-md-6 col-lg-3">
+    <div class="col-sm-12 col-md-6 col-lg-2">
         <div class="form-group">
             <label>Stroke width</label>
             <input class="form-control" type="number" min="0.1" step="0.1" @bind-value="@strokeWidth" />
         </div>
     </div>
-    <div class="col-sm-12 col-md-3 col-lg-2">
+
+    <div class="col-sm-12 col-md-6 col-lg-2">
+        <div class="form-group">
+            <label>Rotate</label>
+            <input class="form-control" type="number" step="1" @bind-value="@rotate" />
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-6 col-lg-2">
         <div class="form-group">
             <label>Color</label>
             <input class="form-control form-control-color" type="color" @bind="@color" @bind:event="oninput" />
         </div>
     </div>
-    <div class="col-sm-12 col-md-6 col-lg-3">
+    <div class="col-sm-12 col-md-6 col-lg-2">
         <div class="form-group">
             <label>Search</label>
             <input class="form-control" type="text" value="@searchText" @oninput="SearchIcons" />
@@ -43,19 +50,23 @@
     </div>
 </div>
 
+<div class="row mb-3">
+    <div style="height:500px;overflow-y:auto">
+        <ResizeObserver OnWidthResized=IconContainerResized>
+            <Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize Items="@filteredIcons.Batch(GetRowCount()).ToList()" Context="icons">
+                @foreach (var icon in icons)
+                {
+                    <span title="@icon.Name">
+                        <label class="me-1 mb-1">
+                            <input type="checkbox" class="form-selectgroup-input" checked="@IsSelected(icon)" @onchange="@((e) => SelectIcon(icon))">
+                            <span class="form-selectgroup-label">
+                                <Icon Size="@size" Rotate=@rotate Elements="@icon.Elements" StrokeWidth="strokeWidth" Color="@color" />
+                            </span>
+                        </label>
+                    </span>
+                }
 
-
-<div class="iconlist-container">
-
-    <div class="form-selectgroup">
-
-        <Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize Items="@filteredIcons" Context="icon">
-            <span title="@icon.Name">
-                <Checkbox Value="@IsSelected(icon)" ValueChanged="@(() => SelectIcon(icon))">
-                    <Icon Size="@size" Elements="@icon.Elements" StrokeWidth="strokeWidth" Color="@color" />
-                </Checkbox>
-            </span>
-        </Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize>
-        
+            </Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize>
+        </ResizeObserver>
     </div>
 </div>

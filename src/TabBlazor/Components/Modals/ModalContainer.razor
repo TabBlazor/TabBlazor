@@ -4,7 +4,9 @@
 
 @foreach (var modalModel in ModalService.Modals.Reverse())
 {
-    <TabBlazor.Components.Modals.ModalView @key="modalModel"  ModalModel="modalModel" />
+    <ModalView @key="modalModel" Options=@modalModel.Options Title="@modalModel.Title" OnClosed="@(() => ModalClosed(modalModel))">
+        @modalModel.ModalContents
+    </ModalView>
 }
 
 @code {
@@ -16,5 +18,10 @@
     public void Dispose()
     {
         ModalService.OnChanged -= StateHasChanged;
+    }
+
+    public void ModalClosed(ModalModel modalModel)
+    {
+        ModalService.Close();
     }
 }

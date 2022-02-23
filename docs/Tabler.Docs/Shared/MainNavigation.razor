@@ -1,4 +1,4 @@
-﻿<Navbar Darkmode=appService.Settings.NavbarDark Direction=appService.Settings.NavbarDirection>
+﻿<Navbar Background=appService.Settings.NavbarBackground Direction=appService.Settings.NavbarDirection>
 
 
     <a href="https://github.com/joadan/Blazor-Tabler" class="navbar-brand navbar-brand-autodark">
@@ -39,7 +39,6 @@
                 <NavbarMenuItem Text="Colors" Href="docs/utilities/colors" />
                 <NavbarMenuItem Text="Tabler Service" Href="docs/utilities/tabservice" />
             </SubMenu>
-
         </NavbarMenuItem>
 
         <NavbarMenuItem Text="Components">
@@ -61,16 +60,28 @@
                             <SubMenu>
                                 <NavbarMenuItem Text="Checkboxes" Href="docs/forms/checkboxes" />
                                 <NavbarMenuItem Text="Datepickers" Href="docs/forms/datepickers" />
-                                <NavbarMenuItem Text="Select" Href="docs/forms/selects" />
                                 <NavbarMenuItem Text="ItemSelect" Href="docs/forms/item-selects" />
+                                <NavbarMenuItem Text="Select" Href="docs/forms/selects" />
+                                <NavbarMenuItem Text="Typeahead" Href="docs/forms/typeaheads" />
+
+
                             </SubMenu>
                         </NavbarMenuItem>
+
+                          <NavbarMenuItem Text="Helpers">
+                            <SubMenu>
+                                 <NavbarMenuItem Text="Click Outside" Href="docs/helpers/click-outside" />
+                                <NavbarMenuItem Text="Resize Observer" Href="docs/helpers/resize-observer" />
+                            </SubMenu>
+                        </NavbarMenuItem>
+
                         <NavbarMenuItem Text="Icon" Href="docs/icons" />
                     </div>
 
                     <div class="dropdown-menu-column">
                         <NavbarMenuItem Text="Modal" Href="docs/modals" />
                         <NavbarMenuItem Text="Progress" Href="docs/progress" />
+                        <NavbarMenuItem Text="Range slider" Href="docs/range-sliders" />
                         <NavbarMenuItem Text="Switch Content" Href="docs/switch-content" />
                         <NavbarMenuItem Text="Table" Href="docs/tables" />
                         <NavbarMenuItem Text="Tab" Href="docs/tabs" />
@@ -90,7 +101,6 @@
             </MenuItemIcon>
             <SubMenu>
                 <NavbarMenuItem Text="Charts" Href="docs/plugins/charts" />
-                <NavbarMenuItem Text="Typeahead" Href="docs/plugins/typeaheads" />
             </SubMenu>
         </NavbarMenuItem>
 

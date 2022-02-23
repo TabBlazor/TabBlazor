@@ -3,19 +3,26 @@ using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace TabBlazor
 {
     public partial class ItemSelect<TItem, TValue> : TablerBaseComponent
     {
+        /// <summary>
+        /// List of items 
+        /// </summary>
         [Parameter] public IEnumerable<TItem> Items { get; set; }
+
+        /// <summary>
+        /// Text to be displayed when no item is selected
+        /// </summary>
         [Parameter] public string NoSelectedText { get; set; } = "*Select*";
+
         [Parameter] public string NoItemsText { get; set; }
         [Parameter] public bool ShowCheckBoxes { get; set; }
         [Parameter] public bool MultiSelect { get; set; }
+        [Parameter] public bool Virtualize { get; set; }
 
         [Parameter] public List<TValue> SelectedValues { get; set; }
         [Parameter] public EventCallback<List<TValue>> SelectedValuesChanged { get; set; }
@@ -24,6 +31,7 @@ namespace TabBlazor
         [Parameter] public EventCallback<TValue> SelectedValueChanged { get; set; }
 
         [Parameter] public EventCallback Changed { get; set; }
+        [Parameter] public EventCallback<bool> OnExpanded { get; set; }
 
         [Parameter] public Func<TItem, string> SelectedTextExpression { get; set; }
         [Parameter] public Func<TItem, string> IdExpression { get; set; }
@@ -32,6 +40,7 @@ namespace TabBlazor
         [Parameter] public RenderFragment<TItem> ListTemplate { get; set; }
         [Parameter] public RenderFragment<List<TItem>> SelectedTemplate { get; set; }
         [Parameter] public RenderFragment FooterTemplate { get; set; }
+        [Parameter] public RenderFragment HeaderTemplate { get; set; }
         [Parameter] public bool Clearable { get; set; }
         [Parameter] public bool Disabled { get; set; }
         [Parameter] public bool RemoveSelectedFromList { get; set; }
@@ -39,6 +48,7 @@ namespace TabBlazor
         [Parameter] public Func<string, IEnumerable<TItem>> SearchMethod { get; set; }
         [Parameter] public string SearchPlaceholderText { get; set; }
         [Parameter] public string MaxListHeight { get; set; }
+        [Parameter] public string ListWidth { get; set; }
         [Parameter] public string Label { get; set; }
 
         private bool showSearch => SearchMethod != null;
@@ -87,6 +97,29 @@ namespace TabBlazor
             }
         }
 
+        public bool IsExpanded => dropdown?.IsExpanded == true;
+
+        private void DropdownExpanded(bool expanded)
+        {
+             OnExpanded.InvokeAsync(expanded);
+        }
+
+        private string GetListStyle()
+        {
+            var style = "";
+
+            if (!string.IsNullOrWhiteSpace(MaxListHeight))
+            {
+                style = $"max-height:{MaxListHeight}; overflow-y:overlay;";
+            }
+
+            if (!string.IsNullOrWhiteSpace(ListWidth))
+            {
+                style += $"width:{ListWidth}; overflow-x:overlay;border:none";
+            }
+
+            return style;
+        }
 
         private void AddSelectItemFromValue(TValue value)
         {
@@ -119,7 +152,6 @@ namespace TabBlazor
 
         private async Task OnKey(KeyboardEventArgs e)
         {
-
             if (!dropdown.IsExpanded && (e.Key == "Enter" || e.Key == " "))
             {
                 highlighted = default;

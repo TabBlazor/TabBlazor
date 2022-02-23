@@ -3,19 +3,27 @@
 <ul class="@(isRoot ? "tree": "")">
     @foreach (var item in Items)
     {
-        var isExpanded = Root.AllwaysExpanded || Root.IsExpanded(item);
+        var isExpanded = Root.AlwaysExpanded || Root.IsExpanded(item);
 
         <li>
             <div class="d-flex align-items-center mb-2 tree-container" style="padding-left:@(Level*20)px">
 
                 @if (HasChildren(item))
                 {
-                    <Icon Elements="@(isExpanded ? InternalIcons.Circle_minus : InternalIcons.Circle_plus)" OnClick="@(() => Root.ToogleExpanded(item))" class="icon me-2 tree-node-expand-icon" />
+                    <Icon Elements="@(isExpanded ? InternalIcons.Circle_minus : InternalIcons.Circle_plus)" OnClick="@(() => Root.ToggleExpanded(item))" class="icon me-2" />
                 }
                 else
                 {
                     <Icon class="icon me-2" />
                 }
+
+                @if (Root.CheckboxMode != CheckboxMode.None)
+                {
+                    <span class="me-2">
+                        <CheckboxTriState Value=@Root.IsChecked(item) ValueChanged="(() => Root.ToggleChecked(item))" />
+                    </span>
+                }
+
 
                 <div @onclick="@(() => Root.ToogleSelected(item))" class="cursor-pointer @(Root.IsSelected(item) ? "tree-node-selected": "") @(Root.AlignTreeNodes ? "tree-node-aligned" : "")">
                     @Template(item)
@@ -26,9 +34,9 @@
             @if (HasChildren(item) && isExpanded)
             {
                 <TabBlazor.Components.TreeViews.TreeViewNodes Items="ChildSelector(item)"
-                                                              Template="Template"
-                                                              ChildSelector="ChildSelector"
-                                                              Level="@(Level+1)" />
+                                                      Template="Template"
+                                                      ChildSelector="ChildSelector"
+                                                      Level="@(Level+1)" />
             }
         </li>
 

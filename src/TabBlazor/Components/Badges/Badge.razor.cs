@@ -10,18 +10,26 @@ namespace TabBlazor
         Pill
     }
 
+    public enum BadgeSize
+    {
+        Default,
+        Large
+    }
+
     public partial class Badge : TablerBaseComponent
     {
         [Parameter] public BadgeShape Shape { get; set; }
-
+        [Parameter] public BadgeSize Size { get; set; } = BadgeSize.Default;
         protected string HtmlTag => "span";
 
         protected override string ClassNames => ClassBuilder
-              .Add("badge")
-              .Add(BackgroundColor.GetColorClass("bg", ColorType.Default))
-              .AddCompare("badge-pill", Shape, BadgeShape.Pill)
+            .Add("badge")
+             .Add("badge-default")
+            .AddCompare("badge-md", Size, BadgeSize.Default)
+            .Add(BackgroundColor.GetColorClass("bg", ColorType.Default))
+            .AddCompare("badge-pill", Shape, BadgeShape.Pill)
             .AddIf("cursor-pointer", OnClick.HasDelegate)
-              .ToString();
+            .ToString();
     }
 
 

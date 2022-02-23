@@ -7,7 +7,7 @@
 
     <SelectedTemplate>
         <Button @onkeydown:preventDefault>
-           
+
             @if (context == null || !context.Any())
             {
                 <span>Customers</span>
@@ -20,9 +20,16 @@
                     <Icon class="ms-2 icon" Elements="@DemoIcons.Trash" />
                 </span>
             }
-          
+
         </Button>
     </SelectedTemplate>
+
+    <HeaderTemplate>
+  
+        <div class="d-flex justify-content-center">
+            <h3>Header <Badge BackgroundColor=TablerColor.Green>New</Badge></h3>
+        </div>
+    </HeaderTemplate>
 
     <FooterTemplate>
         <div class="dropdown-divider"></div>
@@ -32,7 +39,6 @@
                 <Icon class="icon me-1" Elements="@DemoIcons.Plus" />New customer
             </Button>
         </div>
-
     </FooterTemplate>
 
 </ItemSelect>

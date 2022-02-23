@@ -24,6 +24,12 @@
         <CardBody>
             <div class="the-grid">
                 <TablerForm Model="@CurrentEditItem" OnValidSubmit="@OnValidSubmit">
+
+                    @if (CurrentEditItem != null && EditMode == TableEditMode.Popup)
+                    {
+                        <PopupEdit Table=this />
+                    }
+
                     @if (VisibleColumns.Any())
                     {
                         <div class="div-table-wrapper @GetTableCssClass()">
@@ -63,7 +69,7 @@
                                                 {
                                                     foreach (var item in group)
                                                     {
-                                                        @if (IsEditingItem(item))
+                                                        @if (IsEditingItem(item) && EditMode == TableEditMode.Inline)
                                                         {
                                                             <EditRow InlineEditTable="this" Item="item"></EditRow>
                                                         }

@@ -11,6 +11,8 @@ namespace TabBlazor
         [Parameter] public bool CloseOnClick { get; set; } = true;
         [Parameter] public DropdownDirection Direction { get; set; }
         [Parameter] public DropdownDirection SubMenusDirection { get; set; } = DropdownDirection.End;
+        [Parameter] public EventCallback<bool> OnExpanded { get; set;}
+
 
         public bool IsExpanded => isExpanded;
 
@@ -30,20 +32,26 @@ namespace TabBlazor
             .Add(TextColor.GetColorClass("text"))
             .ToString();
 
+        private void SetExpanded(bool expanded)
+        {
+            isExpanded = expanded;
+            OnExpanded.InvokeAsync(isExpanded);
+        }
+
         protected void OnClickOutside()
         {
             if (isExpanded)
             {
-                isExpanded = false;
+                SetExpanded(false);
             }
-
         }
 
         private string GetSyle()
         {
+           
             if (isContextMenu)
             {
-                return $"position:fixed;top:{top}px;left:{left}px";
+               return $"position:fixed;top:{top}px;left:{left}px";
             }
 
             return "";
@@ -57,12 +65,12 @@ namespace TabBlazor
 
         public void Toogle()
         {
-            isExpanded = !isExpanded;
+            SetExpanded(!isExpanded);
         }
 
         public void Open()
         {
-            isExpanded = true;
+            SetExpanded(true);
         }
 
         public void OpenAsContextMenu(MouseEventArgs e)
@@ -70,15 +78,15 @@ namespace TabBlazor
             isContextMenu = true;
             top = e.ClientY;
             left = e.ClientX;
-            isExpanded = true;
-            StateHasChanged();
+            SetExpanded(true);
+            InvokeAsync(StateHasChanged);
 
         }
 
         public void Close()
         {
-            isExpanded = false;
-            StateHasChanged();
+            SetExpanded(false);
+            InvokeAsync(StateHasChanged);
         }
     }
 }

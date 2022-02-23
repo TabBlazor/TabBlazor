@@ -1,11 +1,10 @@
 ﻿<div class="row">
     <div class="col-auto">
         <ApexChart TItem="Order"
-                   ChartType="ChartType.Pie"
-                   Options="GetOptions()"
-                  >
+                   Options="GetOptions()">
 
-            <ApexSeries TItem="Order"
+            <ApexPointSeries TItem="Order"
+            SeriesType="SeriesType.Pie"
                         Items="SampleData.GetOrders()"
                         Name="Net Value"
                         XValue="@(e => e.OrderType.ToString())"

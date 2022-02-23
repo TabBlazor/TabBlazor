@@ -32,6 +32,26 @@
     text-decoration: underline;
 }
 
+//Badge
+.badge.badge-default {
+    text-transform: inherit;
+}
+
+.badge.badge-md {
+    font-size: 75%;
+    font-weight: 400;
+}
+
+.badge-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: -0.25rem !important;
+    margin-right: -0.25rem;
+}
+
+.badge-list > * {
+    margin: 0 0.4rem 0.3rem 0 !important;
+}
 
 //Modal
 .modal-max {
@@ -43,6 +63,12 @@
     /*  background-color : var(--tblr-light);*/
     background-color: lightgray;
 }
+
+//Navbar
+.nav-item, dropdown-menu {
+    z-index: 1029;
+}
+
 
 //Treeview
 .tree, .tree ul {

@@ -55,6 +55,11 @@ namespace TabBlazor
 
         public override string ToString()
         {
+            if (ClassNames == null || !ClassNames.Any())
+            {
+                return null;
+            }
+
             return string.Join(" ", ClassNames
                 .Distinct()
                 .Where(c => !string.IsNullOrWhiteSpace(c)));

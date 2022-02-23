@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace TabBlazor.Services
@@ -17,11 +13,18 @@ namespace TabBlazor.Services
             this.jsRuntime = jSRuntime;
         }
 
+        public async Task SaveAsFile(string fileName, string href)
+        {
+            await jsRuntime.InvokeVoidAsync("tabBlazor.saveAsFile", fileName, href);
+        }
+
+   
+
         public async Task PreventDefaultKey(ElementReference element, string eventName, string[] keys)
         {
             await jsRuntime.InvokeVoidAsync("tabBlazor.preventDefaultKey", element, eventName, keys);
         }
-       
+
         public async Task FocusFirstInTableRow(ElementReference tableRow)
         {
             await jsRuntime.InvokeVoidAsync("tabBlazor.focusFirstInTableRow", tableRow, "");
@@ -45,6 +48,11 @@ namespace TabBlazor.Services
         public async Task CopyToClipboard(string text)
         {
             await jsRuntime.InvokeVoidAsync("tabBlazor.copyToClipboard", text);
+        }
+
+        public async Task<string> ReadFromClipboard()
+        {
+            return await jsRuntime.InvokeAsync<string>("tabBlazor.readFromClipboard");
         }
 
         public async Task DisableDraggable(ElementReference container, ElementReference element)

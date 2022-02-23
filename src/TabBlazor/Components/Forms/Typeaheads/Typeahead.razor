@@ -1,0 +1,63 @@
+﻿@inherits TablerBaseComponent
+@namespace TabBlazor
+
+@typeparam TItem
+@typeparam TValue
+
+<Dropdown @ref=dropdown CloseOnClick="false">
+    <ChildContent>
+        <div class="input-group input-group-flat" @onclick:stopPropagation>
+
+            @if (SelectedValue != null && !isInput)
+            {
+                <span class="form-control" tabindex=0 @onfocus="@(() => SetInput(true))"> @SelectedTextExpression(SelectedValue)</span>
+                <span class="input-group-text" tabindex=0>
+                    <Icon Elements="@InternalIcons.X" class="icon" OnClick="ClearSelected" />
+                </span>
+            }
+            else
+            {
+                <input class="form-control" @ref="input" @bind="SearchText" type="text" @bind:event="oninput" placeholder="@SearchPlaceholderText"  @onblur="@(() => SetInput(false))">
+                <span class="input-group-text">
+
+                    @if (!string.IsNullOrWhiteSpace(searchText))
+                    {
+                        <Icon Elements="@InternalIcons.X" class="icon" OnClick="ClearSearch" />
+                    }
+                    else
+                    {
+                        <Icon Elements="@InternalIcons.Search" class="icon cursor-auto" />
+                    }
+                </span>
+            }
+
+        </div>
+    </ChildContent>
+
+    <DropdownTemplate>
+        <DropdownMenu style=@GetListStyle()>
+
+            @if (isSearching)
+            {
+                <div class="m-2 spinner-border" role="status" />
+            }
+            else if (listItems == null || !listItems.Any())
+            {
+                <div class="m-2">
+                    No results found
+                </div>
+            }
+            else
+            {
+                @foreach (var listItem in listItems)
+                {
+                    <DropdownItem Active="@IsSelected(listItem)" OnClick="@(() => SelectItem(listItem))">@ListTemplate(listItem)</DropdownItem>
+                }
+            }
+
+        </DropdownMenu>
+    </DropdownTemplate>
+
+</Dropdown>
+
+

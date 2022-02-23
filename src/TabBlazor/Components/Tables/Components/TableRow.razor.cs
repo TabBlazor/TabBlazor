@@ -62,6 +62,7 @@ namespace TabBlazor.Components.Tables
         public string GetRowCssClass(TableItem item)
         {
             return new ClassBuilder()
+               .Add("data-row")
                .AddIf("table-active", IsSelected(item) && (Table.OnItemSelected.HasDelegate || Table.SelectedItemsChanged.HasDelegate))
                .ToString();
         }

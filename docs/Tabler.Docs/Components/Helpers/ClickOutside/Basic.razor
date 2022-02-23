@@ -1,0 +1,26 @@
+﻿
+<ClickOutside OnClickOutside="OutsideClicked">
+    <div class="p-1 border">
+        <h3>Here is some content</h3>
+        Try to click outside
+
+    </div>
+</ClickOutside>
+
+
+@code {
+    [Inject] private ToastService toastService { get; set; }
+    private ContentRect containerSize;
+
+    private void ElementResized(ResizeObserverEntry resizeObserverEntry)
+    {
+        containerSize = resizeObserverEntry.ContentRect;
+    }
+
+    private async Task OutsideClicked()
+    {
+        await toastService.RemoveAllAsync();
+        await toastService.AddToastAsync(new ToastModel { Title = @DateTime.Now.ToString("T"), Message = "You clicked outside container..." });
+    }
+
+}

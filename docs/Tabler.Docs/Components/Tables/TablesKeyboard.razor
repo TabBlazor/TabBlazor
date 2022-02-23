@@ -16,11 +16,11 @@
 </Alert>
 
 
-<Table Item="Order" Items="orders" PageSize="10"  ShowCheckboxes MultiSelect KeyboardNavigation OnItemDeleted="ItemDeleted" >
+<Table Item="Order" Items="orders" PageSize="int.MaxValue" ShowCheckboxes MultiSelect KeyboardNavigation OnItemDeleted="ItemDeleted">
     <HeaderTemplate>
         <strong>Orders</strong>
     </HeaderTemplate>
- 
+
     <ChildContent>
         <Column Item="Order" Property="e=>e.Customer.CustomerName" Title="Customer" Sortable Searchable Groupable>
             <Template>
@@ -35,7 +35,7 @@
         </Column>
         <Column Item="Order" Property="e=>e.Country" Title="Country" Sortable Searchable Groupable>
             <Template>
-                <input type="text" class="form-control" @bind-value="@context.Country"  @bind-value:event="oninput"/>
+                <input type="text" class="form-control" @bind-value="@context.Country" @bind-value:event="oninput" />
             </Template>
         </Column>
 
@@ -50,12 +50,12 @@
 </Table>
 
 @code {
-    private  List<Order> orders = SampleData.GetOrders();
+    private List<Order> orders = SampleData.GetOrders();
 
 
     private void ItemDeleted(Order order)
-        {
+    {
 
-        }
+    }
 
 }

@@ -9,8 +9,8 @@
 }
 
 <Dimmer Active="Disabled" ShowSpinner="false">
-    <div @onkeydown="OnKey" @onkeydown:stopPropagation="dropdown?.IsExpanded==true" >
-        <Dropdown @ref="dropdown" CloseOnClick="false">
+    <div @onkeydown="OnKey" @onkeydown:stopPropagation="dropdown?.IsExpanded==true">
+        <Dropdown @ref="dropdown" CloseOnClick="false" OnExpanded="DropdownExpanded">
             <ChildContent>
                 <div @onkeydown:preventDefault="dropdown?.IsExpanded==true">
                     @if (SelectedTemplate != null)
@@ -31,10 +31,12 @@
                                 }
                                 else
                                 {
-                                    @foreach (var selectedItem in selectedItems)
-                                    {
-                                        <Badge class="me-2" BackgroundColor="TablerColor.Primary">@GetSelectedText(selectedItem) <span @onclick:stopPropagation @onclick="@(e=> RemoveSelected(selectedItem))"><Icon class="ms-2" Size="16" Elements="@InternalIcons.X"></Icon></span></Badge>
-                                    }
+                                    <div class="badge-list">
+                                        @foreach (var selectedItem in selectedItems)
+                                        {
+                                            <Badge BackgroundColor="TablerColor.Primary">@GetSelectedText(selectedItem) <span @onclick:stopPropagation @onclick="@(e=> RemoveSelected(selectedItem))"><Icon class="ms-2" Size="16" Elements="@InternalIcons.X"></Icon></span></Badge>
+                                        }
+                                    </div>
                                 }
                             </div>
 
@@ -50,7 +52,7 @@
             </ChildContent>
 
             <DropdownTemplate>
-                <DropdownMenu>
+                <DropdownMenu style="@GetListStyle()">
                     @if (showSearch)
                     {
                         <div class="m-2">
@@ -71,39 +73,46 @@
                         </div>
                     }
 
+                    @if (HeaderTemplate != null)
+                    {
+                        <div class="cursor-auto">
+                            @HeaderTemplate
+                        </div>
+                    }
+
+
                     @if (Items != null && Items.Any())
                     {
+                        <VirtualizeOptional Items="FilteredList()" Virtualize=Virtualize>
+                            <DropdownItem class="@(IsHighlighted(context) ? "highlight":"")" Active="IsSelected(context)" Disabled="(!CanSelect() && !IsSelected(context)) || IsDisabled(context)" OnClick="(e=> ToogleSelected(context))" @key="context">
 
-                        <div style="@(string.IsNullOrWhiteSpace(MaxListHeight) ? "": $"max-height:{MaxListHeight};overflow-y:auto")">
-                            @foreach (var item in FilteredList())
+                                @if (ShowCheckBoxes)
                             {
-                                <DropdownItem class="@(IsHighlighted(item) ? "highlight":"")" Active="IsSelected(item)" Disabled="(!CanSelect() && !IsSelected(item)) || IsDisabled(item)" OnClick="(e=> ToogleSelected(item))" @key="item">
-
-                                    @if (ShowCheckBoxes)
-                                    {
-                                        <input class="form-check-input m-0 me-2" checked="@IsSelected(item)" type="checkbox">
-                                    }
-                                    @if (ListTemplate == null)
-                                    {
-                                        @item.ToString()
-                                    }
-                                    else
-                                    {
-                                        @ListTemplate(item)
-                                    }
-
-                                </DropdownItem>
+                                <input class="form-check-input m-0 me-2" checked="@IsSelected(context)" type="checkbox">
                             }
-                        </div>
+                            @if (ListTemplate == null)
+                            {
+                                @context.ToString()
+                            }
+                            else
+                            {
+                                @ListTemplate(context)
+                            }
+
+                        </DropdownItem>
+                    </VirtualizeOptional>
                     }
                     else
                     {
                         <span>@NoItemsText</span>
                     }
-                    <div class="cursor-auto">
-                        @FooterTemplate
-                    </div>
 
+                    @if (FooterTemplate != null)
+                    {
+                        <div class="cursor-auto">
+                            @FooterTemplate
+                        </div>
+                    }
 
                 </DropdownMenu>
             </DropdownTemplate>

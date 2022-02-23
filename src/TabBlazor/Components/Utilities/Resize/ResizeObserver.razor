@@ -1,0 +1,11 @@
+﻿@namespace TabBlazor
+@inherits TablerBaseComponent
+
+
+<HtmlElement Tag="@Tag"
+             class="@ClassNames"
+             @onclick="OnClick"
+             @attributes="@UnmatchedParameters" @bind-ElementRef="elementRef">
+    @ChildContent
+</HtmlElement>
+

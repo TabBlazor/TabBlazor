@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using TabBlazor;
 using TabBlazor.Services;
 
 namespace Tabler.Docs.Components.Icons
@@ -17,9 +18,11 @@ namespace Tabler.Docs.Components.Icons
         private List<Icon> filteredIcons = new List<Icon>();
         private List<Icon> selectedIcons = new List<Icon>();
         private int size = 24;
+        private int rotate = 0;
         private double strokeWidth = 2;
         private string searchText;
         private string color;
+        private ContentRect iconContainerRect;
         protected override void OnInitialized()
         {
             LoadIcons();
@@ -37,6 +40,11 @@ namespace Tabler.Docs.Components.Icons
             }
         }
 
+        private void IconContainerResized(ResizeObserverEntry resizeObserverEntry)
+        {
+            iconContainerRect = resizeObserverEntry.ContentRect;
+        }
+
         private void SearchIcons(ChangeEventArgs e)
         {
             searchText = e.Value.ToString();
@@ -51,6 +59,14 @@ namespace Tabler.Docs.Components.Icons
         }
 
         private bool IsSelected(Icon icon) => selectedIcons.Contains(icon);
+
+        private int GetRowCount()
+        {
+            var iconSize = size + 30;
+            var width = iconContainerRect?.Width ?? 100;
+
+            return (int)Math.Floor((width / iconSize));
+        }
 
         private void SelectIcon(Icon icon)
         {
@@ -91,7 +107,7 @@ namespace Tabler.Docs.Components.Icons
 
         public string GetStaticProperty()
         {
-            return $"public static string {Name} {"{"} get => @\"{Elements}\"; {"}"} ";
+            return $"public static string {Name} => @\"{Elements}\";";
         }
     }
 

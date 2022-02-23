@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
@@ -56,6 +57,21 @@ namespace TabBlazor.Components.Tables
         Task Update(bool resetPage = false);
         TableItem CurrentEditItem { get; }
 
+    }
+
+    public interface IPopupEditTable<TItem>
+    {
+        List<IColumn<TItem>> Columns { get; }
+        List<IColumn<TItem>> VisibleColumns { get; }
+
+        bool ShowCheckboxes { get; }
+        TItem CurrentEditItem { get; }
+        Task OnValidSubmit(EditContext editContext);
+        bool IsAddInProgress { get; }
+        Task CloseEdit();
+        Task CancelEdit();
+
+       
     }
 
     public interface IInlineEditTable<TableItem>

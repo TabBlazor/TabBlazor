@@ -1,7 +1,7 @@
 ﻿@typeparam TableItem
 @inherits TableRowBase<TableItem>
 
-<tr class="@GetRowCssClass(Item) data-row">
+<tr class="@GetRowCssClass(Item)">
     @if (Table.ShowCheckboxes)
     {
         <td style="width:1%" @onkeydown="@(Table.KeyboardNavigation ? (e) => OnKeyDown(e, tableCells[0]): null)" @ref="tableCells[0]">

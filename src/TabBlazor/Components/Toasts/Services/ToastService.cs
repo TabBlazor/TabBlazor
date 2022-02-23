@@ -39,6 +39,12 @@ namespace TabBlazor.Services
             }
         }
 
+        public async Task RemoveAllAsync()
+        {
+            toasts.Clear();
+            await Changed();
+        }
+
         public async Task RemoveToastAsync(ToastModel toast)
         {
             try

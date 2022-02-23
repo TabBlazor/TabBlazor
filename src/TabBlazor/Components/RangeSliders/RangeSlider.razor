@@ -1,0 +1,51 @@
+﻿@namespace TabBlazor
+@inherits ComponentBase
+@typeparam TValue
+
+<div class="d-flex flex-row" @attributes="UnmatchedParameters">
+    @if (ShowLabels)
+    {
+        <span class="text-nowrap">
+            @GetMinLabel()
+        </span>
+    }
+
+    <div class="@(ShowLabels ? "mx-2" : "") w-100">
+        @if (SingleDragPoint)
+        {
+            <div class="single-drag-slider">
+                @if (Range != null)
+                {
+                    <input type="range" min="@minIndex" max="@maxIndex" value="@currentIndex" step="@GetSliderAttribute(Step)" @oninput="HandleRangeOnChange" />
+                }
+                else
+                {
+                    <input type="range" min="@GetSliderAttribute(Min)" max="@GetSliderAttribute(Max)" step="@GetSliderAttribute(Step)" value="@GetSliderAttributeGeneric(currentValue)" @oninput="HandleValueOnChange" />
+                }
+            </div>
+        }
+        else
+        {
+            <div class="multi-drag-slider">
+                @foreach (var (sliderVal, i) in currentValues.Select((value, i) => ( value, i )))
+                {
+                    @if (Range != null)
+                    {
+                        <input type="range" min="@minIndex" max="@maxIndex" value="@(currentIndices[i])" step="@GetSliderAttribute(Step)" @oninput="e => HandleRangeOnChangeMulti(e, i)" />
+                    }
+                    else
+                    {
+                        <input type="range" min="@GetSliderAttribute(Min)" max="@GetSliderAttribute(Max)" step="@GetSliderAttribute(Step)" value="@GetSliderAttributeGeneric(sliderVal)" @oninput="e => HandleValueOnChangeMulti(e, i)" />
+                    }
+                }
+            </div>
+        }
+    </div>
+
+    @if (ShowLabels)
+    {
+        <span class="text-nowrap">
+            @GetMaxLabel()
+        </span>
+    }
+</div>

@@ -1,28 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tabler.Docs.Data
 {
     public static class SampleData
     {
 
-
-        public static List<Order> GetRandomOrders()
+        public static List<Order> GeneratedOrders(int count)
         {
             var rnd = new Random();
             var orders = new List<Order>();
             var customer = new Customer("Ani Vent");
 
-            for (int i = 0; i < rnd.Next(5, 20); i++)
+            for (int i = 1; i <= count; i++)
             {
                 orders.Add(new Order { Customer = customer, Country = "Sweden", OrderDate = DateTimeOffset.Now.AddDays(-12), GrossValue = rnd.Next(2000, 50000), DiscountPrecentage = rnd.Next(10, 50), OrderType = (OrderType)rnd.Next(0, 4) });
             }
 
             return orders;
         }
+
+        //public static List<Order> GetRandomOrders()
+        //{
+        //    var rnd = new Random();
+        //    var orders = new List<Order>();
+        //    var customer = new Customer("Ani Vent");
+
+        //    for (int i = 0; i < rnd.Next(5, 20); i++)
+        //    {
+        //        orders.Add(new Order { Customer = customer, Country = "Sweden", OrderDate = DateTimeOffset.Now.AddDays(-12), GrossValue = rnd.Next(2000, 50000), DiscountPrecentage = rnd.Next(10, 50), OrderType = (OrderType)rnd.Next(0, 4) });
+        //    }
+
+        //    return orders;
+        //}
 
         public static List<Customer> GetCustomers()
         {
