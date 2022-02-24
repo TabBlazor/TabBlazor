@@ -31,7 +31,6 @@ namespace IconGenerator.MaterialDesign
                 {
                     Name = iconMeta.Name,
                     Author = iconMeta.Author,
-                    Provider = IconProvider.MaterialDesignIcons,
                     Tags = iconMeta.Tags
                 };
 

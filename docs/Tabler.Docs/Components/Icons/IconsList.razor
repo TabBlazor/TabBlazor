@@ -7,13 +7,7 @@
             <input class="form-control" type="number" min="1" @bind-value="@size" />
         </div>
     </div>
-   @* <div class="col-sm-12 col-md-6 col-lg-2">
-        <div class="form-group">
-            <label>Stroke width</label>
-            <input class="form-control" type="number" min="0.1" step="0.1" @bind-value="@strokeWidth" />
-        </div>
-    </div>*@
-
+   
     <div class="col-sm-12 col-md-6 col-lg-2">
         <div class="form-group">
             <label>Rotate</label>
@@ -27,20 +21,33 @@
             <input class="form-control form-control-color" type="color" @bind="@color" @bind:event="oninput" />
         </div>
     </div>
-   @*   <div class="col-sm-12 col-md-6 col-lg-2">
-        <div class="form-group">
-            <Checkbox Switch Label="Filled" @bind-Value="@filled"></Checkbox>
-        </div>
-    </div>*@
+
+
     <div class="col-sm-12 col-md-6 col-lg-2">
         <div class="form-group">
             <label>Search</label>
-            <input class="form-control" type="text" value="@searchText" @oninput="SearchIcons" />
+            <input class="form-control" type="text" value="@searchText" @oninput="Search" />
         </div>
     </div>
 </div>
 
-<div class="row mb-3">
+<Row>
+    <div class="form-label">Providers</div>
+    <div>
+        @foreach (var provider in supportedProviders)
+        {
+            <label class="form-check form-check-inline">
+                <Checkbox Switch Label="@provider.ToString()" Value="@(filterProviders.Contains(provider))" ValueChanged="@(_ => ToggleFilterProvider(provider))" />
+            </label>
+        }
+
+    </div>
+</Row>
+
+
+
+
+<div class="row mt-3 mb-3">
     <div class="col-auto">
         @if (selectedIcons.Any())
         {
@@ -55,17 +62,23 @@
     </div>
 </div>
 
+<Row class="mb-1">
+    <RowCol Auto class="text-muted">
+        Showing @filteredIcons.Count (@icons.Count)
+    </RowCol>
+</Row>
+
 <div class="row mb-3">
     <div style="height:500px;overflow-y:auto">
         <ResizeObserver OnWidthResized=IconContainerResized>
             <Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize Items="@filteredIcons.Batch(GetRowCount()).ToList()" Context="icons">
                 @foreach (var icon in icons)
                 {
-                    <span title="@($"{icon.Name} - {icon.IconType.ClassName}")">
+                    <span title="@($"{icon.Name} - {icon.IconType.Provider}")">
                         <label class="me-1 mb-1">
                             <input type="checkbox" class="form-selectgroup-input" checked="@IsSelected(icon)" @onchange="@((e) => SelectIcon(icon))">
                             <span class="form-selectgroup-label">
-                                <Icon Size="@size" Rotate=@rotate  IconType=icon.IconType Color="@color" />
+                                <Icon Size="@size" Rotate=@rotate IconType=icon.IconType Color="@color" />
                             </span>
                         </label>
                     </span>

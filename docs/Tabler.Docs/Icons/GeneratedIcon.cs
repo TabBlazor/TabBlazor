@@ -10,13 +10,8 @@ namespace Tabler.Docs.Icons
         public string Name { get; set; }
         public string Author { get; set; }
         public List<string> Tags { get; set; }
-        //public string Category { get; set; }
         public IIcon IconType { get; set; }
-
-
-        public IconProvider Provider { get; set; }
         public string DotNetProperty => $"public static IIcon {GetSafeName()} => new {IconType.ClassName}(@\"{IconType?.Elements}\");";
-    
 
         public string GetSafeName()
         {
@@ -49,10 +44,6 @@ namespace Tabler.Docs.Icons
 
     }
 
-    public enum IconProvider
-    {
-        TablerIcons = 0,
-        MaterialDesignIcons = 1
-    }
+  
 
 }

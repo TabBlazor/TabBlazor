@@ -8,13 +8,13 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using TabBlazor;
 using Tabler.Docs.Icons;
 
 namespace IconGenerator.Tabler
 {
     public static class TablerGenerator
     {
-
         public static async Task<IEnumerable<GeneratedIcon>> GenerateIcons()
         {
             var icons = new List<GeneratedIcon>();
@@ -35,14 +35,12 @@ namespace IconGenerator.Tabler
 
             var iconsMeta = JsonSerializer.Deserialize<Dictionary<string, TablerIcon>>(metajson);
 
-
             foreach (var iconMeta in iconsMeta)
             {
                 var icon = new GeneratedIcon
                 {
                     Name = iconMeta.Key,
                     Author = "Paweł Kuna",
-                    Provider = IconProvider.TablerIcons,
                     Tags = iconMeta.Value.Tags
                 };
 
@@ -54,14 +52,11 @@ namespace IconGenerator.Tabler
                     }
                 }
 
-                //tabler-2fa
                 var elements = iconElements.FirstOrDefault(x => x.Attribute("id")?.Value == $"tabler-{icon.Name}")?.Elements();
-
                 if (elements == null || !elements.Any())
                 {
                     throw new SystemException($"Unable to find icon {icon.Name} in sprite");
                 }
-
                 icon.IconType = new TabBlazor.TablerIcon(Utilities.ExtractIconElements(elements));
                 icons.Add(icon);
                 Console.WriteLine($"Icon '{icon.Name}' added");

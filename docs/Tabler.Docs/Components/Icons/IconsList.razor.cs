@@ -19,23 +19,42 @@ namespace Tabler.Docs.Components.Icons
         private List<ListIcon> selectedIcons = new List<ListIcon>();
         private int size = 24;
         private int rotate = 0;
-        private double strokeWidth = 2;
-        private bool filled = false;
         private string searchText;
         private string color;
         private ContentRect iconContainerRect;
+
+        private List<IconProvider> filterProviders = new List<IconProvider>();
+        private List<IconProvider> supportedProviders = new List<IconProvider>();
         protected override void OnInitialized()
         {
             LoadIcons(typeof(TablerIcons));
             LoadIcons(typeof(MDIcons));
 
-            filteredIcons = icons.OrderBy(e=>e.Name).ToList();
+            supportedProviders = EnumHelper.GetList<IconProvider>().Where(e => e != IconProvider.Other).ToList();
+            filterProviders = supportedProviders.ToList();
+
+            icons = icons.OrderBy(e => e.Name).ToList();
+            filteredIcons = icons;
+
+        }
+
+        private void ToggleFilterProvider(IconProvider provider)
+        {
+            if (filterProviders.Contains(provider))
+            {
+                filterProviders.Remove(provider);
+            }
+            else
+            {
+                filterProviders.Add(provider);
+            }
+            SearchIcons();
         }
 
         private void LoadIcons(Type iconsType)
         {
             var properties = iconsType.GetProperties(BindingFlags.Public | BindingFlags.Static);
-        
+
             foreach (var property in properties)
             {
                 var value = property.GetValue(null);
@@ -48,17 +67,42 @@ namespace Tabler.Docs.Components.Icons
             iconContainerRect = resizeObserverEntry.ContentRect;
         }
 
-        private void SearchIcons(ChangeEventArgs e)
+        private void Search(ChangeEventArgs e)
         {
             searchText = e.Value.ToString();
-            if (string.IsNullOrWhiteSpace(searchText))
+            SearchIcons();
+        }
+
+
+        private void SearchIcons()
+        {
+
+            if (!filterProviders.Any())
             {
-                filteredIcons = icons;
+                filteredIcons.Clear();
+                return;
             }
-            else
+
+            IEnumerable<ListIcon> query;
+            query = icons;
+
+            if (!string.IsNullOrWhiteSpace(searchText))
             {
-                filteredIcons = icons.Where(x => x.Name.Contains(searchText, StringComparison.InvariantCultureIgnoreCase)).ToList();
+                query = query.Where(x => x.Name.Contains(searchText, StringComparison.InvariantCultureIgnoreCase));
             }
+
+            if (supportedProviders.Count != filterProviders.Count)
+            {
+                foreach (var filterProvider in filterProviders.Take(1))
+                {
+                    query = query.Where(e => e.IconType.Provider == filterProvider);
+                }
+
+            }
+
+
+            filteredIcons = query.ToList();
+
         }
 
         private bool IsSelected(ListIcon icon) => selectedIcons.Contains(icon);
