@@ -10,11 +10,11 @@
 
                         @if (!string.IsNullOrWhiteSpace(Table.SearchText))
                         {
-                            <Icon Size="16" Elements="@InternalIcons.X" OnClick="@(() => Table.Search(""))" />
+                            <Icon Size="16" IconType="@InternalIcons.X" OnClick="@(() => Table.Search(""))" />
                         }
                         else
                         {
-                            <Icon Size="16" Elements="@InternalIcons.Search" />
+                            <Icon Size="16" IconType="@InternalIcons.Search" />
                         }
                     </span>
         </div>

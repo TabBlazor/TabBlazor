@@ -34,7 +34,7 @@
                                     <div class="badge-list">
                                         @foreach (var selectedItem in selectedItems)
                                         {
-                                            <Badge BackgroundColor="TablerColor.Primary">@GetSelectedText(selectedItem) <span @onclick:stopPropagation @onclick="@(e=> RemoveSelected(selectedItem))"><Icon class="ms-2" Size="16" Elements="@InternalIcons.X"></Icon></span></Badge>
+                                            <Badge BackgroundColor="TablerColor.Primary">@GetSelectedText(selectedItem) <span @onclick:stopPropagation @onclick="@(e=> RemoveSelected(selectedItem))"><Icon class="ms-2" Size="16" IconType="@InternalIcons.X"></Icon></span></Badge>
                                         }
                                     </div>
                                 }
@@ -43,7 +43,7 @@
                             @if (Clearable)
                             {
                                 <span class="input-group-text" @onclick:stopPropagation @onclick="ClearSelected">
-                                    <Icon class="icon cursor-pointer" Elements="@InternalIcons.X" />
+                                    <Icon class="icon cursor-pointer" IconType="@InternalIcons.X" />
                                 </span>
                             }
                         </div>
@@ -62,11 +62,11 @@
 
                                     @if (!string.IsNullOrWhiteSpace(searchText))
                                     {
-                                        <Icon Elements="@InternalIcons.X" class="icon" OnClick="ClearSearch" />
+                                        <Icon IconType="@InternalIcons.X" class="icon" OnClick="ClearSearch" />
                                     }
                                     else
                                     {
-                                        <Icon Elements="@InternalIcons.Search" class="icon cursor-auto" />
+                                        <Icon IconType="@InternalIcons.Search" class="icon cursor-auto" />
                                     }
                                 </span>
                             </div>

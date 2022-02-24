@@ -20,7 +20,7 @@ else
                 <input type="text" class="form-control cursor-pointer" value="@selectedDate?.ToString(Format)" placeholder="Search…">
                 <span class="input-icon-addon cursor-pointer">
                     <Icon class="icon"
-                          Elements="@InternalIcons.Calendar" />
+                          IconType="@InternalIcons.Calendar" />
                 </span>
             </div>
         </ChildContent>
@@ -44,13 +44,13 @@ else
         <div class="datepicker-month">
             <span class="float-start">
                 <Icon OnClick="SetPreviousMonth" class="cursor-pointer"
-                      Elements="@InternalIcons.Arrow_left" />
+                      IconType="@InternalIcons.Arrow_left" />
             </span>
             <span>@GetCurrentMonth()</span>
             <span>@currentDate.Year</span>
             <span class="float-end">
                 <Icon OnClick="SetNextMonth" class="cursor-pointer"
-                      Elements="@InternalIcons.Arrow_right" />
+                      IconType="@InternalIcons.Arrow_right" />
             </span>
         </div>
         <div class="datepicker-weekdays">

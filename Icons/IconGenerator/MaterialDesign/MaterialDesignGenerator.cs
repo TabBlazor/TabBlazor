@@ -23,7 +23,7 @@ namespace IconGenerator.MaterialDesign
             var metajson = await client.GetStringAsync(url);
             var iconsMeta = JsonSerializer.Deserialize<List<MaterialDesignIcon>>(metajson);
 
-            foreach (var iconMeta in iconsMeta.Take(10))
+            foreach (var iconMeta in iconsMeta)
             {
                 var icon = new GeneratedIcon
                 {

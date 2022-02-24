@@ -14,9 +14,9 @@ namespace Tabler.Docs.Components.Icons
         [Inject] private TablerService tabService { get; set; }
         [Inject] private ToastService toastService { get; set; }
 
-        private List<Icon> icons = new List<Icon>();
-        private List<Icon> filteredIcons = new List<Icon>();
-        private List<Icon> selectedIcons = new List<Icon>();
+        private List<ListIcon> icons = new List<ListIcon>();
+        private List<ListIcon> filteredIcons = new List<ListIcon>();
+        private List<ListIcon> selectedIcons = new List<ListIcon>();
         private int size = 24;
         private int rotate = 0;
         private double strokeWidth = 2;
@@ -26,19 +26,20 @@ namespace Tabler.Docs.Components.Icons
         private ContentRect iconContainerRect;
         protected override void OnInitialized()
         {
-            LoadIcons();
-            filteredIcons = icons;
+            LoadIcons(typeof(TablerIcons));
+            LoadIcons(typeof(MDIcons));
+
+            filteredIcons = icons.OrderBy(e=>e.Name).ToList();
         }
 
-        private void LoadIcons()
+        private void LoadIcons(Type iconsType)
         {
-            var properties = typeof(DemoIcons).GetProperties(BindingFlags.Public | BindingFlags.Static);
-            //var properties = typeof(MDIcons).GetProperties(BindingFlags.Public | BindingFlags.Static);
-
+            var properties = iconsType.GetProperties(BindingFlags.Public | BindingFlags.Static);
+        
             foreach (var property in properties)
             {
-                var value = property.GetValue(null).ToString();
-                icons.Add(new Icon { Name = property.Name, Elements = value });
+                var value = property.GetValue(null);
+                icons.Add(new ListIcon { Name = property.Name, IconType = (IIcon)value });
             }
         }
 
@@ -60,7 +61,7 @@ namespace Tabler.Docs.Components.Icons
             }
         }
 
-        private bool IsSelected(Icon icon) => selectedIcons.Contains(icon);
+        private bool IsSelected(ListIcon icon) => selectedIcons.Contains(icon);
 
         private int GetRowCount()
         {
@@ -70,7 +71,7 @@ namespace Tabler.Docs.Components.Icons
             return (int)Math.Floor((width / iconSize));
         }
 
-        private void SelectIcon(Icon icon)
+        private void SelectIcon(ListIcon icon)
         {
             if (IsSelected(icon))
             {
@@ -85,7 +86,7 @@ namespace Tabler.Docs.Components.Icons
 
         private void ClearSelected()
         {
-            selectedIcons = new List<Icon>();
+            selectedIcons = new List<ListIcon>();
         }
 
         private async Task CopyToClipboard()
@@ -97,19 +98,19 @@ namespace Tabler.Docs.Components.Icons
             }
 
             await tabService.CopyToClipboard(iconlist);
-            await toastService.AddToastAsync(new TabBlazor.ToastModel { Title = $"{selectedIcons.Count} icons copied to clipboard", Options = new TabBlazor.ToastOptions { Delay = 2 } });
+            await toastService.AddToastAsync(new ToastModel { Title = $"{selectedIcons.Count} icons copied to clipboard", Options = new TabBlazor.ToastOptions { Delay = 2 } });
         }
 
     }
 
-    public class Icon
+    public class ListIcon
     {
         public string Name { get; set; }
-        public string Elements { get; set; }
+        public IIcon IconType { get; set; }
 
         public string GetStaticProperty()
         {
-            return $"public static string {Name} => @\"{Elements}\";";
+            return $"public static string {Name} => @\"{IconType?.Elements}\";";
         }
     }
 

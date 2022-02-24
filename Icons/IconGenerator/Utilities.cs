@@ -16,16 +16,21 @@ namespace IconGenerator
             return $"public static string {iconName} => @\"{elementsString}\";";
         }
 
-        public static string ExtractIconElements(string svgContent)
+        public static string ExtractIconElements(IEnumerable<XElement> elements)
         {
-            var svg = XElement.Parse(svgContent);
-            svg.RemoveAllNamespaces();
-            var elements = svg.Elements();
             var elementsString = string.Join("", elements.Select(e => e));
             elementsString = elementsString.Replace(@"""", "'");
             elementsString = elementsString.Replace(Environment.NewLine, "");
 
             return elementsString;
+        }
+
+        public static string ExtractIconElements(string svgContent)
+        {
+            var svg = XElement.Parse(svgContent);
+            svg.RemoveAllNamespaces();
+            var elements = svg.Elements();
+            return ExtractIconElements(elements);
         }
 
 

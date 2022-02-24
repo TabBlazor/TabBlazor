@@ -7,12 +7,12 @@
             <input class="form-control" type="number" min="1" @bind-value="@size" />
         </div>
     </div>
-    <div class="col-sm-12 col-md-6 col-lg-2">
+   @* <div class="col-sm-12 col-md-6 col-lg-2">
         <div class="form-group">
             <label>Stroke width</label>
             <input class="form-control" type="number" min="0.1" step="0.1" @bind-value="@strokeWidth" />
         </div>
-    </div>
+    </div>*@
 
     <div class="col-sm-12 col-md-6 col-lg-2">
         <div class="form-group">
@@ -27,11 +27,11 @@
             <input class="form-control form-control-color" type="color" @bind="@color" @bind:event="oninput" />
         </div>
     </div>
-      <div class="col-sm-12 col-md-6 col-lg-2">
+   @*   <div class="col-sm-12 col-md-6 col-lg-2">
         <div class="form-group">
             <Checkbox Switch Label="Filled" @bind-Value="@filled"></Checkbox>
         </div>
-    </div>
+    </div>*@
     <div class="col-sm-12 col-md-6 col-lg-2">
         <div class="form-group">
             <label>Search</label>
@@ -61,11 +61,11 @@
             <Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize Items="@filteredIcons.Batch(GetRowCount()).ToList()" Context="icons">
                 @foreach (var icon in icons)
                 {
-                    <span title="@icon.Name">
+                    <span title="@($"{icon.Name} - {icon.IconType.Provider}")">
                         <label class="me-1 mb-1">
                             <input type="checkbox" class="form-selectgroup-input" checked="@IsSelected(icon)" @onchange="@((e) => SelectIcon(icon))">
                             <span class="form-selectgroup-label">
-                                <Icon Size="@size" Rotate=@rotate Filled="@filled" Elements="@icon.Elements" StrokeWidth="strokeWidth" Color="@color" />
+                                <Icon Size="@size" Rotate=@rotate  IconType=icon.IconType Color="@color" />
                             </span>
                         </label>
                     </span>

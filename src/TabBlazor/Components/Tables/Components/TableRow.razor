@@ -43,7 +43,7 @@
                 @if (CanEdit())
                 {
                     <button class="tabicon" aria-label="Button" @onclick="Edit" tabindex="@GetTabIndex()">
-                        <Icon class="icon" Elements="@InternalIcons.Edit" />
+                        <Icon class="icon" IconType="@InternalIcons.Edit" />
                     </button>
 
                 }
@@ -51,7 +51,7 @@
                 @if (CanDelete())
                 {
                     <button class="tabicon" aria-label="Button" @onclick="Delete" tabindex="@GetTabIndex()">
-                        <Icon class="icon" Elements="@InternalIcons.Trash" />
+                        <Icon class="icon" IconType="@InternalIcons.Trash" />
                     </button>
                 }
 

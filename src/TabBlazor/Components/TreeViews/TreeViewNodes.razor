@@ -10,7 +10,7 @@
 
                 @if (HasChildren(item))
                 {
-                    <Icon Elements="@(isExpanded ? InternalIcons.Circle_minus : InternalIcons.Circle_plus)" OnClick="@(() => Root.ToggleExpanded(item))" class="icon me-2" />
+                    <Icon IconType="@(isExpanded ? InternalIcons.Circle_minus : InternalIcons.Circle_plus)" OnClick="@(() => Root.ToggleExpanded(item))" class="icon me-2" />
                 }
                 else
                 {

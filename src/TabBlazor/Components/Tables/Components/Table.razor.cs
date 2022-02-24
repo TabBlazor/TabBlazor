@@ -391,7 +391,7 @@ namespace TabBlazor
                 var result = await modalService.ShowDialogAsync(new Components.Modals.DialogOptions
                 {
                     MainText = "Are you sure you want to delete?",
-                    IconElements = InternalIcons.Alert_triangle,
+                    IconType = InternalIcons.Alert_triangle,
                     StatusColor = TablerColor.Danger
                 });
 

@@ -17,7 +17,7 @@
                 <span>Select Customers...</span>
                 <Badge class="ms-2" BackgroundColor="TablerColor.Red">@context.Count</Badge>
                 <span @onclick="@(e => select.ClearSelected())" @onclick:stopPropagation>
-                    <Icon class="ms-2 icon" Elements="@DemoIcons.Trash" />
+                    <Icon class="ms-2 icon" IconType="@TablerIcons.Trash" />
                 </span>
             }
 
@@ -36,7 +36,7 @@
 
         <div class="d-flex justify-content-center">
             <Button Size="ButtonSize.Small">
-                <Icon class="icon me-1" Elements="@DemoIcons.Plus" />New customer
+                <Icon class="icon me-1" IconType="@TablerIcons.Plus" />New customer
             </Button>
         </div>
     </FooterTemplate>

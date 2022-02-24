@@ -10,7 +10,7 @@ namespace TabBlazor.Components.Modals
     {
         public string MainText { get; set; }
         public string SubText { get; set; }
-        public string IconElements { get; set; }
+        public IIcon IconType { get; set; }
 
         public string CancelText { get; set; } = "Cancel";
         public string OkText { get; set; } = "Ok";

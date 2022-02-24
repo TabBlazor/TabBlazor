@@ -1,4 +1,5 @@
 ﻿using IconGenerator.MaterialDesign;
+using IconGenerator.Tabler;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,33 +16,28 @@ namespace IconGenerator
         static async Task Main(string[] args)
         {
             //GenerateTablerIcons();
-            await GenerateMaterialDesignIcons();
+             await GenerateMaterialDesignIcons();
+            //await GenerateTablerIcons();
+        }
+
+        private static async Task GenerateTablerIcons()
+        {
+            var icons = await TablerGenerator.GenerateIcons();
         }
 
         private static async Task GenerateMaterialDesignIcons()
         {
-
             var icons = await MaterialDesignGenerator.GenerateIcons();
-
-            foreach (var icon in icons)
-            {
-                var kalle = "anka";
-            }
-
-
         }
 
         private static void GenerateMaterialIcons()
         {
             var directory = Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).Parent.Parent;
             var iconsPath = Path.Combine(directory.FullName, @"Material\Icons");
-            //materialiconsoutlined
-            //materialicons
-            //MaterialIconGenerator.Generate(iconsPath, "materialiconsoutlined");
-
+   
         }
 
-        private static void GenerateTablerIcons()
+        private static void GenerateTablerIconsOLD()
         {
             var directory = Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).Parent.Parent;
             var svgPath = Path.Combine(directory.FullName, @"Tabler\tabler-sprite.svg");
