@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
 
 namespace TabBlazor
 {
@@ -25,11 +24,12 @@ namespace TabBlazor
 
     public partial class Avatar : TablerBaseComponent
     {
-        [Parameter] public string Url { get; set; } = "";
+        [Parameter] public string Data { get; set; } = "";
         [Parameter] public AvatarSize Size { get; set; } = AvatarSize.Default;
         [Parameter] public AvatarRounded Rounded { get; set; } = AvatarRounded.Default;
 
-        protected string Style => $"{GetUnmatchedParameter("style")} background-image:url('{Url}')";
+        protected string Style => string.IsNullOrWhiteSpace(Data) ? string.Empty : $"{GetUnmatchedParameter("style")} background-image:url('{Data}')";
+        
         protected override string ClassNames => ClassBuilder
             .Add("avatar")
             .Add(BackgroundColor.GetColorClass("bg", suffix: "lt"))
