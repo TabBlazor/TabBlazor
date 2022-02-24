@@ -61,7 +61,7 @@
             <Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize Items="@filteredIcons.Batch(GetRowCount()).ToList()" Context="icons">
                 @foreach (var icon in icons)
                 {
-                    <span title="@($"{icon.Name} - {icon.IconType.Provider}")">
+                    <span title="@($"{icon.Name} - {icon.IconType.ClassName}")">
                         <label class="me-1 mb-1">
                             <input type="checkbox" class="form-selectgroup-input" checked="@IsSelected(icon)" @onchange="@((e) => SelectIcon(icon))">
                             <span class="form-selectgroup-label">

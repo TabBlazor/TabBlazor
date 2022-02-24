@@ -7,7 +7,7 @@ namespace TabBlazor
         public bool Filled { get;  }
         public string Elements { get; }
 
-        public string Provider { get; }
+        public string ClassName { get; }
 
 
     }
@@ -21,7 +21,7 @@ namespace TabBlazor
         public double StrokeWidth => 0.1;
         public bool Filled => true;
         public string Elements { get; }
-        public string Provider => "Material Design";
+        public string ClassName => "MDIcon";
     }
 
     public class TablerIcon : IIcon
@@ -33,7 +33,7 @@ namespace TabBlazor
         public double StrokeWidth => 2;
         public bool Filled => false;
         public string Elements { get; }
-        public string Provider => "Tabler";
+        public string ClassName => "TablerIcon";
     }
 
 

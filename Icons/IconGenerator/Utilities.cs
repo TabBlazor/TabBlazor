@@ -1,11 +1,12 @@
-﻿using IconGenerator.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Xml.Linq;
+using Tabler.Docs.Icons;
 
 namespace IconGenerator
 {
@@ -43,9 +44,11 @@ namespace IconGenerator
                 fileOutput.AppendLine(icon.DotNetProperty);
             }
 
-            File.WriteAllText(Path.Combine(directory.FullName, "Generated", fileName), fileOutput.ToString());
-
-
+            File.WriteAllText(Path.Combine(directory.FullName, "Generated", fileName + ".txt"), fileOutput.ToString());
+            var json = JsonSerializer.Serialize(icons);
+            File.WriteAllText(Path.Combine(directory.FullName, "Generated", fileName + ".json"), json);
         }
+
+
     }
 }

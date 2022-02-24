@@ -1,4 +1,4 @@
-﻿using IconGenerator.Models;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +8,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using TabBlazor;
+using Tabler.Docs.Icons;
 
 namespace IconGenerator.MaterialDesign
 {
@@ -35,18 +37,17 @@ namespace IconGenerator.MaterialDesign
 
                 var iconUrl = $"https://unpkg.com/@mdi/svg/svg/{iconMeta.Name}.svg";
                 var svgContent = await client.GetStringAsync(iconUrl);
-
-                icon.Elements = Utilities.ExtractIconElements(svgContent);
+                icon.IconType = new MDIcon(Utilities.ExtractIconElements(svgContent));
                 icons.Add(icon);
                 Console.WriteLine($"Icon '{icon.Name}' added");
             }
 
-            Utilities.GenerateIconsFile("MaterialDesignIcons.txt", icons);
+            Utilities.GenerateIconsFile("MaterialDesignIcons", icons);
 
             return icons;
         }
 
-      
+
     }
 
     public class MaterialDesignIcon

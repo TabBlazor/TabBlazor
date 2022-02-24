@@ -1,5 +1,4 @@
 ﻿using IconGenerator.Converters;
-using IconGenerator.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Tabler.Docs.Icons;
 
 namespace IconGenerator.Tabler
 {
@@ -41,10 +41,18 @@ namespace IconGenerator.Tabler
                 var icon = new GeneratedIcon
                 {
                     Name = iconMeta.Key,
-                    Author = "Pawel",
+                    Author = "Paweł Kuna",
                     Provider = IconProvider.TablerIcons,
                     Tags = iconMeta.Value.Tags
                 };
+
+                if (!string.IsNullOrWhiteSpace(iconMeta.Value.Category))
+                {
+                    if (!icon.Tags.Contains(iconMeta.Value.Category))
+                    {
+                        icon.Tags.Add(iconMeta.Value.Category);
+                    }
+                }
 
                 //tabler-2fa
                 var elements = iconElements.FirstOrDefault(x => x.Attribute("id")?.Value == $"tabler-{icon.Name}")?.Elements();
@@ -54,16 +62,12 @@ namespace IconGenerator.Tabler
                     throw new SystemException($"Unable to find icon {icon.Name} in sprite");
                 }
 
-                //https://unpkg.com/@tabler/icons/icons/2fa.svg
-                // var iconUrl = $"https://unpkg.com/@tabler/icons/icons/{iconMeta.Key}.svg";
-                //var svgContent = await client.GetStringAsync(iconUrl);
-                var elementsString = string.Join("", elements.Select(e => e));
-                icon.Elements = Utilities.ExtractIconElements(elements);
+                icon.IconType = new TabBlazor.TablerIcon(Utilities.ExtractIconElements(elements));
                 icons.Add(icon);
                 Console.WriteLine($"Icon '{icon.Name}' added");
             }
 
-            Utilities.GenerateIconsFile("TablerIcons.txt", icons);
+            Utilities.GenerateIconsFile("TablerIcons", icons);
 
             return icons;
         }

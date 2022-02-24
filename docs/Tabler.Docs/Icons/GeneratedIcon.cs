@@ -1,29 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TabBlazor;
 
-namespace IconGenerator.Models
+namespace Tabler.Docs.Icons
 {
     public class GeneratedIcon
     {
         public string Name { get; set; }
         public string Author { get; set; }
         public List<string> Tags { get; set; }
-        public string Category { get; set; }
-        public string Elements { get; set; }
+        //public string Category { get; set; }
+        public IIcon IconType { get; set; }
+
+
         public IconProvider Provider { get; set; }
-        public string DotNetProperty => $"public static IIcon {GetSafeName()} => new {GetClassName()}(@\"{Elements}\");";
-
-        private string GetClassName() {
-
-            return Provider switch
-            {
-                IconProvider.TablerIcons => "TablerIcon",
-                IconProvider.MaterialDesignIcons => "MDIcon",
-                _ => throw new SystemException($"Provider {Provider} is unknown"),
-            };
-        }
-            
+        public string DotNetProperty => $"public static IIcon {GetSafeName()} => new {IconType.ClassName}(@\"{IconType?.Elements}\");";
+    
 
         public string GetSafeName()
         {
@@ -58,8 +51,8 @@ namespace IconGenerator.Models
 
     public enum IconProvider
     {
-        TablerIcons,
-        MaterialDesignIcons
+        TablerIcons = 0,
+        MaterialDesignIcons = 1
     }
 
 }
