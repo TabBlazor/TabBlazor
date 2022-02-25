@@ -1,7 +1,7 @@
 ﻿
 namespace TabBlazor
 {
-    public interface IIcon
+    public interface IIconType
     {
         public double StrokeWidth { get;  }
         public bool Filled { get;  }
@@ -11,7 +11,7 @@ namespace TabBlazor
 
     }
 
-    public class MDIcon : IIcon
+    public class MDIcon : IIconType
     {
         public MDIcon(string elements)
         {
@@ -24,7 +24,7 @@ namespace TabBlazor
         public IconProvider Provider => IconProvider.MaterialDesignIcons;
     }
 
-    public class TablerIcon : IIcon
+    public class TablerIcon : IIconType
     {
         public TablerIcon(string elements)
         {

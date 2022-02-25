@@ -1,47 +1,46 @@
 ﻿<h3>@icons.Count Icons</h3>
 
-<div class="row mb-3">
-    <div class="col-sm-12 col-md-6 col-lg-2">
+<Row class="mb-3">
+
+    <RowCol Auto>
         <div class="form-group">
             <label>Size</label>
             <input class="form-control" type="number" min="1" @bind-value="@size" />
         </div>
-    </div>
-   
-    <div class="col-sm-12 col-md-6 col-lg-2">
+    </RowCol>
+
+   <RowCol Auto>
         <div class="form-group">
             <label>Rotate</label>
             <input class="form-control" type="number" step="1" @bind-value="@rotate" />
         </div>
-    </div>
-
-    <div class="col-sm-12 col-md-6 col-lg-2">
+      </RowCol>
+ <RowCol Auto>
         <div class="form-group">
             <label>Color</label>
             <input class="form-control form-control-color" type="color" @bind="@color" @bind:event="oninput" />
         </div>
-    </div>
+     </RowCol>
 
 
-    <div class="col-sm-12 col-md-6 col-lg-2">
+  <RowCol Auto>
         <div class="form-group">
             <label>Search</label>
             <input class="form-control" type="text" value="@searchText" @oninput="Search" />
         </div>
-    </div>
-</div>
+      </RowCol>
+</Row>
 
 <Row>
     <div class="form-label">Providers</div>
-    <div>
+
+    <div class="badge-list">
         @foreach (var provider in supportedProviders)
         {
-            <label class="form-check form-check-inline">
-                <Checkbox Switch Label="@provider.ToString()" Value="@(filterProviders.Contains(provider))" ValueChanged="@(_ => ToggleFilterProvider(provider))" />
-            </label>
+            <Badge Size=BadgeSize.Large OnClick="@(() => ToggleFilterProvider(provider))" BackgroundColor="@(filterProviders.Contains(provider) ? TablerColor.Primary : TablerColor.Default)">@provider</Badge>
         }
-
     </div>
+
 </Row>
 
 
@@ -75,7 +74,7 @@
                 @foreach (var icon in icons)
                 {
                     <span title="@($"{icon.Name} - {icon.IconType.Provider}")">
-                        <label class="me-1 mb-1">
+                        <label class="me-1 mt-1">
                             <input type="checkbox" class="form-selectgroup-input" checked="@IsSelected(icon)" @onchange="@((e) => SelectIcon(icon))">
                             <span class="form-selectgroup-label">
                                 <Icon Size="@size" Rotate=@rotate IconType=icon.IconType Color="@color" />

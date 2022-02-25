@@ -58,7 +58,7 @@ namespace Tabler.Docs.Components.Icons
             foreach (var property in properties)
             {
                 var value = property.GetValue(null);
-                icons.Add(new ListIcon { Name = property.Name, IconType = (IIcon)value });
+                icons.Add(new ListIcon { Name = property.Name, IconType = (IIconType)value });
             }
         }
 
@@ -150,7 +150,7 @@ namespace Tabler.Docs.Components.Icons
     public class ListIcon
     {
         public string Name { get; set; }
-        public IIcon IconType { get; set; }
+        public IIconType IconType { get; set; }
 
         public string GetStaticProperty()
         {
