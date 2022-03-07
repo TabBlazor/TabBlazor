@@ -17,6 +17,13 @@
                 <input type="text" class="form-control" @bind-value="@context.Country" />
             </EditorTemplate>
         </Column>
+        
+        <Column Item="Order" Property="e=>e.NetValue" Title="Value" Sortable Searchable>
+            <Template>
+                $@context.NetValue.ToString("N0")
+            </Template>
+        </Column>
+  
         <Column Item="Order" Property="e=>e.OrderType" Title="Order type" Sortable Searchable Groupable>
             <EditorTemplate>
                 <Select Items="EnumHelper.GetList<OrderType>()" @bind-SelectedValue="@context.OrderType" TextExpression="e=> e.ToString()" ValueExpression="e=> e" Clearable />
