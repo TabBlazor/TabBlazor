@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +52,10 @@ namespace TabBlazor
         [Parameter] public string ListWidth { get; set; }
         [Parameter] public string Label { get; set; }
 
+        [Inject] private IJSRuntime jSRuntime { get; set; }
+        private string? userAgent = null;
+        private bool isFirefoxBrowser => userAgent.Contains("Firefox", StringComparison.InvariantCultureIgnoreCase);
+
         private bool showSearch => SearchMethod != null;
         private bool singleSelect => MaxSelectableItems == 1 || !MultiSelect;
         private List<TItem> selectedItems = new();
@@ -97,6 +102,16 @@ namespace TabBlazor
             }
         }
 
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
+
+            if (firstRender && userAgent == null)
+            {
+                userAgent = await jSRuntime.InvokeAsync<string>("tabBlazor.getUserAgent");
+            }
+        }
+
         public bool IsExpanded => dropdown?.IsExpanded == true;
 
         private void DropdownExpanded(bool expanded)
@@ -110,7 +125,10 @@ namespace TabBlazor
 
             if (!string.IsNullOrWhiteSpace(MaxListHeight))
             {
-                style = $"max-height:{MaxListHeight}; overflow-y:overlay;";
+                var overFlowStyle = isFirefoxBrowser ?
+                    "overflow-y:scroll;" :
+                    "overflow-y:overlay;";
+                style = $"max-height:{MaxListHeight}; {overFlowStyle}";
             }
 
             if (!string.IsNullOrWhiteSpace(ListWidth))

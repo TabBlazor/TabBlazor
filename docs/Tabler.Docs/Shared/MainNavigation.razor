@@ -1,14 +1,11 @@
 ﻿<Navbar Background=appService.Settings.NavbarBackground Direction=appService.Settings.NavbarDirection>
 
-
     <a href="https://github.com/joadan/Blazor-Tabler" class="navbar-brand navbar-brand-autodark">
         <img src="_content/Tabler.Docs/img/TabBlazorLogoWhite.png" alt="Tabler" class="navbar-brand-image me-2">
         <h2 class="text-muted">TabBlazor</h2>
     </a>
 
-
     <NavbarMenu>
-
         <NavbarMenuItem Href="app-settings" Text="App Settings">
             <MenuItemIcon>
                 <Icon class="icon" IconType="@TablerIcons.Settings" />
@@ -31,7 +28,7 @@
             </SubMenu>
         </NavbarMenuItem>
 
-        <NavbarMenuItem Text="Utilites">
+        <NavbarMenuItem Text="Utilities">
             <MenuItemIcon>
                 <Icon class="icon" IconType="@TablerIcons.Exposure" />
             </MenuItemIcon>
@@ -56,6 +53,7 @@
                         <NavbarMenuItem Text="Card" Href="docs/cards" />
                         <NavbarMenuItem Text="Dimmer" Href="docs/dimmers" />
                         <NavbarMenuItem Text="Dropdown" Href="docs/dropdowns" />
+
                         <NavbarMenuItem Text="Forms">
                             <SubMenu>
                                 <NavbarMenuItem Text="Checkboxes" Href="docs/forms/checkboxes" />
@@ -63,12 +61,10 @@
                                 <NavbarMenuItem Text="ItemSelect" Href="docs/forms/item-selects" />
                                 <NavbarMenuItem Text="Select" Href="docs/forms/selects" />
                                 <NavbarMenuItem Text="Typeahead" Href="docs/forms/typeaheads" />
-
-
                             </SubMenu>
                         </NavbarMenuItem>
 
-                          <NavbarMenuItem Text="Helpers">
+                        <NavbarMenuItem Text="Helpers">
                             <SubMenu>
                                  <NavbarMenuItem Text="Click Outside" Href="docs/helpers/click-outside" />
                                 <NavbarMenuItem Text="Resize Observer" Href="docs/helpers/resize-observer" />
@@ -91,7 +87,6 @@
                         <NavbarMenuItem Text="TreeView" Href="docs/treeviews" />
                     </div>
                 </div>
-
             </SubMenu>
         </NavbarMenuItem>
 
@@ -103,8 +98,5 @@
                 <NavbarMenuItem Text="Charts" Href="docs/plugins/charts" />
             </SubMenu>
         </NavbarMenuItem>
-
     </NavbarMenu>
-
 </Navbar>
-
