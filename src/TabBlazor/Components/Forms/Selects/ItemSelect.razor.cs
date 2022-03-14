@@ -228,7 +228,7 @@ namespace TabBlazor
 
         private bool IsDisabled(TItem item)
         {
-            return DisabledExpression != null ? DisabledExpression(item) : false;
+            return DisabledExpression != null && DisabledExpression(item);
         }
 
         private bool CanSelect()
