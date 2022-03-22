@@ -47,7 +47,7 @@ namespace TabBlazor.Components.Tables
 
                 else if ((state.TotalCount - 1) < state.PageSize * state.PageNumber)
                 {
-                    state.PageNumber = (int)Math.Floor((decimal)(state.TotalCount / state.PageSize)) - 1;
+                    state.PageNumber = (int)Math.Floor((decimal)(state.TotalCount / state.PageSize));
                 }
                 else if (moveToItem != null)
                 {
