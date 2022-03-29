@@ -4,7 +4,7 @@ on:
     branches:
       - master
 env:
-  PUBLISH_DIR: docs/Tabler.Docs.Wasm/bin/Release/net5.0/publish/wwwroot
+  PUBLISH_DIR: docs/Tabler.Docs.Wasm/bin/Release/net6.0/publish/wwwroot
 
 jobs:
   build:
@@ -35,7 +35,7 @@ jobs:
           with:
             github_token: ${{ secrets.PUBLISH_TOKEN }}
             publish_branch: gh-pages
-            publish_dir: docs/Tabler.Docs.Wasm/bin/Release/net5.0/publish/wwwroot
+            publish_dir: docs/Tabler.Docs.Wasm/bin/Release/net6.0/publish/wwwroot
             allow_empty_commit: false
             keep_files: false
             force_orphan: true
