@@ -11,7 +11,7 @@ namespace Tabler.Docs.Icons
         public string Author { get; set; }
         public List<string> Tags { get; set; }
         public IIconType IconType { get; set; }
-        public string DotNetProperty => $"public static IIcon {GetSafeName()} => new {IconType.ClassName}(@\"{IconType?.Elements}\");";
+        public string DotNetProperty => $"public static IIconType {GetSafeName()} => new {IconType.ClassName}(@\"{IconType?.Elements}\");";
 
         public string GetSafeName()
         {

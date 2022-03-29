@@ -138,7 +138,7 @@ namespace Tabler.Docs.Components.Icons
             var iconlist = "";
             foreach (var icon in selectedIcons)
             {
-                iconlist += icon.GetStaticProperty() + Environment.NewLine;
+                iconlist += icon.DotNetProperty + Environment.NewLine;
             }
 
             await tabService.CopyToClipboard(iconlist);
@@ -152,10 +152,9 @@ namespace Tabler.Docs.Components.Icons
         public string Name { get; set; }
         public IIconType IconType { get; set; }
 
-        public string GetStaticProperty()
-        {
-            return $"public static string {Name} => @\"{IconType?.Elements}\";";
-        }
+        public string DotNetProperty => $"public static IIconType {Name} => new {IconType.ClassName}(@\"{IconType?.Elements}\");";
+
+      
     }
 
 }
