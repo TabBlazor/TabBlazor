@@ -17,7 +17,7 @@
   </ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="Blazor-ApexCharts" Version="0.6.0-alpha" />
+    <PackageReference Include="Blazor-ApexCharts" Version="0.8.2-beta" />
     <PackageReference Include="ColorCode.HTML" Version="2.0.13" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.3" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
