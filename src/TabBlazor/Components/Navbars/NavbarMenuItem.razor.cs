@@ -14,6 +14,7 @@ namespace TabBlazor
         [Parameter] public RenderFragment SubMenu { get; set; }
         [Parameter] public bool Expanded { get; set; }
         [Parameter] public bool Expandable { get; set; } = true;
+        [Parameter] public bool IsActive { get; set; }
 
         public bool IsTopMenuItem => ParentMenuItem == null;
 
@@ -34,6 +35,7 @@ namespace TabBlazor
         protected override string ClassNames => ClassBuilder
             .Add("nav-item")
             .Add("cursor-pointer")
+            .AddIf("active", !IsDropdown && IsActive)
             .AddIf("dropdown", IsDropdown && !isDropEnd)
             .AddIf("dropend", IsDropdown && isDropEnd)
             .ToString();
