@@ -65,8 +65,12 @@
 }
 
 //Navbar
-.nav-item, dropdown-menu {
+.nav-item {
     z-index: 1029;
+}
+
+.dropdown-menu {
+    z-index: 1030;
 }
 
 
