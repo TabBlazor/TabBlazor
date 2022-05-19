@@ -9,7 +9,8 @@ namespace TabBlazor
     public partial class DropdownMenu : TablerBaseComponent
     {
         [Parameter] public bool Arrow { get; set; } = false;
-      
+        [Parameter] public bool Card { get; set; } = false;
+
         private List<DropdownItem> subMenuItems = new();
 
         protected override string ClassNames => ClassBuilder
@@ -18,6 +19,7 @@ namespace TabBlazor
            .Add(TextColor.GetColorClass("text"))
            .AddIf("show", true)
            .AddIf($"dropdown-menu-arrow", Arrow)
+           .AddIf($"dropdown-menu-card", Card)
            .ToString();
 
         public void CloseAllSubMenus()
