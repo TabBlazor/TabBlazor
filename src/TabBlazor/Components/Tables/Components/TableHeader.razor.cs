@@ -12,11 +12,26 @@ namespace TabBlazor.Components.Tables
         {
             return new ClassBuilder()
                 .AddIf("cursor-pointer", column.Sortable)
-                .AddIf("sorting", !column.SortColumn && column.Sortable)
-                .AddIf("sorting_desc", column.SortColumn && column.SortDescending)
-                .AddIf("sorting_asc", column.SortColumn && !column.SortDescending)
                 .ToString();
          }
+
+
+        protected string GetSortIconClass(IColumn<TableItem> column)
+        {
+            if (!column.SortColumn && column.Sortable) { return "sorting"; }
+            if (column.SortColumn && column.SortDescending) { return "sorting_desc"; }
+            if (column.SortColumn && !column.SortDescending) { return "sorting_desc"; }
+            return string.Empty;
+        }
+
+        protected IIconType GetSortIcon(IColumn<TableItem> column)
+        {
+            if (!column.SortColumn && column.Sortable) { return InternalIcons.Sortable; }
+            if (column.SortColumn && column.SortDescending) { return InternalIcons.Sort_Desc; }
+            if (column.SortColumn && !column.SortDescending) { return InternalIcons.Sort_Asc; }
+
+            return null;
+        }
 
         protected bool? SelectedValue()
         {
@@ -40,4 +55,6 @@ namespace TabBlazor.Components.Tables
         }
 
     }
+
+   
 }

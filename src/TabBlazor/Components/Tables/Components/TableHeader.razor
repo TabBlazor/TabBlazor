@@ -3,24 +3,32 @@
 
 <thead>
     <tr class="no-hover-row">
-        @if(Table.ShowCheckboxes)
+        @if (Table.ShowCheckboxes)
         {
-        <th>
-            @if (Table.MultiSelect)
-            {
-                <CheckboxTriState Value="SelectedValue()" ValueChanged="ToogleSelected" />
-            }
-        </th>
+            <th>
+                @if (Table.MultiSelect)
+                {
+                    <CheckboxTriState Value="SelectedValue()" ValueChanged="ToogleSelected" />
+                }
+            </th>
         }
 
         @foreach (IColumn<TableItem> column in Table.VisibleColumns)
         {
+
             <th style="@GetColumnWidth(column)" class="@GetColumnHeaderClass(column)" @onclick="@(() => column.SortByAsync())">
                 <span>@((MarkupString)column.Title)</span>
+
+                @if (column.Sortable)
+                {
+                    <span class="@GetSortIconClass(column)">
+                        <Icon Size=17 IconType=@GetSortIcon(column) />
+                    </span>
+                }
             </th>
         }
 
-        @if(Table.HasRowActions && !Table.HasActionColumn)
+        @if (Table.HasRowActions && !Table.HasActionColumn)
         {
             <th></th>
         }
