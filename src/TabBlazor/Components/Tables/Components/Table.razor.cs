@@ -11,13 +11,14 @@ using TabBlazor.Services;
 
 namespace TabBlazor
 {
-    public class TableBase<Item> : ComponentBase, IPopupEditTable<Item>, ITable<Item>, IInlineEditTable<Item>, IDetailsTable<Item>, ITableRow<Item>, ITableState<Item> // ITableRowActions<Item>
+    public class TableBase<Item> : ComponentBase, IPopupEditTable<Item>, ITable<Item>, IInlineEditTable<Item>, IDetailsTable<Item>, ITableRow<Item>, ITableState<Item> 
     {
         [Inject] private TablerService tabService { get; set; }
         [Inject] private IModalService modalService { get; set; }
 
         [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> UnknownParameters { get; set; }
         [Parameter] public bool ShowHeader { get; set; } = true;
+        [Parameter] public bool ResetSortCycle { get; set; }
         [Parameter] public bool ShowFooter { get; set; } = true;
         [Parameter] public bool ShowTableHeader { get; set; } = true;
         [Parameter] public bool Selectable { get; set; }

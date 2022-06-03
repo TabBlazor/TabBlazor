@@ -11,6 +11,7 @@ namespace TabBlazor.Components.Tables
     {
         int PageSize { get; }
         bool ShowFooter { get; set; }
+        bool ResetSortCycle { get; set; }
         bool ShowSearch { get; set; }
         bool MultiSelect { get; set; }
         int PageNumber { get; }

@@ -1,5 +1,4 @@
-﻿//using LinqKit;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using TabBlazor.Components.Tables.Components;
 using System;
 using System.Linq;
@@ -10,7 +9,7 @@ using LinqKit;
 
 namespace TabBlazor
 {
-    public class ColumnBase<Item> : ComponentBase, IColumn<Item> 
+    public class ColumnBase<Item> : ComponentBase, IColumn<Item>
     {
         [Inject] protected TableFilterService FilterService { get; set; }
 
@@ -43,7 +42,7 @@ namespace TabBlazor
         public bool SortDescending { get; set; }
         public Type Type { get; private set; }
         public bool GroupBy { get; set; }
-     
+
 
         public void Dispose()
         {
@@ -133,13 +132,19 @@ namespace TabBlazor
         {
             if (Sortable)
             {
+                var sortOnColumn = true;
                 if (SortColumn)
                 {
-                    SortDescending = !SortDescending;
+                    if (SortDescending && Table.ResetSortCycle)
+                    {
+                        sortOnColumn = false;
+                    }
+                        SortDescending = !SortDescending;
                 }
 
                 Table.Columns.ForEach(x => x.SortColumn = false);
-                SortColumn = true;
+                
+                SortColumn = sortOnColumn;
                 await Table.Update();
             }
         }
