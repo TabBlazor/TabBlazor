@@ -7,8 +7,8 @@
 
 
 <Table Item="Order" Items="orders" PageSize="10" AddItemFactory="AddItem" OnItemEdited="OnItemEdit"
-       @bind-SelectedItems="selectedOrders" OnItemAdded="OnItemAdd" OnItemDeleted="OnItemDelete"
-       ShowCheckboxes MultiSelect Hover Responsive EditMode=tableEditMode >
+        OnItemAdded="OnItemAdd" OnItemDeleted="OnItemDelete"
+       ShowCheckboxes MultiSelect Hover Responsive EditMode=tableEditMode EditPopupMutator=EditPopupOptions>
     <HeaderTemplate>
         <strong>Orders</strong>
     </HeaderTemplate>
@@ -35,23 +35,15 @@
 </Table>
 
 
-<ul>
-    @foreach (var order in selectedOrders)
-    {
-        <li>@order.OrderId, @order.Customer.CustomerName</li>
-    }
-</ul>
-
 @code {
 
     [Inject] TabBlazor.Services.TablerService TablerService { get; set; }
     [Inject] TabBlazor.Services.IModalService ModalService { get; set; }
     private static List<Order> orders = SampleData.GetOrders();
-    private static List<Order> selectedOrders = new List<Order>();
-
+  
     private TableEditMode tableEditMode;
 
-   
+
     private async Task OnItemEdit(Order order)
     {
         await ShowDialog($"Edited order {order.OrderId}");
@@ -78,10 +70,23 @@
             });
     }
 
-
     private Task<Order> AddItem()
     {
         return Task.FromResult(new Order { Customer = new Customer { CustomerName = "New customer" } });
+    }
 
+
+    //This is optional if you like to control the edit popup.
+    private void EditPopupOptions(TableEditPopupOptions<Order> options)
+    {
+        if (options.IsAddInProgress)
+        {
+            options.Title = "Add new order";
+        }
+        else
+        {
+            options.Title = $"Edit order {options.CurrentEditItem.OrderId}, {options.CurrentEditItem.Customer.CustomerName}";
+        }
+        options.ModalOptions.Draggable = true;
     }
 }

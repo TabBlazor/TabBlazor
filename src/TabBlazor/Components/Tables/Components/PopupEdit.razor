@@ -3,7 +3,7 @@
 @if (Table.CurrentEditItem != null)
 {
 
-    <ModalView Title="@title" Options="options" OnClosed=CancelEdit >
+    <ModalView Title="@popupOptions.Title" Options="@popupOptions.ModalOptions" OnClosed=CancelEdit >
         @foreach (var column in Table.VisibleColumns)
         {
             <div class="form-group mb-3 row">

@@ -53,6 +53,9 @@ namespace TabBlazor
         [Parameter] public bool ConfirmDelete { get; set; } = true;
         [Parameter] public TableEditMode EditMode { get; set; }
 
+        [Parameter] public Action<TableEditPopupOptions<Item>> EditPopupMutator { get; set; }
+
+        //TablePopupOptions
         public bool HasRowActions => RowActionTemplate != null || RowActionEndTemplate != null || AllowDelete || AllowEdit;
 
         public bool HasActionColumn => Columns.Any(e => e.ActionColumn);
@@ -410,13 +413,7 @@ namespace TabBlazor
         public void EditItem(Item tableItem)
         {
             CurrentEditItem = tableItem;
-         
-            //if (EditMode == TableEditMode.Popup)
-            //{
-            //    var renderComponent = new RenderComponent<PopupEdit<Item>>().Set(e => e.Table, this);
-            //    var result = modalService.ShowAsync("Edit", renderComponent, new ModalOptions { Size = ModalSize.Large, ShowCloseButton=false });
-            //}
-          
+                  
             StateHasChanged();
         }
 
