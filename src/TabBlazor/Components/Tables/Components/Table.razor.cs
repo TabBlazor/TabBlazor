@@ -11,7 +11,7 @@ using TabBlazor.Services;
 
 namespace TabBlazor
 {
-    public class TableBase<Item> : ComponentBase, IPopupEditTable<Item>, ITable<Item>, IInlineEditTable<Item>, IDetailsTable<Item>, ITableRow<Item>, ITableState<Item> 
+    public class TableBase<Item> : ComponentBase, IPopupEditTable<Item>, ITable<Item>, IInlineEditTable<Item>, IDetailsTable<Item>, ITableRow<Item>, ITableState<Item>
     {
         [Inject] private TablerService tabService { get; set; }
         [Inject] private IModalService modalService { get; set; }
@@ -55,7 +55,6 @@ namespace TabBlazor
 
         [Parameter] public Action<TableEditPopupOptions<Item>> EditPopupMutator { get; set; }
 
-        //TablePopupOptions
         public bool HasRowActions => RowActionTemplate != null || RowActionEndTemplate != null || AllowDelete || AllowEdit;
 
         public bool HasActionColumn => Columns.Any(e => e.ActionColumn);
@@ -377,7 +376,7 @@ namespace TabBlazor
             EditItem(tableItem);
 
             TempItems = DataFactory.GetData(Items, false, false, tableItem);
-         
+
         }
 
         public async Task OnDeleteItem(Item item)
@@ -413,7 +412,7 @@ namespace TabBlazor
         public void EditItem(Item tableItem)
         {
             CurrentEditItem = tableItem;
-                  
+
             StateHasChanged();
         }
 
