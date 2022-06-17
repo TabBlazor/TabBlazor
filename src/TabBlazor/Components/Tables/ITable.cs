@@ -72,7 +72,8 @@ namespace TabBlazor.Components.Tables
         Task CloseEdit();
         Task CancelEdit();
 
-       
+        Action<TableEditPopupOptions<TItem>> EditPopupMutator { get; set; }
+
     }
 
     public interface IInlineEditTable<TableItem>
