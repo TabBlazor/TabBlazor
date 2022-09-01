@@ -1,5 +1,4 @@
 ﻿window.tabBlazor = {
-
     getUserAgent: function () {
         return navigator.userAgent;
     },
@@ -7,7 +6,7 @@
     saveAsFile: function (filename, href) {
         var link = document.createElement('a');
         link.download = filename;
-        link.href = href; 
+        link.href = href;
         document.body.appendChild(link); // Needed for Firefox
         link.click();
         document.body.removeChild(link);
@@ -29,11 +28,12 @@
     },
 
     preventDefaultKey: (element, event, keys) => {
-        element.addEventListener(event, (e) => {
-            if (keys.includes(e.key)) {
-                e.preventDefault();
-            }
-        });
+        element.addEventListener(event,
+            (e) => {
+                if (keys.includes(e.key)) {
+                    e.preventDefault();
+                }
+            });
     },
 
     focusFirstInTableRow: (tr) => {
@@ -50,8 +50,7 @@
         var moveToRow = tr;
         if (key == 'ArrowUp') {
             moveToRow = tr.parentNode.rows[tr.rowIndex - 2];
-        }
-        else if (key == 'ArrowDown') {
+        } else if (key == 'ArrowDown') {
             moveToRow = tr.parentNode.rows[tr.rowIndex];
         }
 
@@ -62,11 +61,9 @@
         var pos = td.cellIndex;
         if (key == 'ArrowLeft') {
             pos = pos - 1;
-        }
-        else if (key == 'ArrowRight') {
+        } else if (key == 'ArrowRight') {
             pos = pos + 1;
-        }
-        else if (key == '') {
+        } else if (key == '') {
             key = 'ArrowRight';
         }
 
@@ -82,8 +79,7 @@
             if (focusElement.select) {
                 focusElement.select();
             }
-        }
-        else {
+        } else {
             //Try next
             window.tabBlazor.navigateTable(moveToCell, key);
         }
@@ -127,37 +123,48 @@
 
     disableDraggable: (container, element) => {
 
-        element.addEventListener("mousedown", (e) => {
-            e.stopPropagation();
-            container['draggable'] = false;
-        });
+        element.addEventListener("mousedown",
+            (e) => {
+                e.stopPropagation();
+                container['draggable'] = false;
+            });
 
-        element.addEventListener("mouseup", (e) => {
-            container['draggable'] = true;
-        });
+        element.addEventListener("mouseup",
+            (e) => {
+                container['draggable'] = true;
+            });
 
-        element.addEventListener("mouseleave", (e) => {
-            container['draggable'] = true;
-        });
+        element.addEventListener("mouseleave",
+            (e) => {
+                container['draggable'] = true;
+            });
     },
 
     setPropByElement: (element, property, value) => {
         element[property] = value;
         return "";
     },
-
-
-
+    
     clickOutsideHandler: {
-        addEvent: function (elementId, dotnetHelper) {
-            window.addEventListener("click", (e) => {
-                var element = document.getElementById(elementId);
-                if (e != null && element != null) {
-                    if (e.target.isConnected == true && e.target !== element && (!element.contains(e.target))) {
-                        dotnetHelper.invokeMethodAsync("InvokeClickOutside");
+        removeEvent: () => {
+            if (window.clickOutsideHandler === undefined) return;
+            window.removeEventListener("click", window.clickOutsideHandler);
+            window.clickOutsideHandler = undefined;
+        },
+
+        addEvent: (elementId, dotnetHelper) => {
+            window.tabBlazor.clickOutsideHandler.removeEvent();
+            window.addEventListener("click",
+                window.clickOutsideHandler = (e) => {
+                    
+                    var element = document.getElementById(elementId);
+                    if (e != null && element != null) {
+                        if (e.target.isConnected === true && e.target !== element && (!element.contains(e.target))) {
+                            window.tabBlazor.clickOutsideHandler.removeEvent();
+                            dotnetHelper.invokeMethodAsync("InvokeClickOutside");
+                        }
                     }
-                }
-            });
+                });
         }
     }
 }

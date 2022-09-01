@@ -1,31 +1,33 @@
-﻿@using Microsoft.JSInterop;
-@inject Microsoft.JSInterop.IJSRuntime JSRuntime;
+﻿@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime;
 @namespace TabBlazor
 
 
-<span id="@Id" @attributes="@Attributes">
+<span id="@Id" @attributes="@Attributes" @onclick="AddClickOutsideHandler">
     @ChildContent
 </span>
 
 @code {
     private string Id { get; set; } = Guid.NewGuid().ToString();
 
-    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object> Attributes { get; set; }
-    [Parameter] public EventCallback OnClickOutside { get; set; }
-    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object> Attributes { get; set; }
 
+    [Parameter]
+    public EventCallback OnClickOutside { get; set; }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await JSRuntime.InvokeVoidAsync("tabBlazor.clickOutsideHandler.addEvent", Id, DotNetObjectReference.Create(this));
-        }
-    }
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
 
     [JSInvokable]
     public async Task InvokeClickOutside()
     {
         await OnClickOutside.InvokeAsync();
     }
+
+    private async Task AddClickOutsideHandler()
+    {
+        await JSRuntime.InvokeVoidAsync("tabBlazor.clickOutsideHandler.addEvent", Id, DotNetObjectReference.Create(this));
+    }
+
 }
