@@ -144,27 +144,47 @@
         element[property] = value;
         return "";
     },
-    
+     
     clickOutsideHandler: {
-        removeEvent: () => {
-            if (window.clickOutsideHandler === undefined) return;
-            window.removeEventListener("click", window.clickOutsideHandler);
-            window.clickOutsideHandler = undefined;
-        },
+        removeEvent: (elementId) => {
+            if (elementId === undefined || window.clickHandlers === undefined) return;
+            if (!window.clickHandlers.has(elementId)) return;
 
-        addEvent: (elementId, dotnetHelper) => {
-            window.tabBlazor.clickOutsideHandler.removeEvent();
-            window.addEventListener("click",
-                window.clickOutsideHandler = (e) => {
-                    
-                    var element = document.getElementById(elementId);
-                    if (e != null && element != null) {
-                        if (e.target.isConnected === true && e.target !== element && (!element.contains(e.target))) {
-                            window.tabBlazor.clickOutsideHandler.removeEvent();
-                            dotnetHelper.invokeMethodAsync("InvokeClickOutside");
+            var handler = window.clickHandlers.get(elementId);
+            window.removeEventListener("click", handler);
+            window.clickHandlers.delete(elementId);
+        },
+        addEvent: (elementId, unregisterAfterClick, dotnetHelper) => {
+            window.tabBlazor.clickOutsideHandler.removeEvent(elementId);
+
+            if (window.clickHandlers === undefined) {
+                window.clickHandlers = new Map();
+            }
+            var currentTime = (new Date()).getTime();
+
+            var handler = (e) => {
+
+                var nowTime = (new Date()).getTime();
+                var diff = Math.abs((nowTime - currentTime) / 1000);
+
+                if (diff < 1)
+                    return;
+
+                currentTime = nowTime;
+
+                var element = document.getElementById(elementId);
+                if (e != null && element != null) {
+                    if (e.target.isConnected === true && e.target !== element && (!element.contains(e.target))) {
+                        if (unregisterAfterClick) {
+                            window.tabBlazor.clickOutsideHandler.removeEvent(elementId);
                         }
+                        dotnetHelper.invokeMethodAsync("InvokeClickOutside");
                     }
-                });
+                }
+            };
+            window.clickHandlers.set(elementId, handler);
+            window.addEventListener("click", handler);
         }
     }
+
 }

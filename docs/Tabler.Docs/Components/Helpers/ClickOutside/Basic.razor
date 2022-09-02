@@ -1,5 +1,5 @@
 ﻿
-<ClickOutside OnClickOutside="OutsideClicked">
+<ClickOutside OnClickOutside=@(()=>OutsideClicked("Basic")) Strategy="ClickOutside.RegisterStrategy.OnRender" Concurrence="ClickOutside.ConcurrenceStrategy.Many">
     <div class="p-1 border">
         <h3>Here is some content</h3>
         Try to click outside
@@ -7,6 +7,7 @@
     </div>
 </ClickOutside>
 
+<br/>
 
 @code {
     [Inject] private ToastService toastService { get; set; }
@@ -17,10 +18,9 @@
         containerSize = resizeObserverEntry.ContentRect;
     }
 
-    private async Task OutsideClicked()
+    private async Task OutsideClicked(string component)
     {
-        await toastService.RemoveAllAsync();
-        await toastService.AddToastAsync(new ToastModel { Title = @DateTime.Now.ToString("T"), Message = "You clicked outside container..." });
+        await toastService.AddToastAsync(new ToastModel { Title = @DateTime.Now.ToString("T"), Message = $"You clicked outside container {component}..." });
     }
 
 }

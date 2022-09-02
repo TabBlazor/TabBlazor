@@ -27,4 +27,10 @@
     <ProjectReference Include="..\..\src\TabBlazor\TabBlazor.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Components\Helpers\ClickOutside\Multiple.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
 </Project>

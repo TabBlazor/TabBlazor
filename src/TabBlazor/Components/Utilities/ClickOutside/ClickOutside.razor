@@ -1,5 +1,6 @@
-﻿@using Microsoft.JSInterop
-@inject IJSRuntime JSRuntime;
+﻿@inject IJSRuntime JSRuntime;
+@using Microsoft.JSInterop
+@implements IAsyncDisposable
 @namespace TabBlazor
 
 
@@ -9,6 +10,34 @@
 
 @code {
     private string Id { get; set; } = Guid.NewGuid().ToString();
+
+    /// <summary>
+    ///     If the clickhandler shall be registered when the component is rendered or when the component is clicked.
+    ///     Default is RegisterStrategy.OnClick.
+    /// </summary>
+    [Parameter]
+    public RegisterStrategy Strategy { get; set; } = RegisterStrategy.OnClick;
+
+    public enum RegisterStrategy
+    {
+        OnClick = 1,
+        OnRender = 2
+    }
+
+    /// <summary>
+    ///     Number of clicks received one or many
+    ///     If ConcurrenceStrategy.One the eventhandler is unregistered after the first click outside.
+    ///     To reduce stress on blazor use RegisterStrategy= OnClick and Concurrence=One
+    /// Default is ConcurrenceStrategy.One
+    /// </summary>
+    [Parameter]
+    public ConcurrenceStrategy Concurrence { get; set; } = ConcurrenceStrategy.One;
+
+    public enum ConcurrenceStrategy
+    {
+        One = 1,
+        Many = 2
+    }
 
     [Parameter(CaptureUnmatchedValues = true)]
     public IReadOnlyDictionary<string, object> Attributes { get; set; }
@@ -25,9 +54,32 @@
         await OnClickOutside.InvokeAsync();
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender && Strategy == RegisterStrategy.OnRender)
+        {
+            await JSRuntime.InvokeVoidAsync("tabBlazor.clickOutsideHandler.addEvent", Id, Concurrence == ConcurrenceStrategy.One, DotNetObjectReference.Create(this));
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("tabBlazor.clickOutsideHandler.removeEvent", Id);
+        }
+        catch (Exception e)
+        {
+        }
+    }
+
     private async Task AddClickOutsideHandler()
     {
-        await JSRuntime.InvokeVoidAsync("tabBlazor.clickOutsideHandler.addEvent", Id, DotNetObjectReference.Create(this));
+        if (Strategy == RegisterStrategy.OnClick)
+        {
+            await JSRuntime.InvokeVoidAsync("tabBlazor.clickOutsideHandler.addEvent", Id, Concurrence == ConcurrenceStrategy.One, DotNetObjectReference.Create(this));
+        }
     }
 
 }
