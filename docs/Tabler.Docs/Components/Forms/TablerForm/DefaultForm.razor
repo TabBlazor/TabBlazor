@@ -1,22 +1,28 @@
 ﻿@using TabBlazor.Components.Modals
 @using Microsoft.AspNetCore.Components
+@using System.ComponentModel.DataAnnotations
 
 <TablerForm Model="@Model" OnValidSubmit="Submit">
     <div class="mb-3">
         <label class="form-label">Name</label>
         <InputText class="form-control" @bind-Value="Model.Name"></InputText>
-        <ValidationMessage For="(() => Model.Name)"></ValidationMessage>
+        <TabValidationMessage For="(() => Model.Name)"></TabValidationMessage>
     </div>
 
     <Button Type="ButtonType.Submit" Text="Save" class="mt-1"></Button>
 </TablerForm>
 
 @code {
-
+    public class Person
+    {
+        [Required]
+        [StringLength(10)]
+        public string Name { get; set; }
+    }
     [Inject]
     public IModalService Modal { get; set; }
 
-    private PersonModel.Person Model { get; set; } = new PersonModel.Person()
+    private Person Model { get; set; } = new Person()
     {
         Name = "Mr. Tab Blazor"
     };
@@ -29,5 +35,4 @@
             SubText = $"Person Name: {Model.Name}"
         });
     }
-
 }

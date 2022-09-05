@@ -1,23 +1,29 @@
 ﻿@using TabBlazor.Components.Modals
+@using System.ComponentModel.DataAnnotations
 
-<Table Item="PersonModel.Person" Items="Persons" OnItemEdited="Submit" EditMode="TableEditMode.Popup">
-    <Column Item="PersonModel.Person" Property="x => x.Name">
+<Table Item="Person" Items="Persons" OnItemEdited="Submit" EditMode="TableEditMode.Popup">
+    <Column Item="Person" Property="x => x.Name">
         <Template>
             @context.Name
         </Template>
         <EditorTemplate>
             <InputText class="form-control" @bind-Value="context.Name"></InputText>
-            <ValidationMessage For="() => context.Name"></ValidationMessage>
+            <TabValidationMessage For="() => context.Name"></TabValidationMessage>
         </EditorTemplate>
     </Column>
 </Table>
 
 @code {
-
+    public class Person
+    {
+        [Required]
+        [StringLength(10)]
+        public string Name { get; set; }
+    }
     [Inject]
     public IModalService Modal { get; set; }
 
-    private IList<PersonModel.Person> Persons { get; set; } = new List<PersonModel.Person>()
+    private IList<Person> Persons { get; set; } = new List<Person>()
     {
         new()
         {
@@ -25,7 +31,7 @@
         }
     };
 
-    private async Task Submit(PersonModel.Person person)
+    private async Task Submit(Person person)
     {
         await Modal.ShowDialogAsync(new DialogOptions()
         {

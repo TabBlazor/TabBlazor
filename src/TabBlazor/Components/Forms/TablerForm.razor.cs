@@ -55,6 +55,8 @@ namespace TabBlazor
                 Validator.EnableValidation(EditContext);
                 EditContext.Validate();
             }
+            
+            EditContext.SetFieldCssClassProvider(new TabFieldCssClassProvider());
 
             RenderForm = true;
         }
