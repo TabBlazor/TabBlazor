@@ -1,0 +1,29 @@
+﻿@page "/docs/forms"
+
+<Page>
+    <DocsExample Title="TablerForm" ComponentType="typeof(TablerForm)">
+        <CodeSnippet ClassName="@typeof(PersonModel).ToString()" Title="PersonModel">
+            <Example>
+                <PersonModel></PersonModel>
+            </Example>
+        </CodeSnippet>
+        
+        <CodeSnippet ClassName="@typeof(DefaultForm).ToString()" Title="DefaultValidation">
+            <Example>
+                <DefaultValidation />
+            </Example>
+        </CodeSnippet>
+        
+        <CodeSnippet ClassName="@typeof(TableInlineValidation).ToString()" Title="Table Inline Validation">
+            <Example>
+                <TableInlineValidation />
+            </Example>
+        </CodeSnippet>
+        
+        <CodeSnippet ClassName="@typeof(TablePopupValidation).ToString()" Title="Table Popup Validation">
+            <Example>
+                <TablePopupValidation />
+            </Example>
+        </CodeSnippet>
+    </DocsExample>
+</Page>
