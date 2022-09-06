@@ -20,7 +20,7 @@ namespace TabBlazor
         public static TabBlazorBuilder AddTabBlazor(this IServiceCollection services)
         {
             services
-                .AddTabBlazor();
+                .AddTabler();
 
             return new TabBlazorBuilder(services);
         }
