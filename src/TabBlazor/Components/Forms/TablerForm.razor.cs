@@ -22,6 +22,7 @@ namespace TabBlazor
         [Parameter] public IFormValidator Validator { get; set; }
         [Parameter] public EventCallback<EditContext> OnValidSubmit { get; set; }
         [Parameter] public bool IsValid { get; set; }
+        public DynamicComponent ValidatorInstance { get; set; }
 
         public bool IsModified => true;
         protected EditContext EditContext { get; set; }
@@ -30,16 +31,16 @@ namespace TabBlazor
 
         private bool initialized;
 
-        protected override void OnParametersSet()
+        protected override async Task OnParametersSetAsync()
         {
-            SetupForm();
+            await SetupFormAsync();
         }
 
         protected override void OnInitialized()
         {
         }
 
-        private void SetupForm()
+        private async Task SetupFormAsync()
         {
             if (Model == null)
             {
@@ -48,14 +49,14 @@ namespace TabBlazor
                 return;
             }
 
+            Validator = GetValidator();
+            
             if (EditContext == null || !EditContext.Model.Equals(Model))
             {
                 EditContext = new EditContext(Model);
-                Validator = GetValidator();
-                Validator.EnableValidation(EditContext);
-                EditContext.Validate();
+                await ValidateAsync();
             }
-            
+
             EditContext.SetFieldCssClassProvider(new TabFieldCssClassProvider());
 
             RenderForm = true;
@@ -63,11 +64,11 @@ namespace TabBlazor
         
         private IFormValidator GetValidator() => Validator ?? Provider.GetRequiredService<IFormValidator>();
 
-        protected override void OnAfterRender(bool firstRender)
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (RenderForm)
             {
-                IsValid = EditContext.Validate();
+                IsValid = await ValidateAsync();
                 OnAfterModelValidation(IsValid);
             }
         }
@@ -83,10 +84,20 @@ namespace TabBlazor
             }
         }
 
-        public void Validate()
+        public async Task<bool> ValidateAsync()
         {
-            IsValid = EditContext.Validate();
+            IsValid = await Validator.ValidateAsync(ValidatorInstance?.Instance, EditContext);
             OnAfterModelValidation(IsValid);
+
+            return IsValid;
+        }
+
+        public bool Validate()
+        {
+            Validator.Validate(ValidatorInstance.Instance, EditContext);
+            OnAfterModelValidation(IsValid);
+
+            return IsValid;
         }
 
         protected async Task HandleValidSubmit()
@@ -100,16 +111,13 @@ namespace TabBlazor
 
         public void Dispose()
         {
+            
             EditContext = null;
         }
 
         protected string GetSaveButtonClass()
         {
             return "";
-            //return new CssBuilder()
-            //    .AddClass("btn btn-primary")
-            //    .AddClass("disabled text-muted", !CanSubmit)
-            //    .Build();
         }
     }
 }
