@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 using TabBlazor.Components;
 using TabBlazor.Components.Tables;
 using TabBlazor.Services;
