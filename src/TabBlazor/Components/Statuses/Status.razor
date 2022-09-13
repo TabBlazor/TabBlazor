@@ -1,0 +1,16 @@
+﻿@inherits TablerBaseComponent
+@namespace TabBlazor
+
+<HtmlElement Tag="span"
+             class="@ClassNames"
+             @onclick="OnClick"
+             @attributes="@UnmatchedParameters">
+
+    @if (DotType != StatusDotType.None)
+    {
+        <StatusDot Animate="@(DotType == StatusDotType.Animate)" />
+    }
+
+
+    @ChildContent
+</HtmlElement>
