@@ -30,7 +30,7 @@
     @if (SubMenu != null && isExpanded && Expandable)
     {
         <CascadingValue Value="this" Name="Parent">
-            <ul data-bs-popper="none" class="dropdown-menu show @(Navbar?.Background  == NavbarBackground.Dark ? "bg-dark text-muted":"")">
+            <ul data-bs-popper="none" class="dropdown-menu show @(NavbarIsHorizontalAndDark ? "bg-dark text-muted" : "")">
                 @SubMenu
             </ul>
         </CascadingValue>

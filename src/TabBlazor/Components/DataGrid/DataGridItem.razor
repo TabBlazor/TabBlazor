@@ -1,0 +1,24 @@
+﻿@namespace TabBlazor
+@inherits TablerBaseComponent
+<HtmlElement Tag="div"
+             class="@ClassNames"
+             @onclick="OnClick"
+             @attributes="@UnmatchedParameters">
+
+    <div class="datagrid-title">
+        @if(TitleTemplate != null)
+        {
+            @TitleTemplate
+        }
+        else
+        {
+               @Title
+        }
+     
+        
+    </div>
+
+    <div class="datagrid-content">@ChildContent</div>
+
+</HtmlElement>
+

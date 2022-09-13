@@ -1,0 +1,52 @@
+﻿
+<DataGrid>
+
+    <DataGridItem Title="Name">
+        Ringo Star
+    </DataGridItem>
+
+    <DataGridItem Title="Status">
+        <Status BackgroundColor="TablerColor.Green">
+            Active
+        </Status>
+    </DataGridItem>
+
+    <DataGridItem Title="Picture">
+        <Avatar Data="_content/Tabler.Docs/img/avatars/004m.jpg" />
+    </DataGridItem>
+
+    <DataGridItem Title=Friends>
+        <AvatarList Stacked>
+    <Avatar Data="_content/Tabler.Docs/img/avatars/004m.jpg" />
+    <Avatar Data="_content/Tabler.Docs/img/avatars/004f.jpg" />
+    <Avatar Data="_content/Tabler.Docs/img/avatars/002m.jpg" />
+    <Avatar Data="_content/Tabler.Docs/img/avatars/008m.jpg" />
+    <Avatar Data="_content/Tabler.Docs/img/avatars/008f.jpg" />
+    <Avatar>+8</Avatar>
+</AvatarList>
+    </DataGridItem>
+
+    <DataGridItem>
+        <TitleTemplate>
+            <i>Badge</i>
+        </TitleTemplate>
+        <ChildContent>
+            <Badge BackgroundColor="TablerColor.Primary">1:st</Badge>
+        </ChildContent>
+
+    </DataGridItem>
+
+    <DataGridItem Title=Selection>
+
+        <ItemSelect TItem=Customer TValue=Customer Items="Data.SampleData.GetCustomers()" SelectedTextExpression="e=>e.CustomerName">
+            <ListTemplate>
+                @context.CustomerName
+            </ListTemplate>
+        </ItemSelect>
+    </DataGridItem>
+
+    <DataGridItem Title="Comment">
+      <input type="text" class="form-control" />
+    </DataGridItem>
+
+</DataGrid>

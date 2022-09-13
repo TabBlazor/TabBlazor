@@ -29,6 +29,8 @@ namespace TabBlazor
             Navbar?.AddNavbarMenuItem(this);
         }
 
+        private bool NavbarIsHorizontalAndDark => Navbar?.Background == NavbarBackground.Dark && Navbar?.Direction == NavbarDirection.Horizontal;
+
         private bool isDropEnd => Navbar.Direction == NavbarDirection.Horizontal && ParentMenuItem?.IsDropdown == true;
 
         protected override string ClassNames => ClassBuilder
