@@ -6,14 +6,14 @@
 span {
     visibility: hidden;
     position: absolute;
-    width: 120px;
+   /* width: 120px;*/
     bottom: 100%;
     left: 50%;
     margin-left: -60px;
     background-color: #363636;
     color: #fff;
     text-align: center;
-    padding: 5px 0;
+    padding: 5px 5px;
     border-radius: 6px;
     z-index: 1;
 }
