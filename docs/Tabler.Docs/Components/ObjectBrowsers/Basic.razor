@@ -1,17 +1,10 @@
-﻿
-<ObjectBrowser Object=order />
-
-
-
-
+﻿<ObjectBrowser Object=order />
 
 @code {
     private Order order;
   
     protected override void OnInitialized()
     {
-
-        //orders = Data.SampleData.GetOrders();
         order = Data.SampleData.GetOrders().First();
 
         var configuration = new Dictionary<string, string>();
