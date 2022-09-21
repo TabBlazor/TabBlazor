@@ -21,7 +21,7 @@ namespace TabBlazor.Components.ObjectBrowser
             if(PropertyValue != null)
             {
                 var component = new RenderComponent<TabBlazor.ObjectBrowser>().Set(e => e.Object, PropertyValue);
-                var result = await ModalService.ShowAsync(PropertyValue.GetType().Name, component, new ModalOptions { Size = ModalSize.XLarge });
+                var result = await ModalService.ShowAsync(PropertyValue.GetType().FullName, component, new ModalOptions { Size = ModalSize.XLarge });
             }
         
         }

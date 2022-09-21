@@ -29,17 +29,16 @@ namespace TabBlazor
                 return;
             }
 
-            
             isEnumerable = IsEnumerable(Object.GetType());
             objectType = GetAnyElementType(Object.GetType());
-             properties = objectType.GetProperties().ToList(); 
+            properties = objectType.GetProperties().ToList();
 
             if (isEnumerable)
             {
-                    foreach (var item in (IEnumerable)Object)
-                    {
-                        listItems.Add(new ObjectItem(item, properties));
-                    }
+                foreach (var item in (IEnumerable)Object)
+                {
+                    listItems.Add(new ObjectItem(item, properties));
+                }
             }
             else
             {
@@ -49,7 +48,7 @@ namespace TabBlazor
 
         private bool SearchObject(ObjectItem objectItem, string searchText)
         {
-           return objectItem.SearchValues(searchText);
+            return objectItem.SearchValues(searchText);
         }
 
         private bool IsEnumerable(Type type)

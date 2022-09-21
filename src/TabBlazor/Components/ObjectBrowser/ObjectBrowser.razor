@@ -3,8 +3,11 @@
 @if (isEnumerable)
 {
     <Table Item=ObjectItem Items=listItems Responsive PageSize=10>
-
-        <Column Item=ObjectItem Property="e=> e.Object" Title="" Width="1%">
+      <HeaderTemplate>
+          <h3>@objectType.FullName</h3>
+      </HeaderTemplate>
+      <ChildContent>
+            <Column Item=ObjectItem Property="e=> e.Object" Title="" Width="1%">
             <Template>
                 <TabBlazor.Components.ObjectBrowser.PropertyValueLink PropertyValue=context.Object>
                     <Icon class="text-muted" Size="16" IconType="InternalIcons.Search" />
@@ -20,6 +23,8 @@
                 </Template>
             </Column>
         }
+      </ChildContent>
+      
     </Table>
 }
 else if (objectItem != null)
