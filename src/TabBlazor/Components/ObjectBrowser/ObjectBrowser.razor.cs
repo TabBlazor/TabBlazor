@@ -58,8 +58,6 @@ namespace TabBlazor
             return typeof(IEnumerable).IsAssignableFrom(type);
         }
 
-
-
         private static Type GetAnyElementType(Type type)
         {
             // Type is Array

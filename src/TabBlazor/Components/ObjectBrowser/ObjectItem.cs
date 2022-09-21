@@ -13,11 +13,10 @@ namespace TabBlazor
         public ObjectItem(object myObject, IEnumerable<PropertyInfo> properties)
         {
             this.Object = myObject;
-            this.HashCode = myObject.GetHashCode();
             this.properties = properties.ToList(); 
         }
 
-        public int HashCode { get; set; }
+     
         public object Object { get; set; }
 
         public List<PropertyInfo> Properties => properties;
@@ -56,6 +55,7 @@ namespace TabBlazor
                 return values[property.Name];
             }
 
+            if (Object == null) { return null; }
 
             var propValue = property.GetValue(Object, null);
             values.Add(property.Name, propValue);

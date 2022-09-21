@@ -32,6 +32,13 @@ namespace Tabler.Docs.Data
         public string CustomerName { get; set; }
         public int Visits { get; set; }
         public int Percentage { get; set; }
+
+        public DateTimeOffset? LastOrderDate { get; set; }
+
+
+        public override string ToString() {
+            return $"{CustomerId} [{CustomerName}]";
+        }
     }
 
 

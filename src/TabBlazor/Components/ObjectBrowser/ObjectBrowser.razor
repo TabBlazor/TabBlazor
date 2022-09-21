@@ -6,7 +6,9 @@
 
         <Column Item=ObjectItem Property="e=> e.Object" Title="" Width="1%">
             <Template>
-                <Icon Size="18" IconType="InternalIcons.Search" OnClick="(() => ObjectDetails(context.Object))" />
+                <TabBlazor.Components.ObjectBrowser.PropertyValueLink PropertyValue=context.Object>
+                    <Icon class="text-muted" Size="16" IconType="InternalIcons.Search" />
+                </TabBlazor.Components.ObjectBrowser.PropertyValueLink>
             </Template>
         </Column>
 
@@ -14,10 +16,7 @@
         {
             <Column Item=ObjectItem Title="@property.Name" Property="e=>e.Object" Searchable SearchExpression="(e, s) => SearchObject(e,s)">
                 <Template>
-                    @{
-                        var myObject = context.GetPropertyValue(property);
-                        <span class="cursor-pointer" @onclick="(() => ObjectDetails(myObject))"> @myObject?.ToString()</span>
-                    }
+                        <TabBlazor.Components.ObjectBrowser.PropertyValueLink PropertyValue=context.GetPropertyValue(property) />
                 </Template>
             </Column>
         }
@@ -29,7 +28,6 @@ else if (objectItem != null)
     @if (!objectItem.Properties.Any())
     {
         <span> @objectItem.Object</span>
-
     }
     else
     {
@@ -38,7 +36,6 @@ else if (objectItem != null)
             @foreach (var property in objectItem.Properties)
             {
                 <DataGridItem>
-
                     <TitleTemplate>
                         <Tooltip>
                             <ChildContent>
@@ -50,16 +47,10 @@ else if (objectItem != null)
                         </Tooltip>
                     </TitleTemplate>
                     <ChildContent>
-                        @{
-                            var myObject = objectItem.GetPropertyValue(property);
-                            <span class="cursor-pointer" @onclick="(() => ObjectDetails(myObject))"> @myObject?.ToString()</span>
-                        }
-
+                            <TabBlazor.Components.ObjectBrowser.PropertyValueLink PropertyValue=objectItem.GetPropertyValue(property) />
                     </ChildContent>
-
                 </DataGridItem>
             }
-
         </DataGrid>
     }
 }

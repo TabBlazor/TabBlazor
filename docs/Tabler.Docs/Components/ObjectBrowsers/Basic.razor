@@ -2,7 +2,7 @@
 
 @code {
     private Order order;
-  
+
     protected override void OnInitialized()
     {
         order = Data.SampleData.GetOrders().First();
@@ -12,11 +12,9 @@
         configuration.Add("Age", "14");
 
         order.OrderLines = new List<OrderLine> {
-            new OrderLine { ItemNumber = "1234", Quantity = 220, Status = OrderStatus.Active},
+            new OrderLine { ItemNumber = null, Quantity = 220, Status = OrderStatus.Active},
         new OrderLine { ItemNumber = "Lamp3456", Quantity = 76, Status = OrderStatus.Shipped,
         Configuration = configuration} };
-
-
 
     }
 
