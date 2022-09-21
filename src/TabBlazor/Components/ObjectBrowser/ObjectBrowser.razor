@@ -1,0 +1,72 @@
+﻿@namespace TabBlazor
+
+@if (isEnumerable)
+{
+    <Table Item=ObjectItem Items=listItems Responsive PageSize=10>
+
+        <Column Item=ObjectItem Property="e=> e.Object" Title="" Width="1%">
+            <Template>
+                <Icon Size="18" IconType="InternalIcons.Search" OnClick="(() => ObjectDetails(context.Object))" />
+            </Template>
+        </Column>
+
+        @foreach (var property in properties)
+        {
+            <Column Item=ObjectItem Title="@property.Name" Property="e=>e.Object" Searchable SearchExpression="(e, s) => SearchObject(e,s)">
+                <Template>
+                    @{
+                        var myObject = context.GetPropertyValue(property);
+                        <span class="cursor-pointer" @onclick="(() => ObjectDetails(myObject))"> @myObject?.ToString()</span>
+                    }
+                </Template>
+            </Column>
+        }
+    </Table>
+}
+else if (objectItem != null)
+{
+
+    @if (!objectItem.Properties.Any())
+    {
+        <span> @objectItem.Object</span>
+
+    }
+    else
+    {
+
+        <DataGrid>
+            @foreach (var property in objectItem.Properties)
+            {
+                <DataGridItem>
+
+                    <TitleTemplate>
+                        <Tooltip>
+                            <ChildContent>
+                                @property.Name
+                            </ChildContent>
+                            <TooltipTemplate>
+                                @property.PropertyType.FullName
+                            </TooltipTemplate>
+                        </Tooltip>
+                    </TitleTemplate>
+                    <ChildContent>
+                        @{
+                            var myObject = objectItem.GetPropertyValue(property);
+                            <span class="cursor-pointer" @onclick="(() => ObjectDetails(myObject))"> @myObject?.ToString()</span>
+                        }
+
+                    </ChildContent>
+
+                </DataGridItem>
+            }
+
+        </DataGrid>
+    }
+}
+
+
+
+
+
+
+

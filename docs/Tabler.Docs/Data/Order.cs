@@ -48,5 +48,18 @@ namespace Tabler.Docs.Data
         public decimal GrossValue { get; set; }
         public decimal NetValue { get => GrossValue * (1 - (DiscountPrecentage / 100)); }
         public decimal DiscountPrecentage { get; set; }
+
+        public List<OrderLine> OrderLines { get; set; }
+
+    }
+
+    public class OrderLine
+    {
+        public string ItemNumber { get; set; }
+        public decimal Quantity { get; set; }
+        public OrderStatus Status { get; set; }
+
+        public Dictionary<string, string> Configuration { get; set; }
+
     }
 }

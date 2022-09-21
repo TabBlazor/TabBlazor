@@ -12,7 +12,7 @@
                 <input type="text" class="form-control" @bind-value="@context.Customer.CustomerName" />
             </EditorTemplate>
         </Column>
-        <Column Item="Order" Property="e=>e.Country" Title="Country" Sortable Searchable Groupable>
+        <Column Item="Order" Property="e=>e.Country" Title="Country" Sortable Searchable Groupable SearchExpression="(e, s) => SearchCountry(e,s)">
             <EditorTemplate>
                 <input type="text" class="form-control" @bind-value="@context.Country" />
             </EditorTemplate>
@@ -47,10 +47,16 @@
     private static List<Order> orders = SampleData.GetOrders();
     private static List<Order> selectedOrders = new List<Order>();
 
-   
+
     private async Task OnItemDelete(Order order)
     {
         await ShowDialog($"Order deleted {order.OrderId}");
+    }
+
+    private bool SearchCountry(Order order, string search)
+    {
+        var t = order;
+        return false;
     }
 
     private async Task ShowDialog(string title)
