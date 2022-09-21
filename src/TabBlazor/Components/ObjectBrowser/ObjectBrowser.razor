@@ -37,14 +37,7 @@ else if (objectItem != null)
             {
                 <DataGridItem>
                     <TitleTemplate>
-                        <Tooltip>
-                            <ChildContent>
-                                @property.Name
-                            </ChildContent>
-                            <TooltipTemplate>
-                                @property.PropertyType.FullName
-                            </TooltipTemplate>
-                        </Tooltip>
+                        <span title="@property.PropertyType.FullName">@property.Name</span>
                     </TitleTemplate>
                     <ChildContent>
                             <TabBlazor.Components.ObjectBrowser.PropertyValueLink PropertyValue=objectItem.GetPropertyValue(property) />
