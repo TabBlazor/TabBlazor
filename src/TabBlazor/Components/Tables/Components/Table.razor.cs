@@ -20,6 +20,7 @@ namespace TabBlazor
         [Parameter] public bool ShowHeader { get; set; } = true;
         [Parameter] public bool ResetSortCycle { get; set; }
         [Parameter] public bool ShowFooter { get; set; } = true;
+        [Parameter] public bool UseNaturalSort { get; set; } = false;
         [Parameter] public bool ShowTableHeader { get; set; } = true;
         [Parameter] public bool Selectable { get; set; }
         [Parameter] public bool ShowNoItemsLabel { get; set; } = true;

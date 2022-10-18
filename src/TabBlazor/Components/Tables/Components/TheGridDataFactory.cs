@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 using TabBlazor.Components.Tables.Components;
 
 namespace TabBlazor.Components.Tables
@@ -88,12 +90,32 @@ namespace TabBlazor.Components.Tables
             var sortColumn = columns.FirstOrDefault(x => x.SortColumn);
             if (sortColumn != null)
             {
-                query = sortColumn.SortDescending
-                    ? query.OrderByDescending(sortColumn.Property)
-                    : query.OrderBy(sortColumn.Property);
+                if (state.UseNaturalSort)
+                {
+                    query = NaturalOrderBy(query, sortColumn.Property, sortColumn.SortDescending);
+                }
+                else
+                {
+                    query = sortColumn.SortDescending
+                        ? query.OrderByDescending(sortColumn.Property)
+                        : query.OrderBy(sortColumn.Property);
+                }
             }
 
             return query;
+        }
+
+        public static IQueryable<T> NaturalOrderBy<T>(IQueryable<T> source, Expression<Func<T, object>> selectorExpr, bool desc)
+        {
+            var selector = selectorExpr.Compile();
+
+            int max = source
+                .SelectMany(i => Regex.Matches(selector(i).ToString(), @"\d+").Cast<Match>().Select(m => (int?)m.Value.Length))
+                .Max() ?? 0;
+
+            return desc ?
+                source.OrderByDescending(i => Regex.Replace(selector(i).ToString(), @"\d+", m => m.Value.PadLeft(max, '0')))
+                : source.OrderBy(i => Regex.Replace(selector(i).ToString(), @"\d+", m => m.Value.PadLeft(max, '0')));
         }
 
         private IQueryable<Item> AddSearch(IQueryable<Item> query)
