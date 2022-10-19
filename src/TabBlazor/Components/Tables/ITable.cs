@@ -52,6 +52,7 @@ namespace TabBlazor.Components.Tables
         int PageSize { get; set; }
         bool ShowFooter { get; set; }
         bool ShowSearch { get; set; }
+        bool UseNaturalSort { get; set; }
         int PageNumber { get; set; }
         int TotalCount { get; set; }
         int VisibleColumnCount { get; }
