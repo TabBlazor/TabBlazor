@@ -147,7 +147,7 @@ namespace TabBlazor
                 await Update(true);
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //HandleError("Something went wrong when searching", e);
                 SearchText = "";
@@ -253,7 +253,7 @@ namespace TabBlazor
             await Update();
         }
 
-        public async Task ClearSelectedItem()
+        public Task ClearSelectedItem()
         {
             //if (ChangedItem)
             //{
@@ -263,6 +263,7 @@ namespace TabBlazor
 
             //SelectedItem = default;
             //await Update();
+            return Task.CompletedTask;
         }
 
         public async Task CancelEdit()

@@ -52,6 +52,7 @@
 		</None>
 	</ItemGroup>
 
-
-
+	<ItemGroup>
+	  <Folder Include="wwwroot\css" />
+	</ItemGroup>
 </Project>

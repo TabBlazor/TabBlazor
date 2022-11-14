@@ -32,6 +32,10 @@
     text-decoration: underline;
 }
 
+.clickable-header {
+    cursor: pointer;
+}  
+
 //Badge
 .badge.badge-default {
     text-transform: inherit;

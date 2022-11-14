@@ -5,7 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\TabBlazor.QuickTable.EntityFramework\TabBlazor.QuickTable.EntityFramework.csproj" />
     <ProjectReference Include="..\Tabler.Docs\Tabler.Docs.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data" />
   </ItemGroup>
 
 </Project>
