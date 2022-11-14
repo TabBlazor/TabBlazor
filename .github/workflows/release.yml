@@ -26,6 +26,15 @@ jobs:
       working-directory: src/TabBlazor/bin/Release
       run: dotnet nuget push TabBlazor.*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
       continue-on-error: true
+      
+    - name: Dotnet Pack 
+      working-directory: src/TabBlazor.QuickTable.EntityFramework
+      run: dotnet pack -c Release -p:Version=${GITHUB_REF##*/v}
+
+    - name: Dotnet Nuget Push   
+      working-directory: src/TabBlazor.QuickTable.EntityFramework/bin/Release
+      run: dotnet nuget push TabBlazor.QuickTable.EntityFramework.*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
+      continue-on-error: true
 
     - name: Create Release
       uses: actions/create-release@master
