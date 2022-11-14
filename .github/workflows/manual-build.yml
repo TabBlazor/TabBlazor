@@ -5,7 +5,7 @@ env:
 
 jobs:
   build:
-    runs-on: win22
+    runs-on: windows-2022
     steps:
         # Checkout the code
         - uses: actions/checkout@v2
