@@ -1,3 +1,4 @@
+@using System.Diagnostics.CodeAnalysis
 <Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="new [] { typeof(MainLayout).Assembly }">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
@@ -8,3 +9,10 @@
         </LayoutView>
     </NotFound>
 </Router>
+
+@code{
+
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+    private static Type _keepDateOnly = typeof(DateOnly);
+
+}
