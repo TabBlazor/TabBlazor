@@ -53,7 +53,7 @@ namespace TabBlazor
         [Parameter] public string Label { get; set; }
 
         [Inject] private IJSRuntime jSRuntime { get; set; }
-        private string? userAgent = null;
+        private string userAgent = null;
         private bool isFirefoxBrowser => userAgent.Contains("Firefox", StringComparison.InvariantCultureIgnoreCase);
 
         private bool showSearch => SearchMethod != null;

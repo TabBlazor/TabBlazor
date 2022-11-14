@@ -1,4 +1,4 @@
-﻿.tabicon {
+.tabicon {
   border: none;
   background: none;
   outline: none;
@@ -26,6 +26,10 @@
 .clickable-text {
   cursor: pointer;
   text-decoration: underline;
+}
+
+.clickable-header {
+  cursor: pointer;
 }
 
 .badge.badge-default {
@@ -180,3 +184,5 @@ Dimmer
 .tabler-table .sorting {
   opacity: 0.3;
 }
+
+/*# sourceMappingURL=tabblazor.css.map */
