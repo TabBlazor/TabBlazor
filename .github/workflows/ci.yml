@@ -18,7 +18,10 @@ jobs:
           uses: actions/setup-dotnet@v1
           with:
             dotnet-version: 6.0.x
-
+      
+        - name: Test
+          run: dotnet workload install wasm-tools-net6
+      
         # Run tests
         - name: Test
           run: dotnet test
