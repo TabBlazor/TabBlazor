@@ -7,6 +7,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.3" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="6.0.3" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.0-pre20220427180151" />
     <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
   </ItemGroup>
 
@@ -22,6 +24,7 @@
 	</Target>
 	
   <ItemGroup>
+    <ProjectReference Include="..\..\src\TabBlazor.QuickTable.EntityFramework\TabBlazor.QuickTable.EntityFramework.csproj" />
     <ProjectReference Include="..\Tabler.Docs\Tabler.Docs.csproj" />
   </ItemGroup>
 
