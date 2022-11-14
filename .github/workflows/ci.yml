@@ -13,20 +13,17 @@ jobs:
         # Checkout the code
         - uses: actions/checkout@v2
 
-        # Install .NET Core SDK
         - name: Setup .NET Core
           uses: actions/setup-dotnet@v1
           with:
             dotnet-version: 6.0.x
       
-        - name: Test
-          run: dotnet workload install wasm-tools-net6
+        - name: Restore Workloads
+          run: dotnet workload restore
       
-        # Run tests
         - name: Test
           run: dotnet test
 
-        # Generate the website
         - name: Publish
           run: dotnet publish Tabler.Docs.Wasm.csproj --configuration Release
           working-directory: ./docs/Tabler.Docs.Wasm
