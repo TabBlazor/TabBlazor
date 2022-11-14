@@ -33,7 +33,8 @@ namespace Tabler.Docs.Server
            
             services.AddScoped<ICodeSnippetService, LocalSnippetService>();
             services.AddDocs();
-           
+                
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
