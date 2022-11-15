@@ -3,10 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter.Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using TabBlazor;
+using TabBlazor.QuickTable.EntityFramework;
 using Tabler.Docs.Services;
 
 

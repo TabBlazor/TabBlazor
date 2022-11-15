@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TabBlazor.Components.QuickTables.Infrastructure;
 
-namespace Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter.Microsoft.Extensions.DependencyInjection;
+namespace TabBlazor.QuickTable.EntityFramework;
 
 /// <summary>
 ///     Provides extension methods to configure <see cref="IAsyncQueryExecutor" /> on a <see cref="IServiceCollection" />.

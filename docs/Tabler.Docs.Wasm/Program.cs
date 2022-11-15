@@ -1,16 +1,10 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter.Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using TabBlazor;
+using TabBlazor.QuickTable.EntityFramework;
 using Tabler.Docs.Services;
 
 namespace Tabler.Docs.Wasm

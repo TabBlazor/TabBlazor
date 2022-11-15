@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Query;
 using TabBlazor.Components.QuickTables.Infrastructure;
 
-namespace Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter;
+namespace TabBlazor.QuickTable.EntityFramework;
 
 internal class EntityFrameworkAsyncQueryExecutor : IAsyncQueryExecutor
 {
