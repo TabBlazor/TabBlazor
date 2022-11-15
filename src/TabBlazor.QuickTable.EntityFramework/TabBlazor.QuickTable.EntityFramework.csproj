@@ -7,9 +7,12 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
-        <PackageReference Include="TabBlazor" Version="0.7.3-alpha" />       
+        <PackageReference Include="Teronis.MSBuild.Packaging.ProjectBuildInPackage" Version="1.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\TabBlazor\TabBlazor.csproj" />
+      <ProjectReference Include="..\TabBlazor\TabBlazor.csproj" PrivateAssets="all"/>
     </ItemGroup>
 </Project>
