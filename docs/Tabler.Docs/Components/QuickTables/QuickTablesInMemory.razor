@@ -3,7 +3,7 @@
 @inject IDataService Data
 
 <div class="card">
-    <QuickTable TGridItem="Country" Pagination="pagination" Items="orders">
+    <QuickTable TGridItem="Country" Pagination="pagination" Items="orders" Class="quick-table-example">
         <PropertyColumn Property="@(x => x.Name)"></PropertyColumn>
         <PropertyColumn Property="@(x => x.Code)"></PropertyColumn>
         <PropertyColumn Property="@(x => x.Medals.Total)"></PropertyColumn>

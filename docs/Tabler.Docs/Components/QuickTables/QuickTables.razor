@@ -1,6 +1,10 @@
 ﻿@page "/docs/quick-tables"
 @using TabBlazor.Components.QuickTables
-
+<style type="text/css">
+    .quick-table-example {
+        height:  300px;
+    }
+</style>
 <Page>
     <DocsExample Title="Table" ComponentType="typeof(QuickTable<>)">
         <CodeSnippet SetBackground ClassName="@typeof(QuickTablesInMemory).ToString()" Title="In Memory">
