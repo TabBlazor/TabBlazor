@@ -8,7 +8,7 @@
     <Defer>
         @{ FinishCollectingColumns(); }
         <ColumnsCollectedNotifier TGridItem="TGridItem"/>
-        <div class="table-responsive" style="height: 300px;">
+        <div class="table-responsive @Class">
             <table class="table table-vcenter card-table quick-table" theme="@Theme" aria-rowcount="@(ariaBodyRowCount + 1)" @ref="tableReference">
                 <thead>
                 <tr>
