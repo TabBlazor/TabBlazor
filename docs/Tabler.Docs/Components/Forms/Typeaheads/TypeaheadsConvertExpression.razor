@@ -1,0 +1,28 @@
+﻿<div class="mb-2">
+    Selected Customer: @SelectedCustomerName
+</div>
+
+<Typeahead
+    TItem="Customer"
+    TValue="string"
+    SearchMethod="SearchCustomers"
+    @bind-SelectedValue="SelectedCustomerName"
+    MinimumLength=1
+    SearchPlaceholderText="Search customer..."
+    ShowOptionOnFocus="true",
+    ConvertExpression="customer => customer.CustomerName">
+    <ListTemplate>
+        @context.CustomerName
+    </ListTemplate>
+</Typeahead>
+
+@code {
+    private string SelectedCustomerName { get; set; }
+    private List<Customer> customers = Data.SampleData.GetCustomers();
+
+    private async Task<IEnumerable<Customer>> SearchCustomers(string searchText)
+    {
+        return customers.Where(e => e.CustomerName.Contains(searchText, StringComparison.CurrentCultureIgnoreCase));
+    }
+
+}
