@@ -18,11 +18,10 @@
 
 @code {
     private string SelectedCustomerName { get; set; }
-    private List<Customer> customers = Data.SampleData.GetCustomers();
+    private List<Customer> customers = SampleData.GetCustomers();
 
-    private async Task<IEnumerable<Customer>> SearchCustomers(string searchText)
+    private Task<IEnumerable<Customer>> SearchCustomers(string searchText)
     {
-        return customers.Where(e => e.CustomerName.Contains(searchText, StringComparison.CurrentCultureIgnoreCase));
+        return Task.FromResult(customers.Where(e => e.CustomerName.Contains(searchText, StringComparison.CurrentCultureIgnoreCase)));
     }
-
 }

@@ -62,7 +62,7 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
             Interval = Debounce,
             AutoReset = false
         };
-        Timer.Elapsed += DoSearch;
+        Timer.Elapsed += async (sender, args) => await DoSearch();
     }
 
     protected override void OnParametersSet()
@@ -96,7 +96,7 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
         {
             ForceShowOptions = true;
             SearchText ??= "";
-            DoSearch(null, null);
+            await DoSearch();
             ForceShowOptions = false;
         }
     }
@@ -164,10 +164,9 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
         return listResult.Any();
     }
 
-    private async void DoSearch(object source, ElapsedEventArgs e)
+    private async Task DoSearch()
     {
         var search = GetSearchText(SearchText);
-
 
         Result = await SearchMethod.Invoke(search ?? "");
 

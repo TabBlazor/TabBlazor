@@ -42,7 +42,7 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent
             Interval = Debounce,
             AutoReset = false
         };
-        debounceTimer.Elapsed += async (_, _) =>  Search();
+        debounceTimer.Elapsed += async (_, _) =>  await Search();
 
         if (ConvertExpression == null)
         {
