@@ -5,20 +5,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace TabBlazor
 {
-    public partial class ItemSelect<TItem, TValue> : TablerBaseComponent
+    public partial class ItemSelect<TItem, TValue> : TablerBaseComponent, IDisposable
     {
         /// <summary>
         /// List of items 
         /// </summary>
-        [Parameter] public IEnumerable<TItem> Items { get; set; }
+        [Parameter]
+        public IEnumerable<TItem> Items { get; set; }
 
         /// <summary>
         /// Text to be displayed when no item is selected
         /// </summary>
-        [Parameter] public string NoSelectedText { get; set; } = "*Select*";
+        [Parameter]
+        public string NoSelectedText { get; set; } = "*Select*";
 
         [Parameter] public string NoItemsText { get; set; }
         [Parameter] public bool ShowCheckBoxes { get; set; }
@@ -27,9 +30,11 @@ namespace TabBlazor
 
         [Parameter] public List<TValue> SelectedValues { get; set; }
         [Parameter] public EventCallback<List<TValue>> SelectedValuesChanged { get; set; }
+        [Parameter] public Expression<Func<IList<TValue>>> SelectedValuesExpression { get; set; }
 
         [Parameter] public TValue SelectedValue { get; set; }
         [Parameter] public EventCallback<TValue> SelectedValueChanged { get; set; }
+        [Parameter] public Expression<Func<TValue>> SelectedValueExpression { get; set; }
 
         [Parameter] public EventCallback Changed { get; set; }
         [Parameter] public EventCallback<bool> OnExpanded { get; set; }
@@ -52,6 +57,8 @@ namespace TabBlazor
         [Parameter] public string ListWidth { get; set; }
         [Parameter] public string Label { get; set; }
 
+        [CascadingParameter] private EditContext CascadedEditContext { get; set; }
+
         [Inject] private IJSRuntime jSRuntime { get; set; }
         private string userAgent = null;
         private bool isFirefoxBrowser => userAgent.Contains("Firefox", StringComparison.InvariantCultureIgnoreCase);
@@ -62,6 +69,8 @@ namespace TabBlazor
         private Dropdown dropdown;
         private string searchText;
         private TItem highlighted;
+        private FieldIdentifier fieldIdentifier;
+        private string FieldCssClasses;
 
         protected override void OnInitialized()
         {
@@ -69,16 +78,47 @@ namespace TabBlazor
             {
                 if (typeof(TItem) != typeof(TValue))
                 {
-                    throw new InvalidOperationException($"{GetType()} requires a {nameof(ConvertExpression)} parameter.");
+                    throw new InvalidOperationException(
+                        $"{GetType()} requires a {nameof(ConvertExpression)} parameter.");
                 }
 
                 ConvertExpression = item => item is TValue value ? value : default;
             }
+
+            if (MultiSelect && SelectedValuesExpression != null)
+            {
+                fieldIdentifier = FieldIdentifier.Create(SelectedValuesExpression);
+            }
+
+            if (!MultiSelect && SelectedValueExpression != null)
+            {
+                fieldIdentifier = FieldIdentifier.Create(SelectedValueExpression);
+            }
+
+            if (CascadedEditContext != null)
+            {
+                CascadedEditContext.OnValidationStateChanged += SetValidationClasses;
+            }
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            CascadedEditContext?.NotifyFieldChanged(fieldIdentifier);
+            CascadedEditContext?.Validate();
+        }
+
+        private void SetValidationClasses(object sender, ValidationStateChangedEventArgs args)
+        {
+            FieldCssClasses = CascadedEditContext?.FieldCssClass(fieldIdentifier) ?? "";
         }
 
         protected override void OnParametersSet()
         {
-            if (selectedItems == null) { selectedItems = new List<TItem>(); }
+            if (selectedItems == null)
+            {
+                selectedItems = new List<TItem>();
+            }
+
             selectedItems.Clear();
 
             //TODO How to handle if the items are in the provided list
@@ -116,7 +156,7 @@ namespace TabBlazor
 
         private void DropdownExpanded(bool expanded)
         {
-             OnExpanded.InvokeAsync(expanded);
+            OnExpanded.InvokeAsync(expanded);
         }
 
         private string GetListStyle()
@@ -125,9 +165,7 @@ namespace TabBlazor
 
             if (!string.IsNullOrWhiteSpace(MaxListHeight))
             {
-                var overFlowStyle = isFirefoxBrowser ?
-                    "overflow-y:scroll;" :
-                    "overflow-y:overlay;";
+                var overFlowStyle = isFirefoxBrowser ? "overflow-y:scroll;" : "overflow-y:overlay;";
                 style = $"max-height:{MaxListHeight}; {overFlowStyle}";
             }
 
@@ -160,6 +198,7 @@ namespace TabBlazor
             {
                 return filtered.Where(e => !selectedItems.Contains(e)).ToList();
             }
+
             return filtered.ToList();
         }
 
@@ -200,6 +239,7 @@ namespace TabBlazor
                 }
             }
         }
+
         private void SetHighlighted(int step)
         {
             var myList = FilteredList();
@@ -243,7 +283,10 @@ namespace TabBlazor
 
         private bool IsHighlighted(TItem item)
         {
-            if (highlighted == null) { return false; }
+            if (highlighted == null)
+            {
+                return false;
+            }
 
             if (IdExpression != null)
             {
@@ -269,6 +312,7 @@ namespace TabBlazor
             {
                 selectedItems.Remove(item);
             }
+
             dropdown.Close();
             await UpdateChanged();
         }
@@ -306,9 +350,8 @@ namespace TabBlazor
 
         private async Task UpdateChanged()
         {
-            //Allways send out SelectedValuesChanged
             var selectedValues = new List<TValue>();
-            selectedValues = selectedItems.Select(e => GetValue(e)).ToList();
+            selectedValues = selectedItems.Select(GetValue).ToList();
             await SelectedValuesChanged.InvokeAsync(selectedValues);
 
             if (!MultiSelect)
@@ -317,7 +360,15 @@ namespace TabBlazor
             }
 
             await Changed.InvokeAsync();
+            CascadedEditContext?.NotifyFieldChanged(fieldIdentifier);
         }
 
+        public void Dispose()
+        {
+            if (CascadedEditContext != null)
+            {
+                CascadedEditContext.OnValidationStateChanged -= SetValidationClasses;
+            }
+        }
     }
 }

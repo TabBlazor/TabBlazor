@@ -32,7 +32,7 @@
     {
         <td>
             <div class="row-action-edit">
-                <button class="btn btn-primary btn-sm" @onclick:stopPropagation type="submit">Save</button>
+                <button class="btn btn-primary btn-sm" @onclick:stopPropagation type="submit" disabled="@(!InlineEditTable.IsRowValid)">Save</button>
                 <button class="btn btn-secondary btn-sm" @onclick:stopPropagation type="button" @onclick="OnEditItemCanceled">Cancel</button>
             </div>
         </td>

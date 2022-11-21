@@ -9,7 +9,7 @@
 }
 
 <Dimmer Active="Disabled" ShowSpinner="false">
-    <div @onkeydown="OnKey" @onkeydown:stopPropagation="dropdown?.IsExpanded==true">
+    <div @onkeydown="OnKey" @onkeydown:stopPropagation="dropdown?.IsExpanded==true" class="@FieldCssClasses">
         <Dropdown @ref="dropdown" CloseOnClick="false" OnExpanded="DropdownExpanded">
             <ChildContent>
                 <div @onkeydown:preventDefault="dropdown?.IsExpanded==true">
@@ -20,7 +20,7 @@
                     else
                     {
                         <div class="input-group input-group-flat">
-                            <div class="form-control form-select" tabindex="0">
+                            <div class="form-control form-select @FieldCssClasses" tabindex="0">
                                 @if (!selectedItems.Any())
                                 {
                                     @NoSelectedText
@@ -34,7 +34,7 @@
                                     <div class="badge-list">
                                         @foreach (var selectedItem in selectedItems)
                                         {
-                                            <Badge BackgroundColor="TablerColor.Primary">@GetSelectedText(selectedItem) <span @onclick:stopPropagation @onclick="@(e=> RemoveSelected(selectedItem))"><Icon class="ms-2" Size="16" IconType="@InternalIcons.X"></Icon></span></Badge>
+                                            <Badge BackgroundColor="TablerColor.Primary">@GetSelectedText(selectedItem) <span @onclick:stopPropagation @onclick="@(()=> RemoveSelected(selectedItem))"><Icon class="ms-2" Size="16" IconType="@InternalIcons.X"></Icon></span></Badge>
                                         }
                                     </div>
                                 }
@@ -43,14 +43,13 @@
                             @if (Clearable)
                             {
                                 <span class="input-group-text" @onclick:stopPropagation @onclick="ClearSelected">
-                                    <Icon class="icon cursor-pointer" IconType="@InternalIcons.X" />
+                                    <Icon class="icon cursor-pointer" IconType="@InternalIcons.X"/>
                                 </span>
                             }
                         </div>
                     }
                 </div>
             </ChildContent>
-
             <DropdownTemplate>
                 <DropdownMenu style="@GetListStyle()">
                     @if (showSearch)
@@ -62,11 +61,11 @@
 
                                     @if (!string.IsNullOrWhiteSpace(searchText))
                                     {
-                                        <Icon IconType="@InternalIcons.X" class="icon" OnClick="ClearSearch" />
+                                        <Icon IconType="@InternalIcons.X" class="icon" OnClick="ClearSearch"/>
                                     }
                                     else
                                     {
-                                        <Icon IconType="@InternalIcons.Search" class="icon cursor-auto" />
+                                        <Icon IconType="@InternalIcons.Search" class="icon cursor-auto"/>
                                     }
                                 </span>
                             </div>
@@ -84,23 +83,23 @@
                     @if (Items != null && Items.Any())
                     {
                         <VirtualizeOptional Items="FilteredList()" Virtualize=Virtualize>
-                            <DropdownItem class="@(IsHighlighted(context) ? "highlight":"")" Active="IsSelected(context)" Disabled="(!CanSelect() && !IsSelected(context)) || IsDisabled(context)" OnClick="(e=> ToogleSelected(context))" @key="context">
+                            <DropdownItem class="@(IsHighlighted(context) ? "highlight" : "")" Active="IsSelected(context)" Disabled="(!CanSelect() && !IsSelected(context)) || IsDisabled(context)" OnClick="(e => ToogleSelected(context))" @key="context">
 
                                 @if (ShowCheckBoxes)
-                            {
-                                <input class="form-check-input m-0 me-2" checked="@IsSelected(context)" type="checkbox">
-                            }
-                            @if (ListTemplate == null)
-                            {
-                                @context.ToString()
-                            }
-                            else
-                            {
-                                @ListTemplate(context)
-                            }
+                                {
+                                    <input class="form-check-input m-0 me-2" checked="@IsSelected(context)" type="checkbox">
+                                }
+                                @if (ListTemplate == null)
+                                {
+                                    @context.ToString()
+                                }
+                                else
+                                {
+                                    @ListTemplate(context)
+                                }
 
-                        </DropdownItem>
-                    </VirtualizeOptional>
+                            </DropdownItem>
+                        </VirtualizeOptional>
                     }
                     else
                     {

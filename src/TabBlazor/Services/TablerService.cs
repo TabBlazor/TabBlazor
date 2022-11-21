@@ -18,8 +18,6 @@ namespace TabBlazor.Services
             await jsRuntime.InvokeVoidAsync("tabBlazor.saveAsFile", fileName, href);
         }
 
-   
-
         public async Task PreventDefaultKey(ElementReference element, string eventName, string[] keys)
         {
             await jsRuntime.InvokeVoidAsync("tabBlazor.preventDefaultKey", element, eventName, keys);

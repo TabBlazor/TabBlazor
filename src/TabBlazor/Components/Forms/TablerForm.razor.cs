@@ -18,10 +18,12 @@ namespace TabBlazor
 
         [Parameter] public object Model { get; set; }
         [Parameter] public RenderFragment ChildContent { get; set; }
-        [Parameter] public EventCallback<bool> IsValidChanged { get; set; }
         [Parameter] public IFormValidator Validator { get; set; }
         [Parameter] public EventCallback<EditContext> OnValidSubmit { get; set; }
+        
         [Parameter] public bool IsValid { get; set; }
+        [Parameter] public EventCallback<bool> IsValidChanged { get; set; }
+        
         public DynamicComponent ValidatorInstance { get; set; }
 
         public bool IsModified => true;
@@ -68,8 +70,8 @@ namespace TabBlazor
         {
             if (RenderForm)
             {
-                IsValid = await ValidateAsync();
-                OnAfterModelValidation(IsValid);
+                var valid = await ValidateAsync();
+                OnAfterModelValidation(valid);
             }
         }
 
@@ -86,16 +88,16 @@ namespace TabBlazor
 
         public async Task<bool> ValidateAsync()
         {
-            IsValid = await Validator.ValidateAsync(ValidatorInstance?.Instance, EditContext);
-            OnAfterModelValidation(IsValid);
+            var valid  = await Validator.ValidateAsync(ValidatorInstance?.Instance, EditContext);
+            OnAfterModelValidation(valid);
 
             return IsValid;
         }
 
         public bool Validate()
         {
-            Validator.Validate(ValidatorInstance.Instance, EditContext);
-            OnAfterModelValidation(IsValid);
+            var valid = Validator.Validate(ValidatorInstance.Instance, EditContext);
+            OnAfterModelValidation(valid);
 
             return IsValid;
         }

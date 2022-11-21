@@ -186,5 +186,4 @@
             window.addEventListener("click", handler);
         }
     }
-
 }
