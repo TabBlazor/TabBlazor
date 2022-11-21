@@ -55,7 +55,7 @@ namespace TabBlazor
         [Parameter] public TableEditMode EditMode { get; set; }
 
         [Parameter] public Action<TableEditPopupOptions<Item>> EditPopupMutator { get; set; }
-
+        public bool IsRowValid { get; set; }
         public bool HasRowActions => RowActionTemplate != null || RowActionEndTemplate != null || AllowDelete || AllowEdit;
 
         public bool HasActionColumn => Columns.Any(e => e.ActionColumn);

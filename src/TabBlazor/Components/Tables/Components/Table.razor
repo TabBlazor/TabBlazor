@@ -1,5 +1,6 @@
 ﻿@typeparam Item
 @inherits TableBase<Item>
+
 @using TabBlazor.Components.Tables.Components
 @using TabBlazor.Components.Tables
 @using TabBlazor.Components
@@ -23,7 +24,7 @@
 
         <CardBody>
             <div class="the-grid">
-                <TablerForm Model="@CurrentEditItem" OnValidSubmit="@OnValidSubmit">
+                <TablerForm Model="@CurrentEditItem" OnValidSubmit="@OnValidSubmit" @bind-IsValid="IsRowValid">
 
                     @if (CurrentEditItem != null && EditMode == TableEditMode.Popup)
                     {

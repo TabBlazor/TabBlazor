@@ -72,7 +72,7 @@ namespace TabBlazor.Components.Tables
         bool IsAddInProgress { get; }
         Task CloseEdit();
         Task CancelEdit();
-
+        bool IsRowValid { get;}
         Action<TableEditPopupOptions<TItem>> EditPopupMutator { get; set; }
 
     }
@@ -87,7 +87,7 @@ namespace TabBlazor.Components.Tables
         TableItem CurrentEditItem { get; }
         Task CloseEdit();
         Task CancelEdit();
-
+        bool IsRowValid { get;}
         bool HasActionColumn { get; }
     }
 
