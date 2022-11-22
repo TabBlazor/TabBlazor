@@ -2,9 +2,12 @@
 using Microsoft.AspNetCore.Components.Forms;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TabBlazor
@@ -37,7 +40,8 @@ namespace TabBlazor
         {
             await SetupFormAsync();
         }
-
+        
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(DataAnnotationsValidator))] // Prevent HeadOutlet from being
         protected override void OnInitialized()
         {
         }
