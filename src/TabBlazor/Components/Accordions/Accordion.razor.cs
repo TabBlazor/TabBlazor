@@ -3,6 +3,7 @@
 public partial class Accordion : TablerBaseComponent
 {
     private List<AccordionItem> Items { get; set; } = new();
+    [Parameter]public bool MultipleOpen { get; set; }
 
     public void AddAccordionItem(AccordionItem item)
     {
@@ -13,9 +14,12 @@ public partial class Accordion : TablerBaseComponent
     private void SetExpanded(AccordionItem item)
     {
         var oldExpanded = item.Expanded;
-        foreach (var accordionItem in Items)
+        if (!MultipleOpen)
         {
-            accordionItem.Expanded = false;
+            foreach (var accordionItem in Items)
+            {
+                accordionItem.Expanded = false;
+            }
         }
 
         item.Expanded = !oldExpanded;
