@@ -13,16 +13,20 @@ public partial class Accordion : TablerBaseComponent
 
     private void SetExpanded(AccordionItem item)
     {
-        var oldExpanded = item.Expanded;
-        if (!MultipleOpen)
-        {
+        var oldExpanded = item.IsExpanded;
+        
             foreach (var accordionItem in Items)
             {
-                accordionItem.Expanded = false;
+                if (item == accordionItem)
+                {
+                    accordionItem.IsExpanded = !oldExpanded;
+                }
+                else if (!MultipleOpen)
+                {
+                    accordionItem.IsExpanded = false;    
+                }
             }
-        }
-
-        item.Expanded = !oldExpanded;
+        
         
         StateHasChanged();
     }

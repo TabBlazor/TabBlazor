@@ -7,11 +7,18 @@
         {
             <div class="accordion-item">
                 <h2 class="accordion-header">
-                    <button class="accordion-button @(item.Expanded ? "" : "collapsed")" @onclick="@(() => SetExpanded(item))">
-                        @item.Title
+                    <button class="accordion-button @(item.IsExpanded ? "" : "collapsed")" @onclick="@(() => SetExpanded(item))">
+                        @if (item.TitleTemplate != null)
+                        {
+                            @item.TitleTemplate
+                        }
+                        else
+                        {
+                            @item.Title
+                        }
                     </button>
                 </h2>
-                <div class="accordion-collapse collapse @(item.Expanded ? "show" : "")">
+                <div class="accordion-collapse collapse @(item.IsExpanded ? "show" : "")">
                     <div class="accordion-body pt-0">
                         @item.ChildContent
                     </div>
