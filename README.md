@@ -3,7 +3,7 @@ A blazor admin template built on [Tabler](https://preview.tabler.io/)
 
 Minimal javascript!
 
-## [Demo](https://joadan.github.io/TabBlazor)
+## [Demo](https://TabBlazor.github.io/TabBlazor)
 
 ### Getting Started Templates
 [TabBlazor.Templates](https://github.com/joadan/TabBlazor.Templates)
