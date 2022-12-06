@@ -6,7 +6,7 @@ Minimal javascript!
 ## [Demo](https://TabBlazor.github.io/TabBlazor)
 
 ### Getting Started Templates
-[TabBlazor.Templates](https://github.com/joadan/TabBlazor.Templates)
+[TabBlazor.Templates](https://github.com/TabBlazor/TabBlazor.Templates)
 
 ### Nuget
 [TabBlazor](https://www.nuget.org/packages/TabBlazor/)
