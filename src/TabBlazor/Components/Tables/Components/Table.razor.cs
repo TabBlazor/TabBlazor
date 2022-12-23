@@ -75,7 +75,7 @@ namespace TabBlazor
         public bool ChangedItem { get; set; }
         public bool AllowAdd => OnItemAdded.HasDelegate;
         public bool AllowDelete => OnItemDeleted.HasDelegate;
-        public bool AllowEdit => OnItemEdited.HasDelegate;
+        public bool AllowEdit => OnItemEdited.HasDelegate && !IsAddInProgress;
         public bool HasGrouping => Columns.Any(x => x.GroupBy);
         public TheGridDataFactory<Item> DataFactory { get; set; }
         public Item SelectedItem { get; set; }
