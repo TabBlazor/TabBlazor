@@ -1,0 +1,35 @@
+﻿@using TabBlazor.Dashboard
+
+<Dashboard Items="orders">
+
+    <Row>
+        <RowCol Lg="2">
+            <DashboardFacet TItem=Order Expression="e=> e.OrderType.ToString()" Name="Order Type:" Context="facet" />
+              
+        </RowCol>
+        <RowCol Lg=10>
+
+     
+                <Table PageSize=10 Item="Order" Items="context.FilteredItems?.ToList()">
+                    <Column Item="Order" Property="e=>e.Customer.CustomerName" />
+                    <Column Item="Order" Property="e=>e.OrderType" />
+                </Table>
+
+                <Button OnClick="context.FilterData">Filter</Button>
+     
+         
+
+
+        </RowCol>
+    </Row>
+
+
+
+
+</Dashboard>
+
+@code {
+
+    private List<Order> orders = SampleData.GetOrders();
+
+}
