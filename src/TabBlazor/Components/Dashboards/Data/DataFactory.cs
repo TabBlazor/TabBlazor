@@ -11,6 +11,7 @@ namespace TabBlazor.Data
         private readonly List<DataFilter<TItem>> filters = new();
         private readonly List<DataFacet<TItem>> facets = new();
 
+        public event Action OnDataFilter;
 
         public IEnumerable<TItem> FilteredItems => filteredItems;
         public IEnumerable<TItem> Items => items;
@@ -159,7 +160,7 @@ namespace TabBlazor.Data
 
 
             filteredItems = query.ToList();
-
+            OnDataFilter?.Invoke();
 
         }
     }

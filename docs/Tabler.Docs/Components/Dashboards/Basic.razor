@@ -4,24 +4,57 @@
 
     <Row>
         <RowCol Lg="2">
-            <DashboardFacet TItem=Order Expression="e=> e.OrderType.ToString()" Name="Order Type:" Context="facet" />
-              
+            <DashboardFacet TItem=Order Expression="e=> e.OrderType.ToString()" Name="Order Type:" />
+            <DashboardFacet TItem=Order Expression="e=> e.OrderStatus.ToString()" Name="Order Status:" />
         </RowCol>
         <RowCol Lg=10>
 
-     
-                <Table PageSize=10 Item="Order" Items="context.FilteredItems?.ToList()">
-                    <Column Item="Order" Property="e=>e.Customer.CustomerName" />
-                    <Column Item="Order" Property="e=>e.OrderType" />
-                </Table>
+            <Row>
+                <RowCol>
+                    <DashboardComponent TItem="Order">
+                        <Table PageSize=5 Item="Order" Items="context.FilteredItems?.ToList()">
+                            <Column Item="Order" Property="e=>e.Customer.CustomerName" Searchable Sortable />
+                            <Column Item="Order" Property="e=>e.OrderDate" Searchable Sortable />
+                            <Column Item="Order" Property="e=>e.Country" Searchable Sortable />
+                            <Column Item="Order" Property="e=>e.OrderType" Searchable Sortable />
+                            <Column Item="Order" Property="e=>e.OrderStatus" Searchable Sortable />
+                            <Column Item="Order" Property="e=>e.GrossValue" Searchable Sortable>
+                                <Template Context="order">
+                                    @order.GrossValue.ToString("c")
+                                </Template>
+                            </Column>
+                        </Table>
+                    </DashboardComponent>
+                </RowCol>
+            </Row>
 
-                <Button OnClick="context.FilterData">Filter</Button>
-     
-         
+            <Row>
+                <RowCol>
+                    <DashboardComponent TItem="Order" FilteredDataUpdated="FilteredDataUpdated">
+
+                        <ApexChart @ref=chart TItem="Order" Title="Orders Value"
+                                   XAxisType="XAxisType.Datetime" Height="200"
+                                                                    >
+
+                            <ApexPointSeries TItem="Order"
+                                             Items="context.FilteredItems"
+                                             Name="Gross Value"
+                                             SeriesType="SeriesType.Bar"
+                                             XValue="@(e => e.OrderDate.FirstDayOfMonth())"
+                                             YAggregate="@(e => e.Sum(e => e.GrossValue))"
+                                             OrderBy="e=>e.X" />
+
+                           
+                        </ApexChart>
+
+                    </DashboardComponent>
+                </RowCol>
+            </Row>
 
 
         </RowCol>
     </Row>
+
 
 
 
@@ -31,5 +64,12 @@
 @code {
 
     private List<Order> orders = SampleData.GetOrders();
+    private ApexChart<Order> chart;
 
+    private async Task FilteredDataUpdated()
+    {
+        await Task.Delay(10);
+        await chart?.UpdateSeriesAsync(true);
+
+    }
 }
