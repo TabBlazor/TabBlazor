@@ -1,5 +1,5 @@
 ﻿
-namespace TabBlazor.Data
+namespace TabBlazor.Dashboards
 {
     public class DataFacet<TItem> where TItem : class
     {
@@ -10,9 +10,12 @@ namespace TabBlazor.Data
     public class FacetFilter<TItem> where TItem : class
     {
         public DataFilter<TItem> Filter { get; set; }
+        public IEnumerable<TItem> Items { get; set; }
         public bool Active { get; set; }
         public int CountAll { get; set; }
         public int CountFiltered { get; set; }
+
+     
     }
 
 }

@@ -1,4 +1,4 @@
-.tabicon {
+﻿.tabicon {
   border: none;
   background: none;
   outline: none;
@@ -184,5 +184,3 @@ Dimmer
 .tabler-table .sorting {
   opacity: 0.3;
 }
-
-/*# sourceMappingURL=tabblazor.css.map */

@@ -1,18 +1,19 @@
 ﻿@typeparam TItem
 @inherits DashboardComponent<TItem>
-@namespace TabBlazor.Dashboard
+@namespace TabBlazor.Dashboards
 
 @if (facet != null)
 {
     @if (@Facet == null)
     {
+        <div class="mb-3">
         <strong>@facet.Name</strong>
 
         @foreach (var facetFilter in facet.Filters)
         {
             <Checkbox Label="@($"{facetFilter.Filter.Name} ({facetFilter.CountAll})")" Value=@facetFilter.Active ValueChanged="@(e => ValueChanged(facetFilter, e))" Switch />
         }
-      
+        </div>
     }
     else
     {

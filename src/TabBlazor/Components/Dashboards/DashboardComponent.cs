@@ -1,27 +1,25 @@
 ﻿
-using TabBlazor.Data;
 
-namespace TabBlazor.Dashboard
+namespace TabBlazor.Dashboards
 {
     public class DashboardComponent<TItem> :  ComponentBase, IDisposable where TItem : class
     {
-
         [CascadingParameter] public Dashboard<TItem> Dashboard { get; set; }
 
-        [Parameter] public RenderFragment<DataFactory<TItem>> ChildContent { get; set; }
+        [Parameter] public RenderFragment<Dashboard<TItem>> ChildContent { get; set; }
         [Parameter] public EventCallback FilteredDataUpdated { get; set; }
 
 
-        public DataFactory<TItem> DataFactory => Dashboard.DataFactory;
+        
 
         protected override void OnInitialized()
         {
-            if(DataFactory == null)
+            if(Dashboard == null)
             {
                 throw new Exception("Dashboard Component must be in a dashboard");
             }
 
-            DataFactory.OnDataFilter += OnDataFilter;
+           // Dashboard.OnUpdate += OnDataFilter;
 
             base.OnInitialized();
         }
@@ -36,9 +34,9 @@ namespace TabBlazor.Dashboard
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            if(ChildContent != null && DataFactory != null)
+            if(ChildContent != null && Dashboard != null)
             {
-                builder.AddContent(1, ChildContent(DataFactory));
+                builder.AddContent(1, ChildContent(Dashboard));
             }
            
 
@@ -47,7 +45,7 @@ namespace TabBlazor.Dashboard
 
         public void Dispose()
         {
-            DataFactory.OnDataFilter -= OnDataFilter;
+           // DataFactory.OnDataFilter -= OnDataFilter;
         }
     }
 }

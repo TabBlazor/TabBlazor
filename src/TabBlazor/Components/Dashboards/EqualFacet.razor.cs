@@ -1,8 +1,8 @@
-using TabBlazor.Data;
 
-namespace TabBlazor.Dashboard
+
+namespace TabBlazor.Dashboards
 {
-    public partial class DashboardFacet<TItem> : DashboardComponent<TItem> where TItem : class
+    public partial class EqualFacet<TItem> : DashboardComponent<TItem> where TItem : class
     {
         [Parameter] public Expression<Func<TItem, object>> Expression { get; set; }
         [Parameter] public string Name { get; set; }
@@ -13,13 +13,13 @@ namespace TabBlazor.Dashboard
 
         protected override void OnInitialized()
         {
-            facet = DataFactory.AddEqualFacet(Expression, Name);
+            facet = Dashboard.AddEqualFacet(Expression, Name);
         }
 
         private void ValueChanged(FacetFilter<TItem> filter, bool value)
         {
             filter.Active = value;
-            DataFactory.FilterData();
+            Dashboard.FilterData();
         }
 
     }

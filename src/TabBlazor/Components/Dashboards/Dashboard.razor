@@ -1,15 +1,13 @@
 ﻿@typeparam TItem
-@namespace TabBlazor.Dashboard
+@namespace TabBlazor.Dashboards
 
 
-@if(dataFactory != null)
-{
     <CascadingValue Value="this">
 
-        @ChildContent
+        @ChildContent.Invoke(this)
 
     </CascadingValue>
-}
+
 
     
 

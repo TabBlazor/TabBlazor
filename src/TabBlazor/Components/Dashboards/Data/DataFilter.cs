@@ -1,4 +1,4 @@
-﻿namespace TabBlazor.Data
+﻿namespace TabBlazor.Dashboards
 {
     public class DataFilter<TItem> where TItem : class
     {

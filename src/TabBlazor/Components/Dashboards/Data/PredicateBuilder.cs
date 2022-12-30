@@ -1,4 +1,4 @@
-﻿namespace TabBlazor.Data
+﻿namespace TabBlazor.Dashboards
 {
     /// <summary>
     /// Enables the efficient, dynamic composition of query predicates.
