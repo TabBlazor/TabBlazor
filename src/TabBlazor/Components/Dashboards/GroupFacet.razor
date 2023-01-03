@@ -8,6 +8,11 @@
     {
         <div class="mb-3">
         <strong>@facet.Name</strong>
+            @if (facet.IsActive)
+            {
+                <Icon class="ms-2 tabicon icon" IconType="InternalIcons.Trash" OnClick="@(_ => ResetFilters())" />
+            }
+
 
         @foreach (var facetFilter in facet.Filters)
         {

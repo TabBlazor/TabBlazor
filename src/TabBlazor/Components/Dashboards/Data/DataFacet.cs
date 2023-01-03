@@ -5,6 +5,11 @@ namespace TabBlazor.Dashboards
     {
         public string Name { get; set; }
         public List<FacetFilter<TItem>> Filters { get; set; } = new();
+
+        public bool IsActive => Filters.Any(e => e.Active);
+
+      
+
     }
 
     public class FacetFilter<TItem> where TItem : class

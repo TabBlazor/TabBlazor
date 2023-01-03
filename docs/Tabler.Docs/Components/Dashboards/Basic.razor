@@ -13,6 +13,8 @@
                     <EqualFacet TItem=Order Expression="e=> e.OrderStatus.ToString()" Name="Order Status:" />
                     <EqualFacet TItem=Order Expression="e=> e.Country" Name="Country:" />
                     <GroupFacet TItem=Order Expression="e=> e.NetValue" Name="Net Value:" />
+                    <RangeFilter TItem=Order Expression="e=> e.DiscountPrecentage" Name="Discount %" />
+                    <DateFacet TItem=Order Expression="e=> e.OrderDate.DateTime" Name="Order Date:" />
                 </CardBody>
             </Card>
         
@@ -202,6 +204,7 @@
     {
         await Task.Yield();
         await chart?.UpdateSeriesAsync(true);
+
     }
 
 
@@ -211,6 +214,8 @@
         .Select(e => new { Customer = e.Key, Value = e.Aggregate(0.0M, (current, order) => current + order.NetValue) })
         .OrderByDescending(e => e.Value).FirstOrDefault();
         ;
+
+       // var tt = orders.Min(e => e.NetValue);
 
         return (test.Customer, test.Value);
 

@@ -61,6 +61,39 @@ namespace Tabler.Docs.Data
             var cali = new Customer("Cali Inc");
 
             var orders = new List<Order>();
+
+            orders.Add(new Order
+            {
+                OrderStatus = OrderStatus.Active,
+                Customer = nascetur,
+                Country = "Sweden",
+                OrderDate = DateTimeOffset.Now.AddDays(-1),
+                GrossValue = 23456,
+                DiscountPrecentage = 18,
+                OrderType = OrderType.Web
+            });
+            orders.Add(new Order
+            {
+                OrderStatus = OrderStatus.Shipped,
+                Customer = odio,
+                Country = "Sweden",
+                OrderDate = DateTimeOffset.Now.AddDays(-1),
+                GrossValue = 12345,
+                DiscountPrecentage = 11,
+                OrderType = OrderType.Contract
+            });
+            orders.Add(new Order
+            {
+                OrderStatus = OrderStatus.Active,
+                Customer = nascetur,
+                Country = "Sweden",
+                OrderDate = DateTimeOffset.Now.AddDays(-7),
+                GrossValue = 1456,
+                DiscountPrecentage = 24,
+                OrderType = OrderType.Contract
+            });
+
+
             orders.Add(new Order
             {
                 OrderStatus = OrderStatus.Active, Customer = odio, Country = "Sweden",

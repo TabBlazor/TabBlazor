@@ -7,7 +7,7 @@ namespace TabBlazor.Dashboards
         [Parameter] public Expression<Func<TItem, object>> Expression { get; set; }
         [Parameter] public string Name { get; set; }
 
-        [Parameter] public RenderFragment<DataFacet<TItem>> Facet { get; set; }
+        [Parameter] public RenderFragment<DataFacet<TItem>> FacetTemplate { get; set; }
 
         private DataFacet<TItem> facet;
 
@@ -16,10 +16,19 @@ namespace TabBlazor.Dashboards
             facet = Dashboard.AddEqualFacet(Expression, Name);
         }
 
+        private void ResetFilters()
+        {
+            foreach (var filter in facet.Filters.Where(e => e.Active))
+            {
+                filter.Active = false;
+            }
+            Dashboard.RunFilter();
+        }
+
         private void ValueChanged(FacetFilter<TItem> filter, bool value)
         {
             filter.Active = value;
-            Dashboard.FilterData();
+            Dashboard.RunFilter();
         }
 
     }

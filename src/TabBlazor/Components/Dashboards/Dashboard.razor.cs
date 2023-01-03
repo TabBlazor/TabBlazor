@@ -8,10 +8,11 @@ namespace TabBlazor.Dashboards
 
         [Parameter] public EventCallback OnUpdate { get; set; }
 
-        public IEnumerable<TItem> FilteredItems => filteredItems;
+        public IQueryable<TItem> FilteredItems => filteredItems;
+        public IQueryable<TItem> AllItems => items;
 
         private IQueryable<TItem> items;
-        private IEnumerable<TItem> filteredItems;
+        private IQueryable<TItem> filteredItems;
         private readonly List<DataFilter<TItem>> filters = new();
         private readonly List<DataFacet<TItem>> facets = new();
 
@@ -20,23 +21,29 @@ namespace TabBlazor.Dashboards
         {
             items = Items.AsQueryable();
         }
-
     
         public void RemoveFacet(DataFacet<TItem> facet)
         {
             if (facets.Contains(facet))
             {
                 facets.Remove(facet);
-                FilterData();
+                RunFilter();
             }
-            
         }
 
         public DataFacet<TItem> AddEqualFacet(Expression<Func<TItem, object>> expression, string name)
         {
             var facet = FacetsHelper.AddEqualFacet(items, expression, name);
             facets.Add(facet);
-            FilterData();
+            RunFilter();
+            return facet;
+        }
+
+        public DataFacet<TItem> AddDateFacet(Expression<Func<TItem, DateTime>> expression, string name)
+        {
+            var facet = FacetsHelper.AddDateFacet(items, expression, name);
+            facets.Add(facet);
+            
             return facet;
         }
 
@@ -44,16 +51,14 @@ namespace TabBlazor.Dashboards
         {
             var facet = FacetsHelper.AddGroupFacet(items, expression, name, numberOfGroups);
             facets.Add(facet);
-            FilterData();
+            RunFilter();
             return facet;
         }
-
-
 
         public void AddFilter(DataFilter<TItem> dataFilter)
         {
             filters.Add(dataFilter);
-            FilterData();
+            RunFilter();
         }
 
         public void RemoveFilter(DataFilter<TItem> dataFilter)
@@ -61,11 +66,11 @@ namespace TabBlazor.Dashboards
             if (filters.Contains(dataFilter))
             {
                 filters.Remove(dataFilter);
-                FilterData();
+                RunFilter();
             }
         }
 
-        public void FilterData()
+        public void RunFilter()
         {
             var query = items.AsQueryable();
 
@@ -95,7 +100,7 @@ namespace TabBlazor.Dashboards
                     query = query.Where(predicate);
                 }
 
-                filteredItems = query.ToList();
+                filteredItems = query.AsQueryable();
             }
 
             OnUpdate.InvokeAsync();

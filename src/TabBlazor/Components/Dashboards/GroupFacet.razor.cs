@@ -18,10 +18,19 @@ namespace TabBlazor.Dashboards
             facet = Dashboard.AddGroupFacet(Expression, Name, NumberOfGroups);
         }
 
+        private void ResetFilters()
+        {
+            foreach (var filter in facet.Filters.Where(e => e.Active))
+            {
+                filter.Active = false;
+            }
+            Dashboard.RunFilter();
+        }
+
         private void ValueChanged(FacetFilter<TItem> filter, bool value)
         {
             filter.Active = value;
-            Dashboard.FilterData();
+            Dashboard.RunFilter();
         }
 
     }
