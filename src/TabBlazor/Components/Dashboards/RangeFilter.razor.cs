@@ -36,11 +36,11 @@ namespace TabBlazor.Dashboards
 
         }
 
-        private async Task MinUpdated(ChangeEventArgs e)
+        private void MinUpdated(ChangeEventArgs e)
         {
             if (decimal.TryParse(e.Value.ToString(), out var inputValue))
             {
-                if (inputValue < allMin) { inputValue = allMin; }
+                if (inputValue < allMin) {  inputValue = allMin; }
 
                 min = inputValue;
                 FilterData();

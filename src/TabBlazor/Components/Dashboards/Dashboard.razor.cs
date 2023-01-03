@@ -1,4 +1,6 @@
 
+using System.Diagnostics;
+
 namespace TabBlazor.Dashboards
 {
     public partial class Dashboard<TItem> where TItem : class
@@ -7,6 +9,8 @@ namespace TabBlazor.Dashboards
         [Parameter] public RenderFragment<Dashboard<TItem>> ChildContent { get; set; }
 
         [Parameter] public EventCallback OnUpdate { get; set; }
+
+        public long LastRunFilterMilliseconds;
 
         public IQueryable<TItem> FilteredItems => filteredItems;
         public IQueryable<TItem> AllItems => items;
@@ -19,9 +23,9 @@ namespace TabBlazor.Dashboards
 
         protected override void OnInitialized()
         {
-            items = Items.AsQueryable();
+            items = Items.AsQueryable(); 
         }
-    
+
         public void RemoveFacet(DataFacet<TItem> facet)
         {
             if (facets.Contains(facet))
@@ -43,7 +47,7 @@ namespace TabBlazor.Dashboards
         {
             var facet = FacetsHelper.AddDateFacet(items, expression, name);
             facets.Add(facet);
-            
+
             return facet;
         }
 
@@ -72,6 +76,9 @@ namespace TabBlazor.Dashboards
 
         public void RunFilter()
         {
+            var sw = new Stopwatch();
+            sw.Start();
+
             var query = items.AsQueryable();
 
             foreach (var filter in filters)
@@ -99,12 +106,32 @@ namespace TabBlazor.Dashboards
                 {
                     query = query.Where(predicate);
                 }
-
-                filteredItems = query.AsQueryable();
+              
             }
+
+            filteredItems = query.ToList().AsQueryable();
+
+            SetFacetFilterCount();
 
             OnUpdate.InvokeAsync();
             StateHasChanged();
+
+           sw.Stop();
+            LastRunFilterMilliseconds = sw.ElapsedMilliseconds;
+         
+
+        }
+
+
+        private void SetFacetFilterCount()
+        {
+            foreach (var facet in facets)
+            {
+                foreach (var filter in facet.Filters)
+                {
+                    filter.CountFiltered = filteredItems.Count(filter.Filter.Predicate);
+                }
+            }
         }
     }
 }

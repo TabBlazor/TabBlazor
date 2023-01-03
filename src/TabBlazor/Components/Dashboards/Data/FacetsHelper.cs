@@ -69,32 +69,7 @@ namespace TabBlazor.Dashboards
                 facet.Filters.Add(filter);
             }
 
-
-
-            //var yesterDayStart = DateTime.Today.AddDays(-1).StartOfDay();
-            //var yesterDayEnd = yesterDayStart.EndOfDay();
-
-            //var predicate = CreateDateRangePredicate(expression, yesterDayStart, yesterDayEnd);
-
-            //var groupItems = items.Where(predicate).ToList();
-
-            //var filter = new FacetFilter<TItem>
-            //{
-            //    Items = groupItems,
-            //    CountAll = groupItems.Count,  
-            //    Filter = new DataFilter<TItem>
-            //    {
-            //        Name = $"Yesterday",
-            //        Expression = predicate
-            //    }
-            //};
-            //facet.Filters.Add(filter);
-
-
-
-
             return facet;
-
         }
 
 
@@ -114,16 +89,18 @@ namespace TabBlazor.Dashboards
                 var groupMax = chunkGroup.Max(e => e.Key);
                 var groupMin = chunkGroup.Min(e => e.Key);
 
-                var constantMin = Expression.Constant(groupMin);
-                var bodyMin = Expression.GreaterThanOrEqual(expression.Body, constantMin);
-                var predicateMin = Expression.Lambda<Func<TItem, bool>>(bodyMin, expression.Parameters);
+                var predicate = CreateRangePredicate(expression, groupMin, groupMax);
+
+                //var constantMin = Expression.Constant(groupMin);
+                //var bodyMin = Expression.GreaterThanOrEqual(expression.Body, constantMin);
+                //var predicateMin = Expression.Lambda<Func<TItem, bool>>(bodyMin, expression.Parameters);
 
 
-                var constantMax = Expression.Constant(groupMax);
-                var bodyMax = Expression.LessThanOrEqual(expression.Body, constantMax);
-                var predicateMax = Expression.Lambda<Func<TItem, bool>>(bodyMax, expression.Parameters);
+                //var constantMax = Expression.Constant(groupMax);
+                //var bodyMax = Expression.LessThanOrEqual(expression.Body, constantMax);
+                //var predicateMax = Expression.Lambda<Func<TItem, bool>>(bodyMax, expression.Parameters);
 
-                var predicate = PredicateBuilder.And(predicateMin, predicateMax);
+                //var predicate = PredicateBuilder.And(predicateMin, predicateMax);
 
                 var groupItems = chunkGroup.ToList().SelectMany(e => e.ToList()).ToList();
 

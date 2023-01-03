@@ -18,7 +18,7 @@
         {
                 <label class="form-check">
                     <input class="form-check-input" type="radio" name="radios" checked=@facetFilter.Active @onclick="@(e => ValueChanged(facetFilter, e))">
-                    <span class="form-check-label">@($"{facetFilter.Filter.Name} ({facetFilter.CountAll})")</span>
+                    <span class="form-check-label">@($"{facetFilter.Filter.Name} ({facetFilter.CountFiltered}/{facetFilter.CountAll})")</span>
                 </label>
         }
         </div>

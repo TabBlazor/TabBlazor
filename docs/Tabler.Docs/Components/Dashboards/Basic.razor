@@ -1,9 +1,14 @@
 ﻿@using TabBlazor.Dashboards
 
+
 <Dashboard TItem=Order Items="orders" OnUpdate="DashboardUpdated">
     <h2 class="page-title mb-2">
         Dashboard
     </h2>
+
+    <span class="text-muted">
+        Filter: @context.LastRunFilterMilliseconds ms
+    </span>
 
     <Row>
         <RowCol Lg="2">
@@ -17,7 +22,7 @@
                     <DateFacet TItem=Order Expression="e=> e.OrderDate.DateTime" Name="Order Date:" />
                 </CardBody>
             </Card>
-        
+
         </RowCol>
         <RowCol Lg=10>
 
@@ -33,11 +38,11 @@
                                 </RowCol>
 
                                 <div class="col">
-                                    <div class="font-weight-medium">
-                                        @context.FilteredItems.Sum(e=> e.NetValue).ToString("c0") Net Sales
-                                    </div>
+                                    <h3 class="mb-0">
+                                        @context.FilteredItems.Sum(e => e.NetValue).ToString("n0") Net Sales
+                                    </h3>
                                     <div class="text-muted">
-                                        @context.FilteredItems.Sum(e=> e.GrossValue).ToString("c0") Gross Sales
+                                        @context.FilteredItems.Sum(e => e.GrossValue).ToString("n0") Gross Sales
                                     </div>
                                 </div>
                             </div>
@@ -84,7 +89,7 @@
                                     </div>
                                     <div class="text-muted">
                                         @context.FilteredItems.DistinctBy(e=> e.Country).Count().ToString("n0") Countries
-                                     </div>
+                                    </div>
                                 </div>
                             </div>
                         </CardBody>
@@ -106,20 +111,115 @@
                                         var topCustomer = @context.FilteredItems.GroupBy(e => e.Customer).Select(e => new { Customer = e.Key, Value = e.Aggregate(0.0M, (current, order) => current + order.NetValue) }).OrderByDescending(e => e.Value).FirstOrDefault();
 
                                         <div class="font-weight-medium">
-                                        @topCustomer?.Customer.CustomerName
+                                            @topCustomer?.Customer.CustomerName
                                         </div>
                                         <div class="text-muted">
-                                             @topCustomer?.Value.ToString("n0")
+                                            @topCustomer?.Value.ToString("n0")
                                         </div>
 
                                     }
 
-                                  
+
                                 </div>
                             </div>
                         </CardBody>
                     </Card>
                 </RowCol>
+
+                <RowCol Sm="6" Lg="3">
+                    <Card Size="CardSize.Small">
+                        <CardBody>
+                            <div class="row align-items-top">
+
+                                <RowCol Lg="7" Xs="12">
+                              
+                                        <div class="d-flex align-items-center">
+                                            <div class="subheader">Net Sales</div>
+                                            <div class="ms-auto lh-1">
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-baseline">
+                                            <div class="h1 mb-3 me-2"> @context.FilteredItems.Sum(e => e.NetValue).ToString("c0")</div>
+
+                                        </div>
+
+                                 
+
+                                </RowCol>
+
+                                <RowCol Lg="7" Xs="12">
+                                 
+                                        <div>
+                                            <ApexChart TItem="Order"
+                                                       Options="orderTypeChartOptions"
+                                                       @ref=orderTypeChart>
+
+                                                <ApexPointSeries TItem="Order"
+                                                                 Items="context.FilteredItems"
+                                                                 Name="Order Type"
+                                                                 SeriesType="SeriesType.Pie"
+                                                                 XValue="@(e => e.OrderType)"
+                                                                 YAggregate="@(e => e.Sum(e => e.NetValue))"
+                                                                 OrderByDescending="e=>e.Y" />
+                                            </ApexChart>
+                                        </div>
+
+                                 
+
+                              </RowCol>
+
+                              
+
+                            </div>
+                        </CardBody>
+                    </Card>
+                </RowCol>
+
+
+
+
+                <RowCol Sm="6" Lg="3">
+                    <Card Size="CardSize.Small">
+                        <CardBody>
+                            <div class="d-flex align-items-center">
+                                <div class="subheader">Discount</div>
+                                <div class="ms-auto lh-1">
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-baseline">
+                                <div class="h1 mb-3 me-2">@(CalculateDiscount(context.FilteredItems.Sum(e => e.GrossValue), context.FilteredItems.Sum(e => e.NetValue)))%</div>
+                                <div class="me-auto">
+                                    <span class="text-green d-inline-flex align-items-center lh-1">
+                                        8% <!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><polyline points="3 17 9 11 13 15 21 7"></polyline><polyline points="14 7 21 7 21 14"></polyline></svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <ApexChart TItem="Order"
+                                           Options="orderDiscountChartOptions"
+                                           @ref=orderDiscountChart
+                                           Height="70"
+                                           XAxisType="@XAxisType.Datetime">
+
+                                    <ApexPointSeries TItem="Order"
+                                                     Items="context.FilteredItems"
+                                                     Name="Discount"
+                                                     SeriesType="SeriesType.Bar"
+                                                     XValue="@(e => e.OrderDate.FirstDayOfMonth())"
+                                                     YAggregate="@(e => CalculateDiscount(e.Sum(f => f.GrossValue), e.Sum(f => f.NetValue)))"
+                                                     OrderByDescending="e=>e.X" />
+                                </ApexChart>
+                            </div>
+
+
+                        </CardBody>
+                    </Card>
+                </RowCol>
+
+
+
 
                 <RowCol>
 
@@ -159,10 +259,10 @@
 
                     <Table PageSize=5 Item="Order" Items="context.FilteredItems?.ToList()">
                         <Column Item="Order" Property="e=>e.Customer.CustomerName" Searchable Sortable />
-                        <Column Item="Order" Property="e=>e.OrderDate" Searchable Sortable >
-                        <Template Context="order">
+                        <Column Item="Order" Property="e=>e.OrderDate" Searchable Sortable>
+                            <Template Context="order">
                                 @order.OrderDate.ToString("d")
-                        </Template>    
+                            </Template>
                         </Column>
                         <Column Item="Order" Property="e=>e.Country" Searchable Sortable />
                         <Column Item="Order" Property="e=>e.OrderType" Searchable Sortable />
@@ -182,43 +282,44 @@
         </RowCol>
     </Row>
 
-
-
-
-
 </Dashboard>
 
 @code {
-    private List<Order> orders = SampleData.GetOrders();
+    private List<Order> orders = SampleData.GetOrders(); // SampleData.GeneratedOrders(500000);
+
     private ApexChart<Order> chart;
     private ApexChartOptions<Order> chartOptions = new();
+
+    private ApexChart<Order> orderTypeChart;
+    private ApexChartOptions<Order> orderTypeChartOptions = new();
+
+    private ApexChart<Order> orderDiscountChart;
+    private ApexChartOptions<Order> orderDiscountChartOptions = new();
 
     protected override void OnInitialized()
     {
         chartOptions.Theme = new Theme { Palette = PaletteType.Palette6 };
         chartOptions.Chart.Toolbar = new Toolbar { Show = false };
         chartOptions.Yaxis = new List<YAxis> { new YAxis { DecimalsInFloat = 0 } };
+
+        orderTypeChartOptions.Theme = new Theme { Palette = PaletteType.Palette6 };
+        orderTypeChartOptions.Chart = new Chart { Sparkline = new ChartSparkline { Enabled = true } };
+
+        orderDiscountChartOptions.Theme = new Theme { Palette = PaletteType.Palette6 };
+        orderDiscountChartOptions.Chart = new Chart { Sparkline = new ChartSparkline { Enabled = true } };
     }
 
     private async Task DashboardUpdated()
     {
         await Task.Yield();
         await chart?.UpdateSeriesAsync(true);
-
+        await orderTypeChart?.UpdateSeriesAsync(true);
+        await orderDiscountChart?.UpdateSeriesAsync(true);
     }
 
-
-    private (Customer, decimal) GetTopCustomer(IEnumerable<Order> orders)
+    private decimal CalculateDiscount(decimal gross, decimal net)
     {
-        var test = orders.GroupBy(e => e.Customer)
-        .Select(e => new { Customer = e.Key, Value = e.Aggregate(0.0M, (current, order) => current + order.NetValue) })
-        .OrderByDescending(e => e.Value).FirstOrDefault();
-        ;
-
-       // var tt = orders.Min(e => e.NetValue);
-
-        return (test.Customer, test.Value);
-
+        return Math.Round((gross - net) / gross * 100, 2);
     }
 
 }
