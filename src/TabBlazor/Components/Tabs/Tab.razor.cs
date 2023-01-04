@@ -24,6 +24,7 @@ namespace TabBlazor
         void Activate()
         {
             ContainerTabSet.SetActivateTab(this);
+            OnClick.InvokeAsync();
         }
     }
 }
