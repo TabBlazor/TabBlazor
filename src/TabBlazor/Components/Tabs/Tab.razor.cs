@@ -1,5 +1,4 @@
 ﻿using TabBlazor.Components;
-using Microsoft.AspNetCore.Components;
 
 namespace TabBlazor
 {
