@@ -1,4 +1,6 @@
-﻿@using TabBlazor.Dashboards
+﻿@using System.IO;
+@using ClosedXML.Excel;
+@using TabBlazor.Dashboards
 
 
 <Dashboard TItem=Order Items="orders" OnUpdate="DashboardUpdated">
@@ -8,6 +10,10 @@
 
     <span class="text-muted">
         Filter: @context.LastRunFilterMilliseconds ms
+    </span>
+
+    <span class="text-muted">
+        <Icon IconType="MDIcons.Microsoft_excel" OnClick="@(() => DownloadExcel(context.FilteredItems))" Color="#1D6F42" />
     </span>
 
     <Row>
@@ -126,49 +132,40 @@
                     </Card>
                 </RowCol>
 
-                <RowCol Sm="6" Lg="3">
+                <RowCol Sm="12" Lg="4">
                     <Card Size="CardSize.Small">
                         <CardBody>
                             <div class="row align-items-top">
 
                                 <RowCol Lg="7" Xs="12">
-                              
-                                        <div class="d-flex align-items-center">
-                                            <div class="subheader">Net Sales</div>
-                                            <div class="ms-auto lh-1">
-                                            </div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="subheader">Net Sales</div>
+                                        <div class="ms-auto lh-1">
                                         </div>
-                                        <div class="d-flex align-items-baseline">
-                                            <div class="h1 mb-3 me-2"> @context.FilteredItems.Sum(e => e.NetValue).ToString("c0")</div>
+                                    </div>
+                                    <div class="d-flex align-items-baseline">
+                                        <div class="h1 mb-3 me-2"> @context.FilteredItems.Sum(e => e.NetValue).ToString("c0")</div>
 
-                                        </div>
-
-                                 
-
+                                    </div>
                                 </RowCol>
 
-                                <RowCol Lg="7" Xs="12">
-                                 
-                                        <div>
-                                            <ApexChart TItem="Order"
-                                                       Options="orderTypeChartOptions"
-                                                       @ref=orderTypeChart>
+                                <RowCol Lg="5" Xs="12">
+                                    <div>
+                                        <ApexChart TItem="Order"
+                                                   Options="orderTypeChartOptions"
+                                                   @ref=orderTypeChart>
 
-                                                <ApexPointSeries TItem="Order"
-                                                                 Items="context.FilteredItems"
-                                                                 Name="Order Type"
-                                                                 SeriesType="SeriesType.Pie"
-                                                                 XValue="@(e => e.OrderType)"
-                                                                 YAggregate="@(e => e.Sum(e => e.NetValue))"
-                                                                 OrderByDescending="e=>e.Y" />
-                                            </ApexChart>
-                                        </div>
+                                            <ApexPointSeries TItem="Order"
+                                                             Items="context.FilteredItems"
+                                                             Name="Order Type"
+                                                             SeriesType="SeriesType.Pie"
+                                                             XValue="@(e => e.OrderType)"
+                                                             YAggregate="@(e => e.Sum(e => e.NetValue))"
+                                                             OrderByDescending="e=>e.Y" />
+                                        </ApexChart>
+                                    </div>
+                                </RowCol>
 
-                                 
-
-                              </RowCol>
-
-                              
 
                             </div>
                         </CardBody>
@@ -176,9 +173,7 @@
                 </RowCol>
 
 
-
-
-                <RowCol Sm="6" Lg="3">
+                <RowCol Sm="12" Lg="4">
                     <Card Size="CardSize.Small">
                         <CardBody>
                             <div class="d-flex align-items-center">
@@ -187,20 +182,39 @@
                                 </div>
                             </div>
                             <div class="d-flex align-items-baseline">
-                                <div class="h1 mb-3 me-2">@(CalculateDiscount(context.FilteredItems.Sum(e => e.GrossValue), context.FilteredItems.Sum(e => e.NetValue)))%</div>
-                                <div class="me-auto">
-                                    <span class="text-green d-inline-flex align-items-center lh-1">
-                                        8% <!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><polyline points="3 17 9 11 13 15 21 7"></polyline><polyline points="14 7 21 7 21 14"></polyline></svg>
-                                    </span>
-                                </div>
+                                @{
+                                    var discount = CalculateDiscount(context.FilteredItems.Sum(e => e.GrossValue), context.FilteredItems.Sum(e => e.NetValue));
+
+                                    <div class="h1 mb-3 me-2">
+
+                                        @if (discount != null)
+                                        {
+                                            <span>@((decimal)discount)%</span>
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+
+                                    </div>
+
+                                    @if (discount != null)
+                                    {
+                                        <div class="me-auto">
+                                            <span class="text-green d-inline-flex align-items-center lh-1">
+                                            8%
+                                            <Icon class="icon ms-1" IconType="TablerIcons.Trending_up" />
+                                        </span>
+                                    </div>
+                                    }
+                                }
                             </div>
 
                             <div>
                                 <ApexChart TItem="Order"
                                            Options="orderDiscountChartOptions"
                                            @ref=orderDiscountChart
-                                           Height="70"
+                                           Height="40"
                                            XAxisType="@XAxisType.Datetime">
 
                                     <ApexPointSeries TItem="Order"
@@ -219,6 +233,63 @@
                 </RowCol>
 
 
+                <RowCol Sm="12" Lg="4">
+                    <Card Size="CardSize.Small">
+                        <CardBody>
+
+                            @{
+                                var topCustomers = GetTopCustomers(context.FilteredItems);
+                                var filteredNetValue = context.FilteredItems.Sum(e => e.NetValue);
+                                <div class="row align-items-top">
+
+                                    <RowCol Lg="7" Xs="12">
+                                        <div class="d-flex align-items-center">
+                                            <div class="subheader">Top 5 Customers</div>
+                                            <div class="ms-auto lh-1">
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-baseline">
+                                            <div class="h1 mb-3 me-2">
+                                                @if (filteredNetValue > 0)
+                                                {
+                                                    @(((topCustomers.Sum(e => e.NetValue) / filteredNetValue) * 100).ToString("n2"))
+
+                                                    <span>%</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>-</span>
+                                                }
+
+                                            </div>
+                                        </div>
+                                    </RowCol>
+
+                                    <RowCol Lg="5" Xs="12">
+                                        <div>
+
+                                            <ApexChart TItem="TopCustomer"
+                                                   Options="topCustomerChartOptions"
+                                                       @ref=topCustomerChart>
+
+                                                <ApexPointSeries TItem="TopCustomer"
+                                                             Items="@topCustomers"
+                                                             Name="Customer"
+                                                             SeriesType="SeriesType.Bar"
+                                                             XValue="@(e => e.Customer.CustomerName)"
+                                                             YValue="@(e => e.NetValue)"
+                                                             OrderByDescending="e=>e.Y" />
+                                            </ApexChart>
+
+                                        </div>
+                                    </RowCol>
+
+
+                                </div>
+                            }
+                        </CardBody>
+                    </Card>
+                </RowCol>
 
 
                 <RowCol>
@@ -285,7 +356,8 @@
 </Dashboard>
 
 @code {
-    private List<Order> orders = SampleData.GetOrders(); // SampleData.GeneratedOrders(500000);
+    [Inject] public TablerService TablerService { get; set; }
+    private List<Order> orders = SampleData.GetOrders();  // SampleData.GeneratedOrders(500000);
 
     private ApexChart<Order> chart;
     private ApexChartOptions<Order> chartOptions = new();
@@ -295,6 +367,9 @@
 
     private ApexChart<Order> orderDiscountChart;
     private ApexChartOptions<Order> orderDiscountChartOptions = new();
+
+    private ApexChart<TopCustomer> topCustomerChart;
+    private ApexChartOptions<TopCustomer> topCustomerChartOptions = new();
 
     protected override void OnInitialized()
     {
@@ -307,6 +382,11 @@
 
         orderDiscountChartOptions.Theme = new Theme { Palette = PaletteType.Palette6 };
         orderDiscountChartOptions.Chart = new Chart { Sparkline = new ChartSparkline { Enabled = true } };
+
+
+        topCustomerChartOptions.Theme = new Theme { Palette = PaletteType.Palette6 };
+        topCustomerChartOptions.PlotOptions = new PlotOptions { Bar = new PlotOptionsBar { Horizontal = true, Distributed = true } };
+        topCustomerChartOptions.Chart = new Chart { Sparkline = new ChartSparkline { Enabled = true } };
     }
 
     private async Task DashboardUpdated()
@@ -315,11 +395,63 @@
         await chart?.UpdateSeriesAsync(true);
         await orderTypeChart?.UpdateSeriesAsync(true);
         await orderDiscountChart?.UpdateSeriesAsync(true);
+        await topCustomerChart?.UpdateSeriesAsync(true);
     }
 
-    private decimal CalculateDiscount(decimal gross, decimal net)
+    private decimal? CalculateDiscount(decimal gross, decimal net)
     {
+        if (gross == 0) { return null; }
         return Math.Round((gross - net) / gross * 100, 2);
+    }
+
+    private List<TopCustomer> GetTopCustomers(IEnumerable<Order> orders)
+    {
+        return orders.GroupBy(e => e.Customer).Select(g => new TopCustomer
+            {
+                Customer = g.Key,
+                NetValue = g.Select(e => e.NetValue).Aggregate((s1, s2) => s1 + s2)
+            }).OrderByDescending(e => e.NetValue).Take(5).ToList();
+    }
+
+    private async Task DownloadExcel(IEnumerable<Order> orders)
+    {
+        var wb = new XLWorkbook();
+        var ws = wb.Worksheets.Add("Filtered Orders");
+
+        var toExport = orders.Select(e => new
+        {
+            e.OrderId,
+            e.Country,
+            e.OrderDate,
+            e.OrderStatus,
+            e.OrderType,
+            e.Customer.CustomerName,
+            e.Customer.CustomerId,
+            e.NetValue,
+            e.GrossValue,
+            e.DiscountPrecentage
+        });
+
+        ws.Row(1).Style.Font.SetBold();
+        ws.Cell(1, 1).InsertTable(toExport, false);
+
+        var bytes = new byte[0];
+        using (var ms = new MemoryStream())
+        {
+            wb.SaveAs(ms);
+            bytes = ms.ToArray();
+        }
+
+        var bytesBase64 = Convert.ToBase64String(bytes);
+        var href = "data:application/octet-stream;base64," + bytesBase64;
+        await TablerService.SaveAsFile("Orders Dashboard.xlsx", href);
+    }
+
+    private class TopCustomer
+    {
+        public Customer Customer { get; set; }
+        public decimal NetValue { get; set; }
+
     }
 
 }
