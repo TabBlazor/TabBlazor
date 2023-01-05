@@ -1,4 +1,8 @@
-﻿.tabicon {
+﻿.progress-lg {
+  height: 0.8rem;
+}
+
+.tabicon {
   border: none;
   background: none;
   outline: none;
@@ -26,6 +30,10 @@
 .clickable-text {
   cursor: pointer;
   text-decoration: underline;
+}
+
+.clickable-header {
+  cursor: pointer;
 }
 
 .badge.badge-default {
