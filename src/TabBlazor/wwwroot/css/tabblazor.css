@@ -1,4 +1,8 @@
-﻿.tabicon {
+﻿.progress-lg {
+  height: 0.8rem;
+}
+
+.tabicon {
   border: none;
   background: none;
   outline: none;

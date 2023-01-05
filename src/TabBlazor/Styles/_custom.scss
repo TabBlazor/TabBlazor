@@ -1,4 +1,9 @@
 ﻿
+//
+.progress-lg {
+    height: 0.8rem;
+}
+
 .tabicon {
     border: none;
     background: none;
@@ -34,7 +39,7 @@
 
 .clickable-header {
     cursor: pointer;
-}  
+}
 
 //Badge
 .badge.badge-default {
@@ -212,5 +217,3 @@ Dimmer
         opacity: 0.3;
     }
 }
-
-
