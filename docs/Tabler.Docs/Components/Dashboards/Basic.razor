@@ -67,9 +67,9 @@
                                 </RowCol>
 
                                 <div class="col">
-                                    <div class="font-weight-medium">
+                                    <h3 class="mb-0">
                                         @context.FilteredItems.Count().ToString("n0") Orders
-                                    </div>
+                                    </h3>
                                     <div class="text-muted">
                                         @context.FilteredItems.Where(e=> e.OrderStatus == OrderStatus.Cancelled).Count().ToString("n0") Cancelled
                                     </div>
@@ -90,9 +90,9 @@
                                 </RowCol>
 
                                 <div class="col">
-                                    <div class="font-weight-medium">
+                                    <h3 class="mb-0">
                                         @context.FilteredItems.DistinctBy(e=> e.Customer.CustomerId).Count().ToString("n0") Customers
-                                    </div>
+                                    </h3>
                                     <div class="text-muted">
                                         @context.FilteredItems.DistinctBy(e=> e.Country).Count().ToString("n0") Countries
                                     </div>
@@ -116,9 +116,9 @@
                                     @{
                                         var topCustomer = @context.FilteredItems.GroupBy(e => e.Customer).Select(e => new { Customer = e.Key, Value = e.Aggregate(0.0M, (current, order) => current + order.NetValue) }).OrderByDescending(e => e.Value).FirstOrDefault();
 
-                                        <div class="font-weight-medium">
+                                        <h3 class="mb-0">
                                             @topCustomer?.Customer.CustomerName
-                                        </div>
+                                        </h3>
                                         <div class="text-muted">
                                             @topCustomer?.Value.ToString("n0")
                                         </div>
@@ -175,13 +175,13 @@
 
                 <RowCol Sm="12" Lg="4">
                     <Card Size="CardSize.Small">
-                        <CardBody>
+                        <CardBody class="d-flex flex-column">
                             <div class="d-flex align-items-center">
                                 <div class="subheader">Discount</div>
                                 <div class="ms-auto lh-1">
                                 </div>
                             </div>
-                            <div class="d-flex align-items-baseline">
+                            <div class="d-flex flex-grow-1 align-items-stretch">
                                 @{
                                     var discount = CalculateDiscount(context.FilteredItems.Sum(e => e.GrossValue), context.FilteredItems.Sum(e => e.NetValue));
 
@@ -202,30 +202,32 @@
                                     {
                                         <div class="me-auto">
                                             <span class="text-green d-inline-flex align-items-center lh-1">
-                                            8%
-                                            <Icon class="icon ms-1" IconType="TablerIcons.Trending_up" />
-                                        </span>
-                                    </div>
+                                                8%
+                                                <Icon class="icon ms-1" IconType="TablerIcons.Trending_up" />
+                                            </span>
+                                        </div>
                                     }
                                 }
                             </div>
 
-                            <div>
-                                <ApexChart TItem="Order"
-                                           Options="orderDiscountChartOptions"
-                                           @ref=orderDiscountChart
-                                           Height="40"
-                                           XAxisType="@XAxisType.Datetime">
+                            
+                                <div class="justify-content-end">
+                                    <ApexChart TItem="Order"
+                                               Options="orderDiscountChartOptions"
+                                               @ref=orderDiscountChart
+                                           Height="60"
+                                               XAxisType="@XAxisType.Datetime">
 
-                                    <ApexPointSeries TItem="Order"
-                                                     Items="context.FilteredItems"
-                                                     Name="Discount"
-                                                     SeriesType="SeriesType.Bar"
-                                                     XValue="@(e => e.OrderDate.FirstDayOfMonth())"
-                                                     YAggregate="@(e => CalculateDiscount(e.Sum(f => f.GrossValue), e.Sum(f => f.NetValue)))"
-                                                     OrderByDescending="e=>e.X" />
-                                </ApexChart>
-                            </div>
+                                        <ApexPointSeries TItem="Order"
+                                                         Items="context.FilteredItems"
+                                                         Name="Discount"
+                                                         SeriesType="SeriesType.Bar"
+                                                         XValue="@(e => e.OrderDate.FirstDayOfMonth())"
+                                                         YAggregate="@(e => CalculateDiscount(e.Sum(f => f.GrossValue), e.Sum(f => f.NetValue)))"
+                                                         OrderByDescending="e=>e.X" />
+                                    </ApexChart>
+                                </div>
+                            
 
 
                         </CardBody>
