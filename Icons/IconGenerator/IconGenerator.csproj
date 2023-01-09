@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ISO.3166.CountryCodes" Version="1.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\docs\Tabler.Docs\Tabler.Docs.csproj" />
   </ItemGroup>
 
