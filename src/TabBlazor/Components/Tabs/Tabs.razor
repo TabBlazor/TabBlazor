@@ -6,9 +6,11 @@
 
 <div class="card">
     <CascadingValue Value="@this">
-        <ul class="nav nav-tabs" data-toggle="tabs">
+        <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" data-toggle="tabs">
             @ChildContent
         </ul>
+</div>
     </CascadingValue>
 
     <div class="card-body">
