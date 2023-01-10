@@ -69,7 +69,7 @@ namespace TabBlazor
         private Dropdown dropdown;
         private string searchText;
         private TItem highlighted;
-        private FieldIdentifier fieldIdentifier;
+        private FieldIdentifier? fieldIdentifier;
         private string FieldCssClasses;
 
         protected override void OnInitialized()
@@ -103,13 +103,15 @@ namespace TabBlazor
 
         protected override void OnAfterRender(bool firstRender)
         {
-            CascadedEditContext?.NotifyFieldChanged(fieldIdentifier);
+            if (fieldIdentifier is not FieldIdentifier fid) { return; }
+            CascadedEditContext?.NotifyFieldChanged(fid);
             CascadedEditContext?.Validate();
         }
 
         private void SetValidationClasses(object sender, ValidationStateChangedEventArgs args)
         {
-            FieldCssClasses = CascadedEditContext?.FieldCssClass(fieldIdentifier) ?? "";
+            if (fieldIdentifier is not FieldIdentifier fid) { return; }
+            FieldCssClasses = CascadedEditContext?.FieldCssClass(fid) ?? "";
         }
 
         protected override void OnParametersSet()
@@ -360,7 +362,11 @@ namespace TabBlazor
             }
 
             await Changed.InvokeAsync();
-            CascadedEditContext?.NotifyFieldChanged(fieldIdentifier);
+            
+            if (fieldIdentifier is FieldIdentifier fid)
+            {
+                CascadedEditContext?.NotifyFieldChanged(fid);
+            }
         }
 
         public void Dispose()
