@@ -40,6 +40,7 @@ namespace IconGenerator
             var fileOutput = new StringBuilder();
             foreach (var flag in flags)
             {
+              
                 fileOutput.AppendLine(flag.DotNetProperty);
             }
 

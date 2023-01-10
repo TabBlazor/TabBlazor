@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ISO.3166.CountryCodes" Version="1.0.3" />
+    <PackageReference Include="Nager.Country" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>

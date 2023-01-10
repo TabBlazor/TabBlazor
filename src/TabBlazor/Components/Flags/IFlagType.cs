@@ -6,17 +6,21 @@
         public int Width { get; }
         public int Height { get; }
         public string Elements { get; }
-        public string TwoLetterCode { get;  }
-        public string ThreeLetterCode { get;  }
+
+        public Country Country { get; set; }
     }
 
     public class TablerFlag : IFlagType
     {
-        public TablerFlag(string elements, string twoLetterCode = null, string threeLetterCode = null)
+        public TablerFlag(string elements)
         {
             Elements = elements;
-            TwoLetterCode = twoLetterCode;
-            ThreeLetterCode = threeLetterCode;
+        }
+
+        public TablerFlag(string elements, Country country = null)
+        {
+            Elements = elements;
+            Country = country;
         }
 
         public int Width => 640;
@@ -27,7 +31,6 @@
 
         public string ClassName => "TablerFlag";
 
-        public string TwoLetterCode { get; internal set; }
-        public string ThreeLetterCode { get; internal set; }
+        public Country Country { get; set; }
     }
 }

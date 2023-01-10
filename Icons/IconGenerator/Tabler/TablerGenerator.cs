@@ -1,4 +1,5 @@
 ﻿using IconGenerator.Converters;
+using Nager.Country;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ using System.Xml.Linq;
 using TabBlazor;
 using Tabler.Docs.Components.Icons;
 using Tabler.Docs.Icons;
-using ISO._3166;
+
 namespace IconGenerator.Tabler
 {
     public static class TablerGenerator
@@ -26,7 +27,8 @@ namespace IconGenerator.Tabler
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("TabBlazor", "1"));
 
-            var countries = ISO._3166.CountryCodesResolver.GetList();
+            var countryProvider = new CountryProvider();
+            var countries = countryProvider.GetCountries();
 
             var repo = "tabler/tabler";
             var contentsUrl = $"https://api.github.com/repos/{repo}/contents/src/img/flags";
@@ -36,14 +38,18 @@ namespace IconGenerator.Tabler
 
             foreach (var file in entries.Where(e => e.Name.EndsWith(".svg")))
             {
+                Console.WriteLine(file.Name);
+
+
                 var countryAbbrevation = file.Name.Substring(0, file.Name.Length - 4);
                 var generatedFlag = new GeneratedFlag();
 
-                var country = countries.FirstOrDefault(e => e.Alpha2.ToLower() == countryAbbrevation.ToLower());
+                var country = countries.FirstOrDefault(e => e.Alpha2Code.ToString().ToLower() == countryAbbrevation.ToLower());
 
-                if(country != null)
+                if (country != null)
                 {
-                    generatedFlag.Name = country.Name;
+                    generatedFlag.Country = new TabBlazor.Country(country.CommonName, country.Alpha2Code.ToString(), country.Alpha3Code.ToString(), country.NumericCode);
+                    generatedFlag.Name = country.CommonName;
                 }
                 else
                 {

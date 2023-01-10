@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using TabBlazor.Components.QuickTables;
+using Tabler.Docs.Data;
 
 public interface IDataService
 {
