@@ -18,14 +18,14 @@
         }
         else
         {
-            <span>Click icons to select..</span>
+            <span>Click flags to select..</span>
         }
     </div>
 </div>
 
 <Row class="mb-1">
     <RowCol Auto class="text-muted">
-        Showing @filteredFlags.Count (@flagMembers.Count)
+        Showing @filteredFlags.Count (@flags.Count)
     </RowCol>
 </Row>
 
@@ -34,7 +34,7 @@
 <div class="row mb-3">
     <div style="height:500px;overflow-y:auto">
         <ResizeObserver OnWidthResized=FlagContainerResized>
-            <Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize Items="@filteredFlags.Batch(40).ToList()" Context="flags">
+            <Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize Items="@filteredFlags.Batch(GetRowCount()).ToList()" Context="flags">
                 @foreach (var flagMember in flags)
                 {
                     <span title="@($"{flagMember.Name}")">

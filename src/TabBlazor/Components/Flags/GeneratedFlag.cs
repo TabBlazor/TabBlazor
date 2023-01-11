@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using TabBlazor;
-
-namespace Tabler.Docs.Icons
+﻿
+namespace TabBlazor
 {
     public class GeneratedFlag
     {
@@ -13,18 +9,15 @@ namespace Tabler.Docs.Icons
         public string DotNetProperty { 
         get
             {
-                if (Country == null)
+                if (FlagType.Country == null)
                 {
-                    return $"public static IFlagType {GetSafeName()} => new {FlagType.ClassName}(@\"{FlagType?.Elements}\");";
+                    return $"public static IFlagType {GetSafeName()} => new {FlagType.ClassName}(@\"{FlagType.Elements}\");";
                 }
-
-                return $"public static IFlagType {GetSafeName()} => new {FlagType.ClassName}(@\"{FlagType?.Elements}\", new TabBlazor.Country(\"{Country.Name}\", \"{Country.Alpha2}\", \"{Country.Alpha3}\", {Country.Numeric}));";
+                return $"public static IFlagType {GetSafeName()} => new {FlagType.ClassName}(@\"{FlagType.Elements}\", new TabBlazor.Country(\"{FlagType.Country.Name}\", \"{FlagType.Country.Alpha2}\", \"{FlagType.Country.Alpha3}\", {FlagType.Country.Numeric}));";
             }
 
         } 
-        
-        public TabBlazor.Country Country { get; set; }
-
+      
         public string GetSafeName()
         {
             var safeName = Name;
@@ -49,7 +42,6 @@ namespace Tabler.Docs.Icons
 
             return safeName;
         }
-
 
         private static string FirstCharacterToUpperCase(string text)
         {

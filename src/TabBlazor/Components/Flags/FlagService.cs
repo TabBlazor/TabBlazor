@@ -11,9 +11,9 @@ namespace TabBlazor
     public class FlagService
     {
 
-        private List<FlagMember> flagMembers = new();
+        private List<GeneratedFlag> generatedFlags = new();
 
-        public List<FlagMember> AllFlagMembers => flagMembers;
+        public List<GeneratedFlag> AllFlags => generatedFlags;
         public List<IFlagType> countryFlagTypes { get; set; }
 
 
@@ -47,20 +47,15 @@ namespace TabBlazor
                 {
                     foreach (var prop in t.GetProperties(BindingFlags.Static | BindingFlags.Public).Where(e => e.PropertyType == typeof(IFlagType)))
                     {
-                        flagMembers.Add(new FlagMember { Name = prop.Name, FlagType = (IFlagType)prop.GetValue(null) });
+                        generatedFlags.Add(new GeneratedFlag { Name = prop.Name, FlagType = (IFlagType)prop.GetValue(null) });
                     }
                 }
             }
 
-            countryFlagTypes = flagMembers.Select(e => e.FlagType).Where(f => f.Country != null).ToList();
+            countryFlagTypes = generatedFlags.Select(e => e.FlagType).Where(f => f.Country != null).ToList();
         }
     }
 
-    public class FlagMember
-    {
-        public string Name { get; set; }
-        public IFlagType FlagType { get; set; }
-
-    }
+  
 
 }

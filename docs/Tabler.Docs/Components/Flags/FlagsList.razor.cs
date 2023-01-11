@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using TabBlazor;
 using TabBlazor.Services;
+using Tabler.Docs.Icons;
 
 namespace Tabler.Docs.Components.Flags
 {
@@ -15,9 +16,9 @@ namespace Tabler.Docs.Components.Flags
         [Inject] private TablerService tabService { get; set; }
         [Inject] private ToastService toastService { get; set; }
 
-        private List<FlagMember> flagMembers => flagServcie.AllFlagMembers;
-        private List<FlagMember> filteredFlags = new();
-        private List<FlagMember> selectedFlags = new();
+        private List<GeneratedFlag> flags => flagServcie.AllFlags;
+        private List<GeneratedFlag> filteredFlags = new();
+        private List<GeneratedFlag> selectedFlags = new();
 
         private string searchText;
         private ContentRect flagContainerRect;
@@ -46,39 +47,38 @@ namespace Tabler.Docs.Components.Flags
             filteredFlags.Clear();
 
 
-            IEnumerable<FlagMember> query;
-            query = flagMembers;
+            IEnumerable<GeneratedFlag> query;
+            query = flags;
 
             if (!string.IsNullOrWhiteSpace(searchText))
             {
                 query = query.Where(x => x.Name.Contains(searchText, StringComparison.InvariantCultureIgnoreCase));
             }
 
-
             filteredFlags = query.ToList();
-            //filteredIcons = query.ToList();
-
+         
         }
 
-        private bool IsSelected(FlagMember flagMember) => selectedFlags.Contains(flagMember);
-
-        //private int GetRowCount()
-        //{
-        //    var iconSize = size + 30;
-        //    var width = iconContainerRect?.Width ?? 100;
-
-        //    return (int)Math.Floor((width / iconSize));
-        //}
-
-        private void SelectFlag(FlagMember flagMember)
+       private int GetRowCount()
         {
-            if (IsSelected(flagMember))
+                var flagSize = 100;
+                var width = flagContainerRect?.Width ?? 100;
+            var result = (int)Math.Floor((width / flagSize));
+           return result;
+           
+        }
+
+        private bool IsSelected(GeneratedFlag flagMember) => selectedFlags.Contains(flagMember);
+
+        private void SelectFlag(GeneratedFlag flag)
+        {
+            if (IsSelected(flag))
             {
-                selectedFlags.Remove(flagMember);
+                selectedFlags.Remove(flag);
             }
             else
             {
-                selectedFlags.Add(flagMember);
+                selectedFlags.Add(flag);
             }
 
         }
@@ -90,27 +90,15 @@ namespace Tabler.Docs.Components.Flags
 
         private async Task CopyToClipboard()
         {
-            //    var iconlist = "";
-            //    foreach (var icon in selectedIcons)
-            //    {
-            //        iconlist += icon.DotNetProperty + Environment.NewLine;
-            //    }
+            var flags = "";
+            foreach (var flag in selectedFlags)
+            {
+                flags += flag.DotNetProperty + Environment.NewLine;
+            }
 
-            //    await tabService.CopyToClipboard(iconlist);
-            //    await toastService.AddToastAsync(new ToastModel { Title = $"{selectedIcons.Count} icons copied to clipboard", Options = new TabBlazor.ToastOptions { Delay = 2 } });
-            //}
+            await tabService.CopyToClipboard(flags);
+            await toastService.AddToastAsync(new ToastModel { Title = $"{selectedFlags.Count} icons copied to clipboard", Options = new TabBlazor.ToastOptions { Delay = 2 } });
         }
-        //}
-
-        //public class ListIcon
-        //{
-        //    public string Name { get; set; }
-        //    public IIconType IconType { get; set; }
-
-        //    public string DotNetProperty => $"public static IIconType {Name} => new {IconType.ClassName}(@\"{IconType?.Elements}\");";
-
-
-        //}
-
     }
+    
 }
