@@ -76,7 +76,6 @@ namespace Tabler.Docs.Components.Icons
 
         private void SearchIcons()
         {
-
             if (!filterProviders.Any())
             {
                 filteredIcons.Clear();
@@ -97,12 +96,8 @@ namespace Tabler.Docs.Components.Icons
                 {
                     query = query.Where(e => e.IconType.Provider == filterProvider);
                 }
-
             }
-
-
             filteredIcons = query.ToList();
-
         }
 
         private bool IsSelected(ListIcon icon) => selectedIcons.Contains(icon);

@@ -1,0 +1,54 @@
+﻿<Row>
+<RowCol Auto>
+        <div class="form-group">
+            <label>Search</label>
+            <input class="form-control" type="text" value="@searchText" @oninput="Search" />
+        </div>
+      </RowCol>
+</Row>
+
+
+<div class="row mt-3 mb-3">
+    <div class="col-auto">
+        @if (selectedFlags.Any())
+        {
+            <span>@selectedFlags.Count flags selected</span>
+            <Button class="ms-1" Size="ButtonSize.Small" BackgroundColor="TablerColor.Primary" OnClick="CopyToClipboard">Copy to clipboard</Button>
+            <Button class="ms-1" Size="ButtonSize.Small" BackgroundColor="TablerColor.Danger" OnClick="ClearSelected">Clear selected</Button>
+        }
+        else
+        {
+            <span>Click flags to select..</span>
+        }
+    </div>
+</div>
+
+<Row class="mb-1">
+    <RowCol Auto class="text-muted">
+        Showing @filteredFlags.Count (@flags.Count)
+    </RowCol>
+</Row>
+
+
+
+<div class="row mb-3">
+    <div style="height:500px;overflow-y:auto">
+        <ResizeObserver OnWidthResized=FlagContainerResized>
+            <Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize Items="@filteredFlags.Batch(GetRowCount()).ToList()" Context="flags">
+                @foreach (var flagMember in flags)
+                {
+                    <span title="@($"{flagMember.Name}")">
+                        <label class="me-1 mt-1">
+                            <input type="checkbox" class="form-selectgroup-input" checked="@IsSelected(flagMember)" @onchange="@((e) => SelectFlag(flagMember))">
+                            <span class="form-selectgroup-label">
+                                <Flag Size=FlagSize.Medium FlagType="flagMember.FlagType" />
+
+                            </span>
+                        </label>
+                    </span>
+                }
+
+            </Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize>
+        </ResizeObserver>
+    </div>
+</div>

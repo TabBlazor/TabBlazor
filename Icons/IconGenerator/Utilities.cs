@@ -34,6 +34,20 @@ namespace IconGenerator
             return ExtractIconElements(elements);
         }
 
+        public static void GeneratFlagsFile(string fileName, IEnumerable<GeneratedFlag> flags)
+        {
+            var directory = Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).Parent.Parent;
+            var fileOutput = new StringBuilder();
+            foreach (var flag in flags)
+            {
+              
+                fileOutput.AppendLine(flag.DotNetProperty);
+            }
+
+            File.WriteAllText(Path.Combine(directory.FullName, "Generated", fileName + ".txt"), fileOutput.ToString());
+     
+        }
+
 
         public static void GenerateIconsFile(string fileName, IEnumerable<GeneratedIcon> icons)
         {
@@ -48,6 +62,8 @@ namespace IconGenerator
             var json = JsonSerializer.Serialize(icons);
             File.WriteAllText(Path.Combine(directory.FullName, "Generated", fileName + ".json"), json);
         }
+
+     
 
 
     }

@@ -1,0 +1,43 @@
+﻿.flag {
+    //position: relative;
+    //display: inline-block;
+   //width: 1.33333em;
+   // height: 1em;
+    //vertical-align: -3px;
+    //background-repeat: no-repeat;
+    //background-position: center;
+    //background-size: cover;
+    border: var(--tblr-border-size) var(--tblr-border-style) var(--tblr-border-color);
+    border-radius: var(--tblr-border-radius);
+}
+
+
+.flag-xs {
+    width: 1.5rem;
+    height: 1.125rem;
+}
+
+.flag-sm {
+    width: 2rem;
+    height: 1.5rem;
+}
+
+.flag-md {
+    width: 4rem;
+    height: 3rem;
+}
+
+.flag-lg {
+    width: 5.5rem;
+    height: 4.125rem;
+}
+
+.flag-xl {
+    width: 7rem;
+    height: 5.25rem;
+}
+
+.flag-2xl {
+    width: 11rem;
+    height: 8.25rem;
+}

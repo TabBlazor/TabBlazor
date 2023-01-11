@@ -6,7 +6,7 @@
      }
 </style>
 <div class="card">
-    <QuickTable TGridItem="Country" Virtualize="true" ItemsProvider="ItemsProvider" ItemSize="30" class="quick-table-example">
+    <QuickTable TGridItem="Tabler.Docs.Data.Country" Virtualize="true" ItemsProvider="ItemsProvider" ItemSize="30" class="quick-table-example">
         <PropertyColumn Property="@(x => x.Name)" Sortable="true" IsDefaultSort="SortDirection.Ascending"></PropertyColumn>
         <PropertyColumn Property="@(x => x.Code)" Sortable="true"></PropertyColumn>
         <PropertyColumn Property="@(x => x.Medals.Gold)"></PropertyColumn>
@@ -15,7 +15,7 @@
 
 @code {
 
-    private GridItemsProvider<Country> ItemsProvider { get; set; }
+    private GridItemsProvider<Tabler.Docs.Data.Country> ItemsProvider { get; set; }
 
     protected override void OnInitialized()
     {

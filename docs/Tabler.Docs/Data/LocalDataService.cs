@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TabBlazor.Components.QuickTables;
+using Tabler.Docs.Data;
 
 public class LocalDataService : IDataService
 {
