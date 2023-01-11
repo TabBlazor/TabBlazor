@@ -48,7 +48,6 @@ namespace IconGenerator.Tabler
 
                 if (country != null)
                 {
-                    generatedFlag.Country = new TabBlazor.Country(country.CommonName, country.Alpha2Code.ToString(), country.Alpha3Code.ToString(), country.NumericCode);
                     generatedFlag.Name = country.CommonName;
                 }
                 else
@@ -60,6 +59,12 @@ namespace IconGenerator.Tabler
                 XElement flagSvg = XDocument.Parse(content).Root;
                 flagSvg.RemoveAllNamespaces();
                 generatedFlag.FlagType = new TablerFlag(Utilities.ExtractIconElements(flagSvg.Elements()));
+
+                if (country != null)
+                {
+                    generatedFlag.FlagType.Country = new TabBlazor.Country(country.CommonName, country.Alpha2Code.ToString(), country.Alpha3Code.ToString(), country.NumericCode);
+                }
+
                 generatedFlags.Add(generatedFlag);
             }
 
