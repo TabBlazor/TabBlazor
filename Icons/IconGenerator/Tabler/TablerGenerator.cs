@@ -1,4 +1,5 @@
-﻿using IconGenerator.Converters;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using IconGenerator.Converters;
 using Nager.Country;
 using System;
 using System.Collections.Generic;
@@ -6,14 +7,11 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using TabBlazor;
-using Tabler.Docs.Components.Icons;
 using Tabler.Docs.Icons;
 
 namespace IconGenerator.Tabler
@@ -57,8 +55,27 @@ namespace IconGenerator.Tabler
 
                 var content = await httpClient.GetStringAsync(file.DownloadUrl);
                 XElement flagSvg = XDocument.Parse(content).Root;
+
+                int width;
+                int height;
+
+                var viewBox = flagSvg.Attribute("viewBox")?.Value;
+
+                if (viewBox != null)
+                {
+                    var arr = viewBox.Split(' ');
+                    width = int.Parse(arr[2]);
+                    height = int.Parse(arr[3]);
+                }
+                else
+                {
+                    width = int.Parse(flagSvg.Attribute("width").Value);
+                    height = int.Parse(flagSvg.Attribute("height").Value);
+                }
+
                 flagSvg.RemoveAllNamespaces();
-                generatedFlag.FlagType = new TablerFlag(Utilities.ExtractIconElements(flagSvg.Elements()));
+
+                generatedFlag.FlagType = new TablerFlag(Utilities.ExtractFlagElements(flagSvg), width, height, null);
 
                 if (country != null)
                 {
@@ -73,6 +90,9 @@ namespace IconGenerator.Tabler
             return generatedFlags;
 
         }
+
+
+
 
         public static async Task<IEnumerable<GeneratedIcon>> GenerateIcons()
         {
