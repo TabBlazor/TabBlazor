@@ -6,18 +6,25 @@ namespace TabBlazor
         public string Name { get; set; }
 
         public IFlagType FlagType { get; set; }
-        public string DotNetProperty { 
-        get
+        public string DotNetProperty
+        {
+            get
             {
-                if (FlagType.Country == null)
-                {
-                    return $"public static IFlagType {GetSafeName()} => new {FlagType.ClassName}(@\"{FlagType.Elements}\");";
-                }
-                return $"public static IFlagType {GetSafeName()} => new {FlagType.ClassName}(@\"{FlagType.Elements}\", new TabBlazor.Country(\"{FlagType.Country.Name}\", \"{FlagType.Country.Alpha2}\", \"{FlagType.Country.Alpha3}\", {FlagType.Country.Numeric}));";
+                return $"public static IFlagType {GetSafeName()} => new {FlagType.ClassName}(\"{FlagType.Elements}\", {FlagType.Width}, {FlagType.Height}, {CountryConstuctor()});";
+            }
+        }
+
+        private string CountryConstuctor()
+        {
+            if (FlagType.Country == null)
+            {
+                return "null";
             }
 
-        } 
-      
+            return $"new TabBlazor.Country(\"{FlagType.Country.Name}\", \"{FlagType.Country.Alpha2}\", \"{FlagType.Country.Alpha3}\", {FlagType.Country.Numeric})";
+        }
+
+
         public string GetSafeName()
         {
             var safeName = Name;
