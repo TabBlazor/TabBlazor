@@ -57,6 +57,18 @@ namespace TabBlazor
         [Parameter] public string ListWidth { get; set; }
         [Parameter] public string Label { get; set; }
 
+        private bool FocusSearch;
+        private ElementReference searchInput;
+        private ElementReference SearchInput
+        {
+            get => searchInput;
+            set
+            {
+                searchInput = value;
+                FocusSearch = true;
+            } 
+        }
+
         [CascadingParameter] private EditContext CascadedEditContext { get; set; }
 
         [Inject] private IJSRuntime jSRuntime { get; set; }
@@ -71,6 +83,7 @@ namespace TabBlazor
         private TItem highlighted;
         private FieldIdentifier? fieldIdentifier;
         private string FieldCssClasses;
+        private string[] ExpandKeys = { "Enter", " ", "ArrowDown" };
 
         protected override void OnInitialized()
         {
@@ -103,6 +116,12 @@ namespace TabBlazor
 
         protected override void OnAfterRender(bool firstRender)
         {
+            if (FocusSearch)
+            {
+                SearchInput.FocusAsync();
+                FocusSearch = false;
+            }
+            
             if (fieldIdentifier is not FieldIdentifier fid) { return; }
             CascadedEditContext?.NotifyFieldChanged(fid);
             CascadedEditContext?.Validate();
@@ -201,6 +220,11 @@ namespace TabBlazor
                 return filtered.Where(e => !selectedItems.Contains(e)).ToList();
             }
 
+            if (highlighted is not null && !filtered.Contains(highlighted))
+            {
+                highlighted = default;
+            }
+            
             return filtered.ToList();
         }
 
@@ -211,7 +235,7 @@ namespace TabBlazor
 
         private async Task OnKey(KeyboardEventArgs e)
         {
-            if (!dropdown.IsExpanded && (e.Key == "Enter" || e.Key == " "))
+            if (!dropdown.IsExpanded && ExpandKeys.Contains(e.Key))
             {
                 highlighted = default;
                 dropdown.Open();
@@ -221,7 +245,7 @@ namespace TabBlazor
 
             if (dropdown.IsExpanded)
             {
-                if (e.Key == "Escape")
+                if (e.Key == "Escape" || e.Key == "Tab")
                 {
                     highlighted = default;
                     dropdown.Close();
@@ -245,15 +269,21 @@ namespace TabBlazor
         private void SetHighlighted(int step)
         {
             var myList = FilteredList();
+            
             if (highlighted == null)
             {
-                highlighted = myList.FirstOrDefault();
+                highlighted = step > Decimal.Zero ? myList.FirstOrDefault() : myList.LastOrDefault();
             }
             else
             {
                 var pos = myList.IndexOf(highlighted);
                 pos += step;
                 highlighted = myList.ElementAtOrDefault(pos);
+
+                if (highlighted is null)
+                {
+                    SetHighlighted(step);
+                }
             }
 
             if (!CanSelect() && highlighted != null && !IsSelected(highlighted))
