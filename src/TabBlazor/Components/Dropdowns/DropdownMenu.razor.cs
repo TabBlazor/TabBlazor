@@ -6,10 +6,11 @@ using System.Linq;
 
 namespace TabBlazor
 {
-    public partial class DropdownMenu : TablerBaseComponent
+    public partial class DropdownMenu : TablerBaseComponent, IDisposable
     {
         [Parameter] public bool Arrow { get; set; } = false;
         [Parameter] public bool Card { get; set; } = false;
+        [Parameter] public EventCallback Disposed { get; set; }
 
         private List<DropdownItem> subMenuItems = new();
 
@@ -46,6 +47,13 @@ namespace TabBlazor
                 subMenuItems.Remove(item);
             }
         }
-     
+
+        public void Dispose()
+        {
+            if (Disposed.HasDelegate)
+            {
+                Disposed.InvokeAsync();
+            }
+        }
     }
 }
