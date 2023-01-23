@@ -12,6 +12,7 @@ namespace TabBlazor
         [CascadingParameter(Name = "DropdownMenu")] public DropdownMenu ParentMenu { get; set; }
         [Parameter] public bool Active { get; set; }
         [Parameter] public bool Disabled { get; set; }
+        [Parameter] public bool Highlight { get; set; }
 
         [Parameter] public RenderFragment SubMenu { get; set; }
         private List<DropdownItem> subItems = new();
@@ -25,7 +26,6 @@ namespace TabBlazor
             {
                 ParentMenu?.AddSubMenuItem(this);
             }
-
         }
      
         private void ItemClicked(MouseEventArgs e)
@@ -48,6 +48,7 @@ namespace TabBlazor
             .Add(TextColor.GetColorClass("text"))
             .AddIf("active", Active)
             .AddIf("disabled", Disabled)
+            .AddIf("highlight", Highlight)
             .AddIf("dropdown-toggle", hasSubMenu)
             .ToString();
 

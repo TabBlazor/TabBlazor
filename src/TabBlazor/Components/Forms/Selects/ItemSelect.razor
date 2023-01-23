@@ -51,12 +51,12 @@
                 </div>
             </ChildContent>
             <DropdownTemplate>
-                <DropdownMenu style="@GetListStyle()">
+                <DropdownMenu Disposed="() => highlighted = default" style="@GetListStyle()">
                     @if (showSearch)
                     {
                         <div class="m-2">
                             <div class="input-group input-group-flat">
-                                <input class="form-control" @bind="searchText" type="text" @bind:event="oninput" placeholder="@SearchPlaceholderText">
+                                <input @ref="SearchInput" class="form-control" @bind="searchText" type="text" @bind:event="oninput" @onblur="ClearSearch" placeholder="@SearchPlaceholderText">
                                 <span class="input-group-text">
 
                                     @if (!string.IsNullOrWhiteSpace(searchText))
@@ -83,7 +83,7 @@
                     @if (Items != null && Items.Any())
                     {
                         <VirtualizeOptional Items="FilteredList()" Virtualize=Virtualize>
-                            <DropdownItem class="@(IsHighlighted(context) ? "highlight" : "")" Active="IsSelected(context)" Disabled="(!CanSelect() && !IsSelected(context)) || IsDisabled(context)" OnClick="(e => ToogleSelected(context))" @key="context">
+                            <DropdownItem Highlight="IsHighlighted(context)" Active="IsSelected(context)" Disabled="(!CanSelect() && !IsSelected(context)) || IsDisabled(context)" OnClick="(e => ToogleSelected(context))" @key="context">
 
                                 @if (ShowCheckBoxes)
                                 {
