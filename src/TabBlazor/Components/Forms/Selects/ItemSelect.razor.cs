@@ -56,6 +56,7 @@ namespace TabBlazor
         [Parameter] public string MaxListHeight { get; set; }
         [Parameter] public string ListWidth { get; set; }
         [Parameter] public string Label { get; set; }
+        [Parameter] public string DropdownMenuCss { get; set; }
 
         private bool FocusSearch;
         private ElementReference searchInput;
