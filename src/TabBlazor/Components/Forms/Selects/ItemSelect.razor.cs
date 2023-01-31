@@ -407,5 +407,11 @@ namespace TabBlazor
                 CascadedEditContext.OnValidationStateChanged -= SetValidationClasses;
             }
         }
+
+        private void OnDropdownMenuClosed()
+        {
+            highlighted = default;
+            ClearSearch();
+        }
     }
 }
