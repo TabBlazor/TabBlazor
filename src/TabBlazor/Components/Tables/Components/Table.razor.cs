@@ -54,6 +54,7 @@ namespace TabBlazor
         [Parameter] public bool ConfirmDelete { get; set; } = true;
         [Parameter] public TableEditMode EditMode { get; set; }
 
+        [Parameter] public OnCancelStrategy CancelStrategy { get; set; }
         [Parameter] public Action<TableEditPopupOptions<Item>> EditPopupMutator { get; set; }
         public bool IsRowValid { get; set; }
         public bool HasRowActions => RowActionTemplate != null || RowActionEndTemplate != null || AllowDelete || AllowEdit;
@@ -269,11 +270,15 @@ namespace TabBlazor
 
         public async Task CancelEdit()
         {
-            var editItemIndex = Items.IndexOf(CurrentEditItem);
-            Items.RemoveAt(editItemIndex);
-            
-            if (!IsAddInProgress)
+            if (IsAddInProgress)
             {
+                Items.Remove(CurrentEditItem);
+            }
+            
+            if (StateBeforeEdit is not null)
+            {
+                var editItemIndex = Items.IndexOf(CurrentEditItem);
+                Items.RemoveAt(editItemIndex);
                 Items.Insert(editItemIndex, StateBeforeEdit);
             }
 
@@ -418,7 +423,11 @@ namespace TabBlazor
 
         public void EditItem(Item tableItem)
         {
-            StateBeforeEdit = tableItem.Copy();
+            if (!IsAddInProgress && CancelStrategy == OnCancelStrategy.Revert)
+            {
+                StateBeforeEdit = tableItem.Copy();   
+            }
+            
             CurrentEditItem = tableItem;
 
             StateHasChanged();
