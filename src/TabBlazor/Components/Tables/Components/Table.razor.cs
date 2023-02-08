@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Options;
 using TabBlazor.Components.Tables.Components;
 using TabBlazor.Components.Tables;
 using TabBlazor.Services;
@@ -15,7 +16,8 @@ namespace TabBlazor
     {
         [Inject] private TablerService tabService { get; set; }
         [Inject] private IModalService modalService { get; set; }
-
+        [Inject] private IOptionsMonitor<TablerOptions> tablerOptions { get; set; }
+        
         [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> UnknownParameters { get; set; }
         [Parameter] public bool ShowHeader { get; set; } = true;
         [Parameter] public bool ResetSortCycle { get; set; }
@@ -54,6 +56,7 @@ namespace TabBlazor
         [Parameter] public bool ConfirmDelete { get; set; } = true;
         [Parameter] public TableEditMode EditMode { get; set; }
 
+        [Parameter] public OnCancelStrategy? CancelStrategy { get; set; }
         [Parameter] public Action<TableEditPopupOptions<Item>> EditPopupMutator { get; set; }
         public bool IsRowValid { get; set; }
         public bool HasRowActions => RowActionTemplate != null || RowActionEndTemplate != null || AllowDelete || AllowEdit;
@@ -81,6 +84,7 @@ namespace TabBlazor
         public Item SelectedItem { get; set; }
 
         protected ElementReference table;
+        private Item StateBeforeEdit;
         private bool tableInitialized;
         public string SearchText { get; set; }
 
@@ -272,12 +276,20 @@ namespace TabBlazor
             {
                 Items.Remove(CurrentEditItem);
             }
+            
+            if (StateBeforeEdit is not null)
+            {
+                var editItemIndex = Items.IndexOf(CurrentEditItem);
+                Items.RemoveAt(editItemIndex);
+                Items.Insert(editItemIndex, StateBeforeEdit);
+            }
 
             await CloseEdit();
         }
 
         public async Task CloseEdit()
         {
+            StateBeforeEdit = default;
             CurrentEditItem = default;
             IsAddInProgress = false;
             await Update();
@@ -413,6 +425,12 @@ namespace TabBlazor
 
         public void EditItem(Item tableItem)
         {
+            var onCancelStrategy = CancelStrategy ?? tablerOptions.CurrentValue.DefaultOnCancelStrategy;
+            if (!IsAddInProgress && onCancelStrategy == OnCancelStrategy.Revert)
+            {
+                StateBeforeEdit = tableItem.Copy();   
+            }
+            
             CurrentEditItem = tableItem;
 
             StateHasChanged();

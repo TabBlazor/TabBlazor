@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.DependencyInjection;
-using TabBlazor.Components;
+﻿using Microsoft.Extensions.DependencyInjection;
 using TabBlazor.Components.Tables;
 using TabBlazor.Services;
 
@@ -8,8 +6,15 @@ namespace TabBlazor
 {
     public static class TablerExtensions
     {
-        public static IServiceCollection AddTabler(this IServiceCollection services)
+        public static IServiceCollection AddTabler(this IServiceCollection services, Action<TablerOptions> tablerOptions = null)
         {
+            if (tablerOptions is null)
+            {
+                tablerOptions = _ => {};
+            }
+
+            services.Configure(tablerOptions);
+            
             return services
                 .AddScoped<ToastService>()
                 .AddScoped<TablerService>()
@@ -19,10 +24,10 @@ namespace TabBlazor
              .AddSingleton<FlagService>();
         }
         
-        public static TabBlazorBuilder AddTabBlazor(this IServiceCollection services)
+        public static TabBlazorBuilder AddTabBlazor(this IServiceCollection services, Action<TablerOptions> tablerOptions = null)
         {
             services
-                .AddTabler();
+                .AddTabler(tablerOptions);
 
             return new TabBlazorBuilder(services);
         }
