@@ -81,6 +81,7 @@ namespace TabBlazor
         public Item SelectedItem { get; set; }
 
         protected ElementReference table;
+        private Item StateBeforeEdit;
         private bool tableInitialized;
         public string SearchText { get; set; }
 
@@ -268,9 +269,12 @@ namespace TabBlazor
 
         public async Task CancelEdit()
         {
-            if (IsAddInProgress)
+            var editItemIndex = Items.IndexOf(CurrentEditItem);
+            Items.RemoveAt(editItemIndex);
+            
+            if (!IsAddInProgress)
             {
-                Items.Remove(CurrentEditItem);
+                Items.Insert(editItemIndex, StateBeforeEdit);
             }
 
             await CloseEdit();
@@ -278,6 +282,7 @@ namespace TabBlazor
 
         public async Task CloseEdit()
         {
+            StateBeforeEdit = default;
             CurrentEditItem = default;
             IsAddInProgress = false;
             await Update();
@@ -413,6 +418,7 @@ namespace TabBlazor
 
         public void EditItem(Item tableItem)
         {
+            StateBeforeEdit = tableItem.Copy();
             CurrentEditItem = tableItem;
 
             StateHasChanged();
