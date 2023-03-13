@@ -17,7 +17,7 @@ namespace TabBlazor
         [Inject] private TablerService tabService { get; set; }
         [Inject] private IModalService modalService { get; set; }
         [Inject] private IOptionsMonitor<TablerOptions> tablerOptions { get; set; }
-        
+
         [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> UnknownParameters { get; set; }
         [Parameter] public bool ShowHeader { get; set; } = true;
         [Parameter] public bool ResetSortCycle { get; set; }
@@ -58,6 +58,7 @@ namespace TabBlazor
 
         [Parameter] public OnCancelStrategy? CancelStrategy { get; set; }
         [Parameter] public Action<TableEditPopupOptions<Item>> EditPopupMutator { get; set; }
+        [Parameter] public IDataProvider<Item> DataProvider { get; set; }
         public bool IsRowValid { get; set; }
         public bool HasRowActions => RowActionTemplate != null || RowActionEndTemplate != null || AllowDelete || AllowEdit;
 
@@ -80,7 +81,6 @@ namespace TabBlazor
         public bool AllowDelete => OnItemDeleted.HasDelegate;
         public bool AllowEdit => OnItemEdited.HasDelegate && !IsAddInProgress;
         public bool HasGrouping => Columns.Any(x => x.GroupBy);
-        public TheGridDataFactory<Item> DataFactory { get; set; }
         public Item SelectedItem { get; set; }
 
         protected ElementReference table;
@@ -109,7 +109,7 @@ namespace TabBlazor
 
         protected override void OnInitialized()
         {
-            DataFactory = new TheGridDataFactory<Item>(Columns, this);
+            DataProvider = DataProvider ?? new TheGridDataFactory<Item>();
 
             if (Hover)
             {
@@ -276,7 +276,7 @@ namespace TabBlazor
             {
                 Items.Remove(CurrentEditItem);
             }
-            
+
             if (StateBeforeEdit is not null)
             {
                 var editItemIndex = Items.IndexOf(CurrentEditItem);
@@ -299,7 +299,7 @@ namespace TabBlazor
         {
             if (CurrentEditItem == null || !TempItems.Any())
             {
-                TempItems = DataFactory.GetData(Items, resetPage);
+                TempItems = await DataProvider.GetData(Columns, this,Items, resetPage);
                 await Refresh();
             }
         }
@@ -320,7 +320,7 @@ namespace TabBlazor
 
         public async Task MoveToItem(Item item)
         {
-            TempItems = DataFactory.GetData(Items, false, true, item);
+            TempItems = await DataProvider.GetData(Columns, this,Items, false, true, item);
             await Refresh();
         }
 
@@ -389,7 +389,7 @@ namespace TabBlazor
             Items.Add(tableItem);
             EditItem(tableItem);
 
-            TempItems = DataFactory.GetData(Items, false, false, tableItem);
+            TempItems = await DataProvider.GetData(Columns, this,Items, false, false, tableItem);
 
         }
 
@@ -428,9 +428,9 @@ namespace TabBlazor
             var onCancelStrategy = CancelStrategy ?? tablerOptions.CurrentValue.DefaultOnCancelStrategy;
             if (!IsAddInProgress && onCancelStrategy == OnCancelStrategy.Revert)
             {
-                StateBeforeEdit = tableItem.Copy();   
+                StateBeforeEdit = tableItem.Copy();
             }
-            
+
             CurrentEditItem = tableItem;
 
             StateHasChanged();

@@ -1,0 +1,40 @@
+﻿@using TabBlazor.Components.Tables.Components;
+@using TabBlazor.Components.Tables;
+
+<Table Item="Item"  PageSize="10" Hover Responsive DataProvider="customDataProvider">
+    <HeaderTemplate>
+        <strong>Items</strong>
+    </HeaderTemplate>
+
+    <ChildContent>
+        <Column Item="Item" Property="e => e.Name" Title="Customer" Sortable >
+            <EditorTemplate>
+                <input type="text" class="form-control" @bind-value="@context.Name" />
+            </EditorTemplate>
+        </Column>
+    </ChildContent>
+</Table>
+
+@code {
+   
+    public class Item
+    {
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Name { get; set; }
+    }
+
+
+
+    private IDataProvider<Item> customDataProvider = new MyCustomDatasource();
+    public class MyCustomDatasource : IDataProvider<Item>
+    {
+        public async Task<IEnumerable<TableResult<object, Item>>> GetData(List<IColumn<Item>> columns, ITableState<Item> state, IEnumerable<Item> items, bool resetPage = false, bool addSorting = true, Item moveToItem = null)
+        {
+            //here you have to implement your own service call  for data and implement correctly sorting, paging ,grouping to get full benefit of this interface and Table implementation.
+            var viewResult = new List<TableResult<object, Item>>();
+            viewResult.Add(new TableResult<object, Item>(null, new List<Item> { new Item { Name = "my" }, new Item { Name = "custom" }, new Item { Name = "results" } }));
+
+            return await Task.FromResult(viewResult);
+        }
+    }
+}
