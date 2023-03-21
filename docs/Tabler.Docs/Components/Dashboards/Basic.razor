@@ -115,12 +115,12 @@
                                     @{
                                         var topCustomer = @context.FilteredItems.GroupBy(e => e.Customer).Select(e => new { Customer = e.Key, Value = e.Aggregate(0.0M, (current, order) => current + order.NetValue) }).OrderByDescending(e => e.Value).FirstOrDefault();
 
-                                        <h3 class="mb-0">
+                                            <h3 class="mb-0">
                                             @topCustomer?.Customer.CustomerName
-                                        </h3>
-                                        <div class="text-muted">
+                                            </h3>
+                                            <div class="text-muted">
                                             @topCustomer?.Value.ToString("n0")
-                                        </div>
+                                            </div>
 
                                     }
 
@@ -184,32 +184,32 @@
                                 @{
                                     var discount = CalculateDiscount(context.FilteredItems.Sum(e => e.GrossValue), context.FilteredItems.Sum(e => e.NetValue));
 
-                                    <div class="h1 mb-3 me-2">
+                                        <div class="h1 mb-3 me-2">
 
                                         @if (discount != null)
                                         {
-                                            <span>@((decimal)discount)%</span>
+                                                    <span>@((decimal)discount)%</span>
                                         }
                                         else
                                         {
-                                            <span>-</span>
+                                                    <span>-</span>
                                         }
 
-                                    </div>
+                                        </div>
 
                                     @if (discount != null)
                                     {
-                                        <div class="me-auto">
-                                            <span class="text-green d-inline-flex align-items-center lh-1">
-                                                8%
-                                                <Icon class="icon ms-1" IconType="TablerIcons.Trending_up" />
-                                            </span>
-                                        </div>
+                                                <div class="me-auto">
+                                                    <span class="text-green d-inline-flex align-items-center lh-1">
+                                                        8%
+                                                        <Icon class="icon ms-1" IconType="TablerIcons.Trending_up" />
+                                                    </span>
+                                                </div>
                                     }
                                 }
                             </div>
 
-                            
+
                                 <div class="justify-content-end">
                                     <ApexChart TItem="Order"
                                                Options="orderDiscountChartOptions"
@@ -226,7 +226,7 @@
                                                          OrderByDescending="e=>e.X" />
                                     </ApexChart>
                                 </div>
-                            
+
 
 
                         </CardBody>
@@ -241,52 +241,52 @@
                             @{
                                 var topCustomers = GetTopCustomers(context.FilteredItems);
                                 var filteredNetValue = context.FilteredItems.Sum(e => e.NetValue);
-                                <div class="row align-items-top">
+                                    <div class="row align-items-top">
 
-                                    <RowCol Lg="7" Xs="12">
-                                        <div class="d-flex align-items-center">
-                                            <div class="subheader">Top 5 Customers</div>
-                                            <div class="ms-auto lh-1">
+                                        <RowCol Lg="7" Xs="12">
+                                            <div class="d-flex align-items-center">
+                                                <div class="subheader">Top 5 Customers</div>
+                                                <div class="ms-auto lh-1">
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="d-flex align-items-baseline">
-                                            <div class="h1 mb-3 me-2">
+                                            <div class="d-flex align-items-baseline">
+                                                <div class="h1 mb-3 me-2">
                                                 @if (filteredNetValue > 0)
                                                 {
                                                     @(((topCustomers.Sum(e => e.NetValue) / filteredNetValue) * 100).ToString("n2"))
 
-                                                    <span>%</span>
+                                                            <span>%</span>
                                                 }
                                                 else
                                                 {
-                                                    <span>-</span>
+                                                            <span>-</span>
                                                 }
 
+                                                </div>
                                             </div>
-                                        </div>
-                                    </RowCol>
+                                        </RowCol>
 
-                                    <RowCol Lg="5" Xs="12">
-                                        <div>
+                                        <RowCol Lg="5" Xs="12">
+                                            <div>
 
-                                            <ApexChart TItem="TopCustomer"
+                                                <ApexChart TItem="TopCustomer"
                                                    Options="topCustomerChartOptions"
-                                                       @ref=topCustomerChart>
+                                                           @ref=topCustomerChart>
 
-                                                <ApexPointSeries TItem="TopCustomer"
+                                                    <ApexPointSeries TItem="TopCustomer"
                                                              Items="@topCustomers"
                                                              Name="Customer"
                                                              SeriesType="SeriesType.Bar"
                                                              XValue="@(e => e.Customer.CustomerName)"
                                                              YValue="@(e => e.NetValue)"
                                                              OrderByDescending="e=>e.Y" />
-                                            </ApexChart>
+                                                </ApexChart>
 
-                                        </div>
-                                    </RowCol>
+                                            </div>
+                                        </RowCol>
 
 
-                                </div>
+                                    </div>
                             }
                         </CardBody>
                     </Card>
@@ -358,7 +358,7 @@
 
 @code {
     [Inject] public TablerService TablerService { get; set; }
-    private List<Order> orders = SampleData.GetOrders();  
+    private List<Order> orders = SampleData.GetOrders();
 
     private ApexChart<Order> chart;
     private ApexChartOptions<Order> chartOptions = new();
@@ -392,7 +392,7 @@
 
     private string GetFilterLabel(FacetFilter<Order> facetFilter)
     {
-        return $"{facetFilter.Filter.Name} - {facetFilter.FilteredItems.Sum(e=> e.NetValue).ToString("N0")} ({facetFilter.Items.Sum(e=> e.NetValue).ToString("N0")})";
+        return $"{facetFilter.Filter.Name} - {facetFilter.FilteredItems.Sum(e => e.NetValue).ToString("N0")} ({facetFilter.Items.Sum(e => e.NetValue).ToString("N0")})";
     }
 
     private async Task DashboardUpdated()
