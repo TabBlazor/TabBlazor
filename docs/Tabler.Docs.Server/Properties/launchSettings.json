@@ -11,7 +11,7 @@
     "Tabler.Docs.Server": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "docs/flags",
+      "launchUrl": "docs/dashboards",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
