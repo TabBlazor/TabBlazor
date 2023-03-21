@@ -123,7 +123,7 @@ namespace TabBlazor.Dashboards
         }
 
 
-        public static DataFacet<TItem> AddEqualFacet<TItem>(IQueryable<TItem> items, Expression<Func<TItem, object>> expression, string name) where TItem : class
+        public static DataFacet<TItem> AddEqualFacet<TItem>(IQueryable<TItem> items, Expression<Func<TItem, object>> expression, string name, Func<FacetFilter<TItem>, string> filterLabel) where TItem : class
         {
             var facet = new DataFacet<TItem>();
             facet.Name = name;
@@ -138,6 +138,7 @@ namespace TabBlazor.Dashboards
 
                 var filter = new FacetFilter<TItem>
                 {
+                    FilterLabel = filterLabel,
                     Items = group.ToList(),
                     CountAll = group.Count(),
                     Filter = new DataFilter<TItem>

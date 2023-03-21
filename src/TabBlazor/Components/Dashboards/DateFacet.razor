@@ -1,34 +1,36 @@
 ﻿@typeparam TItem
-@inherits DashboardComponent<TItem>
+@inherits BaseFacet<TItem>
 @namespace TabBlazor.Dashboards
 
-@if (facet != null)
+@if (Facet != null)
 {
     @if (@FacetTemplate == null)
     {
-        <div class="mb-3">
-        <strong>@facet.Name</strong>
+        <div class="m-2 p-2 border">
+            <Icon class="me-2" IconType="GetExpandedIcon()" OnClick="ToogleExpanded" />
+            <strong>@Facet.Name</strong>
 
-            @if (facet.IsActive)
+            @if (Facet.IsActive)
             {
                 <Icon class="ms-2 tabicon icon" IconType="InternalIcons.Trash" OnClick="@(_ => ResetFilters(true))" />
             }
 
-        @foreach (var facetFilter in facet.Filters)
-        {
-                <label class="form-check">
-                    <input class="form-check-input" type="radio" name="radios" checked=@facetFilter.Active @onclick="@(e => ValueChanged(facetFilter, e))">
-                    <span class="form-check-label">@($"{facetFilter.Filter.Name} ({facetFilter.CountFiltered}/{facetFilter.CountAll})")</span>
-                </label>
-        }
+            @if (IsExpanded != false)
+            {
+
+                @foreach (var facetFilter in Facet.Filters)
+                {
+                    <label class="form-check">
+                        <input class="form-check-input" type="radio" name="radios" checked=@facetFilter.Active @onclick="@(e => ValueChanged(facetFilter, e))">
+                        <span class="form-check-label">@($"{facetFilter.Filter.Name} ({facetFilter.CountFiltered}/{facetFilter.CountAll})")</span>
+                    </label>
+                }
+            }
         </div>
     }
+
     else
     {
-        @FacetTemplate.Invoke(facet)
+        @FacetTemplate.Invoke(Facet)
     }
 }
-
-
-
-

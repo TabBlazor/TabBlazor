@@ -18,15 +18,13 @@
 
     <Row>
         <RowCol Lg="2">
-            <Card class="h-100">
-                <CardBody>
-                    <EqualFacet TItem=Order Expression="e=> e.OrderType.ToString()" Name="Order Type:" />
+            <Card Size=CardSize.Small class="h-100">
+                    <EqualFacet TItem=Order Expression="e=> e.OrderType.ToString()" Name="Order Type:" FilterLabel="GetFilterLabel" />
                     <EqualFacet TItem=Order Expression="e=> e.OrderStatus.ToString()" Name="Order Status:" />
                     <EqualFacet TItem=Order Expression="e=> e.Country" Name="Country:" />
                     <GroupFacet TItem=Order Expression="e=> e.NetValue" Name="Net Value:" />
                     <RangeFilter TItem=Order Expression="e=> e.DiscountPrecentage" Name="Discount %" />
                     <DateFacet TItem=Order Expression="e=> e.OrderDate.DateTime" Name="Order Date:" />
-                </CardBody>
             </Card>
 
         </RowCol>
@@ -359,7 +357,7 @@
 
 @code {
     [Inject] public TablerService TablerService { get; set; }
-    private List<Order> orders = SampleData.GetOrders();  // SampleData.GeneratedOrders(500000);
+    private List<Order> orders = SampleData.GetOrders();  
 
     private ApexChart<Order> chart;
     private ApexChartOptions<Order> chartOptions = new();
@@ -389,6 +387,11 @@
         topCustomerChartOptions.Theme = new Theme { Palette = PaletteType.Palette6 };
         topCustomerChartOptions.PlotOptions = new PlotOptions { Bar = new PlotOptionsBar { Horizontal = true, Distributed = true } };
         topCustomerChartOptions.Chart = new Chart { Sparkline = new ChartSparkline { Enabled = true } };
+    }
+
+    private string GetFilterLabel(FacetFilter<Order> facetFilter)
+    {
+        return $"{facetFilter.Filter.Name} - {facetFilter.FilteredItems.Sum(e=> e.NetValue).ToString("N0")} ({facetFilter.Items.Sum(e=> e.NetValue).ToString("N0")})";
     }
 
     private async Task DashboardUpdated()

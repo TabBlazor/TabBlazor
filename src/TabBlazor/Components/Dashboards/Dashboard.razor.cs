@@ -35,9 +35,9 @@ namespace TabBlazor.Dashboards
             }
         }
 
-        public DataFacet<TItem> AddEqualFacet(Expression<Func<TItem, object>> expression, string name)
+        public DataFacet<TItem> AddEqualFacet(Expression<Func<TItem, object>> expression, string name, Func<FacetFilter<TItem>, string> filterLabel)
         {
-            var facet = FacetsHelper.AddEqualFacet(items, expression, name);
+            var facet = FacetsHelper.AddEqualFacet(items, expression, name, filterLabel);
             facets.Add(facet);
             RunFilter();
             return facet;
@@ -129,7 +129,10 @@ namespace TabBlazor.Dashboards
             {
                 foreach (var filter in facet.Filters)
                 {
-                    filter.CountFiltered = filteredItems.Count(filter.Filter.Predicate);
+                    filter.FilteredItems = filteredItems.Where(filter.Filter.Predicate);
+                    filter.CountFiltered = filter.FilteredItems.Count();
+                 
+                    filter.SetLabel();
                 }
             }
         }
