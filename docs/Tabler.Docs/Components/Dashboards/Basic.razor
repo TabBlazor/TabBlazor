@@ -19,7 +19,8 @@
     <Row>
         <RowCol Lg="2">
             <Card Size=CardSize.Small class="h-100">
-                    <EqualFacet TItem=Order Expression="e=> e.OrderType.ToString()" Name="Order Type:" FilterLabel="GetFilterLabel" />
+                <EqualFacet TItem=Order Expression="e=> e.TestInt" Name="TestInt"  />
+                    <EqualFacet TItem=Order Expression="e=> e.OrderType" Name="Order Type:" FilterLabel="GetFilterLabel" />
                     <EqualFacet TItem=Order Expression="e=> e.OrderStatus.ToString()" Name="Order Status:" />
                     <EqualFacet TItem=Order Expression="e=> e.Country" Name="Country:" />
                     <GroupFacet TItem=Order Expression="e=> e.NetValue" Name="Net Value:" />

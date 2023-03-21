@@ -122,6 +122,18 @@ namespace TabBlazor.Dashboards
 
         }
 
+        private static LambdaExpression StripConvert<T>(Expression<Func<T, object>> source)
+        {
+            Expression result = source.Body;
+            // use a loop in case there are nested Convert expressions for some crazy reason
+            while (((result.NodeType == ExpressionType.Convert)
+                       || (result.NodeType == ExpressionType.ConvertChecked))
+                   && (result.Type == typeof(object)))
+            {
+                result = ((UnaryExpression)result).Operand;
+            }
+            return Expression.Lambda(result, source.Parameters);
+        }
 
         public static DataFacet<TItem> AddEqualFacet<TItem>(IQueryable<TItem> items, Expression<Func<TItem, object>> expression, string name, Func<FacetFilter<TItem>, string> filterLabel) where TItem : class
         {
@@ -132,9 +144,11 @@ namespace TabBlazor.Dashboards
 
             foreach (var group in groups)
             {
+                var unConvertExp = StripConvert<TItem>(expression);
+
                 var constant = Expression.Constant(group.Key);
-                var body = Expression.Equal(expression.Body, constant);
-                var predicate = Expression.Lambda<Func<TItem, bool>>(body, expression.Parameters);
+                var body = Expression.Equal(unConvertExp.Body, constant);
+                var predicate = Expression.Lambda<Func<TItem, bool>>(body, unConvertExp.Parameters);
 
                 var filter = new FacetFilter<TItem>
                 {
