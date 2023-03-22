@@ -10,7 +10,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.4" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.4" PrivateAssets="all" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="7.0.4" />
-        <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.0-pre20220427180151" />
+        <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.4" />
         <PackageReference Include="System.Net.Http.Json" Version="7.0.1" />
     </ItemGroup>
 
