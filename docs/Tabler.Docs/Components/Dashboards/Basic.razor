@@ -357,7 +357,7 @@
 
 @code {
     [Inject] public TablerService TablerService { get; set; }
-    private List<Order> orders = SampleData.GeneratedOrders(500000); // SampleData.GetOrders();
+    private List<Order> orders = SampleData.GetOrders(); // SampleData.GeneratedOrders(500000); // SampleData.GetOrders();
 
     private ApexChart<Order> chart;
     private ApexChartOptions<Order> chartOptions = new();
