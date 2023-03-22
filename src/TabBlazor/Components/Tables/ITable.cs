@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
+﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using TabBlazor.Components.Tables.Components;
 
 namespace TabBlazor.Components.Tables
 {
@@ -19,6 +16,7 @@ namespace TabBlazor.Components.Tables
         int VisibleColumnCount { get; }
         List<TableItem> SelectedItems { get; set; }
         IList<TableItem> Items { get; }
+        IDataProvider<TableItem> DataProvider { get; set; }
         RenderFragment<TableItem> RowActionTemplate { get; set; }
         bool ShowCheckboxes { get; set; }
         bool HasRowActions { get; }
