@@ -3,7 +3,7 @@
 @using TabBlazor.Dashboards
 
 
-<Dashboard TItem=Order Items="orders" OnUpdate="DashboardUpdated">
+<Dashboard TItem=Order Items="orders" OnUpdate="DashboardUpdated" Debug>
     <h2 class="page-title mb-2">
         Dashboard
     </h2>
@@ -19,8 +19,8 @@
     <Row>
         <RowCol Lg="2">
             <Card Size=CardSize.Small class="h-100">
-                    <EqualFacet TItem=Order Expression="e=> e.OrderType" Name="Order Type:" FilterLabel="GetFilterLabel" />
-                    <EqualFacet TItem=Order Expression="e=> e.OrderStatus.ToString()" Name="Order Status:" />
+                    <EqualFacet TItem=Order Expression="e=> e.OrderType" Name="Order Type:"  />
+                    <EqualFacet TItem=Order Expression="e=> e.OrderStatus" Name="Order Status:" />
                     <EqualFacet TItem=Order Expression="e=> e.Country" Name="Country:" />
                     <GroupFacet TItem=Order Expression="e=> e.NetValue" Name="Net Value:" />
                     <RangeFilter TItem=Order Expression="e=> e.DiscountPrecentage" Name="Discount %" />
@@ -357,7 +357,7 @@
 
 @code {
     [Inject] public TablerService TablerService { get; set; }
-    private List<Order> orders = SampleData.GetOrders();
+    private List<Order> orders = SampleData.GeneratedOrders(500000); // SampleData.GetOrders();
 
     private ApexChart<Order> chart;
     private ApexChartOptions<Order> chartOptions = new();
