@@ -98,7 +98,7 @@ namespace IconGenerator.Tabler
         {
             var icons = new List<GeneratedIcon>();
             var metaUrl = "https://raw.githubusercontent.com/tabler/tabler-icons/master/tags.json";
-            var spriteUrl = "https://raw.githubusercontent.com/tabler/tabler-icons/master/tabler-sprite.svg";
+            var spriteUrl = "https://raw.githubusercontent.com/tabler/tabler-icons/master/packages/icons/tabler-sprite.svg"; // "https://raw.githubusercontent.com/tabler/tabler-icons/master/tabler-sprite.svg";
             var client = new HttpClient();
 
             var metajson = await client.GetStringAsync(metaUrl);

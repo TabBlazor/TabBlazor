@@ -15,8 +15,8 @@ namespace IconGenerator
     {
         static async Task Main(string[] args)
         {
-            await TablerGenerator.GenerateFlags();
-            //await TablerGenerator.GenerateIcons();
+           //await TablerGenerator.GenerateFlags();
+            await TablerGenerator.GenerateIcons();
             //await MaterialDesignGenerator.GenerateIcons();
         }
 
