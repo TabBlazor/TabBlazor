@@ -14,25 +14,38 @@ namespace TabBlazor.Dashboards
     public class FacetFilter<TItem> where TItem : class
     {
         public DataFilter<TItem> Filter { get; set; }
-        public IEnumerable<TItem> Items { get; set; }
+        public List<TItem> Items { get; set; }
         public IEnumerable<TItem> FilteredItems { get; set; }
-        public string Label { get; set; }
+        //public string Label { get; set; }
         public bool Active { get; set; }
         public int CountAll { get; set; }
-        public int CountFiltered { get; set; }
+     //   public int CountFiltered { get; set; }
         public Func<FacetFilter<TItem>, string> FilterLabel { get; set; }
 
-        public void SetLabel()
+        public string GetLabel()
         {
-            if (FilterLabel != null)
-            {
-                Label = FilterLabel(this);
-            }
-            else
-            {
-                Label = $"{Filter.Name} ({CountFiltered}/{CountAll})";
-            }
+                if (FilterLabel != null)
+                {
+                    return FilterLabel(this);
+                }
+                else
+                {
+                    return $"{Filter.Name} ({CountAll})";
+                }
+           
         }
+
+        //public void SetLabel()
+        //{
+        //    if (FilterLabel != null)
+        //    {
+        //        Label = FilterLabel(this);
+        //    }
+        //    else
+        //    {
+        //        Label = $"{Filter.Name} ({CountAll})";
+        //    }
+        //}
 
 
     }

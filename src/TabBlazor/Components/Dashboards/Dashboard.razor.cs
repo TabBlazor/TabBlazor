@@ -10,6 +10,8 @@ namespace TabBlazor.Dashboards
 
         [Parameter] public EventCallback OnUpdate { get; set; }
 
+        [Parameter] public bool Debug { get; set; }
+
         public long LastRunFilterMilliseconds;
 
         public IQueryable<TItem> FilteredItems => filteredItems;
@@ -23,7 +25,7 @@ namespace TabBlazor.Dashboards
 
         protected override void OnInitialized()
         {
-            items = Items.AsQueryable(); 
+            items = Items.AsQueryable();
         }
 
         public void RemoveFacet(DataFacet<TItem> facet)
@@ -74,16 +76,27 @@ namespace TabBlazor.Dashboards
             }
         }
 
+        private void WriteDebug(string text, Stopwatch sw)
+        {
+            if(Debug)
+            {
+                Console.WriteLine($"{text}: {sw.ElapsedMilliseconds}");
+            }
+
+        }
+
+
         public void RunFilter()
         {
             var sw = new Stopwatch();
             sw.Start();
 
             var query = items.AsQueryable();
+            WriteDebug("1", sw);
+
 
             foreach (var filter in filters)
             {
-                var test = filter.Expression.ToString();
                 query = query.Where(filter.Expression);
             }
 
@@ -106,19 +119,22 @@ namespace TabBlazor.Dashboards
                 {
                     query = query.Where(predicate);
                 }
-              
+
             }
 
+            WriteDebug("2", sw);
             filteredItems = query.ToList().AsQueryable();
+            WriteDebug("3", sw);
 
             SetFacetFilterCount();
+            WriteDebug("4", sw);
 
             OnUpdate.InvokeAsync();
             StateHasChanged();
 
-           sw.Stop();
+            sw.Stop();
             LastRunFilterMilliseconds = sw.ElapsedMilliseconds;
-         
+
 
         }
 
@@ -130,9 +146,6 @@ namespace TabBlazor.Dashboards
                 foreach (var filter in facet.Filters)
                 {
                     filter.FilteredItems = filteredItems.Where(filter.Filter.Predicate);
-                    filter.CountFiltered = filter.FilteredItems.Count();
-                 
-                    filter.SetLabel();
                 }
             }
         }

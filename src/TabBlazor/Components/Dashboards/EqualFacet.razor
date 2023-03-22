@@ -20,7 +20,7 @@
 
                 @foreach (var facetFilter in Facet.Filters)
                 {
-                    <Checkbox Switch Label="@facetFilter.Label" Value=@facetFilter.Active ValueChanged="@(e => ValueChanged(facetFilter, e))" />
+                    <Checkbox Switch Label="@facetFilter.GetLabel()" Value=@facetFilter.Active ValueChanged="@(e => ValueChanged(facetFilter, e))" />
                 }
             }
         </div>
