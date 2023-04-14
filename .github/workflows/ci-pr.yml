@@ -13,6 +13,11 @@ jobs:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v2
+      
+      - name: Setup .NET Core LTS
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
 
       - name: Setting up .NET Core SDK ${{ env.NETCORE_VERSION }}...
         uses: actions/setup-dotnet@v1
