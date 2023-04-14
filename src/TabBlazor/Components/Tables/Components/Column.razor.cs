@@ -20,7 +20,10 @@ namespace TabBlazor
             get { return _title ?? Property.GetPropertyMemberInfo()?.Name; }
             set { _title = value; }
         }
-
+        public string PropertyName
+        {
+            get { return  Property.GetPropertyMemberInfo()?.Name; }
+        }
         [CascadingParameter(Name = "Table")] public ITable<Item> Table { get; set; }
         [Parameter] public string Width { get; set; }
         [Parameter] public bool Sortable { get; set; }
