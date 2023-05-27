@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Routing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Components.Routing;
 using TabBlazor.Components.Modals;
 
 
@@ -15,7 +10,14 @@ namespace TabBlazor.Services
         public ModalService(NavigationManager navigationManager)
         {
             this.navigationManager = navigationManager;
-            this.navigationManager.LocationChanged += LocationChanged;
+            try
+            {
+                this.navigationManager.LocationChanged += LocationChanged;
+            }
+            catch (InvalidOperationException e) when (e.Message.Contains("has not been initialized", StringComparison.InvariantCulture))
+            {
+                Console.WriteLine(e);
+            }
         }
 
 

@@ -2,13 +2,13 @@
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
-		<PackageId>TabBlazor</PackageId>
+		<PackageId>Erymuzuan.TabBlazor</PackageId>
 		<Description>Blazor dashboard admin theme based on Tabler UI. Minimal Javascript</Description>
 		<Authors>Joakim Dangården</Authors>
 		<Product>TabBlazor</Product>
 		<PackageTags>Blazor Tabler Admin Theme</PackageTags>
-		<RepositoryUrl>https://github.com/joadan/TabBlazor</RepositoryUrl>
-		<PackageProjectUrl>https://joadan.github.io/TabBlazor</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/erymuzuan/TabBlazor</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/erymuzuan/TabBlazor</PackageProjectUrl>
 		<Version>1.6.9</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryType>git</RepositoryType>
