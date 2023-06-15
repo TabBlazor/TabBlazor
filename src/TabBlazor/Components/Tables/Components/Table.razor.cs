@@ -40,6 +40,7 @@ namespace TabBlazor
         [Parameter] public bool MultiSelect { get; set; }
         [Parameter] public EventCallback<Item> OnRowClicked { get; set; }
         [Parameter] public Func<Task<IList<Item>>> OnRefresh { get; set; }
+        [Parameter] public EventCallback<Item> OnBeforeEdit { get; set; }
         [Parameter] public EventCallback<Item> OnItemEdited { get; set; }
         [Parameter] public EventCallback<Item> OnItemAdded { get; set; }
         [Parameter] public EventCallback<Item> OnItemDeleted { get; set; }
@@ -429,6 +430,11 @@ namespace TabBlazor
             if (!IsAddInProgress && onCancelStrategy == OnCancelStrategy.Revert)
             {
                 StateBeforeEdit = tableItem.Copy();
+            }
+
+            if (OnBeforeEdit.HasDelegate)
+            {
+                OnBeforeEdit.InvokeAsync(tableItem);
             }
 
             CurrentEditItem = tableItem;
