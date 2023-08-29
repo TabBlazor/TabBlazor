@@ -1,0 +1,27 @@
+﻿<div class="mb-3">
+    <label class="form-label">Name</label>
+    <input type="text" class="form-control" name="example-text-input" @bind-value="@ReportName" placeholder="Your report name">
+</div>
+<label class="form-label">Report type</label>
+<div class="form-selectgroup-boxes row mb-3">
+    <div class="col-lg-6">
+        <label class="form-selectgroup-item">
+            <input type="radio" name="report-type" value="1" class="form-selectgroup-input" checked="">
+            <span class="form-selectgroup-label d-flex align-items-center p-3">
+                <span class="me-3">
+                    <span class="form-selectgroup-check"></span>
+                </span>
+                <span class="form-selectgroup-label-content">
+                    <span class="form-selectgroup-title strong mb-1">Simple</span>
+                    <span class="d-block text-muted">Provide only basic data needed for the report</span>
+                </span>
+                @CascadingParameter
+            </span>
+        </label>
+    </div>
+</div> 
+
+@code {
+    [CascadingParameter] public bool CascadingParameter { get; set; } = false;
+    [Parameter] public string ReportName { get; set; }
+}

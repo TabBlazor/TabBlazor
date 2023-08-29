@@ -34,8 +34,10 @@ namespace TabBlazor
                 : propInfoCandidate;
 
             var paramAttr = propertyInfo?.GetCustomAttribute<ParameterAttribute>(inherit: true);
+            var cascadingParameterAttribute = propertyInfo?.GetCustomAttribute<CascadingParameterAttribute>();
 
-            if (propertyInfo is null || paramAttr is null)
+
+            if (propertyInfo is null || (paramAttr is null && cascadingParameterAttribute is null))
                 throw new ArgumentException($"The parameter selector '{parameterSelector}' does not resolve to a public property on the component '{typeof(TComponent)}' with a [Parameter] or [CascadingParameter] attribute.", nameof(parameterSelector));
 
             return propertyInfo.Name;
