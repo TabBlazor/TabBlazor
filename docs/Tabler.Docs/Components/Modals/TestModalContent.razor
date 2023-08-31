@@ -91,6 +91,7 @@
     @inject IModalService ModalService
 
     [Parameter] public string ReportName { get; set; }
+    [CascadingParameter] public bool CascadingParameter { get; set; } = false;
 
     private async Task CreateReport()
     {
