@@ -1,0 +1,30 @@
+﻿@namespace TabBlazor
+@inherits TablerBaseComponent
+
+<CascadingValue Value="@this" Name="Accordion">
+    <div class="accordion">
+        @foreach (var item in Items)
+        {
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button @(item.IsExpanded ? "" : "collapsed")" @onclick="@(() => SetExpanded(item))">
+                        @if (item.TitleTemplate != null)
+                        {
+                            @item.TitleTemplate
+                        }
+                        else
+                        {
+                            @item.Title
+                        }
+                    </button>
+                </h2>
+                <div class="accordion-collapse collapse @(item.IsExpanded ? "show" : "")">
+                    <div class="accordion-body pt-0">
+                        @item.ChildContent
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    @ChildContent
+</CascadingValue>

@@ -1,0 +1,61 @@
+﻿@namespace TabBlazor
+
+@if (isEnumerable)
+{
+    <Table Item=ObjectItem Items=listItems Responsive PageSize=10>
+      <HeaderTemplate>
+          <h3>@objectType.FullName</h3>
+      </HeaderTemplate>
+      <ChildContent>
+            <Column Item=ObjectItem Property="e=> e.Object" Title="" Width="1%">
+            <Template>
+                <TabBlazor.Components.ObjectBrowser.PropertyValueLink PropertyValue=context.Object>
+                    <Icon class="text-muted" Size="16" IconType="InternalIcons.Search" />
+                </TabBlazor.Components.ObjectBrowser.PropertyValueLink>
+            </Template>
+        </Column>
+
+        @foreach (var property in properties)
+        {
+            <Column Item=ObjectItem Title="@property.Name" Property="e=>e.Object" Searchable SearchExpression="(e, s) => SearchObject(e,s)">
+                <Template>
+                        <TabBlazor.Components.ObjectBrowser.PropertyValueLink PropertyValue=context.GetPropertyValue(property) />
+                </Template>
+            </Column>
+        }
+      </ChildContent>
+      
+    </Table>
+}
+else if (objectItem != null)
+{
+
+    @if (!objectItem.Properties.Any())
+    {
+        <span> @objectItem.Object</span>
+    }
+    else
+    {
+
+        <DataGrid>
+            @foreach (var property in objectItem.Properties)
+            {
+                <DataGridItem>
+                    <TitleTemplate>
+                        <span title="@property.PropertyType.FullName">@property.Name</span>
+                    </TitleTemplate>
+                    <ChildContent>
+                            <TabBlazor.Components.ObjectBrowser.PropertyValueLink PropertyValue=objectItem.GetPropertyValue(property) />
+                    </ChildContent>
+                </DataGridItem>
+            }
+        </DataGrid>
+    }
+}
+
+
+
+
+
+
+

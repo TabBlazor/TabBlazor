@@ -1,0 +1,105 @@
+@namespace TabBlazor.Components.QuickTables
+@using TabBlazor.Components.QuickTables.Infrastructure
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@typeparam TGridItem
+
+@{
+    InternalGridContext.Grid.AddColumn(this, IsDefaultSort);
+}
+
+@code
+{
+    [CascadingParameter]
+    internal InternalGridContext<TGridItem> InternalGridContext { get; set; } = default!;
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public string Class { get; set; }
+
+    [Parameter]
+    public Align Align { get; set; }
+
+    [Parameter]
+    public RenderFragment<ColumnBase<TGridItem>> HeaderTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment ColumnOptions { get; set; }
+
+    [Parameter]
+    public bool? Sortable { get; set; }
+
+    [Parameter]
+    public SortDirection IsDefaultSort { get; set; }
+
+    [Parameter]
+    public RenderFragment<PlaceholderContext> PlaceholderTemplate { get; set; }
+
+    public QuickTable<TGridItem> Grid => InternalGridContext.Grid;
+
+    protected internal abstract void CellContent(RenderTreeBuilder builder, TGridItem item);
+
+    protected internal RenderFragment HeaderContent { get; protected set; }
+
+    protected virtual bool IsSortableByDefault()
+    {
+        return false;
+    }
+
+    public ColumnBase()
+    {
+        HeaderContent = RenderDefaultHeaderContent;
+    }
+
+    private void RenderDefaultHeaderContent(RenderTreeBuilder __builder)
+    {
+        @if (HeaderTemplate is not null)
+        {
+            @HeaderTemplate(this)
+        }
+        else
+        {
+            @if (ColumnOptions is not null && Align != Align.Right)
+            {
+                <button class="col-options-button" @onclick="@(() => Grid.ShowColumnOptions(this))"></button>
+            }
+
+            if (Sortable ?? IsSortableByDefault())
+            {
+                <span class="clickable-header" @onclick="@(() => Grid.SortByColumnAsync(this))">
+                    @Title
+                    @if (Grid.SortByColumn == this)
+                    {
+                        @if (Grid.SortByAscending)
+                        {
+                            <Icon IconType="InternalIcons.Chevron_up"></Icon>
+                        }
+                        else
+                        {
+                            <Icon IconType="InternalIcons.Chevron_down"></Icon>
+                        }
+                    }
+                </span>
+            }
+            else
+            {
+                @Title
+            }
+
+            @if (ColumnOptions is not null && Align == Align.Right)
+            {
+                <button class="col-options-button" @onclick="@(() => Grid.ShowColumnOptions(this))"></button>
+            }
+        }
+    }
+
+    internal void RenderPlaceholderContent(RenderTreeBuilder __builder, PlaceholderContext placeholderContext)
+    {
+        // Blank if no placeholder template was supplied, as it's enough to style with CSS by default
+        if (PlaceholderTemplate is not null)
+        {
+            @PlaceholderTemplate(placeholderContext)
+        }
+    }
+}

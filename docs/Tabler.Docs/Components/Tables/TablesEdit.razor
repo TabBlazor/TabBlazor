@@ -6,7 +6,7 @@
 </Row>
 
 
-<Table Item="Order" Items="orders" PageSize="10" AddItemFactory="AddItem" OnItemEdited="OnItemEdit"
+<Table Item="Order" Items="orders" PageSize="10" AddItemFactory="AddItem" OnItemEdited="OnItemEdit" OnBeforeEdit="BeforeEdit"
         OnItemAdded="OnItemAdd" OnItemDeleted="OnItemDelete"
        ShowCheckboxes MultiSelect Hover Responsive EditMode=tableEditMode EditPopupMutator=EditPopupOptions>
     <HeaderTemplate>
@@ -88,5 +88,10 @@
             options.Title = $"Edit order {options.CurrentEditItem.OrderId}, {options.CurrentEditItem.Customer.CustomerName}";
         }
         options.ModalOptions.Draggable = true;
+    }
+
+    private void BeforeEdit(Order order)
+    {
+        Console.WriteLine(order.OrderId);
     }
 }

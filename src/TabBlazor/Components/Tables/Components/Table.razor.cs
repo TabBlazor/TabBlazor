@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Options;
 using TabBlazor.Components.Tables.Components;
 using TabBlazor.Components.Tables;
 using TabBlazor.Services;
@@ -15,11 +16,13 @@ namespace TabBlazor
     {
         [Inject] private TablerService tabService { get; set; }
         [Inject] private IModalService modalService { get; set; }
+        [Inject] private IOptionsMonitor<TablerOptions> tablerOptions { get; set; }
 
         [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> UnknownParameters { get; set; }
         [Parameter] public bool ShowHeader { get; set; } = true;
         [Parameter] public bool ResetSortCycle { get; set; }
         [Parameter] public bool ShowFooter { get; set; } = true;
+        [Parameter] public bool UseNaturalSort { get; set; } = false;
         [Parameter] public bool ShowTableHeader { get; set; } = true;
         [Parameter] public bool Selectable { get; set; }
         [Parameter] public bool ShowNoItemsLabel { get; set; } = true;
@@ -37,6 +40,7 @@ namespace TabBlazor
         [Parameter] public bool MultiSelect { get; set; }
         [Parameter] public EventCallback<Item> OnRowClicked { get; set; }
         [Parameter] public Func<Task<IList<Item>>> OnRefresh { get; set; }
+        [Parameter] public EventCallback<Item> OnBeforeEdit { get; set; }
         [Parameter] public EventCallback<Item> OnItemEdited { get; set; }
         [Parameter] public EventCallback<Item> OnItemAdded { get; set; }
         [Parameter] public EventCallback<Item> OnItemDeleted { get; set; }
@@ -53,8 +57,10 @@ namespace TabBlazor
         [Parameter] public bool ConfirmDelete { get; set; } = true;
         [Parameter] public TableEditMode EditMode { get; set; }
 
+        [Parameter] public OnCancelStrategy? CancelStrategy { get; set; }
         [Parameter] public Action<TableEditPopupOptions<Item>> EditPopupMutator { get; set; }
-
+        [Parameter] public IDataProvider<Item> DataProvider { get; set; }
+        public bool IsRowValid { get; set; }
         public bool HasRowActions => RowActionTemplate != null || RowActionEndTemplate != null || AllowDelete || AllowEdit;
 
         public bool HasActionColumn => Columns.Any(e => e.ActionColumn);
@@ -74,12 +80,12 @@ namespace TabBlazor
         public bool ChangedItem { get; set; }
         public bool AllowAdd => OnItemAdded.HasDelegate;
         public bool AllowDelete => OnItemDeleted.HasDelegate;
-        public bool AllowEdit => OnItemEdited.HasDelegate;
+        public bool AllowEdit => OnItemEdited.HasDelegate && !IsAddInProgress;
         public bool HasGrouping => Columns.Any(x => x.GroupBy);
-        public TheGridDataFactory<Item> DataFactory { get; set; }
         public Item SelectedItem { get; set; }
 
         protected ElementReference table;
+        private Item StateBeforeEdit;
         private bool tableInitialized;
         public string SearchText { get; set; }
 
@@ -104,7 +110,7 @@ namespace TabBlazor
 
         protected override void OnInitialized()
         {
-            DataFactory = new TheGridDataFactory<Item>(Columns, this);
+            DataProvider = DataProvider ?? new TheGridDataFactory<Item>();
 
             if (Hover)
             {
@@ -146,7 +152,7 @@ namespace TabBlazor
                 await Update(true);
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //HandleError("Something went wrong when searching", e);
                 SearchText = "";
@@ -252,7 +258,7 @@ namespace TabBlazor
             await Update();
         }
 
-        public async Task ClearSelectedItem()
+        public Task ClearSelectedItem()
         {
             //if (ChangedItem)
             //{
@@ -262,6 +268,7 @@ namespace TabBlazor
 
             //SelectedItem = default;
             //await Update();
+            return Task.CompletedTask;
         }
 
         public async Task CancelEdit()
@@ -271,11 +278,19 @@ namespace TabBlazor
                 Items.Remove(CurrentEditItem);
             }
 
+            if (StateBeforeEdit is not null)
+            {
+                var editItemIndex = Items.IndexOf(CurrentEditItem);
+                Items.RemoveAt(editItemIndex);
+                Items.Insert(editItemIndex, StateBeforeEdit);
+            }
+
             await CloseEdit();
         }
 
         public async Task CloseEdit()
         {
+            StateBeforeEdit = default;
             CurrentEditItem = default;
             IsAddInProgress = false;
             await Update();
@@ -285,7 +300,7 @@ namespace TabBlazor
         {
             if (CurrentEditItem == null || !TempItems.Any())
             {
-                TempItems = DataFactory.GetData(Items, resetPage);
+                TempItems = await DataProvider.GetData(Columns, this,Items, resetPage);
                 await Refresh();
             }
         }
@@ -306,7 +321,7 @@ namespace TabBlazor
 
         public async Task MoveToItem(Item item)
         {
-            TempItems = DataFactory.GetData(Items, false, true, item);
+            TempItems = await DataProvider.GetData(Columns, this,Items, false, true, item);
             await Refresh();
         }
 
@@ -375,7 +390,7 @@ namespace TabBlazor
             Items.Add(tableItem);
             EditItem(tableItem);
 
-            TempItems = DataFactory.GetData(Items, false, false, tableItem);
+            TempItems = await DataProvider.GetData(Columns, this,Items, false, false, tableItem);
 
         }
 
@@ -411,6 +426,17 @@ namespace TabBlazor
 
         public void EditItem(Item tableItem)
         {
+            var onCancelStrategy = CancelStrategy ?? tablerOptions.CurrentValue.DefaultOnCancelStrategy;
+            if (!IsAddInProgress && onCancelStrategy == OnCancelStrategy.Revert)
+            {
+                StateBeforeEdit = tableItem.Copy();
+            }
+
+            if (OnBeforeEdit.HasDelegate)
+            {
+                OnBeforeEdit.InvokeAsync(tableItem);
+            }
+
             CurrentEditItem = tableItem;
 
             StateHasChanged();

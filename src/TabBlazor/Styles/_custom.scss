@@ -1,4 +1,9 @@
 ﻿
+//
+.progress-lg {
+    height: 0.8rem;
+}
+
 .tabicon {
     border: none;
     background: none;
@@ -30,6 +35,10 @@
 .clickable-text {
     cursor: pointer;
     text-decoration: underline;
+}
+
+.clickable-header {
+    cursor: pointer;
 }
 
 //Badge
@@ -208,5 +217,3 @@ Dimmer
         opacity: 0.3;
     }
 }
-
-

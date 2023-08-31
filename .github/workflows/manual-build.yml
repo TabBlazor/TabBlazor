@@ -1,0 +1,24 @@
+name: 'Build'
+on: [workflow_dispatch]
+env:
+  PUBLISH_DIR: docs/Tabler.Docs.Wasm/bin/Release/net6.0/publish/wwwroot
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      # Checkout the code
+      - uses: actions/checkout@v2
+      
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 7.0.x
+
+      - name: Restore Workloads
+        run: dotnet workload restore
+      
+      - name: Publish
+        run: dotnet build Tabler.Docs.Wasm.csproj --configuration Release
+        working-directory: ./docs/Tabler.Docs.Wasm
+      

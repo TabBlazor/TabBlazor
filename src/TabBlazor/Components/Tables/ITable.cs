@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
+﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using TabBlazor.Components.Tables.Components;
 
 namespace TabBlazor.Components.Tables
 {
@@ -19,6 +16,7 @@ namespace TabBlazor.Components.Tables
         int VisibleColumnCount { get; }
         List<TableItem> SelectedItems { get; set; }
         IList<TableItem> Items { get; }
+        IDataProvider<TableItem> DataProvider { get; set; }
         RenderFragment<TableItem> RowActionTemplate { get; set; }
         bool ShowCheckboxes { get; set; }
         bool HasRowActions { get; }
@@ -52,6 +50,7 @@ namespace TabBlazor.Components.Tables
         int PageSize { get; set; }
         bool ShowFooter { get; set; }
         bool ShowSearch { get; set; }
+        bool UseNaturalSort { get; set; }
         int PageNumber { get; set; }
         int TotalCount { get; set; }
         int VisibleColumnCount { get; }
@@ -71,7 +70,7 @@ namespace TabBlazor.Components.Tables
         bool IsAddInProgress { get; }
         Task CloseEdit();
         Task CancelEdit();
-
+        bool IsRowValid { get;}
         Action<TableEditPopupOptions<TItem>> EditPopupMutator { get; set; }
 
     }
@@ -86,7 +85,7 @@ namespace TabBlazor.Components.Tables
         TableItem CurrentEditItem { get; }
         Task CloseEdit();
         Task CancelEdit();
-
+        bool IsRowValid { get;}
         bool HasActionColumn { get; }
     }
 

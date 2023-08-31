@@ -1,0 +1,25 @@
+﻿@using TabBlazor.Components.QuickTables
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<ApplicationDbContext> Factory
+
+<div class="grid">
+    <QuickTable Items="DbContext.Countries" Pagination="@pagination" Class="quick-table-example">
+        <PropertyColumn Property="@(c => c.Name)" Sortable="true"/>
+        <PropertyColumn Property="@(c => c.Code)" Sortable="true"/>
+        <PropertyColumn Property="@(c => c.Medals.Gold)" Sortable="true"/>
+        <PropertyColumn Property="@(c => c.Medals.Silver)" Sortable="true"/>
+        <PropertyColumn Property="@(c => c.Medals.Bronze)" Sortable="true"/>
+        <PropertyColumn Property="@(c => c.Medals.Total)"/>
+    </QuickTable>
+    <Paginator Value="@pagination"/>
+</div>
+
+@code {
+    private PaginationState pagination = new PaginationState { ItemsPerPage = 15 };
+    private ApplicationDbContext DbContext { get; set; }
+
+    protected override void OnInitialized()
+    {
+        DbContext = Factory.CreateDbContext();
+    }
+}

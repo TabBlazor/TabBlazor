@@ -5,20 +5,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace TabBlazor
 {
-    public partial class ItemSelect<TItem, TValue> : TablerBaseComponent
+    public partial class ItemSelect<TItem, TValue> : TablerBaseComponent, IDisposable
     {
         /// <summary>
         /// List of items 
         /// </summary>
-        [Parameter] public IEnumerable<TItem> Items { get; set; }
+        [Parameter]
+        public IEnumerable<TItem> Items { get; set; }
 
         /// <summary>
         /// Text to be displayed when no item is selected
         /// </summary>
-        [Parameter] public string NoSelectedText { get; set; } = "*Select*";
+        [Parameter]
+        public string NoSelectedText { get; set; } = "*Select*";
 
         [Parameter] public string NoItemsText { get; set; }
         [Parameter] public bool ShowCheckBoxes { get; set; }
@@ -27,9 +30,11 @@ namespace TabBlazor
 
         [Parameter] public List<TValue> SelectedValues { get; set; }
         [Parameter] public EventCallback<List<TValue>> SelectedValuesChanged { get; set; }
+        [Parameter] public Expression<Func<IList<TValue>>> SelectedValuesExpression { get; set; }
 
         [Parameter] public TValue SelectedValue { get; set; }
         [Parameter] public EventCallback<TValue> SelectedValueChanged { get; set; }
+        [Parameter] public Expression<Func<TValue>> SelectedValueExpression { get; set; }
 
         [Parameter] public EventCallback Changed { get; set; }
         [Parameter] public EventCallback<bool> OnExpanded { get; set; }
@@ -51,9 +56,24 @@ namespace TabBlazor
         [Parameter] public string MaxListHeight { get; set; }
         [Parameter] public string ListWidth { get; set; }
         [Parameter] public string Label { get; set; }
+        [Parameter] public string DropdownMenuCss { get; set; }
+
+        private bool FocusSearch;
+        private ElementReference searchInput;
+        private ElementReference SearchInput
+        {
+            get => searchInput;
+            set
+            {
+                searchInput = value;
+                FocusSearch = true;
+            } 
+        }
+
+        [CascadingParameter] private EditContext CascadedEditContext { get; set; }
 
         [Inject] private IJSRuntime jSRuntime { get; set; }
-        private string? userAgent = null;
+        private string userAgent = null;
         private bool isFirefoxBrowser => userAgent.Contains("Firefox", StringComparison.InvariantCultureIgnoreCase);
 
         private bool showSearch => SearchMethod != null;
@@ -62,6 +82,9 @@ namespace TabBlazor
         private Dropdown dropdown;
         private string searchText;
         private TItem highlighted;
+        private FieldIdentifier? fieldIdentifier;
+        private string FieldCssClasses;
+        private string[] ExpandKeys = { "Enter", " ", "ArrowDown" };
 
         protected override void OnInitialized()
         {
@@ -69,16 +92,55 @@ namespace TabBlazor
             {
                 if (typeof(TItem) != typeof(TValue))
                 {
-                    throw new InvalidOperationException($"{GetType()} requires a {nameof(ConvertExpression)} parameter.");
+                    throw new InvalidOperationException(
+                        $"{GetType()} requires a {nameof(ConvertExpression)} parameter.");
                 }
 
                 ConvertExpression = item => item is TValue value ? value : default;
             }
+
+            if (MultiSelect && SelectedValuesExpression != null)
+            {
+                fieldIdentifier = FieldIdentifier.Create(SelectedValuesExpression);
+            }
+
+            if (!MultiSelect && SelectedValueExpression != null)
+            {
+                fieldIdentifier = FieldIdentifier.Create(SelectedValueExpression);
+            }
+
+            if (CascadedEditContext != null)
+            {
+                CascadedEditContext.OnValidationStateChanged += SetValidationClasses;
+            }
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            if (FocusSearch)
+            {
+                SearchInput.FocusAsync();
+                FocusSearch = false;
+            }
+            
+            if (fieldIdentifier is not FieldIdentifier fid) { return; }
+            CascadedEditContext?.NotifyFieldChanged(fid);
+            CascadedEditContext?.Validate();
+        }
+
+        private void SetValidationClasses(object sender, ValidationStateChangedEventArgs args)
+        {
+            if (fieldIdentifier is not FieldIdentifier fid) { return; }
+            FieldCssClasses = CascadedEditContext?.FieldCssClass(fid) ?? "";
         }
 
         protected override void OnParametersSet()
         {
-            if (selectedItems == null) { selectedItems = new List<TItem>(); }
+            if (selectedItems == null)
+            {
+                selectedItems = new List<TItem>();
+            }
+
             selectedItems.Clear();
 
             //TODO How to handle if the items are in the provided list
@@ -116,7 +178,7 @@ namespace TabBlazor
 
         private void DropdownExpanded(bool expanded)
         {
-             OnExpanded.InvokeAsync(expanded);
+            OnExpanded.InvokeAsync(expanded);
         }
 
         private string GetListStyle()
@@ -125,9 +187,7 @@ namespace TabBlazor
 
             if (!string.IsNullOrWhiteSpace(MaxListHeight))
             {
-                var overFlowStyle = isFirefoxBrowser ?
-                    "overflow-y:scroll;" :
-                    "overflow-y:overlay;";
+                var overFlowStyle = isFirefoxBrowser ? "overflow-y:scroll;" : "overflow-y:overlay;";
                 style = $"max-height:{MaxListHeight}; {overFlowStyle}";
             }
 
@@ -160,6 +220,12 @@ namespace TabBlazor
             {
                 return filtered.Where(e => !selectedItems.Contains(e)).ToList();
             }
+
+            if (highlighted is not null && !filtered.Contains(highlighted))
+            {
+                highlighted = default;
+            }
+            
             return filtered.ToList();
         }
 
@@ -170,7 +236,7 @@ namespace TabBlazor
 
         private async Task OnKey(KeyboardEventArgs e)
         {
-            if (!dropdown.IsExpanded && (e.Key == "Enter" || e.Key == " "))
+            if (!dropdown.IsExpanded && ExpandKeys.Contains(e.Key))
             {
                 highlighted = default;
                 dropdown.Open();
@@ -180,7 +246,7 @@ namespace TabBlazor
 
             if (dropdown.IsExpanded)
             {
-                if (e.Key == "Escape")
+                if (e.Key == "Escape" || e.Key == "Tab")
                 {
                     highlighted = default;
                     dropdown.Close();
@@ -200,18 +266,25 @@ namespace TabBlazor
                 }
             }
         }
+
         private void SetHighlighted(int step)
         {
             var myList = FilteredList();
+            
             if (highlighted == null)
             {
-                highlighted = myList.FirstOrDefault();
+                highlighted = step > Decimal.Zero ? myList.FirstOrDefault() : myList.LastOrDefault();
             }
             else
             {
                 var pos = myList.IndexOf(highlighted);
                 pos += step;
                 highlighted = myList.ElementAtOrDefault(pos);
+
+                if (highlighted is null)
+                {
+                    SetHighlighted(step);
+                }
             }
 
             if (!CanSelect() && highlighted != null && !IsSelected(highlighted))
@@ -243,7 +316,10 @@ namespace TabBlazor
 
         private bool IsHighlighted(TItem item)
         {
-            if (highlighted == null) { return false; }
+            if (highlighted == null)
+            {
+                return false;
+            }
 
             if (IdExpression != null)
             {
@@ -269,6 +345,7 @@ namespace TabBlazor
             {
                 selectedItems.Remove(item);
             }
+
             dropdown.Close();
             await UpdateChanged();
         }
@@ -306,9 +383,8 @@ namespace TabBlazor
 
         private async Task UpdateChanged()
         {
-            //Allways send out SelectedValuesChanged
             var selectedValues = new List<TValue>();
-            selectedValues = selectedItems.Select(e => GetValue(e)).ToList();
+            selectedValues = selectedItems.Select(GetValue).ToList();
             await SelectedValuesChanged.InvokeAsync(selectedValues);
 
             if (!MultiSelect)
@@ -317,7 +393,25 @@ namespace TabBlazor
             }
 
             await Changed.InvokeAsync();
+            
+            if (fieldIdentifier is FieldIdentifier fid)
+            {
+                CascadedEditContext?.NotifyFieldChanged(fid);
+            }
         }
 
+        public void Dispose()
+        {
+            if (CascadedEditContext != null)
+            {
+                CascadedEditContext.OnValidationStateChanged -= SetValidationClasses;
+            }
+        }
+
+        private void OnDropdownMenuClosed()
+        {
+            highlighted = default;
+            ClearSearch();
+        }
     }
 }

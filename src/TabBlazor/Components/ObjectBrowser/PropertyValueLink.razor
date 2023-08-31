@@ -1,0 +1,19 @@
+﻿@if (PropertyValue != null)
+{
+    <span class="cursor-pointer value-wrapper" @onclick="(() => ObjectDetails())">
+        @if (ChildContent == null)
+        {
+            @PropertyValue?.ToString()
+        }
+        else
+        {
+            @ChildContent
+        }
+    </span>
+}
+else
+{
+    <i>null</i>
+}
+
+

@@ -28,7 +28,7 @@
         <div class="form-footer">
             <div class="d-flex">
                 <Button BackgroundColor=TablerColor.Secondary OnClick="CancelEdit">Cancel</Button>
-                <button class="btn btn-primary ms-auto" type="submit">Save</button>
+                <button class="btn btn-primary ms-auto" type="submit" disabled="@(!Table.IsRowValid)">Save</button>
             </div>
         </div>
 

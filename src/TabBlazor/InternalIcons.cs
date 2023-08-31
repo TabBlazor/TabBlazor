@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace TabBlazor
 {
     internal static class InternalIcons
@@ -23,6 +18,15 @@ namespace TabBlazor
         public static IIconType Sort_Desc => new TablerIcon(@"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><polyline points='8 17 12 21 16 17' /><line x1='12' y1='3' x2='12' y2='21' />");
         public static IIconType Sort_Asc => new TablerIcon(@"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><polyline points='8 7 12 3 16 7' /><line x1='12' y1='3' x2='12' y2='21' />");
 
+        public static IIconType Chevron_double_left => new MDIcon(@"<path d='M18.41,7.41L17,6L11,12L17,18L18.41,16.59L13.83,12L18.41,7.41M12.41,7.41L11,6L5,12L11,18L12.41,16.59L7.83,12L12.41,7.41Z' />");
+        public static IIconType Chevron_double_right => new MDIcon(@"<path d='M5.59,7.41L7,6L13,12L7,18L5.59,16.59L10.17,12L5.59,7.41M11.59,7.41L13,6L19,12L13,18L11.59,16.59L16.17,12L11.59,7.41Z' />");
+        public static IIconType Chevron_left => new MDIcon(@"<path d='M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z' />");
+        public static IIconType Chevron_right => new MDIcon(@"<path d='M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z' />");
+        
+        public static IIconType Chevron_down => new MDIcon(@"<path d='M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z' />");
+        public static IIconType Chevron_up => new MDIcon(@"<path d='M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z' />");
+
+       
 
 
     }

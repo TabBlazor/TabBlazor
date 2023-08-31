@@ -1,0 +1,40 @@
+﻿@typeparam TItem
+@inherits BaseFacet<TItem>
+@namespace TabBlazor.Dashboards
+
+@if (Facet != null)
+{
+    @if (@FacetTemplate == null)
+    {
+        <div class="m-2 p-2 border">
+            <Icon class="me-2" IconType="GetExpandedIcon()" OnClick="ToogleExpanded" />
+            <strong>@Facet.Name</strong>
+
+            @if (Facet.IsActive)
+            {
+                <Icon class="ms-2 tabicon icon" IconType="InternalIcons.Trash" OnClick="@(_ => ResetFilters(true))" />
+            }
+
+            @if (IsExpanded != false)
+            {
+
+
+
+                @foreach (var facetFilter in Facet.Filters)
+                {
+                    <Checkbox Switch Label="@facetFilter.GetLabel()" Value=@facetFilter.Active ValueChanged="@(e => ValueChanged(facetFilter, e))" />
+                }
+            }
+        </div>
+    }
+
+    else
+    {
+        @FacetTemplate.Invoke(Facet)
+    }
+}
+
+
+
+
+

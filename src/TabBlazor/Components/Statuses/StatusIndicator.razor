@@ -1,0 +1,13 @@
+﻿@inherits TablerBaseComponent
+@namespace TabBlazor
+
+<HtmlElement Tag="span"
+             class="@ClassNames"
+             @onclick="OnClick"
+             @attributes="@UnmatchedParameters">
+
+    <span class="status-indicator-circle"></span>
+    <span class="status-indicator-circle"></span>
+    <span class="status-indicator-circle"></span>
+
+</HtmlElement>

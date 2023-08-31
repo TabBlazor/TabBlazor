@@ -1,0 +1,17 @@
+﻿@namespace TabBlazor
+@using System.Globalization
+@inherits TablerBaseComponent
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     class="@ClassNames"
+     transform="rotate(@Rotate)"
+     width="@Width"
+     height="@Height"
+     viewBox="0 0 @(FlagType?.Width ?? 0) @(FlagType?.Height ?? 0)">
+
+    @if(FlagType?.Elements != null)
+    {
+        @((MarkupString)FlagType.Elements)
+    }
+
+   
+</svg>

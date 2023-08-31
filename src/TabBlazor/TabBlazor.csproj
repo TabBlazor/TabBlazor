@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<PackageId>TabBlazor</PackageId>
 		<Description>Blazor dashboard admin theme based on Tabler UI. Minimal Javascript</Description>
 		<Authors>Joakim Dangården</Authors>
@@ -9,7 +9,7 @@
 		<PackageTags>Blazor Tabler Admin Theme</PackageTags>
 		<RepositoryUrl>https://github.com/joadan/TabBlazor</RepositoryUrl>
 		<PackageProjectUrl>https://joadan.github.io/TabBlazor</PackageProjectUrl>
-		<Version>0.0.1-alpha</Version>
+		<Version>1.6.9</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryType>git</RepositoryType>
 		<PackageIcon>TabBlazorLogo.png</PackageIcon>
@@ -37,9 +37,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="LinqKit.Core" Version="1.2.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.3" />
-		<PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="6.0.3" />
+		<PackageReference Include="LinqKit.Core" Version="1.2.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="7.0.4" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -52,6 +52,7 @@
 		</None>
 	</ItemGroup>
 
-
-
+	<ItemGroup>
+	  <Folder Include="wwwroot\css" />
+	</ItemGroup>
 </Project>

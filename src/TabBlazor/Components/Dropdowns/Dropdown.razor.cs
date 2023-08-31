@@ -48,7 +48,6 @@ namespace TabBlazor
 
         private string GetSyle()
         {
-           
             if (isContextMenu)
             {
                return $"position:fixed;top:{top}px;left:{left}px";

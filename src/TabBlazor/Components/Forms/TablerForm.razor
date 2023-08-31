@@ -6,13 +6,7 @@
 else
 {
     <EditForm EditContext="@EditContext" OnValidSubmit="HandleValidSubmit" @attributes="UnknownParameters">
+        <DynamicComponent Type="Validator.Component" @ref="@ValidatorInstance"></DynamicComponent>
         @ChildContent
-        <DataAnnotationsValidator />
-        @*@if (IncludeSaveButton)
-        {
-            <div class="btn-list text-right card-footer">
-                <button type="submit" class="@GetSaveButtonClass()">@L.GetString(x => x.Save)</button>
-            </div>
-        }*@
     </EditForm>
 }

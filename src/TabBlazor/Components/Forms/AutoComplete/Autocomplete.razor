@@ -1,0 +1,52 @@
+﻿@typeparam TItem
+@inherits TablerBaseComponent
+@namespace TabBlazor
+
+<div class="dropdown autocomplete-input @ValidationClasses" style="width: 100%;">
+    <input @ref="_searchInput" 
+           disabled="@Disabled" 
+           @attributes="@UnmatchedParameters" 
+           @bind="@SearchText" 
+           @bind:event="oninput" 
+           @onkeyup="HandleKeyup" 
+           @onfocus="OnFocus" 
+           @onblur="OnBlurTriggered" 
+           @onkeypress:preventDefault 
+           placeholder="@Placeholder" 
+           autocomplete="off"
+           class="form-control"/>
+
+    @if (IsShowingSuggestions)
+    {
+        <ClickOutside OnClickOutside="OnClickOutside">
+            <div class="dropdown-menu dropdown-menu-left show dropdown-project">
+                @if (!string.IsNullOrEmpty(ResultHeader))
+                {
+                    <div class="dropdown-item d-flex dropdown-group-header">
+                        <h5>@ResultHeader</h5>
+                        <div class="dropdown-divider"></div>
+                    </div>
+                }
+                @{
+                    for (int i = 0; i < Result.Count(); i++)
+                    {
+                        var item = Result[i];
+                        <a @key="item" 
+                           class="dropdown-item d-flex clickable @GetSelectedSuggestionClass(item, i)" 
+                           @onclick="(_ => OnItemSelectedCallback(item))">
+                            @ResultTemplate(item)
+                        </a>
+                    }
+                }
+
+                @if (SearchTextInAutoCompleteList(SearchText, Result) == false)
+                {
+                    <a class="dropdown-item d-flex">
+                        @NotFoundTemplate
+                    </a>
+                }
+
+            </div>
+        </ClickOutside>
+    }
+</div>

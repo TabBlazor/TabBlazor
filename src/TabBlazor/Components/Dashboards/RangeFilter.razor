@@ -1,0 +1,36 @@
+﻿@typeparam TItem
+@inherits DashboardComponent<TItem>
+
+@namespace TabBlazor.Dashboards
+
+
+
+<div class="m-2 p-2 border">
+    <div class="mb-1">
+        <strong>@Name</strong>
+
+        @if (filter != null)
+        {
+            <Icon class="ms-2 tabicon icon" IconType="InternalIcons.Trash" OnClick="@(_ => RemoveFilter())" />
+        }
+    </div>
+
+    <Row>
+        <RowCol Lg="6">
+            <input class="form-control" min="@allMin" max="@max" type="number" value="@min" @oninput=MinUpdated>
+        </RowCol>
+
+        <RowCol Lg="6">
+            <input class="form-control" type="number" min="@min" max="@allMax" value="@max" @oninput=MaxUpdated>
+        </RowCol>
+    </Row>
+
+
+
+
+</div>
+
+
+
+
+

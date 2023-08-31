@@ -32,6 +32,13 @@ namespace Tabler.Docs.Data
         public string CustomerName { get; set; }
         public int Visits { get; set; }
         public int Percentage { get; set; }
+
+        public DateTimeOffset? LastOrderDate { get; set; }
+
+
+        public override string ToString() {
+            return $"{CustomerId} [{CustomerName}]";
+        }
     }
 
 
@@ -48,5 +55,22 @@ namespace Tabler.Docs.Data
         public decimal GrossValue { get; set; }
         public decimal NetValue { get => GrossValue * (1 - (DiscountPrecentage / 100)); }
         public decimal DiscountPrecentage { get; set; }
+
+        public decimal Discount => GrossValue - NetValue;
+
+        public int TestInt { get; set; } = 10;
+
+        public List<OrderLine> OrderLines { get; set; }
+
+    }
+
+    public class OrderLine
+    {
+        public string ItemNumber { get; set; }
+        public decimal Quantity { get; set; }
+        public OrderStatus Status { get; set; }
+
+        public Dictionary<string, string> Configuration { get; set; }
+
     }
 }

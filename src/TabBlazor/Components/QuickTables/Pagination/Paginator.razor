@@ -1,0 +1,35 @@
+@namespace TabBlazor.Components.QuickTables
+
+<div class="card-footer d-flex align-items-center">
+    @if (Value.TotalItemCount.HasValue)
+    {
+        <div class="m-0 text-muted">
+            @if (SummaryTemplate is not null)
+            {
+                @SummaryTemplate
+            }
+            else
+            {
+                <text><strong>@Value.TotalItemCount</strong> items</text>
+            }
+        </div>
+        <ul class="pagination m-0 ms-auto">
+            <li class="page-item @(!CanGoBack ? "disabled" : "")" @onclick="GoFirstAsync" disabled="@(!CanGoBack)">
+                <Icon class="page-link" IconType="InternalIcons.Chevron_double_left"></Icon>
+            </li>
+            <li class="page-item @(!CanGoBack ? "disabled" : "")" @onclick="GoPreviousAsync" disabled="@(!CanGoBack)">
+                <Icon class="page-link" IconType="InternalIcons.Chevron_left"></Icon>
+            </li>
+            <li class="page-item">
+                Page <strong>@(Value.CurrentPageIndex + 1)</strong>
+                of <strong>@(Value.LastPageIndex + 1)</strong>
+            </li>
+            <li class="page-item @(!CanGoForwards ? "disabled" : "")" @onclick="GoNextAsync">
+                <Icon class="page-link" IconType="InternalIcons.Chevron_right"></Icon>
+            </li>
+            <li class="page-item @(!CanGoForwards ? "disabled" : "")" @onclick="GoLastAsync" disabled="@(!CanGoForwards)">
+                <Icon class="page-link" IconType="InternalIcons.Chevron_double_right"></Icon>
+            </li>
+        </ul>
+    }
+</div>

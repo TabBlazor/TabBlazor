@@ -1,14 +1,10 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-using TabBlazor;
+using Microsoft.EntityFrameworkCore;
+using TabBlazor.QuickTable.EntityFramework;
 using Tabler.Docs.Services;
 
 namespace Tabler.Docs.Wasm
@@ -23,6 +19,11 @@ namespace Tabler.Docs.Wasm
             builder.Services.AddHttpClient("GitHub", client => client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("TabBlazor", "1")));
             builder.Services.AddDocs();
             builder.Services.AddScoped<ICodeSnippetService, GitHubSnippetService>();
+            builder.Services.AddScoped<IDataService, LocalDataService>();
+            builder.Services.AddDbContextFactory<ApplicationDbContext>(options => options.UseSqlite("Data Source=app.db"));
+            builder.Services.AddQuickTableEntityFrameworkAdapter();
+            
+            
             await builder.Build().RunAsync();
         }
     }

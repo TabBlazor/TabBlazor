@@ -7,17 +7,16 @@
 <Dropdown @ref=dropdown CloseOnClick="false">
     <ChildContent>
         <div class="input-group input-group-flat" @onclick:stopPropagation>
-
             @if (SelectedValue != null && !isInput)
             {
-                <span class="form-control" tabindex=0 @onfocus="@(() => SetInput(true))"> @SelectedTextExpression(SelectedValue)</span>
+                <span class="form-control" tabindex=0 @onclick="@(() => SetInput(true))"> @SelectedTextExpression(SelectedValue)</span>
                 <span class="input-group-text" tabindex=0>
                     <Icon IconType="@InternalIcons.X" class="icon" OnClick="ClearSelected" />
                 </span>
             }
             else
             {
-                <input class="form-control" @ref="input" @bind="SearchText" type="text" @bind:event="oninput" placeholder="@SearchPlaceholderText"  @onblur="@(() => SetInput(false))">
+                <input class="form-control" @ref="input" @bind="SearchText" type="text" @bind:event="oninput" placeholder="@SearchPlaceholderText" @onfocus="() => SetInput(true)"  @onblur="@(() => SetInput(false))">
                 <span class="input-group-text">
 
                     @if (!string.IsNullOrWhiteSpace(searchText))

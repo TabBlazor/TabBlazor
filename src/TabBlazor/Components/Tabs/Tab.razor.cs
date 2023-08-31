@@ -1,5 +1,4 @@
 ﻿using TabBlazor.Components;
-using Microsoft.AspNetCore.Components;
 
 namespace TabBlazor
 {
@@ -24,6 +23,7 @@ namespace TabBlazor
         void Activate()
         {
             ContainerTabSet.SetActivateTab(this);
+            OnClick.InvokeAsync();
         }
     }
 }

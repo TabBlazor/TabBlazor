@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using Timer = System.Timers.Timer;
 
 namespace TabBlazor.Components.Toasts
 {
@@ -13,9 +14,7 @@ namespace TabBlazor.Components.Toasts
         private int _percentComplete;
 
         internal Action<int> OnTick;
-        internal Action OnElapsed;
-
-       
+        
 
         internal CountdownTimer(int timeout)
         {
@@ -42,7 +41,6 @@ namespace TabBlazor.Components.Toasts
 
             if (_percentComplete >= 100)
             {
-                OnElapsed?.Invoke();
             }
         }
 
