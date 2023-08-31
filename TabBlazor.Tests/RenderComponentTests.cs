@@ -8,7 +8,7 @@ namespace TabBlazor.Tests
         [Test]
         public void RenderComponent_can_render_when_setting_cascading_parameters()
         {
-            var component = new RenderComponent<TestModalContentCascadeParameter>()
+            var component = new RenderComponent<TestModalContent>()
                 .Set(p => p.CascadingParameter, true);
             Assert.IsNotNull(component);
         }
@@ -16,7 +16,7 @@ namespace TabBlazor.Tests
         [Test]
         public void RenderComponent_can_render_when_setting_parameters()
         {
-            var component = new RenderComponent<TestModalContentCascadeParameter>()
+            var component = new RenderComponent<TestModalContent>()
                 .Set(p => p.ReportName, "TestReport");
             Assert.IsNotNull(component);
         }
