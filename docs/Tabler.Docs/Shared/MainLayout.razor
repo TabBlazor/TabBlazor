@@ -1,12 +1,15 @@
 ﻿@inherits LayoutComponentBase
-        <ModalContainer />
-        <ToastContainer />
-        <MainNavigation />
 
-        <div class="page @(appService.Settings.DarkMode ? "theme-dark": "")">
-            <div class="content">
-                <div class="container-fluid mt-2">
-                    @Body
-                </div>
-            </div>
+<ModalContainer />
+<ToastContainer />
+
+<div class="page">
+    <MainNavigation />
+
+    <div class="page-wrapper">
+        <div class="container-fluid mt-2">
+            @Body
         </div>
+    </div>
+</div>
+
