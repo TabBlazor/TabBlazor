@@ -36,6 +36,10 @@
   cursor: pointer;
 }
 
+.badge {
+  color: #ffffff !important;
+}
+
 .badge.badge-default {
   text-transform: inherit;
 }

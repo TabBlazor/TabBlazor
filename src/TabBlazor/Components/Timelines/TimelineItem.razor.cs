@@ -11,7 +11,7 @@ namespace TabBlazor
         [Parameter] public string Title { get; set; }
 
         protected override string ClassNames => ClassBuilder
-            .Add("")
+            .Add("timeline-event")
             .Add(BackgroundColor.GetColorClass("bg"))
             .Add(TextColor.GetColorClass("text"))
             .ToString();

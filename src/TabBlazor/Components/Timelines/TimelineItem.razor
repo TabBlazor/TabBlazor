@@ -7,7 +7,7 @@
              @attributes="@UnmatchedParameters">
 
    
-    <div class="list-timeline-icon @IconColor.GetColorClass("bg")">
+    <div class="timeline-event-icon @IconColor.GetColorClass("bg")-lt">
         @if (IconTemplate != null)
         {
             @IconTemplate
@@ -18,15 +18,23 @@
         }
     </div>
  
-    <div class="list-timeline-content">
-        @if (!string.IsNullOrWhiteSpace(Time))
-        {
-            <div class="list-timeline-time">@Time</div>
-        }
-        @if (!string.IsNullOrWhiteSpace(Title))
-        {
-            <p class="list-timeline-title">@Title</p>
-        }
-        @ChildContent
+    <div class="card timeline-event-card">
+
+        <div class="card-body">
+
+            @if (!string.IsNullOrWhiteSpace(Time))
+            {
+                <div class="text-secondary float-end">@Time</div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Title))
+            {
+                <h4>@Title</h4>
+            }
+
+            @ChildContent
+            
+        </div>
+
     </div>
 </HtmlElement>

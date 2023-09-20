@@ -13,10 +13,10 @@ namespace TabBlazor
         [Parameter] public TimelineType Type { get; set; } = TimelineType.Default;
 
         protected override string ClassNames => ClassBuilder
-            .Add("list list-timeline")
+            .Add("timeline")
             .Add(BackgroundColor.GetColorClass("bg"))
             .Add(TextColor.GetColorClass("text"))
-            .AddIf("list-timeline-simple", Type == TimelineType.Simple)
+            .AddIf("timeline-simple", Type == TimelineType.Simple)
             .ToString();
     }
 }
