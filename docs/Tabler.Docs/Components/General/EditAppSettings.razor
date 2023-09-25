@@ -22,26 +22,22 @@
      <CardBody>
          <div class=mt-2>
              <div class="form-label">Background</div>
-
-             @foreach (var option in EnumHelper.GetList<NavbarBackground>())
-            {
-             <div class="badge-list">
+             <div class="badges-list">
+                 @foreach (var option in EnumHelper.GetList<NavbarBackground>())
+                {
                     <Badge BackgroundColor="@(option == settings.NavbarBackground ? TablerColor.Primary : TablerColor.Default)" OnClick="() => SetNavBackground(option)">@option.ToString()</Badge>
-                </div>
-            }
-
-      
+                }
+            </div>
         </div>
 
         <div class=mt-2>
             <div class="form-label">Direction</div>
-            @foreach (var option in EnumHelper.GetList<NavbarDirection>())
-            {
-                   <div class="badge-list">
-                    <Badge OnClick="()=> SetNavDirection(option)">@option.ToString()</Badge>
-                  </div>
-            }
-
+            <div class="badges-list">
+                @foreach (var option in EnumHelper.GetList<NavbarDirection>())
+                {
+                    <Badge BackgroundColor="@(option == settings.NavbarDirection ? TablerColor.Primary : TablerColor.Default)" OnClick="()=> SetNavDirection(option)">@option.ToString()</Badge>
+                }
+            </div>
         </div>
     </CardBody>
 </Card>
