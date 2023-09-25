@@ -4,7 +4,7 @@ using TabBlazor.Components.Tables.Components;
 
 namespace TabBlazor.Components.Tables
 {
-    public class TheGridDataFactory<Item> : IDataProvider<Item>
+    public partial class TheGridDataFactory<Item> : IDataProvider<Item>
     {
 
         public async Task<IEnumerable<TableResult<object, Item>>> GetData(List<IColumn<Item>> columns, ITableState<Item> state,IEnumerable<Item> items, bool resetPage = false, bool addSorting = true, Item moveToItem = default)
@@ -35,7 +35,7 @@ namespace TabBlazor.Components.Tables
                     state.PageNumber = 0;
                 }
 
-                else if ((state.TotalCount - 1) < state.PageSize * state.PageNumber)
+                else if (state.TotalCount - 1 < state.PageSize * state.PageNumber)
                 {
                     state.PageNumber = (int)Math.Floor((decimal)(state.TotalCount / state.PageSize));
                 }
@@ -93,17 +93,19 @@ namespace TabBlazor.Components.Tables
             return query;
         }
 
-        private IQueryable<T> NaturalOrderBy<T>(IQueryable<T> source, Expression<Func<T, object>> selectorExpr, bool desc)
+        [GeneratedRegex("\\d+")]
+        private static partial Regex DigitRegex();
+        private static IQueryable<T> NaturalOrderBy<T>(IQueryable<T> source, Expression<Func<T, object>> selectorExpr, bool desc)
         {
             var selector = selectorExpr.Compile();
 
             int max = source
-                .SelectMany(i => Regex.Matches(selector(i).ToString(), @"\d+").Cast<Match>().Select(m => (int?)m.Value.Length))
+                .SelectMany(i => DigitRegex().Matches(selector(i).ToString()).Cast<Match>().Select(m => (int?)m.Value.Length))
                 .Max() ?? 0;
 
-            return desc ?
-                source.OrderByDescending(i => Regex.Replace(selector(i).ToString(), @"\d+", m => m.Value.PadLeft(max, '0')))
-                : source.OrderBy(i => Regex.Replace(selector(i).ToString(), @"\d+", m => m.Value.PadLeft(max, '0')));
+            Expression<Func<T, string>> keySelector = (i) => DigitRegex().Replace(selector(i).ToString(), m => m.Value.PadLeft(max, '0'));
+
+            return desc ? source.OrderByDescending(keySelector) : source.OrderBy(keySelector);
         }
 
         private IQueryable<Item> AddSearch(List<IColumn<Item>> columns, ITableState<Item> state,IQueryable<Item> query)
