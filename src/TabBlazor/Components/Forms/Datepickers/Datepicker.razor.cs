@@ -69,7 +69,7 @@ namespace TabBlazor
 
             else
             {
-                throw new SystemException("Type must be of type DateTime or DateTimeOffset");
+                throw new SystemException("BadgeType must be of type DateTime or DateTimeOffset");
             }
         }
 

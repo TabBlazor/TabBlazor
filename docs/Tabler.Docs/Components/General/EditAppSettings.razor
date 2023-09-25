@@ -2,54 +2,49 @@
 
 <h3>Edit Application Settings</h3>
 
-<EditForm EditContext=@editContext>
 
-    <Card Size=@CardSize.Small>
-        <CardHeader>
-            <h3>General</h3>
-        </CardHeader>
-        <CardBody>
-            <label class="form-check form-switch">
-                <InputCheckbox class="form-check-input cursor-pointer" @bind-Value=settings.DarkMode  />
-                <span class="form-check-label">DarkMode</span>
-            </label>
-        </CardBody>
-    </Card>
+<Card Size=@CardSize.Small>
+    <CardHeader>
+        <h3>General</h3>
+    </CardHeader>
+    <CardBody>
 
-    <Card class=mt-3 Size=@CardSize.Small>
-        <CardHeader>
-            <h3>Navbar</h3>
-        </CardHeader>
-        <CardBody>
-            <div class=mt-2>
-                <div class="form-label">Background</div>
-                <InputRadioGroup class="" @bind-Value="settings.NavbarBackground">
-                    @foreach (var option in EnumHelper.GetList<NavbarBackground>())
-                    {
-                        <label class="form-check-inline">
-                            <InputRadio class="cursor-pointer" Value="option" /> @option.ToString() <br />
-                        </label>
+        <Checkbox Label="Dark Mode" Switch Value=settings.DarkMode ValueChanged="@(e=> SetDarkMode(e))" />
 
-                    }
-                </InputRadioGroup>
-            </div>
 
-            <div class=mt-2>
-                <div class="form-label">Direction</div>
-                <InputRadioGroup class="cursor-pointer" @bind-Value="settings.NavbarDirection">
-                    @foreach (var option in EnumHelper.GetList<NavbarDirection>())
-                    {
-                        <label class="form-check-inline">
-                            <InputRadio class="" Value="option" /> @option.ToString() <br />
-                        </label>
+     </CardBody>
+ </Card>
 
-                    }
-                </InputRadioGroup>
+ <Card class=mt-3 Size=@CardSize.Small>
+     <CardHeader>
+         <h3>Navbar</h3>
+     </CardHeader>
+     <CardBody>
+         <div class=mt-2>
+             <div class="form-label">Background</div>
 
-            </div>
-        </CardBody>
-    </Card>
+             @foreach (var option in EnumHelper.GetList<NavbarBackground>())
+            {
+             <div class="badge-list">
+                    <Badge BackgroundColor="@(option == settings.NavbarBackground ? TablerColor.Primary : TablerColor.Default)" OnClick="() => SetNavBackground(option)">@option.ToString()</Badge>
+                </div>
+            }
 
-</EditForm>
+      
+        </div>
+
+        <div class=mt-2>
+            <div class="form-label">Direction</div>
+            @foreach (var option in EnumHelper.GetList<NavbarDirection>())
+            {
+                   <div class="badge-list">
+                    <Badge OnClick="()=> SetNavDirection(option)">@option.ToString()</Badge>
+                  </div>
+            }
+
+        </div>
+    </CardBody>
+</Card>
+
 
 
