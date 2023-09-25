@@ -11,6 +11,9 @@ namespace TabBlazor
         [Inject] private NavigationManager navigationManager { get; set; }
         [Parameter] public NavbarBackground Background { get; set; }
         [Parameter] public NavbarDirection Direction { get; set; }
+
+        [Parameter] public NavLinkMatch? NavLinkMatch { get; set; }
+
         protected string HtmlTag => "div";
         public bool IsExpanded = true;
 
