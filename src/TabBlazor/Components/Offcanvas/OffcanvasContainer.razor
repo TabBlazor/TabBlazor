@@ -1,0 +1,27 @@
+﻿@namespace TabBlazor
+
+
+@foreach (var modalModel in offcanvasService.Models.Reverse())
+{
+    <div class="offcanvas offcanvas-@(modalModel.Options.Position.ToString().ToLower()) show" tabindex="-1" id="offcanvasStart" aria-labelledby="offcanvasStartLabel" aria-modal="true" role="dialog">
+        <div class="offcanvas-header">
+            <h2 class="offcanvas-title" id="offcanvasStartLabel">@modalModel.Title</h2>
+            <button type="button" class="btn-close text-reset" aria-label="Close" @onclick="offcanvasService.Close" />
+        </div>
+        <div class="offcanvas-body">
+            @modalModel.Contents
+                   
+        </div>
+    </div>
+
+    if (modalModel.Options.Backdrop)
+    {
+        <div class="offcanvas-backdrop fade show" />
+    }
+
+
+
+}
+
+
+
