@@ -29,7 +29,7 @@ namespace Tabler.Docs.Components.TypeBrowsers
 
             properties = Type.GetProperties().Select(e => new PropertyView(e)).ToList();
 
-            //methods = Type
+            //methods = BadgeType
             //           .GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public)
             //           .Where(m => !m.IsSpecialName).ToList();
 

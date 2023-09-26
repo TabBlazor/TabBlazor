@@ -2,7 +2,7 @@
 @using Microsoft.EntityFrameworkCore
 @inject IDbContextFactory<ApplicationDbContext> Factory
 
-<div class="grid">
+<div class="card">
     <QuickTable Items="DbContext.Countries" Pagination="@pagination" Class="quick-table-example">
         <PropertyColumn Property="@(c => c.Name)" Sortable="true"/>
         <PropertyColumn Property="@(c => c.Code)" Sortable="true"/>

@@ -59,7 +59,7 @@ namespace TabBlazor
 
         private static Type GetAnyElementType(Type type)
         {
-            // Type is Array
+            // BadgeType is Array
             // short-circuit if you expect lots of arrays 
             if (type.IsArray)
                 return type.GetElementType();

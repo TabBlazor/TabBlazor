@@ -6,16 +6,19 @@
             @if (ComponentType != null)
             {
 
-                <a href="https://github.com/joadan/Blazor-Tabler" class="btn btn-white mb-6 btn-block" target="_blank" rel="noreferrer">
-                    <Icon IconType="@TablerIcons.Brand_github" />
-                    Browse source code
-                </a>
-
-                <Button BackgroundColor=TablerColor.White class="p-2  btn-icon" OnClick="OpenComponentModal">
-                    <Icon IconType="@TablerIcons.Code" class="me-2" /> Component API
-                </Button>
-
-
+                <Row>
+                    <RowCol Auto>
+                     <a href="https://github.com/joadan/Blazor-Tabler" class="btn btn-white btn-block mb-2" target="_blank" rel="noreferrer">
+                         <Icon IconType="@TablerIcons.Brand_github" />
+                         Browse source code
+                     </a>
+                    </RowCol>
+                 <RowCol Auto>
+                     <Button BackgroundColor=TablerColor.White class="p-2  btn-icon mb-2" OnClick="OpenComponentModal">
+                         <Icon IconType="@TablerIcons.Code" class="me-2" /> Component API
+                     </Button>
+                 </RowCol>
+                </Row>
             }
 
             <h5 class="subheader">On this page</h5>

@@ -8,11 +8,11 @@
         Dashboard
     </h2>
 
-    <span class="text-muted">
+    <span class="text-secondary">
         Filter: @context.LastRunFilterMilliseconds ms
     </span>
 
-    <span class="text-muted">
+    <span class="text-secondary">
         <Icon IconType="MDIcons.Microsoft_excel" OnClick="@(() => DownloadExcel(context.FilteredItems))" Color="#1D6F42" />
     </span>
 
@@ -45,7 +45,7 @@
                                     <h3 class="mb-0">
                                         @context.FilteredItems.Sum(e => e.NetValue).ToString("n0") Net Sales
                                     </h3>
-                                    <div class="text-muted">
+                                    <div class="text-secondary">
                                         @context.FilteredItems.Sum(e => e.GrossValue).ToString("n0") Gross Sales
                                     </div>
                                 </div>
@@ -68,7 +68,7 @@
                                     <h3 class="mb-0">
                                         @context.FilteredItems.Count().ToString("n0") Orders
                                     </h3>
-                                    <div class="text-muted">
+                                    <div class="text-secondary">
                                         @context.FilteredItems.Where(e=> e.OrderStatus == OrderStatus.Cancelled).Count().ToString("n0") Cancelled
                                     </div>
                                 </div>
@@ -91,7 +91,7 @@
                                     <h3 class="mb-0">
                                         @context.FilteredItems.DistinctBy(e=> e.Customer.CustomerId).Count().ToString("n0") Customers
                                     </h3>
-                                    <div class="text-muted">
+                                    <div class="text-secondary">
                                         @context.FilteredItems.DistinctBy(e=> e.Country).Count().ToString("n0") Countries
                                     </div>
                                 </div>
@@ -117,7 +117,7 @@
                                             <h3 class="mb-0">
                                             @topCustomer?.Customer.CustomerName
                                             </h3>
-                                            <div class="text-muted">
+                                            <div class="text-secondary">
                                             @topCustomer?.Value.ToString("n0")
                                             </div>
 

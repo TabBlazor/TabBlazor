@@ -3,7 +3,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "docs/dashboards",
+      "launchUrl": "docs/badges",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

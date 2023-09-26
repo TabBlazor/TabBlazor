@@ -13,6 +13,17 @@ namespace TabBlazor.Services
             this.jsRuntime = jSRuntime;
         }
 
+        public async Task SetTheme(bool darkTheme)
+        {
+            var theme = "";
+            if (darkTheme)
+            {
+                theme = "dark";
+            }
+
+            await jsRuntime.InvokeVoidAsync("tabBlazor.setTheme", theme);
+        }
+
         public async Task SaveAsFile(string fileName, string href)
         {
             await jsRuntime.InvokeVoidAsync("tabBlazor.saveAsFile", fileName, href);

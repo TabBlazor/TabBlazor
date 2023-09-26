@@ -1,4 +1,11 @@
 ﻿window.tabBlazor = {
+
+    setTheme: function (theme) {
+
+        document.querySelector("body").setAttribute("data-bs-theme", theme);
+
+    },
+
     getUserAgent: function () {
         return navigator.userAgent;
     },
