@@ -3,7 +3,7 @@
 
 <DataGrid class="mb-3">
     <DataGridItem Title="Position">
-        <ItemSelect TItem="OffcanvasPosition" TValue="OffcanvasPosition" Items="EnumHelper.GetList<OffcanvasPosition>()" @bind-SelectedValue="options.Position" />
+        <ItemSelect  Items="EnumHelper.GetList<OffcanvasPosition>()" @bind-SelectedValue="options.Position" />
      </DataGridItem>
  
  <DataGridItem Title="Backdrop"> 
