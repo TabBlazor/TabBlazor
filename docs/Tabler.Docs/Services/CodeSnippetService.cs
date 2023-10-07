@@ -27,7 +27,7 @@ namespace Tabler.Docs.Services
         {
             var basePath = Directory.GetParent(Assembly.GetExecutingAssembly().Location).Parent.Parent.Parent.Parent.FullName;
             const string projectName = "Tabler.Docs";
-            var classPath = projectName + className.Substring(projectName.Length).Replace(".", @"\");
+            var classPath = projectName + className.Substring(projectName.Length).Replace(".", Path.DirectorySeparatorChar.ToString());
             var codePath = Path.Combine(basePath, $"{classPath}.razor");
 
             if (File.Exists(codePath))
