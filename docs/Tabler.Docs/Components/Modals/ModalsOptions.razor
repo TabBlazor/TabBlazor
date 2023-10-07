@@ -1,4 +1,6 @@
-﻿<Row>
+﻿@inject IModalService ModalService
+
+<Row>
     <RowCol Sm="12" Md="6" Lg="4">
         <label class="form-label">Size</label>
         <Select Items="EnumHelper.GetList<ModalSize>()" @bind-SelectedValue="@modalOptions.Size" TextExpression="e=> e.ToString()" />
@@ -53,7 +55,6 @@
 
 
 @code {
-    @inject IModalService ModalService
     private string message;
         private ModalOptions modalOptions = new ModalOptions {  };
 

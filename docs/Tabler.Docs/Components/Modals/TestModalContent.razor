@@ -1,4 +1,6 @@
-﻿<div class="mb-3">
+﻿@inject IModalService ModalService
+
+<div class="mb-3">
     <label class="form-label">Name</label>
     <input type="text" class="form-control" name="example-text-input" @bind-value="@ReportName" placeholder="Your report name">
 </div>
@@ -88,8 +90,6 @@
 </div>
 
 @code {
-    @inject IModalService ModalService
-
     [Parameter] public string ReportName { get; set; }
     [CascadingParameter] public bool CascadingParameter { get; set; } = false;
 
