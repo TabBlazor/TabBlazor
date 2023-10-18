@@ -10,6 +10,19 @@
         return navigator.userAgent;
     },
 
+    saveAsBinary: function (filename, contentType, content) {
+        // Create the URL
+        const file = new File([content], filename, { type: contentType });
+        const exportUrl = URL.createObjectURL(file);
+        const a = document.createElement("a");
+        document.body.appendChild(a);
+        a.href = exportUrl;
+        a.download = filename;
+        a.target = "_self";
+        a.click();
+        URL.revokeObjectURL(exportUrl);
+    },
+
     saveAsFile: function (filename, href) {
         var link = document.createElement('a');
         link.download = filename;
@@ -151,7 +164,7 @@
         element[property] = value;
         return "";
     },
-     
+
     clickOutsideHandler: {
         removeEvent: (elementId) => {
             if (elementId === undefined || window.clickHandlers === undefined) return;

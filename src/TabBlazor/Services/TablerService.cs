@@ -24,6 +24,11 @@ namespace TabBlazor.Services
             await jsRuntime.InvokeVoidAsync("tabBlazor.setTheme", theme);
         }
 
+        public async Task SaveAsBinary(string fileName, string contentType, byte[] content)
+        {
+            await jsRuntime.InvokeVoidAsync("tabBlazor.saveAsBinary", fileName, contentType, content);
+        }
+
         public async Task SaveAsFile(string fileName, string href)
         {
             await jsRuntime.InvokeVoidAsync("tabBlazor.saveAsFile", fileName, href);
