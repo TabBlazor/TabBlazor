@@ -32,6 +32,7 @@ namespace TabBlazor
 
         public void AddChildItem(NavigationBase child)
         {
+            child.ExpandClick = ExpandClick;
             Children.Add(child);
         }
 

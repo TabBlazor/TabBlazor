@@ -21,9 +21,7 @@ namespace TabBlazor
 
         public override void ChildSelected(NavigationItem child)
         {
-           // child.SetActive(true);
-
-            NavigationItemClicked(child);
+            _ = NavigationItemClicked(child);
         }
 
         protected override string ClassNames => this.ClassBuilder
