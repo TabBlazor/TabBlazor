@@ -183,11 +183,14 @@
             var currentTime = (new Date()).getTime();
 
             var handler = (e) => {
-
+              
                 var nowTime = (new Date()).getTime();
                 var diff = Math.abs((nowTime - currentTime) / 1000);
 
-                if (diff < 1)
+
+                console.log('Diff: ' +diff)
+
+                if (diff < 0.5)
                     return;
 
                 currentTime = nowTime;

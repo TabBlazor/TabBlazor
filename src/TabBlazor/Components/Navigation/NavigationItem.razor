@@ -1,0 +1,53 @@
+﻿@namespace TabBlazor
+@inherits TablerBaseComponent
+
+
+<HtmlElement Tag="li"
+             class="@ClassNames"
+             @onclick="OnClick"
+             @attributes="@UnmatchedParameters">
+
+    @* <a class="nav-link dropdown-toggle" @onclick=ToogleExpanded> *@
+    <a class="@LinkCss"  @onclick="ItemClickedAsync" @onclick:stopPropagation>
+        @if (MenuIcon != null)
+        {
+            <span class="nav-link-icon d-md-none d-lg-inline-block">
+                @MenuIcon
+            </span>
+        }
+
+        <span class="nav-link-title">@Title</span>
+    </a>
+
+    @if (hasSubMenu && isExpanded)
+    {
+         <CascadingValue Value=this>
+        <ul data-bs-popper="none" class="dropdown-menu show">
+        @SubMenu
+        </ul>
+        </CascadingValue>
+    }
+
+</HtmlElement>
+
+
+@* <li class="nav-item cursor-pointer dropdown">
+    <a class="nav-link dropdown-toggle">
+
+        @if (MenuIcon != null)
+        {
+            <span class="nav-link-icon d-md-none d-lg-inline-block">
+                @MenuIcon
+            </span>
+        }
+
+        <span class="nav-link-title">@Title</span>
+    </a>
+
+    @if (SubMenu != null)
+    {
+        @SubMenu
+    }
+
+</li>
+ *@
