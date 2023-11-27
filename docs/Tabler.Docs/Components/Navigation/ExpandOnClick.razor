@@ -1,0 +1,45 @@
+﻿<h3>Basic</h3>
+
+
+<TabBlazor.Navigation Bordered OnItemClicked="ItemClicked" ExpandOnClick>
+    <NavigationItem Title="Peter">
+        <MenuIcon>
+            <Icon class="icon" IconType="@TablerIcons.Ghost" />
+        </MenuIcon>
+
+        <SubMenu>
+            <NavigationItem Title="Anne" />
+            <NavigationItem Title="Fredrik" />
+        </SubMenu>
+
+    </NavigationItem>
+
+
+    <NavigationItem Title="Check this out">
+        <MenuIcon>
+            <Icon class="icon" IconType="@TablerIcons.Alert_circle_filled" />
+        </MenuIcon>
+
+        <SubMenu>
+            <NavigationItem Title="Sub1" />
+            <NavigationItem Title="Sub1" />
+        </SubMenu>
+
+    </NavigationItem>
+
+</TabBlazor.Navigation>
+
+<h3>@message</h3>
+
+
+@code {
+    private string message;
+
+
+    private void ItemClicked(NavigationItem nav)
+    {
+        message = "You clicked: " + nav?.Title;
+    }
+
+
+}

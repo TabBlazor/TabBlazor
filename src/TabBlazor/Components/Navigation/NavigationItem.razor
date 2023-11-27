@@ -1,0 +1,44 @@
+﻿@namespace TabBlazor
+@inherits NavigationBase
+
+
+
+<HtmlElement Tag="li"
+             class="@ClassNames"
+             @onclick="OnClick"
+             @attributes="@UnmatchedParameters">
+
+    <span @onmouseleave=@(ExpandClick ? null:MouseLeave) @onmouseenter=@(ExpandClick ? null:MouseEnter)>
+        
+        <a class="@LinkCss" @onclick=ItemClicked @onclick:stopPropagation>
+            @if (MenuIcon != null)
+            {
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                    @MenuIcon
+                </span>
+            }
+
+            <span class="nav-link-title">
+                @if (ChildContent != null)
+                {
+                    @ChildContent
+                }
+                else
+                {
+                    @Title
+                }
+
+            </span>
+        </a>
+
+        @if (hasSubMenu && IsExpanded)
+        {
+            <CascadingValue TValue=NavigationBase Value=this>
+                <ul data-bs-popper="none" class="dropdown-menu show">
+                    @SubMenu
+                </ul>
+            </CascadingValue>
+        }
+    </span>
+</HtmlElement>
+

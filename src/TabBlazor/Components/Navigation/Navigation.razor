@@ -1,0 +1,18 @@
+﻿@namespace TabBlazor
+@inherits NavigationBase
+
+<ClickOutside OnClickOutside="OnClickOutside" Concurrence="ClickOutside.ConcurrenceStrategy.Many" Strategy="ClickOutside.RegisterStrategy.OnRender" >
+
+    <CascadingValue TValue=NavigationBase Value=this>
+
+        <HtmlElement Tag="ul"
+                     class="@ClassNames"
+                     @onclick="OnClick"
+                     @attributes="@UnmatchedParameters">
+            @ChildContent
+
+        </HtmlElement>
+    </CascadingValue>
+
+
+</ClickOutside>
