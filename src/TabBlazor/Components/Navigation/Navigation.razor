@@ -1,9 +1,9 @@
 ﻿@namespace TabBlazor
-@inherits TablerBaseComponent
+@inherits NavigationBase
 
 <ClickOutside OnClickOutside="OnClickOutside" Concurrence="ClickOutside.ConcurrenceStrategy.Many" Strategy="ClickOutside.RegisterStrategy.OnRender" >
 
-    <CascadingValue Value=this>
+    <CascadingValue TValue=NavigationBase Value=this>
 
         <HtmlElement Tag="ul"
                      class="@ClassNames"

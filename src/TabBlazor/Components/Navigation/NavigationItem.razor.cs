@@ -2,45 +2,16 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace TabBlazor
 {
-    public partial class NavigationItem : TablerBaseComponent, IDisposable
+    public partial class NavigationItem : NavigationBase
     {
-        [CascadingParameter] Navigation Navigation { get; set; }
-        [CascadingParameter] NavigationItem Parent { get; set; }
 
         [Parameter] public string Title { get; set; }
+     
         [Parameter] public RenderFragment MenuIcon { get; set; }
-
         [Parameter] public RenderFragment SubMenu { get; set; }
 
+        [Parameter] public object Data { get; set; }
 
-        private List<NavigationItem> Children { get; set; } = new();
-
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-
-            if (Parent != null)
-            {
-                Parent.AddChildItem(this);
-            }
-            else
-            {
-                Navigation?.AddChildItem(this);
-            }
-        }
-
-        private bool isExpanded;
-        private bool isActive;
-           
-        internal void AddChildItem(NavigationItem child)
-        {
-            Children.Add(child);
-        }
-
-        internal void RemoveChildItem(NavigationItem child)
-        {
-            Children.Remove(child);
-        }
 
         private bool hasSubMenu => SubMenu != null;
 
@@ -53,63 +24,49 @@ namespace TabBlazor
         protected string LinkCss => new ClassBuilder()
             .Add("nav-link")
              .AddIf("dropdown-toggle", hasSubMenu)
-            .AddIf("active", isActive) // && !hasSubMenu)
+            .AddIf("active", IsActive && !Disabled)
+            .AddIf("active", Disabled)
             .ToString();
 
-
-        private async Task ItemClickedAsync()
+      
+        private void MouseEnter()
         {
+            IsExpanded = true;
+        }
 
-            await Navigation?.NavigationItemClicked(this);
+        private void MouseLeave()
+        {
+            IsExpanded = false;
+        }
 
-            if (!hasSubMenu)
-            {
+
+        private void ItemClicked()
+        {
+            bool isActive;
+
+            if (!ExpandClick) {
                 isActive = true;
+                CollapseAll();
+            }
+            else if (!hasSubMenu)
+            {
+                isActive = !IsActive;
             }
             else
             {
-                isExpanded = !isExpanded;
-                isActive = isExpanded;
+                IsExpanded = !IsExpanded;
+                isActive = IsExpanded;
             }
 
             SetActive(isActive);
-        }
 
-        public void SetExpanded(bool expanded)
-        {
-            isExpanded = expanded;
-        }
-
-        public void SetActive(bool active)
-        {
-            this.isActive = active;
-
-            if (Parent != null)
+            if (isActive)
             {
-                if (active)
-                {
-                    foreach (var child in Parent.Children)
-                    {
-                        if (child != this)
-                        {
-                            child.SetActive(false);
-                            child.SetExpanded(false);
-                        }
-                    }
-                }
+                ChildSelected(this);
             }
+
         }
 
-        public void Dispose()
-        {
-            if (Parent != null)
-            {
-                Parent.RemoveChildItem(this);
-            }
-            else
-            {
-                Navigation?.RemoveChildItem(this);
-            }
-        }
+
     }
 }

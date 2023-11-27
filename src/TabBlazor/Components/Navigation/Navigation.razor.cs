@@ -1,32 +1,32 @@
-using Microsoft.AspNetCore.Components.Web;
-using System.Reflection;
+
 
 namespace TabBlazor
 {
-    public partial class Navigation : TablerBaseComponent
+    public partial class Navigation : NavigationBase
     {
         [Parameter] public bool Bordered { get; set; }
 
         [Parameter] public EventCallback<NavigationItem> OnItemClicked { get; set; }
 
-        public NavigationItem SelectedItem { get; set; }
+        [Parameter] public bool ExpandOnClick { get; set; }
 
-        //  public bool CollapseAll { get; set; }
+      
 
-
-        private List<NavigationItem> Children { get; set; } = new();
-
-        internal void AddChildItem(NavigationItem child)
+        protected override void OnInitialized()
         {
-            Children.Add(child);
+            ExpandClick = ExpandOnClick;
+
+            base.OnInitialized();
         }
 
-        internal void RemoveChildItem(NavigationItem child)
+        public override void ChildSelected(NavigationItem child)
         {
-            Children.Remove(child);
+           // child.SetActive(true);
+
+            NavigationItemClicked(child);
         }
 
-        protected override string ClassNames => ClassBuilder
+        protected override string ClassNames => this.ClassBuilder
              .Add("nav")
                 .AddIf("nav-bordered", Bordered)
              .ToString();
@@ -37,10 +37,13 @@ namespace TabBlazor
             await OnItemClicked.InvokeAsync(item);
         }
 
-        private async Task OnClickOutside()
+        private void OnClickOutside()
         {
-            await NavigationItemClicked(null);
-            StateHasChanged();
+
+            foreach (var child in Children)
+            {
+                child.SetExpanded(false);
+            }
         }
 
     }
