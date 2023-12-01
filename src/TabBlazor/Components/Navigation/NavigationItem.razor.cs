@@ -18,7 +18,7 @@ namespace TabBlazor
         protected override string ClassNames => ClassBuilder
             .Add("nav-item")
             .Add("cursor-pointer")
-            .AddIf("dropdown", hasSubMenu)
+            .AddIf("dropdown", hasSubMenu && IsExpanded)
             .ToString();
 
         protected string LinkCss => new ClassBuilder()
