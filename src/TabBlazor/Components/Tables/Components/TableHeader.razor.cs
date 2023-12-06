@@ -36,7 +36,7 @@ namespace TabBlazor.Components.Tables
         protected bool? SelectedValue()
         {
             if (Table.SelectedItems == null || !Table.SelectedItems.Any()) { return false; }
-            if (Table.SelectedItems.Count == Table.Items.Count) { return true; }
+            if (Table.SelectedItems.Count == Table.CurrentItems.Count) { return true; }
             if (Table.SelectedItems.Any()) { return null; }
             return true;
         }

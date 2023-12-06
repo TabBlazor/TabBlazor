@@ -30,6 +30,8 @@ namespace TabBlazor
         [Parameter] public string ValidationRuleSet { get; set; } = "default";
         [Parameter] public int PageSize { get; set; } = 20;
         [Parameter] public IList<Item> Items { get; set; }
+        public IList<Item> CurrentItems => Items ?? TempItems?.FirstOrDefault();
+
         [Parameter] public RenderFragment HeaderTemplate { get; set; }
         [Parameter] public RenderFragment ChildContent { get; set; }
         [Parameter] public RenderFragment<Item> DetailsTemplate { get; set; }
@@ -244,9 +246,9 @@ namespace TabBlazor
 
         public async Task SelectAll()
         {
-            if (Items == null || !Items.Any()) return;
+            if (CurrentItems == null || !CurrentItems.Any()) return;
 
-            SelectedItems = Items.ToList();
+            SelectedItems = CurrentItems.ToList();
             SelectedItem = SelectedItems.First();
             await UpdateSelected();
         }
