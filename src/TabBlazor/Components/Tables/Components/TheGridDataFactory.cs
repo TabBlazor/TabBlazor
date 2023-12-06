@@ -14,12 +14,7 @@ namespace TabBlazor.Components.Tables
             {
                 var query = items.AsQueryable();
                 query = AddSearch(columns, state, query);
-                //if (state.CurrentEditItem == null)
-                //{
-                //    query = AddSearch(query);
-                //}
-
-
+           
                 if (addSorting)
                 {
                     query = AddSorting(columns,state,query);
