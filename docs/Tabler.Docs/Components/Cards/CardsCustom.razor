@@ -1,0 +1,18 @@
+﻿<Card class="@(IsBlue ? "bg-blue": "bg-white")">
+    <CardBody>
+        This is the body...
+        <div>
+            <Button OnClick="Toggle">@(IsBlue ?"Light" : "Blue")</Button>
+        </div>
+    </CardBody>
+</Card>
+@code
+{
+    public bool IsBlue { get; set; }
+
+    private Task Toggle()
+    {
+        IsBlue = !IsBlue;
+        return Task.CompletedTask;
+    }
+}

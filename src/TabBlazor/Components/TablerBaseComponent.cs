@@ -20,15 +20,11 @@ namespace TabBlazor
         {
             get
             {
-                var cssClasses = GetUnmatchedParameter("Class")?.ToString();
+                var cssClasses = GetUnmatchedParameter("class")?.ToString();
 
-                if (providedCssClasses == null)
+                if (cssClasses != null)
                 {
                     providedCssClasses = cssClasses;
-                    if (providedCssClasses == null)
-                    {
-                        providedCssClasses = "";
-                    }
                 }
 
                 return providedCssClasses;

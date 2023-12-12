@@ -187,9 +187,6 @@
                 var nowTime = (new Date()).getTime();
                 var diff = Math.abs((nowTime - currentTime) / 1000);
 
-
-                console.log('Diff: ' +diff)
-
                 if (diff < 0.5)
                     return;
 
