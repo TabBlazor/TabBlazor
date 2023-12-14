@@ -1,0 +1,49 @@
+﻿@namespace TabBlazor
+
+
+<CascadingValue Value="@this">
+
+    <div id="carousel-sample_1" class="carousel slide">
+        <div class="carousel-indicators">
+
+            @foreach (var carouselItem in carouselItems)
+            {
+                <button type="button" @onclick="@( _=> SetActiveItem(carouselItem))" data-bs-target="#carousel-sample-99" class="@(activeItem == carouselItem ? "active":"")"></button>
+            }
+        </div>
+        <div class="carousel-inner">
+
+            @ChildContent
+
+        </div>
+
+
+        <a @onclick=MovePrevious class="carousel-control-prev" role="button" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </a>
+        <a @onclick=MoveNext class="carousel-control-next"  role="button" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </a>
+
+
+
+     @*    <a class="carousel-control-prev" data-bs-target="#carousel-sample" role="button" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </a>
+        <a class="carousel-control-next" data-bs-target="#carousel-sample" role="button" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </a> *@
+    </div>
+
+
+
+
+</CascadingValue>
+
+
+
+
