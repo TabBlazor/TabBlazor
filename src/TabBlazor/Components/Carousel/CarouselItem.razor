@@ -1,0 +1,26 @@
+﻿@namespace TabBlazor
+
+<div class="carousel-item @(isActive ? "active" : "")">
+
+    @if(CaptionTemplate != null)
+    {
+        <div class="carousel-caption-background d-none d-md-block"></div>
+        <div class="carousel-caption d-none d-md-block">
+          @CaptionTemplate
+        </div>
+
+    }
+
+    @if(ChildContent != null)
+    {
+        @ChildContent
+    }
+    else
+    {
+        <img class="d-block w-100" alt="" src="@ImageSrc" />
+    }
+
+   
+</div>
+
+
