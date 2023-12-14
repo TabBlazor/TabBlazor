@@ -7,7 +7,14 @@ namespace TabBlazor
 
         [CascadingParameter] Carousel Carousel { get; set; }
 
+        [Parameter] public string ImageSrc { get; set; }
         [Parameter] public RenderFragment ChildContent { get; set; }
+
+        [Parameter] public RenderFragment IndicatorTemplate { get; set; }
+
+        [Parameter] public RenderFragment CaptionTemplate { get; set; }
+
+
 
         [Parameter] public object Data { get; set; }
 

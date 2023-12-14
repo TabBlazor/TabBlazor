@@ -1,5 +1,6 @@
 using System.Timers;
 
+
 namespace TabBlazor
 {
     public partial class Carousel : IDisposable
@@ -10,14 +11,22 @@ namespace TabBlazor
 
         [Parameter] public RenderFragment ChildContent { get; set; }
 
+        [Parameter] public bool Controls { get; set; }
+        [Parameter] public CarouselIndicator Indicators { get; set; }
+        [Parameter] public CarouselIndicatorDirection IndicatorsDirection { get; set; }
+
+
+
         [Parameter] public int SlideInterval { get; set; } = 5000;
         [Parameter] public bool AutoSlide { get; set; } = true;
         [Parameter] public EventCallback<CarouselItem> OnItemActive { get; set; }
 
+        public CarouselItem ActiveItem => activeItem;
+
         protected override void OnInitialized()
         {
-            slideTimer.Elapsed += slideTimerElapsed;
-            slideTimer.Start();    
+            slideTimer.Elapsed += SlideTimerElapsed;
+            slideTimer.Start();
         }
 
         protected override void OnParametersSet()
@@ -28,16 +37,64 @@ namespace TabBlazor
             slideTimer.Interval = SlideInterval;
         }
 
-        private void slideTimerElapsed(object sender, ElapsedEventArgs e)
+        private void SlideTimerElapsed(object sender, ElapsedEventArgs e)
         {
             MoveNext();
+        }
+
+        private string GetDataBsTarget()
+        {
+
+            var suffix = "";
+
+            if (IndicatorsDirection == CarouselIndicatorDirection.Vertical)
+            {
+                suffix = "-vertical";
+            }
+
+            //#carousel-indicators-dot
+            switch (Indicators)
+            {
+                case CarouselIndicator.Dots:
+                    return "#carousel-indicators-dot" + suffix;
+
+                case CarouselIndicator.Thumbnail:
+                    return "carousel-indicators-thumb" + suffix;
+
+            }
+
+            return "#carousel-indicators" + suffix;
+        }
+        private string GetIndicatorCss()
+        {
+
+            var css = "carousel-indicators ";
+
+
+            if (IndicatorsDirection == CarouselIndicatorDirection.Vertical)
+            {
+                css += "carousel-indicators-vertical ";
+            }
+
+
+            switch (Indicators)
+            {
+                case CarouselIndicator.Dots:
+                    css += "carousel-indicators-dot ";
+                    break;
+                case CarouselIndicator.Thumbnail:
+                    css += "carousel-indicators-thumb ";
+                    break;
+            }
+
+            return css;
         }
 
         internal void AddCarouselItem(CarouselItem item)
         {
             carouselItems.Add(item);
 
-            if(activeItem == null)
+            if (activeItem == null)
             {
                 SetActiveItem(item);
             }
@@ -49,12 +106,18 @@ namespace TabBlazor
         private void SetActiveItem(CarouselItem item)
         {
             activeItem = item;
-           
-            slideTimer.Stop();
-            slideTimer.Start();
-            InvokeAsync(StateHasChanged);
 
-            OnItemActive.InvokeAsync(activeItem);
+            slideTimer.Stop();
+
+            if (AutoSlide)
+            {
+                slideTimer.Start();
+            }
+
+            InvokeAsync(() => {
+                OnItemActive.InvokeAsync(activeItem);
+                StateHasChanged();
+            });
         }
 
         private void MoveNext()
@@ -63,11 +126,12 @@ namespace TabBlazor
             if (activeItem == null) { SetActiveItem(carouselItems.First()); }
 
             var index = carouselItems.IndexOf(activeItem);
-            if (index < 0 || (index >= carouselItems.Count -1))
+            if (index < 0 || (index >= carouselItems.Count - 1))
             {
                 SetActiveItem(carouselItems.First());
             }
-            else {
+            else
+            {
                 SetActiveItem(carouselItems[index + 1]);
             }
         }
