@@ -14,8 +14,11 @@
 <Button OnClick=Open>Open</Button>
 
  @code {
-    private OffcanvasOptions options = new();
-
+    private TabBlazor.OffcanvasOptions options = new()
+    {
+        CloseOnEsc = true,
+        CloseOnClickOutside = true
+    };
 
     private async Task Open()
     {
