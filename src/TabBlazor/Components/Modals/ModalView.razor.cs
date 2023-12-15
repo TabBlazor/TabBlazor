@@ -97,6 +97,11 @@ namespace TabBlazor
             }
         }
 
+        protected string GetModalWrapperClasses() => new ClassBuilder()
+            .AddIf(Options.ModalCssClass, Options.ModalCssClass != null)
+            .AddIf("modal-blur", Options.BlurBackground)
+            .ToString();
+        
         protected string GetModalCss() => new ClassBuilder()
                 .Add("modal-dialog")
                 .AddIf("modal-sm", Options.Size == ModalSize.Small)
