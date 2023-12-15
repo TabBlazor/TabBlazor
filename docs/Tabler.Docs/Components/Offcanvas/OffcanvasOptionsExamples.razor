@@ -1,0 +1,55 @@
+﻿@using Tabler.Docs.Components.Modals
+@inject IOffcanvasService Offcanvas
+
+<Row>
+    <RowCol Sm="12" Md="6" Lg="3">
+        <div>
+            <label class="form-label">Position</label>
+            <Select Items="EnumHelper.GetList<OffcanvasPosition>()" @bind-SelectedValue="@canvasOptions.Position" TextExpression="e => e.ToString()"/>
+        </div>
+    </RowCol>
+    <RowCol Sm="12" Md="6" Lg="3">
+        <Checkbox @bind-Value="@canvasOptions.CloseOnClickOutside" Label="Close on click outside"/>
+    </RowCol>
+    <RowCol Sm="12" Md="6" Lg="3">
+        <Checkbox @bind-Value="@canvasOptions.CloseOnEsc" Label="Close on Esc"/>
+    </RowCol>
+    <RowCol Sm="12" Md="6" Lg="3">
+        <Checkbox @bind-Value="@canvasOptions.Backdrop" Label="Backdrop"/>
+    </RowCol>
+</Row>
+<Row class="mt-2">
+    <RowCol>
+        <Button @onclick="Show" BackgroundColor="TablerColor.Primary">Show Offcanvas</Button>
+    </RowCol>
+</Row>
+
+<div>@message</div>
+
+
+@code {
+    private string message;
+
+    private OffcanvasOptions canvasOptions = new()
+    {
+        WrapperCssClass = "test-class",
+        Position = OffcanvasPosition.End
+    };
+
+    protected async Task Show()
+    {
+        message = string.Empty;
+        var component = new RenderComponent<TestModalContent>();
+        var result = await Offcanvas.ShowAsync("This is a Title", component, canvasOptions);
+
+        if (result.Cancelled)
+        {
+            message = "Modal was cancelled!";
+        }
+        else
+        {
+            message = "Modal as ok!";
+        }
+    }
+
+}
