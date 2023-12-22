@@ -7,17 +7,15 @@
 
         @if (Indicators != CarouselIndicator.None)
         {
-
-
             <div class="@GetIndicatorCss()">
                 @foreach (var carouselItem in carouselItems)
                 {
-                    @if(carouselItem.IndicatorTemplate != null)
+                    @if (carouselItem.IndicatorTemplate != null)
                     {
                         <span @onclick="@( _=> SetActiveItem(carouselItem))" class="cursor-pointer">
                             @carouselItem.IndicatorTemplate
                         </span>
-                       
+
                     }
                     else if (Indicators == CarouselIndicator.Thumbnail && !string.IsNullOrWhiteSpace(carouselItem.ImageSrc))
                     {
@@ -27,15 +25,15 @@
                     {
                         <button type="button" @onclick="@( _=> SetActiveItem(carouselItem))" data-bs-target="@GetDataBsTarget()" class="@(activeItem == carouselItem ? "active":"")"></button>
                     }
-                  
+
                 }
             </div>
         }
-        
+
         <div class="carousel-inner">
             @ChildContent
         </div>
-        
+
         @if (Controls)
         {
             <a @onclick=MovePrevious class="carousel-control-prev" role="button" data-bs-slide="prev">
