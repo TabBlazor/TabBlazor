@@ -11,6 +11,15 @@ public partial class Accordion : TablerBaseComponent
         StateHasChanged();
     }
 
+    public void RemoveAccordionItem(AccordionItem item)
+    {
+        if (Items.Contains(item))
+        {
+            Items.Remove(item);
+        }
+        StateHasChanged();
+    }
+
     private void SetExpanded(AccordionItem item)
     {
         var oldExpanded = item.IsExpanded;
