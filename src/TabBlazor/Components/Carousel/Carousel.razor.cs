@@ -23,6 +23,8 @@ namespace TabBlazor
 
         public CarouselItem ActiveItem => activeItem;
 
+        public List<CarouselItem> CarouselItems => carouselItems;
+
         protected override void OnInitialized()
         {
             slideTimer.Elapsed += SlideTimerElapsed;
@@ -103,10 +105,18 @@ namespace TabBlazor
 
         }
 
-        private void SetActiveItem(CarouselItem item)
+        public void SetActiveItem(int index)
+        {
+            var item = carouselItems.ElementAtOrDefault(index);
+            if (item != null)
+            {
+                SetActiveItem(item);
+            }
+        }
+
+        public void SetActiveItem(CarouselItem item)
         {
             activeItem = item;
-
             slideTimer.Stop();
 
             if (AutoSlide)
@@ -114,13 +124,14 @@ namespace TabBlazor
                 slideTimer.Start();
             }
 
-            InvokeAsync(() => {
+            InvokeAsync(() =>
+            {
                 OnItemActive.InvokeAsync(activeItem);
                 StateHasChanged();
             });
         }
 
-        private void MoveNext()
+        public void MoveNext()
         {
             if (carouselItems.Count == 0) { return; }
             if (activeItem == null) { SetActiveItem(carouselItems.First()); }
@@ -137,7 +148,7 @@ namespace TabBlazor
         }
 
 
-        private void MovePrevious()
+        public void MovePrevious()
         {
             if (carouselItems.Count == 0) { return; }
             if (activeItem == null) { SetActiveItem(carouselItems.First()); }
