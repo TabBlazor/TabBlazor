@@ -1,9 +1,10 @@
-﻿<Button @onclick="ShowModal" BackgroundColor="TablerColor.Primary">Show Modal</Button>
+﻿@inject IModalService ModalService
+
+<Button @onclick="ShowModal" BackgroundColor="TablerColor.Primary">Show Modal</Button>
 <div>@message</div>
 
 
 @code {
-    @inject IModalService ModalService
     private string message;
     protected async Task ShowModal()
     {

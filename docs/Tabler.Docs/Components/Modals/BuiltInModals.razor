@@ -1,4 +1,6 @@
-﻿<Button @onclick="ShowConfirmModal" BackgroundColor="TablerColor.Primary">Show Confirm</Button>
+﻿@inject IModalService ModalService
+
+<Button @onclick="ShowConfirmModal" BackgroundColor="TablerColor.Primary">Show Confirm</Button>
 <div class=mb-3>@message</div>
 
 
@@ -6,10 +8,8 @@
 
 
 @code {
-    @inject IModalService ModalService
     private string message;
    
-    
     protected async Task ShowConfirmModal()
     {
         message = string.Empty;
