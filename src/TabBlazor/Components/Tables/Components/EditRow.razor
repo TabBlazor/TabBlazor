@@ -12,7 +12,7 @@
 
     @foreach (var column in InlineEditTable.VisibleColumns)
     {
-        <td style="@GetColumnWidth(column)" class="@GetColumnClass(column)">
+        <td style="@GetColumnWidth(column)" class="@GetColumnClass(column)" data-label="@column.Title">
             @if (column.EditorTemplate != null)
             {
                 @column.EditorTemplate(Item)

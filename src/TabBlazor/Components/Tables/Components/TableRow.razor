@@ -4,7 +4,7 @@
 <tr class="@GetRowCssClass(Item)">
     @if (Table.ShowCheckboxes)
     {
-        <td style="width:1%" @onkeydown="@(Table.KeyboardNavigation ? (e) => OnKeyDown(e, tableCells[0]): null)" @ref="tableCells[0]">
+        <td class="w-1" @onkeydown="@(Table.KeyboardNavigation ? (e) => OnKeyDown(e, tableCells[0]): null)" @ref="tableCells[0]">
             <Checkbox Value="IsSelected(Item)" ValueChanged="(() => Table.SetSelectedItem(Item))" />
         </td>
     }
@@ -14,7 +14,7 @@
         @foreach (IColumn<TableItem> column in Table.VisibleColumns)
         {
             var j = i;
-            <td style="@GetColumnWidth(column)" class="@GetColumnClass(column)" @onclick="RowClick" @onkeydown="@(Table.KeyboardNavigation ? (e) => OnKeyDown(e, tableCells[j]): null)" @ref="tableCells[j]">
+            <td  data-label="@column.Title" style="@GetColumnWidth(column)" class="@GetColumnClass(column)" @onclick="RowClick" @onkeydown="@(Table.KeyboardNavigation ? (e) => OnKeyDown(e, tableCells[j]): null)" @ref="tableCells[j]">
                 @if (column.Template != null)
                 {
                     @column.Template(Item)
