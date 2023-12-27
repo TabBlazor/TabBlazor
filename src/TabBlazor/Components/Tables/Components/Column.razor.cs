@@ -35,12 +35,13 @@ namespace TabBlazor
         [Parameter] public Expression<Func<Item, object>> Property { get; set; }
         [Parameter] public Expression<Func<Item, string, bool>> SearchExpression { get; set; }
         [Parameter] public SortOrder? Sort { get; set; }
-        public bool SortColumn { get; set; }
-
+        [Parameter]public Align Align { get; set; }
         [Parameter] public bool Group { get; set; }
+        
+        public bool SortColumn { get; set; }
+        public bool GroupBy { get; set; }
         public bool SortDescending { get; set; }
         public Type Type { get; private set; }
-        public bool GroupBy { get; set; }
 
 
         public void Dispose()

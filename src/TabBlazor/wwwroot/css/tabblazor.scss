@@ -1,4 +1,4 @@
-.nav-bordered .nav-item {
+﻿.nav-bordered .nav-item {
   margin-left: 1rem !important;
 }
 
@@ -268,13 +268,10 @@ Dimmer
   width: 10px !important;
   height: 10px !important;
 }
-
 .switch-icon-flip .switch-icon-a {
-  opacity: 0;
+  opacity: 0; 
 }
 
 .switch-icon-flip.active .switch-icon-b {
-  opacity: 0;
+  opacity: 0; 
 }
-
-/*# sourceMappingURL=tabblazor.css.map */

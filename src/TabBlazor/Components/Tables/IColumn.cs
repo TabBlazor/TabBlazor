@@ -18,6 +18,7 @@ namespace TabBlazor.Components.Tables
         bool Visible { get; set; }
         bool SortDescending { get; }
         bool GroupBy { get; set; }
+        Align Align { get; set; }
         Task SortByAsync();
         Task GroupByMeAsync();
         Type Type { get; }

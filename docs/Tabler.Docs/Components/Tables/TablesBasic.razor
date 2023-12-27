@@ -1,4 +1,5 @@
-﻿
+﻿@using Align = TabBlazor.Align
+
 <Table Item="Order" Items="orders" PageSize="10" 
        @bind-SelectedItems="selectedOrders" OnItemDeleted="OnItemDelete"
        ShowCheckboxes MultiSelect Hover Responsive>
@@ -18,7 +19,7 @@
             </EditorTemplate>
         </Column>
         
-        <Column Item="Order" Property="e=>e.NetValue" Title="Value" Sortable Searchable>
+        <Column Item="Order" Property="e=>e.NetValue" Title="Value" Align="Align.End" Sortable Searchable>
             <Template>
                 $@context.NetValue.ToString("N0")
             </Template>
