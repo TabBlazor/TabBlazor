@@ -12,6 +12,7 @@ namespace TabBlazor.Components.Tables
         {
             return new ClassBuilder()
                 .AddIf("cursor-pointer", column.Sortable)
+                .AddIf("text-end", column.Align == Align.End)
                 .ToString();
          }
 

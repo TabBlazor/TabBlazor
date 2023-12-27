@@ -14,6 +14,7 @@ namespace TabBlazor.Components.Tables
         {
             return new ClassBuilder()
                 .Add(column.CssClass)
+                .AddIf("text-end", column.Align == Align.End)
                 .ToString();
         }
     }
