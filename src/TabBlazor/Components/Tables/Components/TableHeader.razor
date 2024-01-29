@@ -2,35 +2,34 @@
 @inherits TableHeaderBase<TableItem>
 
 <thead>
-    <tr class="no-hover-row">
-        @if (Table.ShowCheckboxes)
-        {
-            <th>
-                @if (Table.MultiSelect)
-                {
-                    <CheckboxTriState Value="SelectedValue()" ValueChanged="ToogleSelected" />
-                }
-            </th>
-        }
+<tr class="no-hover-row">
+    @if (Table.ShowCheckboxes)
+    {
+        <th>
+            @if (Table.MultiSelect)
+            {
+                <CheckboxTriState Value="SelectedValue()" ValueChanged="ToggleSelected"/>
+            }
+        </th>
+    }
 
-        @foreach (IColumn<TableItem> column in Table.VisibleColumns)
-        {
+    @foreach (var column in Table.VisibleColumns)
+    {
+        <th style="@GetColumnWidth(column)" class="@GetColumnHeaderClass(column)" @onclick="@(() => column.SortByAsync())">
+            <span>@((MarkupString) column.Title)</span>
 
-            <th style="@GetColumnWidth(column)" class="@GetColumnHeaderClass(column)" @onclick="@(() => column.SortByAsync())">
-                <span>@((MarkupString)column.Title)</span>
+            @if (column.Sortable)
+            {
+                <span class="@GetSortIconClass(column)">
+                    <Icon Size=17 IconType=@GetSortIcon(column)/>
+                </span>
+            }
+        </th>
+    }
 
-                @if (column.Sortable)
-                {
-                    <span class="@GetSortIconClass(column)">
-                        <Icon Size=17 IconType=@GetSortIcon(column) />
-                    </span>
-                }
-            </th>
-        }
-
-        @if (Table.HasRowActions && !Table.HasActionColumn)
-        {
-            <th></th>
-        }
-    </tr>
+    @if (Table.HasRowActions && !Table.HasActionColumn)
+    {
+        <th></th>
+    }
+</tr>
 </thead>

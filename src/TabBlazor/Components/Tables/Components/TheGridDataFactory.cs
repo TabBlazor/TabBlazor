@@ -1,26 +1,25 @@
-﻿using LinqKit;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using LinqKit;
 using TabBlazor.Components.Tables.Components;
 
 namespace TabBlazor.Components.Tables
 {
     public partial class TheGridDataFactory<Item> : IDataProvider<Item>
     {
-
-        public async Task<IEnumerable<TableResult<object, Item>>> GetData(List<IColumn<Item>> columns, ITableState<Item> state,IEnumerable<Item> items, bool resetPage = false, bool addSorting = true, Item moveToItem = default)
+        public async Task<IEnumerable<TableResult<object, Item>>> GetData(List<IColumn<Item>> columns, ITableState<Item> state, IEnumerable<Item> items, bool resetPage = false, bool addSorting = true,
+            Item moveToItem = default)
         {
             var viewResult = new List<TableResult<object, Item>>();
             if (items != null)
             {
                 var query = items.AsQueryable();
                 query = AddSearch(columns, state, query);
-           
                 if (addSorting)
                 {
-                    query = AddSorting(columns,state,query);
+                    query = AddSorting(columns, state, query);
                 }
-                state.TotalCount = query.Count();
 
+                state.TotalCount = query.Count();
                 if (resetPage)
                 {
                     state.PageNumber = 0;
@@ -29,24 +28,21 @@ namespace TabBlazor.Components.Tables
                 {
                     state.PageNumber = 0;
                 }
-
                 else if (state.TotalCount - 1 < state.PageSize * state.PageNumber)
                 {
-                    state.PageNumber = (int)Math.Floor((decimal)(state.TotalCount / state.PageSize));
+                    state.PageNumber = (int) Math.Floor((decimal) (state.TotalCount / state.PageSize));
                 }
                 else if (moveToItem != null)
                 {
                     var pos = query.ToList().IndexOf(moveToItem);
                     if (pos > 0)
                     {
-                        state.PageNumber = (int)Math.Floor((decimal)(pos / state.PageSize));
+                        state.PageNumber = (int) Math.Floor((decimal) (pos / state.PageSize));
                     }
-
                 }
 
                 query = query.Skip(state.PageNumber * state.PageSize).Take(state.PageSize);
                 var columnGroup = columns.FirstOrDefault(e => e.GroupBy);
-
                 if (columnGroup == null)
                 {
                     viewResult.Add(new TableResult<object, Item>(null, query.ToList()));
@@ -64,11 +60,10 @@ namespace TabBlazor.Components.Tables
                 }
             }
 
-
             return await Task.FromResult(viewResult);
         }
 
-        private IQueryable<Item> AddSorting(List<IColumn<Item>> columns, ITableState<Item> state,IQueryable<Item> query)
+        private IQueryable<Item> AddSorting(List<IColumn<Item>> columns, ITableState<Item> state, IQueryable<Item> query)
         {
             var sortColumn = columns.FirstOrDefault(x => x.SortColumn);
             if (sortColumn != null)
@@ -90,22 +85,19 @@ namespace TabBlazor.Components.Tables
 
         [GeneratedRegex("\\d+")]
         private static partial Regex DigitRegex();
+
         private static IQueryable<T> NaturalOrderBy<T>(IQueryable<T> source, Expression<Func<T, object>> selectorExpr, bool desc)
         {
             var selector = selectorExpr.Compile();
-
-            int max = source
-                .SelectMany(i => DigitRegex().Matches(selector(i).ToString()).Cast<Match>().Select(m => (int?)m.Value.Length))
+            var max = source
+                .SelectMany(i => DigitRegex().Matches(selector(i).ToString()).Select(m => (int?) m.Value.Length))
                 .Max() ?? 0;
-
-            Expression<Func<T, string>> keySelector = (i) => DigitRegex().Replace(selector(i).ToString(), m => m.Value.PadLeft(max, '0'));
-
+            Expression<Func<T, string>> keySelector = i => DigitRegex().Replace(selector(i).ToString(), m => m.Value.PadLeft(max, '0'));
             return desc ? source.OrderByDescending(keySelector) : source.OrderBy(keySelector);
         }
 
-        private IQueryable<Item> AddSearch(List<IColumn<Item>> columns, ITableState<Item> state,IQueryable<Item> query)
+        private static IQueryable<Item> AddSearch(List<IColumn<Item>> columns, ITableState<Item> state, IQueryable<Item> query)
         {
-
             if (string.IsNullOrEmpty(state.SearchText))
             {
                 return query;
@@ -127,7 +119,6 @@ namespace TabBlazor.Components.Tables
             }
 
             query = query.Where(predicate);
-
             return query;
         }
     }

@@ -46,6 +46,7 @@ namespace TabBlazor.Components.Tables
         string GetColumnWidth();
         Func<Task<IList<TableItem>>> OnRefresh { get; set; }
         bool HasActionColumn { get; }
+        SelectAllStrategy SelectAllStrategy { get; set; }
     }
 
     public interface ITableState<TableItem>
