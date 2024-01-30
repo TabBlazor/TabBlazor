@@ -2,8 +2,8 @@
 @using TabBlazor.Components.Tables
 <Row>
     Select the kind of strategy that shall be used when the 'Select All' checkbox is clicked.
-    CurrentPage = 0, for only selecting /deselecting in the current page.
-    AllPages = 1, for selecting /deselecting all items in all pages.
+    AllPages, for selecting /deselecting all items in all pages.
+    CurrentPage, for only selecting /deselecting in the current page.
 </Row>
 <Row class="mb-2">
     <Select Items="EnumHelper.GetList<SelectAllStrategy>()"
