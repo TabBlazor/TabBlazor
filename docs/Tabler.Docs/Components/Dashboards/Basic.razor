@@ -23,7 +23,7 @@
                     <EqualFacet TItem=Order Expression="e=> e.OrderStatus" Name="Order Status:" />
                     <EqualFacet TItem=Order Expression="e=> e.Country" Name="Country:" />
                     <GroupFacet TItem=Order Expression="e=> e.NetValue" Name="Net Value:" />
-                    <RangeFilter TItem=Order Expression="e=> e.DiscountPrecentage" Name="Discount %" />
+                    <RangeFilter TItem=Order Expression="e=> e.DiscountPercentage" Name="Discount %" />
                     <DateFacet TItem=Order Expression="e=> e.OrderDate.DateTime" Name="Order Date:" />
             </Card>
 
@@ -434,7 +434,7 @@
             e.Customer.CustomerId,
             e.NetValue,
             e.GrossValue,
-            e.DiscountPrecentage
+            e.DiscountPercentage
         });
 
         ws.Row(1).Style.Font.SetBold();

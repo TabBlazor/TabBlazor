@@ -53,8 +53,8 @@ namespace Tabler.Docs.Data
         public OrderType OrderType { get; set; }
         public OrderStatus OrderStatus { get; set; }
         public decimal GrossValue { get; set; }
-        public decimal NetValue { get => GrossValue * (1 - (DiscountPrecentage / 100)); }
-        public decimal DiscountPrecentage { get; set; }
+        public decimal NetValue { get => GrossValue * (1 - (DiscountPercentage / 100)); }
+        public decimal DiscountPercentage { get; set; }
 
         public decimal Discount => GrossValue - NetValue;
 

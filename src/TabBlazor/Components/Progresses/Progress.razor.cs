@@ -17,7 +17,7 @@ namespace TabBlazor
         [Parameter] public TablerColor Color { get; set; }
         [Parameter] public ProgressSize Size { get; set; }
         [Parameter] public bool Indeterminate { get; set; }
-        [Parameter] public int Precentage { get; set; }
+        [Parameter] public int Percentage { get; set; }
         [Parameter] public string Text { get; set; }
 
         protected override string ClassNames => ClassBuilder
@@ -25,9 +25,7 @@ namespace TabBlazor
               .Add(BackgroundColor.GetColorClass("bg", ColorType.Default))
               .AddCompare("progress-sm", Size, ProgressSize.Small)
               .AddCompare("progress-lg", Size, ProgressSize.Large)
-
               .ToString();
-
 
         protected string BarClassNames => ClassBuilder
                  .Add("progress-bar")
