@@ -97,7 +97,7 @@ namespace TabBlazor
             await Update();
         }
 
-        [Parameter] public SelectAllStrategy SelectAllStrategy { get; set; }
+        [Parameter] public SelectAllStrategy SelectAllStrategy { get; set; } = SelectAllStrategy.AllPages;
 
         [Parameter] public bool ResetSortCycle { get; set; }
         [Parameter] public bool ShowFooter { get; set; } = true;
@@ -465,7 +465,7 @@ namespace TabBlazor
 
     public enum SelectAllStrategy
     {
-        CurrentPage = 0,
-        AllPages = 1
+        AllPages = 0,
+        CurrentPage = 1
     }
 }
