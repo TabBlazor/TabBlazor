@@ -3,16 +3,16 @@
 @namespace TabBlazor
 
 <div class="dropdown autocomplete-input @ValidationClasses" style="width: 100%;">
-    <input @ref="_searchInput" 
-           disabled="@Disabled" 
-           @attributes="@UnmatchedParameters" 
-           @bind="@SearchText" 
-           @bind:event="oninput" 
-           @onkeyup="HandleKeyup" 
-           @onfocus="OnFocus" 
-           @onblur="OnBlurTriggered" 
-           @onkeypress:preventDefault 
-           placeholder="@Placeholder" 
+    <input @ref="_searchInput"
+           disabled="@Disabled"
+           @attributes="@UnmatchedParameters"
+           @bind="@SearchText"
+           @bind:event="oninput"
+           @onkeyup="HandleKeyup"
+           @onfocus="OnFocus"
+           @onblur="OnBlurTriggered"
+           @onkeypress:preventDefault
+           placeholder="@Placeholder"
            autocomplete="off"
            class="form-control"/>
 
@@ -20,32 +20,63 @@
     {
         <ClickOutside OnClickOutside="OnClickOutside">
             <div class="dropdown-menu dropdown-menu-left show dropdown-project">
-                @if (!string.IsNullOrEmpty(ResultHeader))
+                @if (GroupBy != null)
                 {
-                    <div class="dropdown-item d-flex dropdown-group-header">
-                        <h5>@ResultHeader</h5>
-                        <div class="dropdown-divider"></div>
-                    </div>
+                    foreach (var searchGroup in GroupedResult)
+                    {
+                        <div class="dropdown-item d-flex dropdown-group-header">
+                            <h4 class="ml-3 mb-1">@GroupingHeaderExpression(searchGroup.Key)</h4>
+                            <div class="dropdown-divider"></div>
+                        </div>
+
+                        var items = searchGroup.ToList();
+                        for (int i = 0; i < items.Count; i++)
+                        {
+                            var item = items[i];
+                            <a @key="item" 
+                               class="dropdown-item d-flex clickable @GetSelectedSuggestionClass(item, i)" 
+                               @onclick="() => OnItemSelectedCallback(item)">
+                                @ResultTemplate(item)
+                            </a>
+                        }
+                    }
+
+                    @if (!GroupedResult.Any())
+                    {
+                        <a class="dropdown-item d-flex">
+                            @NotFoundTemplate
+                        </a>
+                    }
+
+                    <div class="dropdown-divider"></div>
                 }
-                @{
+                else
+                {
+                    if (!string.IsNullOrEmpty(ResultHeader))
+                    {
+                        <div class="dropdown-item d-flex dropdown-group-header">
+                            <h5>@ResultHeader</h5>
+                            <div class="dropdown-divider"></div>
+                        </div>
+                    }
+
                     for (int i = 0; i < Result.Count(); i++)
                     {
                         var item = Result[i];
-                        <a @key="item" 
-                           class="dropdown-item d-flex clickable @GetSelectedSuggestionClass(item, i)" 
+                        <a @key="item"
+                           class="dropdown-item d-flex clickable @GetSelectedSuggestionClass(item, i)"
                            @onclick="(_ => OnItemSelectedCallback(item))">
                             @ResultTemplate(item)
                         </a>
                     }
-                }
 
-                @if (SearchTextInAutoCompleteList(SearchText, Result) == false)
-                {
-                    <a class="dropdown-item d-flex">
-                        @NotFoundTemplate
-                    </a>
+                    if (SearchTextInAutoCompleteList(SearchText, Result) == false)
+                    {
+                        <a class="dropdown-item d-flex">
+                            @NotFoundTemplate
+                        </a>
+                    }
                 }
-
             </div>
         </ClickOutside>
     }

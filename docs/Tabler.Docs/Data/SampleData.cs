@@ -96,7 +96,7 @@ namespace Tabler.Docs.Data
 
             orders.Add(new Order
             {
-                OrderStatus = OrderStatus.Active, Customer = odio, Country = "Sweden",
+                OrderStatus = OrderStatus.Active, Customer = ani, Country = "Sweden",
                 OrderDate = DateTimeOffset.Now.AddDays(-12), GrossValue = 34531, DiscountPercentage = 21,
                 OrderType = OrderType.Contract
             });
@@ -176,7 +176,7 @@ namespace Tabler.Docs.Data
             });
             orders.Add(new Order
             {
-                OrderStatus = OrderStatus.Shipped, Customer = justo, Country = "Spain",
+                OrderStatus = OrderStatus.Shipped, Customer = ani, Country = "Spain",
                 OrderDate = DateTimeOffset.Now.AddDays(-45), GrossValue = 12532, DiscountPercentage = 24,
                 OrderType = OrderType.Web
             });
