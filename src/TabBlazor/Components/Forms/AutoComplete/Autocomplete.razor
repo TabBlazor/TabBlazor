@@ -22,6 +22,7 @@
             <div class="dropdown-menu dropdown-menu-left show dropdown-project">
                 @if (GroupBy != null)
                 {
+                    var j = 0;
                     foreach (var searchGroup in GroupedResult)
                     {
                         <div class="dropdown-item d-flex dropdown-group-header">
@@ -34,10 +35,11 @@
                         {
                             var item = items[i];
                             <a @key="item" 
-                               class="dropdown-item d-flex clickable @GetSelectedSuggestionClass(item, i)" 
+                               class="dropdown-item d-flex clickable @GetSelectedSuggestionClass(item, j)" 
                                @onclick="() => OnItemSelectedCallback(item)">
                                 @ResultTemplate(item)
                             </a>
+                            j++;
                         }
                     }
 

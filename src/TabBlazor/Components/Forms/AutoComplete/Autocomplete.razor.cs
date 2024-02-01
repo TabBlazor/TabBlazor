@@ -44,7 +44,8 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
 
     private int SelectedIndex { get; set; } = -1;
     private List<TItem> Result { get; set; }
-    public IEnumerable<IGrouping<object, TItem>> GroupedResult { get; set; }
+    private IEnumerable<IGrouping<object, TItem>> GroupedResult { get; set; }
+    private List<TItem> ActualItems => Result ?? GroupedResult?.SelectMany(x => x).ToList();
     private bool IsShowingSuggestions { get; set; } = false;
     private Timer Timer { get; set; }
 
@@ -224,22 +225,22 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
     {
         var index = SelectedIndex + count;
 
-        if (index >= Result.Count())
+        if (index >= ActualItems.Count())
         {
             index = 0;
         }
 
         if (index < 0)
         {
-            index = Result.Count() - 1;
+            index = ActualItems.Count() - 1;
         }
 
         SelectedIndex = index;
     }
-
+    
     private async Task HandleKeyup(KeyboardEventArgs args)
     {
-        if (Result == null)
+        if (ActualItems == null)
             return;
 
         if (args.Key == "ArrowDown")
@@ -250,9 +251,9 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
         {
             MoveSelection(-1);
         }
-        else if (args.Key == "Enter" && SelectedIndex >= 0 && SelectedIndex < Result.Count())
+        else if (args.Key == "Enter" && SelectedIndex >= 0 && SelectedIndex < ActualItems.Count)
         {
-            await OnItemSelectedCallback(Result.ToArray()[SelectedIndex]);
+            await OnItemSelectedCallback(ActualItems[SelectedIndex]);
         }
         else if (args.Key == "Escape")
         {
