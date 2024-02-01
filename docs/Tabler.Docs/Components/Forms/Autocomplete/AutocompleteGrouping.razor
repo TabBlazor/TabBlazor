@@ -1,0 +1,28 @@
+﻿@using TabBlazor
+
+<Autocomplete TItem="Order" @bind-Value="customerName" SearchMethod="Search" OnItemSelected="SelectedCustomer" GroupBy="order => order.Country">
+    <ResultTemplate>
+        @context.OrderId : @context.OrderDate
+    </ResultTemplate>
+</Autocomplete>
+
+Name: @customerName
+
+@code {
+    List<Order> orders = SampleData.GetOrders();
+    string customerName;
+
+    private Task<List<Order>> Search(string arg)
+    {
+        var result = orders
+            .Where(x => x.Customer.CustomerName.Contains(arg, StringComparison.InvariantCultureIgnoreCase))
+            .ToList();
+        return Task.FromResult(result);
+    }
+
+    private void SelectedCustomer(Order order)
+    {
+        customerName = order.Customer.CustomerName;
+    }
+
+}

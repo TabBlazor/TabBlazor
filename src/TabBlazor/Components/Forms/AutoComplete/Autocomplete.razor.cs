@@ -31,6 +31,8 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
     [Parameter] public EventCallback<FocusEventArgs> OnBlur { set; get; }
     [Parameter] public string Value { get; set; }
     [Parameter] public int Debounce { get; set; } = 300;
+    [Parameter] public Expression<Func<TItem, object>> GroupBy { get; set; }
+    [Parameter] public Func<object, string> GroupingHeaderExpression { get; set; }
     [Parameter] public Func<string, Task<List<TItem>>> SearchMethod { get; set; }
     [Parameter] public EventCallback<TItem> OnItemSelected { get; set; }
     [Parameter] public string SeparatorCharacter { get; set; }
@@ -42,6 +44,7 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
 
     private int SelectedIndex { get; set; } = -1;
     private List<TItem> Result { get; set; }
+    public IEnumerable<IGrouping<object, TItem>> GroupedResult { get; set; }
     private bool IsShowingSuggestions { get; set; } = false;
     private Timer Timer { get; set; }
 
@@ -56,6 +59,8 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
         {
             FieldIdentifier = FieldIdentifier.Create(ValueExpression);
         }
+
+        GroupingHeaderExpression ??= item => item.ToString();
 
         Timer = new Timer
         {
@@ -168,7 +173,14 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
     {
         var search = GetSearchText(SearchText);
 
-        Result = await SearchMethod.Invoke(search ?? "");
+        if (GroupBy != null)
+        {
+            GroupedResult = (await SearchMethod.Invoke(search)).GroupBy(GroupBy.Compile());
+        }
+        else
+        {
+            Result = await SearchMethod.Invoke(search ?? "");
+        }
 
         if (NotFoundTemplate != null)
         {
@@ -176,7 +188,7 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
         }
         else
         {
-            IsShowingSuggestions = Result?.Any() == true;
+            IsShowingSuggestions = Result?.Any() == true || GroupedResult?.Any() == true;
         }
 
         SelectedIndex = -1;
