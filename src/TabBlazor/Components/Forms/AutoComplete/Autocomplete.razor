@@ -20,22 +20,33 @@
     {
         <ClickOutside OnClickOutside="OnClickOutside">
             <div class="dropdown-menu dropdown-menu-left show dropdown-project">
+                @if (!string.IsNullOrEmpty(ResultHeader))
+                {
+                    <span class="dropdown-header">@ResultHeader</span>
+                }
+                
                 @if (GroupBy != null)
                 {
                     var j = 0;
                     foreach (var searchGroup in GroupedResult)
                     {
-                        <div class="dropdown-item d-flex dropdown-group-header">
-                            <h4 class="ml-3 mb-1">@GroupingHeaderExpression(searchGroup.Key)</h4>
-                            <div class="dropdown-divider"></div>
-                        </div>
-
+                        <span class="dropdown-header">
+                            @if (GroupingHeaderTemplate != null)
+                            {
+                                @GroupingHeaderTemplate(searchGroup.Key)
+                            }
+                            else
+                            {
+                                @GroupingHeaderExpression(searchGroup.Key)    
+                            }
+                            
+                        </span>
                         var items = searchGroup.ToList();
                         for (int i = 0; i < items.Count; i++)
                         {
                             var item = items[i];
-                            <a @key="item" 
-                               class="dropdown-item d-flex clickable @GetSelectedSuggestionClass(item, j)" 
+                            <a @key="item"
+                               class="dropdown-item d-flex clickable @GetSelectedSuggestionClass(item, j)"
                                @onclick="() => OnItemSelectedCallback(item)">
                                 @ResultTemplate(item)
                             </a>
@@ -43,25 +54,15 @@
                         }
                     }
 
-                    @if (!GroupedResult.Any())
+                    if (!GroupedResult.Any())
                     {
                         <a class="dropdown-item d-flex">
                             @NotFoundTemplate
                         </a>
                     }
-
-                    <div class="dropdown-divider"></div>
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(ResultHeader))
-                    {
-                        <div class="dropdown-item d-flex dropdown-group-header">
-                            <h5>@ResultHeader</h5>
-                            <div class="dropdown-divider"></div>
-                        </div>
-                    }
-
                     for (int i = 0; i < Result.Count(); i++)
                     {
                         var item = Result[i];

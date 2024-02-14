@@ -33,6 +33,8 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
     [Parameter] public int Debounce { get; set; } = 300;
     [Parameter] public Expression<Func<TItem, object>> GroupBy { get; set; }
     [Parameter] public Func<object, string> GroupingHeaderExpression { get; set; }
+    [Parameter] public RenderFragment<object> GroupingHeaderTemplate { get; set; }
+    
     [Parameter] public Func<string, Task<List<TItem>>> SearchMethod { get; set; }
     [Parameter] public EventCallback<TItem> OnItemSelected { get; set; }
     [Parameter] public string SeparatorCharacter { get; set; }
