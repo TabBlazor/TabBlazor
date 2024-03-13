@@ -1,0 +1,40 @@
+﻿@page "/type-browser"
+@using System.Reflection
+
+
+<Tabs>
+    <Tab Title="Properties">
+        <Table Items=properties Item="PropertyView" PageSize=10>
+            <HeaderTemplate>
+                <h3>Properties</h3>
+            </HeaderTemplate>
+            <ChildContent>
+                <Column Item="PropertyView" Property="e=>e.IsComponentParameter" Title="Parameter" Searchable Sortable />
+                <Column Item="PropertyView" Property="e=>e.Name" Title="Name" Searchable Sortable />
+                <Column Item="PropertyView" Property="e=>e.TypeName" Title="Type" Searchable Sortable />
+
+            </ChildContent>
+        </Table>
+    </Tab>
+
+    <Tab Title="Methods">
+        <Table Items=methods>
+            <HeaderTemplate>
+                <h3>Methods</h3>
+            </HeaderTemplate>
+            <ChildContent>
+                <Column Item="MethodInfo" Property="e=>e.Name" Title="Name" Searchable />
+            </ChildContent>
+        </Table>
+    </Tab>
+
+
+</Tabs>
+
+
+
+
+
+
+
+

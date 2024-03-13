@@ -1,0 +1,16 @@
+﻿<RangeSlider TValue="int" @bind-Value="value" ShowLabels />
+
+<RangeSlider TValue="@Customer" @bind-Value="selectedCustomer" Range="customers" LabelExpression="e => e.CustomerName" ShowLabels />
+<span>Selected customer: @selectedCustomer.CustomerName</span>
+
+@code {
+    int value = 0;
+    private Customer selectedCustomer;
+    private List<Customer> customers = new List<Customer>();
+
+    protected override void OnInitialized()
+    {
+        customers = Data.SampleData.GetCustomers();
+        selectedCustomer = customers.First();
+    }
+}

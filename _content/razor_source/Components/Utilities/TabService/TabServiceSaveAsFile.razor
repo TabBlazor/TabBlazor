@@ -1,0 +1,14 @@
+﻿@inject TablerService tabService
+
+<Button BackgroundColor=TablerColor.Primary OnClick="SaveAsFile">SaveAsFile</Button>
+
+@code {
+    private async Task SaveAsFile()
+    {
+        var text = "This is a sample text";
+        var href = "data:text/plain;charset=utf-8," + text;
+        await tabService.SaveAsFile("Testfile.txt", href);
+    }
+
+}
+

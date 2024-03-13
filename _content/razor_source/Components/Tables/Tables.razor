@@ -1,0 +1,80 @@
+﻿@page "/docs/tables"
+
+<Page>
+    <DocsExample Title="Table" ComponentType="typeof(Table<>)">
+        <CodeSnippet SetBackground ClassName="@typeof(TablesBasic).ToString()" Title="Basics">
+            <Example>
+                <TablesBasic />
+            </Example>
+        </CodeSnippet>
+
+        <CodeSnippet SetBackground ClassName="@typeof(TablesRowDetails).ToString()" Title="Details Template">
+            <Description>
+                The details template makes it easy to show more details for a row by clicking on it
+            </Description>
+            <Example>
+                <TablesRowDetails />
+            </Example>
+        </CodeSnippet>
+
+        <CodeSnippet SetBackground ClassName="@typeof(TablesSelect).ToString()" Title="Select">
+            <Example>
+                <TablesSelect />
+            </Example>
+        </CodeSnippet>
+
+        <CodeSnippet SetBackground ClassName="@typeof(TablesKeyboard).ToString()" Title="Keyboard Navigation">
+            <Example>
+                <TablesKeyboard />
+            </Example>
+        </CodeSnippet>
+
+        <CodeSnippet SetBackground ClassName="@typeof(TablesMethods).ToString()" Title="Methods">
+            <Example>
+                <TablesMethods />
+            </Example>
+        </CodeSnippet>
+
+        <CodeSnippet SetBackground ClassName="@typeof(TableCustomRowAction).ToString()" Title="Custom Row Actions">
+            <Example>
+                <TableCustomRowAction />
+            </Example>
+        </CodeSnippet>
+
+        <CodeSnippet SetBackground ClassName="@typeof(TablesEdit).ToString()" Title="Edit">
+            <Example>
+                <TablesEdit />
+            </Example>
+        </CodeSnippet>
+        
+        <CodeSnippet SetBackground ClassName="@typeof(TablesEditWithCancelStrategy).ToString()" Title="Edit with cancel strategy">
+            <Description>
+                When editing a row and the cancelled button is clicked, the state of the line will be reverted to how it initially was.<br/>
+                This is an experimental feature that uses reflection to set the values, use with caution.<br/>
+                It's also possible to change the default behaviour for all tables through the startup registration of TabBlazor.<br/>
+            </Description>
+            <Example>
+                <TablesEditWithCancelStrategy />
+            </Example>
+        </CodeSnippet>
+
+        <CodeSnippet SetBackground ClassName="@typeof(TablesNaturalSort).ToString()" Title="Natural Sort order">
+            <Description>
+                UseNaturalSort makes the table use a more natural sorting order
+            </Description>
+            <Example>
+                <TablesNaturalSort />
+            </Example>
+        </CodeSnippet>
+
+        <CodeSnippet SetBackground ClassName="@typeof(TablesExternalDataSourceWithSortingAndPaging).ToString()" Title="External data source for table">
+            <Description>
+                External Data Provider with sorting and paging for those who need to get data prepared on server side with control of Table built in pagination and sorting functionalities
+            </Description>
+            <Example>
+                <TablesExternalDataSourceWithSortingAndPaging />
+            </Example>
+        </CodeSnippet>
+
+    </DocsExample>
+</Page>

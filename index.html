@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>TabBlazor - A blazor admin template based on Tabler UI - minimal javascript</title>
+    <meta name="description" content="Over 20 blazor controls written from the ground up. Development is ongoing">
+    <meta name="google-site-verification" content="zqLWqmL8NH3pGGODuN5VG9nKuylRVh7tP_30ezrLzfA" />
+    <meta name="msvalidate.01" content="DE2D3B10E189CE8DE4B13033D4CAA0D5" />
+
+    <base href="/" />
+
+    <script src="_content/Blazor-ApexCharts/js/apex-charts.min.js"></script>
+    <script src="_content/Blazor-ApexCharts/js/blazor-apex-charts.js"></script>
+
+ 
+    <link rel="stylesheet" href="https://unpkg.com/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="_content/TabBlazor/css/tabblazor.min.css" />
+    <script src="_content/TabBlazor/js/tabblazor.js"></script>
+
+
+    <link href="_content/Tabler.Docs/css/tabler-docs.css" rel="stylesheet" />
+    <link href="Tabler.Docs.Wasm.styles.css" rel="stylesheet" />
+
+
+
+</head>
+
+<body>
+    <div id="app">
+        <div class="spash">
+
+            <div class="container-fluid">
+                <div class="m-3">
+                    <div class="row row-cards">
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="card placeholder-glow">
+                                <div class="ratio ratio-21x9 card-img-top placeholder"></div>
+                                <div class="card-body">
+                                    <div class="placeholder col-9 mb-3"></div>
+                                    <div class="placeholder placeholder-xs col-10"></div>
+                                    <div class="placeholder placeholder-xs col-11"></div>
+                                    <div class="mt-3">
+                                        <a href="#" tabindex="-1" class="btn btn-primary disabled placeholder col-4" aria-hidden="true"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="card placeholder-glow">
+                                <div class="ratio ratio-21x9 card-img-top placeholder"></div>
+                                <div class="card-body">
+                                    <div class="placeholder col-9 mb-3"></div>
+                                    <div class="placeholder placeholder-xs col-10"></div>
+                                    <div class="placeholder placeholder-xs col-11"></div>
+                                    <div class="mt-3">
+                                        <a href="#" tabindex="-1" class="btn btn-primary disabled placeholder col-4" aria-hidden="true"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="card placeholder-glow">
+                                <div class="ratio ratio-21x9 card-img-top placeholder"></div>
+                                <div class="card-body">
+                                    <div class="placeholder col-9 mb-3"></div>
+                                    <div class="placeholder placeholder-xs col-10"></div>
+                                    <div class="placeholder placeholder-xs col-11"></div>
+                                    <div class="mt-3">
+                                        <a href="#" tabindex="-1" class="btn btn-primary disabled placeholder col-4" aria-hidden="true"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>     
+    </div>
+
+    <script src="decode.js"></script>
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
+    <script>
+        Blazor.start({
+            loadBootResource: function (type, name, defaultUri, integrity) {
+                // For framework resources, use the precompressed .br files for faster downloads
+                // This is needed only because GitHub pages doesn't natively support Brotli (or even gzip for .dll files)
+                if (type !== 'dotnetjs' && location.hostname !== 'localhost') {
+                    return (async function () {
+                        const response = await fetch(defaultUri + '.br', { cache: 'no-cache' });
+                        if (!response.ok) {
+                            throw new Error(response.statusText);
+                        }
+                        const originalResponseBuffer = await response.arrayBuffer();
+                        const originalResponseArray = new Int8Array(originalResponseBuffer);
+                        const decompressedResponseArray = BrotliDecode(originalResponseArray);
+                        const contentType = type === 'dotnetwasm' ? 'application/wasm' : 'application/octet-stream';
+                        return new Response(decompressedResponseArray, { headers: { 'content-type': contentType } });
+                    })();
+                }
+            }
+        });
+    </script>
+
+    <!-- Start Single Page Apps for GitHub Pages -->
+    <script type="text/javascript">
+        // Single Page Apps for GitHub Pages
+        // https://github.com/rafrex/spa-github-pages
+        // Copyright (c) 2016 Rafael Pedicini, licensed under the MIT License
+        // ----------------------------------------------------------------------
+        // This script checks to see if a redirect is present in the query string
+        // and converts it back into the correct url and adds it to the
+        // browser's history using window.history.replaceState(...),
+        // which won't cause the browser to attempt to load the new url.
+        // When the single page app is loaded further down in this file,
+        // the correct url will be waiting in the browser's history for
+        // the single page app to route accordingly.
+        (function (l) {
+            if (l.search) {
+                var q = {};
+                l.search.slice(1).split('&').forEach(function (v) {
+                    var a = v.split('=');
+                    q[a[0]] = a.slice(1).join('=').replace(/~and~/g, '&');
+                });
+                if (q.p !== undefined) {
+                    window.history.replaceState(null, null,
+                        l.pathname.slice(0, -1) + (q.p || '') +
+                        (q.q ? ('?' + q.q) : '') +
+                        l.hash
+                    );
+                }
+            }
+        }(window.location))
+    </script>
+    <!-- End Single Page Apps for GitHub Pages -->
+
+</body>
+
+</html>
