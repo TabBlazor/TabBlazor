@@ -1,5 +1,5 @@
 ﻿
-<TreeView @ref="treeView" Items="@folders" ChildSelector="e=>e.SubFolders" CheckboxMode="CheckboxMode.Multiple" @bind-CheckedItems="checkedFolders">
+<TreeView @ref="treeView" Items="@folders" ChildSelectorAsync="@(e=> Task.FromResult((IList<FileFolder>)e.SubFolders))" CheckboxMode="CheckboxMode.Multiple" @bind-CheckedItems="checkedFolders">
     <Template>
         <Card StatusStart="TablerColor.Danger" Size="CardSize.Small">
             <CardBody>
