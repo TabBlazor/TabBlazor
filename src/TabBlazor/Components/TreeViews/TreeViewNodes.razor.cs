@@ -11,7 +11,7 @@ namespace TabBlazor.Components.TreeViews
     {
         [CascadingParameter(Name = "Root")] private TreeView<TItem> Root { get; set; }
         [Parameter] public IList<TItem> Items { get; set; }
-        [Parameter] public Func<TItem, Task<IList<TItem>>> ChildSelector { get; set; } = node => null;
+        [Parameter] public Func<TItem, Task<IList<TItem>>> ChildSelectorAsync { get; set; } = node => null;
         [Parameter] public RenderFragment<TItem> Template { get; set; }
         
         [Parameter] public int Level { get; set; }
@@ -25,7 +25,7 @@ namespace TabBlazor.Components.TreeViews
             children.Clear();
             foreach (var item in Items)
             {
-                children.Add(item, await ChildSelector(item));
+                children.Add(item, await ChildSelectorAsync(item));
             }
         }
 

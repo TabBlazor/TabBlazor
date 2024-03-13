@@ -3,8 +3,8 @@
     public partial class TreeView<TItem> : ComponentBase
     {
         [Parameter] public IList<TItem> Items { get; set; }
-        [Parameter] public Func<TItem, Task<IList<TItem>>> ChildSelector { get; set; } = node => null;
-
+        [Parameter] public Func<TItem, Task<IList<TItem>>> ChildSelectorAsync { get; set; }
+        [Parameter] public Func<TItem, IList<TItem>> ChildSelector { get; set; }
         [Parameter] public RenderFragment<TItem> Template { get; set; }
         [Parameter] public bool AlwaysExpanded { get; set; }
         [Parameter] public Func<TItem, bool> DefaultExpanded { get; set; }
@@ -32,6 +32,7 @@
 
         protected override async Task OnInitializedAsync()
         {
+            SetChildSelector();
             if (DefaultExpanded != null)
             {
                 await SetDefaultExpandedAsync(Items);
@@ -40,6 +41,7 @@
 
         protected override void OnParametersSet()
         {
+            SetChildSelector();
             if (MultiSelect)
             {
                 selectedItems = SelectedItems;
@@ -51,6 +53,18 @@
                 {
                     selectedItems.Add(SelectedItem);
                 }
+            }
+        }
+
+        private void SetChildSelector()
+        {
+            if (ChildSelectorAsync == null && ChildSelector == null)
+            {
+                ChildSelectorAsync = e => null;
+            }
+            else if (ChildSelectorAsync == null && ChildSelector != null)
+            {
+                ChildSelectorAsync = e => Task.FromResult(ChildSelector(e));
             }
         }
 
@@ -73,7 +87,7 @@
                     expandedItems.Add(item);
                 }
 
-               await ExpandAllAsync(await ChildSelector(item));
+                await ExpandAllAsync(await ChildSelectorAsync(item));
             }
         }
 
@@ -96,7 +110,7 @@
                     }
                 }
 
-                await CheckAllAsync(await ChildSelector(item), setChecked);
+                await CheckAllAsync(await ChildSelectorAsync(item), setChecked);
             }
         }
 
@@ -110,7 +124,7 @@
                     expandedItems.Add(item);
                 }
 
-                await SetDefaultExpandedAsync(await ChildSelector(item));
+                await SetDefaultExpandedAsync(await ChildSelectorAsync(item));
             }
         }
 
@@ -151,12 +165,12 @@
             if (IsChecked(item) == true)
             {
                 checkedItems.Remove(item);
-                await CheckAllAsync(await ChildSelector(item), false);
+                await CheckAllAsync(await ChildSelectorAsync(item), false);
             }
             else
             {
                 checkedItems.Add(item);
-               await CheckAllAsync(await ChildSelector(item), true);
+                await CheckAllAsync(await ChildSelectorAsync(item), true);
             }
 
             await CheckedItemsChanged.InvokeAsync(checkedItems);
