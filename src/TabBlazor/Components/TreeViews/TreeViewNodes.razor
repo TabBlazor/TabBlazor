@@ -10,7 +10,7 @@
 
                 @if (HasChildren(item))
                 {
-                    <Icon IconType="@(isExpanded ? InternalIcons.Circle_minus : InternalIcons.Circle_plus)" OnClick="@(() => Root.ToggleExpanded(item))" class="icon me-2" />
+                    <Icon IconType="@(isExpanded ? InternalIcons.Circle_minus : InternalIcons.Circle_plus)" OnClick="@(() => Root.ToggleExpandedAsync(item))" class="icon me-2" />
                 }
                 else
                 {
@@ -20,12 +20,12 @@
                 @if (Root.CheckboxMode != CheckboxMode.None)
                 {
                     <span class="me-2">
-                        <CheckboxTriState Value=@Root.IsChecked(item) ValueChanged="(() => Root.ToggleChecked(item))" />
+                        <CheckboxTriState Value=@Root.IsChecked(item) ValueChanged="(() => Root.ToggleCheckedAsync(item))" />
                     </span>
                 }
 
 
-                <div @onclick="@(() => Root.ToogleSelected(item))" class="cursor-pointer @(Root.IsSelected(item) ? "tree-node-selected": "") @(Root.AlignTreeNodes ? "tree-node-aligned" : "")">
+                <div @onclick="@(() => Root.ToogleSelectedAsync(item))" class="cursor-pointer @(Root.IsSelected(item) ? "tree-node-selected": "") @(Root.AlignTreeNodes ? "tree-node-aligned" : "")">
                     @Template(item)
                 </div>
             </div>
@@ -33,7 +33,7 @@
 
             @if (HasChildren(item) && isExpanded)
             {
-                <TabBlazor.Components.TreeViews.TreeViewNodes Items="ChildSelector(item)"
+                <TabBlazor.Components.TreeViews.TreeViewNodes Items="GetChildren(item)"
                                                       Template="Template"
                                                       ChildSelector="ChildSelector"
                                                       Level="@(Level+1)" />

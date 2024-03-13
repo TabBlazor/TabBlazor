@@ -1,17 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TabBlazor
+﻿namespace TabBlazor
 {
     public partial class TreeView<TItem> : ComponentBase
     {
         [Parameter] public IList<TItem> Items { get; set; }
-        [Parameter] public Func<TItem, IList<TItem>> ChildSelector { get; set; } = node => null;
+        [Parameter] public Func<TItem, Task<IList<TItem>>> ChildSelector { get; set; } = node => null;
 
         [Parameter] public RenderFragment<TItem> Template { get; set; }
         [Parameter] public bool AlwaysExpanded { get; set; }
@@ -38,11 +30,11 @@ namespace TabBlazor
         private List<TItem> checkedItems = new List<TItem>();
 
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
             if (DefaultExpanded != null)
             {
-                SetDefaultExpanded(Items);
+                await SetDefaultExpandedAsync(Items);
             }
         }
 
@@ -62,9 +54,9 @@ namespace TabBlazor
             }
         }
 
-        public void ExpandAll()
+        public async Task ExpandAllAsync()
         {
-            ExpandAll(Items);
+            await ExpandAllAsync(Items);
         }
 
         public void CollapseAll()
@@ -72,7 +64,7 @@ namespace TabBlazor
             expandedItems.Clear();
         }
 
-        private void ExpandAll(IList<TItem> items)
+        private async Task ExpandAllAsync(IList<TItem> items)
         {
             foreach (var item in items)
             {
@@ -81,11 +73,11 @@ namespace TabBlazor
                     expandedItems.Add(item);
                 }
 
-                ExpandAll(ChildSelector(item));
+               await ExpandAllAsync(await ChildSelector(item));
             }
         }
 
-        private void CheckAll(IList<TItem> items, bool setChecked)
+        private async Task CheckAllAsync(IList<TItem> items, bool setChecked)
         {
             foreach (var item in items)
             {
@@ -104,12 +96,12 @@ namespace TabBlazor
                     }
                 }
 
-                CheckAll(ChildSelector(item), setChecked);
+                await CheckAllAsync(await ChildSelector(item), setChecked);
             }
         }
 
 
-        private void SetDefaultExpanded(IList<TItem> items)
+        private async Task SetDefaultExpandedAsync(IList<TItem> items)
         {
             foreach (var item in items)
             {
@@ -118,7 +110,7 @@ namespace TabBlazor
                     expandedItems.Add(item);
                 }
 
-                SetDefaultExpanded(ChildSelector(item));
+                await SetDefaultExpandedAsync(await ChildSelector(item));
             }
         }
 
@@ -137,7 +129,7 @@ namespace TabBlazor
             return expandedItems.Contains(item);
         }
 
-        public async void ToggleExpanded(TItem item)
+        public async void ToggleExpandedAsync(TItem item)
         {
             if (IsExpanded(item))
             {
@@ -154,17 +146,17 @@ namespace TabBlazor
             }
         }
 
-        public async Task ToggleChecked(TItem item)
+        public async Task ToggleCheckedAsync(TItem item)
         {
             if (IsChecked(item) == true)
             {
                 checkedItems.Remove(item);
-                CheckAll(ChildSelector(item), false);
+                await CheckAllAsync(await ChildSelector(item), false);
             }
             else
             {
                 checkedItems.Add(item);
-                CheckAll(ChildSelector(item), true);
+               await CheckAllAsync(await ChildSelector(item), true);
             }
 
             await CheckedItemsChanged.InvokeAsync(checkedItems);
@@ -172,7 +164,7 @@ namespace TabBlazor
         }
 
 
-        public async Task ToogleSelected(TItem item)
+        public async Task ToogleSelectedAsync(TItem item)
         {
             bool removed = false;
             if (!MultiSelect)
