@@ -25,19 +25,20 @@ namespace TabBlazor.Components.TreeViews
             children.Clear();
             foreach (var item in Items)
             {
-                children.Add(item, await ChildSelectorAsync(item));
+                children.TryAdd(item, await ChildSelectorAsync(item));
             }
         }
 
         protected IList<TItem> GetChildren(TItem item)
         {
-            return children[item];
+            if (!children.TryGetValue(item, out IList<TItem> value)) { return new List<TItem>(); }
+            return value;
         }
 
 
         protected bool HasChildren(TItem item)
         {
-            return children[item]?.Count > 0;
+            return GetChildren(item)?.Count > 0;
         }
 
     }
