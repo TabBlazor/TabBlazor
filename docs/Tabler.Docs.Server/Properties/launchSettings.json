@@ -11,7 +11,7 @@
     "Tabler.Docs.Server": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "/docs/carousel",
+      "launchUrl": "docs/treeviews",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
