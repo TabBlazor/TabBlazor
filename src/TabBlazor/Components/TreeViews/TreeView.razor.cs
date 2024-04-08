@@ -43,7 +43,7 @@
         {
             SetChildSelector();
 
-            checkedItems = CheckedItems;
+            checkedItems = CheckedItems ?? new List<TItem>();
 
             if (MultiSelect)
             {
