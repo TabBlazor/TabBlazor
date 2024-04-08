@@ -42,6 +42,9 @@
         protected override void OnParametersSet()
         {
             SetChildSelector();
+
+            checkedItems = CheckedItems;
+
             if (MultiSelect)
             {
                 selectedItems = SelectedItems;
@@ -110,7 +113,10 @@
                     }
                 }
 
-                await CheckAllAsync(await ChildSelectorAsync(item), setChecked);
+                if (CheckboxMode == CheckboxMode.Recursive)
+                {
+                    await CheckAllAsync(await ChildSelectorAsync(item), setChecked);
+                }
             }
         }
 
@@ -165,12 +171,20 @@
             if (IsChecked(item) == true)
             {
                 checkedItems.Remove(item);
-                await CheckAllAsync(await ChildSelectorAsync(item), false);
+                if (CheckboxMode == CheckboxMode.Recursive)
+                {
+                    await CheckAllAsync(await ChildSelectorAsync(item), false);
+                }
+
             }
             else
             {
                 checkedItems.Add(item);
-                await CheckAllAsync(await ChildSelectorAsync(item), true);
+                if (CheckboxMode == CheckboxMode.Recursive)
+                {
+                    await CheckAllAsync(await ChildSelectorAsync(item), true);
+                }
+
             }
 
             await CheckedItemsChanged.InvokeAsync(checkedItems);
