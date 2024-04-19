@@ -26,6 +26,7 @@ namespace TabBlazor.Components.Tables
         Expression<Func<Item, string, bool>> SearchExpression { get; }
         object GetValue(Item item);
         Expression<Func<Item, bool>> GetFilter(ITableState<Item> state);
+        RenderFragment HeaderTemplate { get; set; }
         RenderFragment<Item> EditorTemplate { get; set; }
         RenderFragment<Item> Template { get; set; }
         RenderFragment<TableResult<object, Item>> GroupingTemplate { get; set; }

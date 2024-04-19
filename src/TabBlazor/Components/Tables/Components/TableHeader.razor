@@ -16,7 +16,14 @@
     @foreach (var column in Table.VisibleColumns)
     {
         <th style="@GetColumnWidth(column)" class="@GetColumnHeaderClass(column)" @onclick="@(() => column.SortByAsync())">
-            <span>@((MarkupString) column.Title)</span>
+            @if (column.HeaderTemplate != null)
+            {
+                @column.HeaderTemplate
+            }
+            else
+            {
+                <span>@((MarkupString)column.Title)</span>
+            }
 
             @if (column.Sortable)
             {

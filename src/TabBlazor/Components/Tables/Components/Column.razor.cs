@@ -29,6 +29,7 @@ namespace TabBlazor
         [Parameter] public string CssClass { get; set; }
         [Parameter] public bool Visible { get; set; } = true;
         [Parameter] public bool ActionColumn { get; set; }
+        [Parameter] public RenderFragment HeaderTemplate { get; set; }
         [Parameter] public RenderFragment<Item> Template { get; set; }
         [Parameter] public RenderFragment<Item> EditorTemplate { get; set; }
         [Parameter] public RenderFragment<TableResult<object, Item>> GroupingTemplate { get; set; }
