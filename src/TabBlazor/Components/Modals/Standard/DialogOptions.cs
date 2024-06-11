@@ -17,5 +17,6 @@ namespace TabBlazor.Components.Modals
 
         public TablerColor StatusColor = TablerColor.Default;
 
+        public MarkupString MarkupString => new MarkupString(SubText);
     }
 }
