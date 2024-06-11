@@ -6,14 +6,7 @@
 
     <h3>@Options.MainText</h3>
     <div class="text-secondary">
-        @if (!string.IsNullOrEmpty(Options.MarkupSubText.Value))
-        {
-            <div>@Options.MarkupSubText.Value</div>
-        }
-        else
-        {
-            <div>@Options.SubText</div>
-        }
+        <div>@((MarkupString)Options.MarkupString)</div>
     </div>
 </div>
 <div class="modal-footer pb-0">

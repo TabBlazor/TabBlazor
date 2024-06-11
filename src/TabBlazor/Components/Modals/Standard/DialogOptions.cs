@@ -10,7 +10,6 @@ namespace TabBlazor.Components.Modals
     {
         public string MainText { get; set; }
         public string SubText { get; set; }
-        public MarkupString MarkupSubText { get; set; }
         public IIconType IconType { get; set; }
 
         public string CancelText { get; set; } = "Cancel";
@@ -18,5 +17,6 @@ namespace TabBlazor.Components.Modals
 
         public TablerColor StatusColor = TablerColor.Default;
 
+        public MarkupString MarkupString => new MarkupString(SubText);
     }
 }
