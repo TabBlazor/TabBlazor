@@ -3,7 +3,7 @@
     <Button Size="ButtonSize.Small" class="ms-2" BackgroundColor=TablerColor.Primary OnClick="CollapseAll">Collapse All</Button>
 </div>
 
-<TreeView @ref="treeView" Items="@folders" ChildSelector="e=>e.SubFolders" DefaultExpanded="e=>e.FolderName.StartsWith('D')" @bind-SelectedItem="selectedFolder">
+<TreeView @ref="treeView" Items="@folders" ChildSelector="e=> e.SubFolders" DefaultExpanded="e=>e.FolderName.StartsWith('D')" @bind-SelectedItem="selectedFolder">
     <Template>
         <Card StatusStart="TablerColor.Danger" Size="CardSize.Small">
             <CardBody>
@@ -49,7 +49,7 @@
 
     private void ExpandAll()
     {
-        treeView.ExpandAll();
+        treeView.ExpandAllAsync();
     }
 
     private void CollapseAll()

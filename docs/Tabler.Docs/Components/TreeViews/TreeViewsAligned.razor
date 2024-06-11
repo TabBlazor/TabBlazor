@@ -1,5 +1,5 @@
 ﻿<div class="wrapper" style="width: 300px;">
-    <TreeView @ref="treeView" Items="@folders" AlignTreeNodes ChildSelector="e=>e.SubFolders" DefaultExpanded="e=>e.FolderName.StartsWith('D')" @bind-SelectedItem="selectedFolder">
+    <TreeView @ref="treeView" Items="@folders" AlignTreeNodes ChildSelectorAsync="@(e=> Task.FromResult((IList<FileFolder>)e.SubFolders))" DefaultExpanded="e=>e.FolderName.StartsWith('D')" @bind-SelectedItem="selectedFolder">
         <Template>
             <Card StatusStart="TablerColor.Danger" Size="CardSize.Small">
                 <CardBody>
