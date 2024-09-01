@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 
 env:
-  NETCORE_VERSION: '7.0.x'
+  NETCORE_VERSION: '8.0.x'
 
 jobs:
   build:
