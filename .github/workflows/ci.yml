@@ -35,7 +35,7 @@ jobs:
           with:
             github_token: ${{ secrets.PUBLISH_TOKEN }}
             publish_branch: gh-pages
-            publish_dir: docs/Tabler.Docs.Wasm/bin/Release/net7.0/publish/wwwroot
+            publish_dir: docs/Tabler.Docs.Wasm/bin/Release/net8.0/publish/wwwroot
             allow_empty_commit: false
             keep_files: false
             force_orphan: true
