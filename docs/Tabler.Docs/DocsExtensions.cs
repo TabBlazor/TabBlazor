@@ -12,7 +12,10 @@ namespace Tabler.Docs
         public static IServiceCollection AddDocs(this IServiceCollection services)
         {
             return services
-               .AddTabler()
+               .AddTabler(options =>
+               {
+                   options.AssemblyScanFilter = () => [typeof(IFlagType).Assembly];
+               })
                .AddSingleton<AppService>();
         }
 
