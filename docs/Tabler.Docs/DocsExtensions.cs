@@ -14,7 +14,7 @@ namespace Tabler.Docs
             return services
                .AddTabler(options =>
                {
-                   options.AssemblyScanFilter = () => [typeof(IFlagType).Assembly];
+                   options.AssemblyScanFilter = () => [typeof(Flags).Assembly];
                })
                .AddSingleton<AppService>();
         }
