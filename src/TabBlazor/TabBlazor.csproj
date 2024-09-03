@@ -7,8 +7,8 @@
 		<Authors>Joakim Dangården</Authors>
 		<Product>TabBlazor</Product>
 		<PackageTags>Blazor Tabler Admin Theme</PackageTags>
-		<RepositoryUrl>https://github.com/joadan/TabBlazor</RepositoryUrl>
-		<PackageProjectUrl>https://joadan.github.io/TabBlazor</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/TabBlazor/TabBlazor</RepositoryUrl>
+		<PackageProjectUrl>https://tabblazor.com/</PackageProjectUrl>
 		<Version>1.6.9</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryType>git</RepositoryType>
