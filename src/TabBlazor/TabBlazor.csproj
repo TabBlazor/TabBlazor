@@ -38,7 +38,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="LinqKit.Core" Version="1.2.4" />
+		<PackageReference Include="LinqKit.Core" Version="1.2.5" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
 		<PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="8.0.8" />
 	</ItemGroup>

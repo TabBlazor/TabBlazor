@@ -1,7 +1,7 @@
 ﻿@using TabBlazor.Components.TreeViews
 
 
-<TreeView AlwaysExpanded Items="@folders" ChildSelector="e=> e.SubFolders" EnableDragAndDrop TItem=FileFolder ItemDragged="ItemDragged" ItemDropped="ItemDropped">
+<TreeView DefaultExpanded="_=> true" Items="@folders" ChildSelector="e=> e.SubFolders" EnableDragAndDrop TItem=FileFolder ItemDragged="ItemDragged" ItemDropped="ItemDropped">
     <Template>
         <Card StatusStart="TablerColor.Success" Size="CardSize.Small">
             <CardBody>

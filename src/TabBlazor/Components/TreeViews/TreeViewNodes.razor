@@ -9,7 +9,6 @@
 
         <li class="@GetNodeCss(item)" draggable="@(Root.EnableDragAndDrop ? "true" : "false")" ondragover=@(allowDrop ? "event.preventDefault();" : "") @ondragstart="@(e=> DragStart(e, item))" @ondragend="@(e=> DragEnd(e, item))" @ondrop="@(e=> OnDrop(e, item))">
             <div class="@GetContainerCss(item)" style="padding-left:@(Level*20)px">
-               <span>@allowDrop</span>
                 @if (HasChildren(item))
 
                 {
