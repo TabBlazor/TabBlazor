@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading;
-using NUnit.Framework;
 using TabBlazor.Services;
 using Tabler.Docs.Components.Modals;
 
@@ -8,7 +7,7 @@ namespace TabBlazor.Tests
 {
     public class ToastServiceTests
     {
-        [Test]
+        [Fact]
         public void ToastService_is_thread_safe()
         {
             var service = new ToastService();
@@ -30,9 +29,9 @@ namespace TabBlazor.Tests
             var toastMessages = service.Toasts.ToList();
             for (var i = 0; i < maxWorkers; i++)
             {
-                Assert.IsTrue(toastMessages.Any(t => t.Title == $"title-{i}"), "Element was not added to the toast list");
+                Assert.True(toastMessages.Any(t => t.Title == $"title-{i}"), "Element was not added to the toast list");
             }
-            Assert.AreEqual(maxWorkers, toastMessages.Count, "Toast count does not match worker count.");
+            Assert.Equal(maxWorkers, toastMessages.Count);
 
         }
     }
