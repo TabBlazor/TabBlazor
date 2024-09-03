@@ -6,5 +6,9 @@
   {
     "outputFile": "Styles/_custom.css",
     "inputFile": "Styles/_custom.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/tabblazor.css",
+    "inputFile": "wwwroot/css/tabblazor.scss"
   }
 ]

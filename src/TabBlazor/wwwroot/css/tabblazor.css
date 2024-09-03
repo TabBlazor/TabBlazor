@@ -1,4 +1,4 @@
-.nav-bordered .nav-item {
+﻿.nav-bordered .nav-item {
   margin-left: 1rem !important;
 }
 
@@ -86,6 +86,10 @@
   border-color: #206bc4;
   border-style: solid;
   border-width: thin;
+}
+
+.tree-node-no-drop {
+  opacity: 0.5;
 }
 
 .tree-node-aligned {
@@ -268,5 +272,3 @@ Dimmer
 .switch-icon-flip.active .switch-icon-b {
   opacity: 0;
 }
-
-/*# sourceMappingURL=tabblazor.css.map */

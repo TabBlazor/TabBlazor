@@ -7,8 +7,8 @@
         var isExpanded = Root.AlwaysExpanded || Root.IsExpanded(item);
         var allowDrop = CheckAllowDrop(item);
 
-        <li class="@(!allowDrop && Root.DraggedItem != null ? "opacity-50":"")" draggable="@(Root.EnableDragAndDrop ? "true" : "false")" ondragover=@(allowDrop ? "event.preventDefault();" : "") @ondragstart="@(e=> DragStart(e, item))" @ondragend="@(e=> DragEnd(e, item))" @ondrop="@(e=> OnDrop(e, item))">
-            <div class="d-flex align-items-center mb-2 tree-container" style="padding-left:@(Level*20)px">
+        <li class="@GetNodeCss(item)" draggable="@(Root.EnableDragAndDrop ? "true" : "false")" ondragover=@(allowDrop ? "event.preventDefault();" : "") @ondragstart="@(e=> DragStart(e, item))" @ondragend="@(e=> DragEnd(e, item))" @ondrop="@(e=> OnDrop(e, item))">
+            <div class="@GetContainerCss(item)" style="padding-left:@(Level*20)px">
                <span>@allowDrop</span>
                 @if (HasChildren(item))
 

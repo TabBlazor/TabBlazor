@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace TabBlazor.Components.TreeViews
 {
@@ -47,6 +49,27 @@ namespace TabBlazor.Components.TreeViews
         {
             if (!children.TryGetValue(item, out IList<TItem> value)) { return new List<TItem>(); }
             return value;
+        }
+
+        private string GetNodeCss(TItem item)
+        {
+            var result = "";
+
+            if (Root.DraggedItem != null)
+            {
+                if (!CheckAllowDrop(item))
+                {
+                    result += "tree-node-no-drop ";
+                }
+               
+            }
+
+            return result;
+        }
+
+        private string GetContainerCss(TItem item)
+        {
+            return "d-flex align-items-center mb-2 tree-container ";
         }
 
 
