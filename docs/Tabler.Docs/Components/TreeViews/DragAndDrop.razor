@@ -1,0 +1,71 @@
+﻿@using TabBlazor.Components.TreeViews
+
+
+<TreeView AlwaysExpanded Items="@folders" ChildSelector="e=> e.SubFolders" EnableDragAndDrop TItem=FileFolder ItemDragged="ItemDragged" ItemDropped="ItemDropped">
+    <Template>
+        <Card StatusStart="TablerColor.Success" Size="CardSize.Small">
+            <CardBody>
+                <span>@context.FolderName (@context.SubFolders.Count)</span>
+            </CardBody>
+        </Card>
+    </Template>
+</TreeView>
+
+<h3>@message</h3>
+
+
+
+
+@code {
+    List<FileFolder> folders = new List<FileFolder>();
+    public FileFolder draggedFolder { get; set; }
+    private string message;
+
+    protected override void OnInitialized()
+    {
+
+        var drawings = new FileFolder("Drawings");
+
+        var architecture = new FileFolder("Arcitecture");
+        architecture.SubFolders.Add(new FileFolder("Folder1"));
+        architecture.SubFolders.Add(new FileFolder("Folder2"));
+        drawings.SubFolders.Add(architecture);
+
+        drawings.SubFolders.Add(new FileFolder("HVAC"));
+        drawings.SubFolders.Add(new FileFolder("Floorplans"));
+        folders.Add(drawings);
+
+        var documents = new FileFolder("Documents");
+        documents.SubFolders.Add(new FileFolder("Instructions"));
+        documents.SubFolders.Add(new FileFolder("History"));
+
+        folders.Add(documents);
+        folders.Add(new FileFolder("Images"));
+    }
+
+    private void ItemDragged(FileFolder folder)
+    {
+        message = "Dragging Item " + folder?.FolderName;
+    }
+
+    private void ItemDropped(ItemDropped<FileFolder> itemDropped)
+    {
+        message = $"You dropped '{itemDropped.Item.FolderName}' on '{itemDropped.TargetItem.FolderName}'";
+
+    }
+
+    public class FileFolder
+    {
+        public FileFolder() { }
+
+        public FileFolder(string folderName)
+        {
+            FolderName = folderName;
+        }
+
+        public string FolderName { get; set; }
+        public List<FileFolder> SubFolders { get; set; } = new List<FileFolder>();
+
+    }
+
+}
