@@ -48,9 +48,11 @@
         message = "Dragging Item " + folder?.FolderName;
     }
 
-    private void ItemDropped(ItemDropped<FileFolder> itemDropped)
+    private async Task ItemDropped(ItemDropped<FileFolder> itemDropped)
     {
+        
         message = $"You dropped '{itemDropped.Item.FolderName}' on '{itemDropped.TargetItem.FolderName}'";
+        await Task.Delay(1000);
 
     }
 

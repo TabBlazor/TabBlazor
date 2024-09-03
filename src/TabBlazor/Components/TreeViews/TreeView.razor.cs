@@ -75,12 +75,13 @@ namespace TabBlazor
 
         internal async Task SetDroppedAsync(TItem targetItem)
         {
+          
             if (DraggedItem != null && targetItem != null && !targetItem.Equals(DraggedItem))
             {
                 await ItemDropped.InvokeAsync(new ItemDropped<TItem> { Item = DraggedItem, TargetItem = targetItem });
             }
-
             DraggedItem = default;
+
         }
 
         private void SetChildSelector()
