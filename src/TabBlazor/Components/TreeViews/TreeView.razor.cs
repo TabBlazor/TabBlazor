@@ -1,4 +1,5 @@
-﻿using TabBlazor.Components.TreeViews;
+﻿using Microsoft.AspNetCore.Components.Web;
+using TabBlazor.Components.TreeViews;
 
 namespace TabBlazor
 {
@@ -73,12 +74,12 @@ namespace TabBlazor
             await ItemDragged.InvokeAsync(item);
         }
 
-        internal async Task SetDroppedAsync(TItem targetItem)
+        internal async Task SetDroppedAsync(TItem targetItem, DragEventArgs e)
         {
           
             if (DraggedItem != null && targetItem != null && !targetItem.Equals(DraggedItem))
             {
-                await ItemDropped.InvokeAsync(new ItemDropped<TItem> { Item = DraggedItem, TargetItem = targetItem });
+                await ItemDropped.InvokeAsync(new ItemDropped<TItem> { Item = DraggedItem, TargetItem = targetItem, DragEventArgs = e });
             }
             DraggedItem = default;
 
