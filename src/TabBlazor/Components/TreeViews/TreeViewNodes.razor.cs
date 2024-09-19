@@ -89,14 +89,14 @@ namespace TabBlazor.Components.TreeViews
 
         private async Task DragEnd(DragEventArgs e, TItem item)
         {
-            await Root.SetDroppedAsync(default);
+            await Root.SetDroppedAsync(default, e);
         }
 
         private async Task OnDrop(DragEventArgs e, TItem item)
         {
             if (AllowDrop)
             {
-                await Root.SetDroppedAsync(item);
+                await Root.SetDroppedAsync(item, e);
             }
 
 
