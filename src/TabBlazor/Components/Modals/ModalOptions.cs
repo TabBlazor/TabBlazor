@@ -11,6 +11,7 @@
         public bool CloseOnEsc { get; set; } = false;
         public bool Draggable { get; set; } = false;
         public string ModalCssClass { get; set; }
+        public string ModalBodyCssClass { get; set; }
 
         public ModalVerticalPosition VerticalPosition { get; set; }
 

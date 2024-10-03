@@ -43,7 +43,7 @@ namespace TabBlazor.Services
         {
             var component = new RenderComponent<DialogModal>().
                 Set(e=> e.Options, options);
-            var result = await ShowAsync("", component, new ModalOptions { Size = ModalSize.Small, ShowHeader = false, StatusColor = options.StatusColor });
+            var result = await ShowAsync("", component, new ModalOptions { ModalBodyCssClass="p-0", Size = ModalSize.Small, ShowHeader = false, StatusColor = options.StatusColor });
             return !result.Cancelled;
         }
          
