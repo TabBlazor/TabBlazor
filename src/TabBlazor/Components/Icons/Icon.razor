@@ -17,6 +17,13 @@
      transform="rotate(@Rotate)"
      >
 
+    @if(!string.IsNullOrEmpty(Title))
+    {
+        <title>
+            @Title
+        </title>
+    }
+
     @if (elements != null)
     {
         @((MarkupString)elements)

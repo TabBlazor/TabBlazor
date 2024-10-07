@@ -11,6 +11,7 @@ namespace TabBlazor
         [Parameter] public IIconType IconType { get; set; }
         [Parameter] public bool? Filled { get; set; } 
         [Parameter] public int Rotate { get; set; }
+        [Parameter] public string Title { get; set; }
 
         private bool filled => Filled ?? IconType?.Filled ?? false;
         private double strokeWidth => StrokeWidth ?? IconType?.StrokeWidth ?? 2;
