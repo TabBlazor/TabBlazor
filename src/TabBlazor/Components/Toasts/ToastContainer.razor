@@ -6,10 +6,8 @@
 
     var topEndToasts = ToastService.Toasts.Where(e => e.Options.Position == ToastPosition.TopEnd).ToList();
     var topStartToasts = ToastService.Toasts.Where(e => e.Options.Position == ToastPosition.TopStart).ToList();
-
     var bottomEndToasts = ToastService.Toasts.Where(e => e.Options.Position == ToastPosition.BottomEnd).ToList();
     var bottomStartToasts = ToastService.Toasts.Where(e => e.Options.Position == ToastPosition.BottomStart).ToList();
-
 
     if (topEndToasts.Any())
     {
@@ -50,8 +48,5 @@
             }
         </div>
     }
-
-}
-
 
 }
