@@ -1,0 +1,56 @@
+name: Create Release New
+
+on: [workflow_dispatch]
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Nerdbank.GitVersioning
+        uses: dotnet/nbgv@v0.4.0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 8.0.x
+
+      - uses: dotnet/nbgv@master
+        id: nbgv
+      - run: echo 'SemVer2=${{ steps.nbgv.outputs.SemVer2 }}'
+
+      - name: Pack TabBlazor
+        working-directory: src/TabBlazor
+        run: dotnet pack -c Release -p:Version=${GITHUB_REF##*/v}
+
+      - name: Push TabBlazor
+        working-directory: src/TabBlazor/bin/Release
+        run: dotnet nuget push TabBlazor.*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
+
+      - name: Pack TabBlazor.QuickTable.EntityFramework
+        working-directory: src/TabBlazor.QuickTable.EntityFramework
+        run: dotnet pack -c Release -p:Version=${GITHUB_REF##*/v}
+
+      - name: Push TabBlazor.QuickTable.EntityFramework
+        working-directory: src/TabBlazor.QuickTable.EntityFramework/bin/Release
+        run: dotnet nuget push TabBlazor.QuickTable.EntityFramework.*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
+        continue-on-error: true
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Create Release
+        uses: actions/create-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.nbgv.outputs.SemVer2 }}
+          release_name: Release ${{ steps.nbgv.outputs.SemVer2 }}
+          draft: false
+          prerelease: ${{ !startsWith(steps.extract_branch.outputs.branch, 'release/') }}
