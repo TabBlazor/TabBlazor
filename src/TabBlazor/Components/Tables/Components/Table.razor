@@ -8,7 +8,6 @@
 
 <CascadingValue Value="(ITable<Item>) this" Name="Table">
     <Card>
-
         @if (ShowHeader)
         {
             <CardHeader>
@@ -102,7 +101,7 @@
                 @ChildContent
 
 
-                @if (TotalCount > 0)
+                @if (TotalCount > 0 && ShowFooter)
                 {
                     <div class="card-footer d-flex align-items-center">
                         <Pager Item="Item" />
