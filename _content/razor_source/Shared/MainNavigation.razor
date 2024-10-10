@@ -1,0 +1,112 @@
+﻿<Navbar Background=appService.Settings.NavbarBackground Direction=appService.Settings.NavbarDirection NavLinkMatch="Microsoft.AspNetCore.Components.Routing.NavLinkMatch.All">
+
+    <a href="https://github.com/joadan/Blazor-Tabler" class="navbar-brand navbar-brand-autodark">
+        <img src="_content/Tabler.Docs/img/TabBlazorLogoWhite.png" alt="Tabler" class="navbar-brand-image me-2">
+        <h2 class="text-secondary">TabBlazor</h2>
+    </a>
+
+    <NavbarMenu>
+        <NavbarMenuItem Href="app-settings" Text="App Settings">
+            <MenuItemIcon>
+                <Icon class="icon" IconType="@TablerIcons.Settings" />
+            </MenuItemIcon>
+        </NavbarMenuItem>
+
+        <NavbarMenuItem Href="dashboard" Text="Dashboard">
+            <MenuItemIcon>
+                <Icon class="icon" IconType="@TablerIcons.Dashboard" />
+            </MenuItemIcon>
+        </NavbarMenuItem>
+
+        <NavbarMenuItem Text="Snippets">
+            <MenuItemIcon>
+                <Icon class="icon" IconType="@TablerIcons.Code" />
+            </MenuItemIcon>
+            <SubMenu>
+                <NavbarMenuItem Text="Statistics" Href="snippets/statistcs" />
+                <NavbarMenuItem Text="Profile" Href="snippets/profiles" />
+            </SubMenu>
+        </NavbarMenuItem>
+
+        <NavbarMenuItem Text="Utilities">
+            <MenuItemIcon>
+                <Icon class="icon" IconType="@TablerIcons.Exposure" />
+            </MenuItemIcon>
+            <SubMenu>
+                <NavbarMenuItem Text="Colors" Href="docs/utilities/colors" />
+                <NavbarMenuItem Text="Tabler Service" Href="docs/utilities/tabservice" />
+            </SubMenu>
+        </NavbarMenuItem>
+
+        <NavbarMenuItem Text="Components">
+            <MenuItemIcon>
+                <Icon class="icon" IconType="@TablerIcons.Puzzle" />
+            </MenuItemIcon>
+            <SubMenu>
+
+                <div class="dropdown-menu-columns">
+                    <div class="dropdown-menu-column">
+                        <NavbarMenuItem Text="Accordion" Href="docs/accordion" />
+                        <NavbarMenuItem Text="Alert" Href="docs/alerts" />
+                        <NavbarMenuItem Text="Avatar" Href="docs/avatars" />
+                        <NavbarMenuItem Text="Badge" Href="docs/badges" />
+                        <NavbarMenuItem Text="Button" Href="docs/buttons" />
+                        <NavbarMenuItem Text="Card" Href="docs/cards" />
+                        <NavbarMenuItem Text="Carousel" Href="docs/Carousel" />
+                        <NavbarMenuItem Text="Dashboard" Href="docs/dashboards" />
+                        <NavbarMenuItem Text="Data Grid" Href="docs/data-grid" />
+                        <NavbarMenuItem Text="Dimmer" Href="docs/dimmers" />
+                        <NavbarMenuItem Text="Dropdown" Href="docs/dropdowns" />
+                        <NavbarMenuItem Text="Flag" Href="docs/flags" />
+                        <NavbarMenuItem Text="Forms">
+                            <SubMenu>
+                                <NavbarMenuItem Text="Checkboxes" Href="docs/forms/checkboxes" />
+                                <NavbarMenuItem Text="Datepickers" Href="docs/forms/datepickers" />
+                                <NavbarMenuItem Text="ItemSelect" Href="docs/forms/item-selects" />
+                                <NavbarMenuItem Text="Select" Href="docs/forms/selects" />
+                                <NavbarMenuItem Text="Typeahead" Href="docs/forms/typeaheads" />
+                                <NavbarMenuItem Text="TablerForm" Href="docs/forms/validation" />
+                                <NavbarMenuItem Text="Autocomplete" Href="docs/forms/autocomplete" />
+                            </SubMenu>
+                        </NavbarMenuItem>
+
+                        <NavbarMenuItem Text="Helpers">
+                            <SubMenu>
+                                 <NavbarMenuItem Text="Click Outside" Href="docs/helpers/click-outside" />
+                                <NavbarMenuItem Text="Resize Observer" Href="docs/helpers/resize-observer" />
+                            </SubMenu>
+                        </NavbarMenuItem>
+
+                        <NavbarMenuItem Text="Icon" Href="docs/icons" />
+                    </div>
+
+                    <div class="dropdown-menu-column">
+                        <NavbarMenuItem Text="Modal" Href="docs/modals" />
+                        <NavbarMenuItem Text="Navigation" Href="docs/navigation" />
+                        <NavbarMenuItem Text="Offcanvas" Href="docs/offcanvas" />
+                        <NavbarMenuItem Text="Progress" Href="docs/progress" />
+                        <NavbarMenuItem Text="Range slider" Href="docs/range-sliders" />
+                        <NavbarMenuItem Text="Status" Href="docs/status" />
+                        <NavbarMenuItem Text="Switch Content" Href="docs/switch-content" />
+                        <NavbarMenuItem Text="Table" Href="docs/tables" />
+                        <NavbarMenuItem Text="QuickTable" Href="docs/quick-tables" />
+                        <NavbarMenuItem Text="Tabs" Href="docs/tabs" />
+                        <NavbarMenuItem Text="Timeline" Href="docs/timelines" />
+                        <NavbarMenuItem Text="Toast" Href="docs/toasts" />
+                        <NavbarMenuItem Text="Tooltip" Href="docs/tooltips" />
+                        <NavbarMenuItem Text="TreeView" Href="docs/treeviews" />
+                    </div>
+                </div>
+            </SubMenu>
+        </NavbarMenuItem>
+
+        <NavbarMenuItem Text="Plugins">
+            <MenuItemIcon>
+                <Icon class="icon" IconType="@TablerIcons.Plug" />
+            </MenuItemIcon>
+            <SubMenu>
+                <NavbarMenuItem Text="Charts" Href="docs/plugins/charts" />
+            </SubMenu>
+        </NavbarMenuItem>
+    </NavbarMenu>
+</Navbar>

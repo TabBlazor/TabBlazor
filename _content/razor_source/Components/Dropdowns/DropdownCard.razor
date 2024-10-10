@@ -1,0 +1,43 @@
+﻿<Dropdown CloseOnClick="false">
+    <ChildContent>
+        <Button BackgroundColor="TablerColor.Primary" Type="ButtonType.Button" Text="Click me" IsDropdown />
+    </ChildContent>
+
+    <DropdownTemplate>
+        <DropdownMenu class="dropdown-menu-card border-0" style="max-width: 20rem;">
+
+            <div class="card d-flex flex-column">
+
+                <img class="card-img-top" src="_content/Tabler.Docs/img/photos/36e273986ed577b8.jpg" alt="How do you know she is a witch?">
+
+                <div class="card-body d-flex flex-column">
+                    <h3 class="card-title"><a>How do you know she is a witch?</a></h3>
+                    <div class="text-secondary">Are you suggesting that coconuts migrate? No, no, no! Yes, yes. A bit. But she's got a wart. You ...</div>
+                    <div class="d-flex align-items-center pt-4 mt-auto">
+                        <Avatar Data="_content/Tabler.Docs/img/avatars/002f.jpg" />
+                        <div class="ms-3">
+                            <a class="text-body">Maryjo Lebarree</a>
+                            <div class="text-secondary">3 days ago</div>
+                        </div>
+                        <div class="ms-auto">
+                            <span class="d-none d-md-inline-block ms-3 text-secondary">
+                                <SwitchContent Animation="SwitchAnimation.Scale">
+                                    <DefaultTemplate>
+                                        <Icon class="icon" IconType="@TablerIcons.Heart" />
+                                    </DefaultTemplate>
+                                    <ActiveTemplate>
+                                        <Icon class="icon" Elements="@TablerIcons.Heart" Filled=true TextColor="TablerColor.Red" />
+                                    </ActiveTemplate>
+                                </SwitchContent>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </DropdownMenu>
+    </DropdownTemplate>
+
+</Dropdown>

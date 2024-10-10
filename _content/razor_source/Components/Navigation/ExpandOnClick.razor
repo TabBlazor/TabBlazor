@@ -1,0 +1,82 @@
+﻿<h3>Basic</h3>
+
+
+<TabBlazor.Navigation Bordered OnItemClicked="ItemClicked" ExpandOnClick>
+    <NavigationItem Title="Peter">
+        <MenuIcon>
+            <Icon class="icon" IconType="@TablerIcons.Ghost" />
+        </MenuIcon>
+
+        <SubMenu>
+            <NavigationItem Title="Anne" />
+            <NavigationItem Title="Fredrik" />
+        </SubMenu>
+
+    </NavigationItem>
+
+
+    <NavigationItem Title="Check this out">
+        <MenuIcon>
+            <Icon class="icon" IconType="@TablerIcons.Alert_circle_filled" />
+        </MenuIcon>
+
+        <SubMenu>
+            <NavigationItem Title="Anders">
+                <MenuIcon>
+                    <Icon class="icon" IconType="@TablerIcons.Alarm" />
+                </MenuIcon>
+
+                <SubMenu>
+                    <NavigationItem Title="Frida" />
+                    <NavigationItem Title="Lemon" />
+                </SubMenu>
+            </NavigationItem>
+
+            <NavigationItem Title="Helen">
+                <MenuIcon>
+                    <Icon class="icon" IconType="@TablerIcons.Alarm" />
+                </MenuIcon>
+
+                <SubMenu>
+                    <NavigationItem Title="Carl" />
+                    <NavigationItem Title="Karin">
+                   <SubMenu>
+                            <NavigationItem Title="Helen">
+                                <MenuIcon>
+                                    <Icon class="icon" IconType="@TablerIcons.Alarm" />
+                                </MenuIcon>
+
+                                <SubMenu>
+                                    <NavigationItem Title="Carl" />
+                                    <NavigationItem Title="Karin">
+
+
+                                    </NavigationItem>
+                                </SubMenu>
+                            </NavigationItem>
+                   </SubMenu>
+                    
+                    </NavigationItem>
+                </SubMenu>
+            </NavigationItem>
+
+        </SubMenu>
+
+    </NavigationItem>
+
+</TabBlazor.Navigation>
+
+<h3>@message</h3>
+
+
+@code {
+    private string message;
+
+
+    private void ItemClicked(NavigationItem nav)
+    {
+        message = "You clicked: " + nav?.Title;
+    }
+
+
+}
