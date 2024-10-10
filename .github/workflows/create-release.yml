@@ -25,7 +25,7 @@ jobs:
 
       - name: Pack TabBlazor
         working-directory: src/TabBlazor
-        run: dotnet pack -c Release -p:Version=${GITHUB_REF##*/v}
+        run: dotnet pack -c Release
 
       - name: Push TabBlazor
         working-directory: src/TabBlazor/bin/Release
@@ -33,7 +33,7 @@ jobs:
 
       - name: Pack TabBlazor.QuickTable.EntityFramework
         working-directory: src/TabBlazor.QuickTable.EntityFramework
-        run: dotnet pack -c Release -p:Version=${GITHUB_REF##*/v}
+        run: dotnet pack -c Release
 
       - name: Push TabBlazor.QuickTable.EntityFramework
         working-directory: src/TabBlazor.QuickTable.EntityFramework/bin/Release
