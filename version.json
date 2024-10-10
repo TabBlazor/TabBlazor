@@ -12,6 +12,6 @@
   },
   "release": {
     "branchName": "release/v{version}",
-    "firstUnstableTag": "prerelease"
+    "firstUnstableTag": "beta"
   }
 }
