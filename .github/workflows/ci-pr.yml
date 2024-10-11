@@ -12,7 +12,9 @@ jobs:
     name: Build and test
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Setting up .NET Core SDK ${{ env.NETCORE_VERSION }}...
         uses: actions/setup-dotnet@v1
