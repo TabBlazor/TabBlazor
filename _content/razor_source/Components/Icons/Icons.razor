@@ -1,0 +1,57 @@
+﻿@page "/docs/icons"
+
+<Page>
+    <DocsExample Title="Icons" ComponentType="typeof(ListIcon)">
+
+        <div class="mb-1">
+            <p>
+                Icons are not included by default. Just create a static class and select/copy the icons from the list below.<br />
+                If you want all icons you can find them <a href="https://github.com/joadan/TabBlazor/blob/master/docs/Tabler.Docs/Icons/DemoIcons.cs" target="_blank">here</a>.
+            </p>
+        </div>
+        
+        <div class="mb-2">
+            All icons come from the Tabler Icons set and are MIT-licensed
+            <a href="https://tabler-icons.io" target="_blank" rel="noopener">tabler-icons.io</a>
+            <Icon class="align-text-top" Size=16 IconType="@TablerIcons.Heart" TextColor="TablerColor.Red" Filled=true />
+        </div>
+
+     
+
+        <CodeSnippet ClassName="@typeof(IconsBasic).ToString()" Title="Basics">
+            <Description>
+                <p>Basic Icon</p>
+            </Description>
+            <Example>
+                <IconsBasic />
+            </Example>
+        </CodeSnippet>
+
+        <CodeSnippet ClassName="@typeof(IconsColorSize).ToString()" Title="Settings">
+            <Description>
+                <p>Set size and color for each icon</p>
+            </Description>
+            <Example>
+                <IconsColorSize />
+            </Example>
+        </CodeSnippet>
+
+        <CodeSnippet ClassName="@typeof(IconsCSS).ToString()" Title="CSS">
+            <Description>
+                <p>Use css for icons</p>
+            </Description>
+            <Example>
+                <IconsCSS />
+            </Example>
+        </CodeSnippet>
+
+        <CodeSnippet Title="Icons list">
+            <Example>
+                <IconsList />
+            </Example>
+        </CodeSnippet>
+
+    </DocsExample>
+</Page>
+
+

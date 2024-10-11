@@ -1,0 +1,57 @@
+﻿<Row>
+    <RowCol Auto>
+        <Checkbox Label="Disabled" @bind-Value="disabled" />
+    </RowCol>
+    <RowCol Auto>
+        <Checkbox Label="ShowCheckBoxes" @bind-Value="showCheckboxes" />
+    </RowCol>
+    <RowCol Auto>
+        <Checkbox Label="Clearable" @bind-Value="clearable" />
+    </RowCol>
+    <RowCol Auto>
+        <Checkbox Label="Remove Selected" @bind-Value="removeSelectedFromList" />
+    </RowCol>
+</Row>
+
+<ItemSelect Items="customers" SelectedTextExpression="e=> e.CustomerName" @bind-SelectedValues="selectedCustomers" Clearable="clearable"
+                    ShowCheckBoxes="showCheckboxes" NoSelectedText="*Select Customers*" Disabled="disabled" RemoveSelectedFromList="removeSelectedFromList"
+                    MaxSelectableItems="4" SearchMethod="SearchCustomer" SearchPlaceholderText="Search..." MultiSelect>
+    <ListTemplate>
+        @context.CustomerName
+    </ListTemplate>
+</ItemSelect>
+
+<Button class="mt-3 mb-3" BackgroundColor="TablerColor.Red" Disabled="!selectedCustomers.Any()" OnClick="RemoveItem">Test Remove</Button>
+
+@foreach (var selectedCustomer in selectedCustomers)
+{
+    <div>@selectedCustomer.CustomerName</div>
+}
+
+
+@code{
+    List<Customer> customers = Data.SampleData.GetCustomers();
+    List<Customer> selectedCustomers = new List<Customer>();
+    bool disabled;
+    bool showCheckboxes;
+    bool clearable;
+    bool removeSelectedFromList;
+
+    protected override void OnInitialized()
+    {
+        selectedCustomers.Add(customers.First());
+    }
+
+    private IEnumerable<Customer> SearchCustomer(string searchText)
+    {
+        return customers.Where(e => e.CustomerName.Contains(searchText, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    private void RemoveItem()
+    {
+        if (selectedCustomers.Any())
+        {
+            selectedCustomers.RemoveAt(0);
+        }
+    }
+}

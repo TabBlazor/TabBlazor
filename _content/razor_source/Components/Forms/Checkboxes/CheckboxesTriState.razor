@@ -1,0 +1,19 @@
+﻿<CheckboxTriState Label="TriStateCheckbox" Description="I can also have an discription" @bind-Value="isChecked1" />
+<div>
+    <i> Value is checked: @isChecked1</i>
+</div>
+
+@if (isChecked1.HasValue)
+{
+    <Button Size="ButtonSize.Small" @onclick="SetNull">Set null</Button>
+}
+
+@code {
+    private bool? isChecked1;
+
+    private void SetNull()
+    {
+        isChecked1 = null;
+    }
+
+}

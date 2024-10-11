@@ -1,0 +1,33 @@
+﻿<Table Item="Order" Items="SampleData.GetOrders()" PageSize="5">
+    <HeaderTemplate>
+        <CardTitle>Orders</CardTitle>
+    </HeaderTemplate>
+    <ChildContent>
+        <Column Item="Order" Property="e=>e.Customer.CustomerName" Title="Customer" Sortable Searchable />
+
+        <Column Item="Order" Property="e=>e.OrderDate" Title="Date" Sortable>
+            <Template>
+                @context.OrderDate.ToString("d")
+            </Template>
+        </Column>
+
+        <Column Item="Order" Property="e=>e.OrderType" Title="Type" Sortable Searchable>
+            <Template>
+                @context.OrderType
+            </Template>
+        </Column>
+
+        <Column Item="Order" Property="e=>e.OrderStatus" Title="Status" Sortable Searchable>
+            <Template>
+                <OrderStatusBadge OrderStatus="@context.OrderStatus" />
+            </Template>
+        </Column>
+
+        <Column Item="Order" Property="e=>e.GrossValue" Title="Gross value" Sortable Searchable>
+            <Template>
+                @context.GrossValue.ToString("N0")
+            </Template>
+        </Column>
+    </ChildContent>
+
+</Table>
