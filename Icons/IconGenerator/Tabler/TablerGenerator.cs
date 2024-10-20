@@ -3,6 +3,7 @@ using IconGenerator.Converters;
 using Nager.Country;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -97,46 +98,22 @@ namespace IconGenerator.Tabler
         public static async Task<IEnumerable<GeneratedIcon>> GenerateIcons()
         {
             var icons = new List<GeneratedIcon>();
-            var metaUrl = "https://raw.githubusercontent.com/tabler/tabler-icons/master/tags.json";
-            var spriteUrl = "https://raw.githubusercontent.com/tabler/tabler-icons/master/packages/icons/tabler-sprite.svg"; // "https://raw.githubusercontent.com/tabler/tabler-icons/master/tabler-sprite.svg";
-            var client = new HttpClient();
+            var spriteLocal = File.ReadAllText(@"C:\Code\Github\TabBlazor\Icons\IconGenerator\Tabler\sprites\dist\tabler-sprite.svg");
 
-            var metajson = await client.GetStringAsync(metaUrl);
-            var sprite = await client.GetStringAsync(spriteUrl);
-
-            XElement spriteSVG = XDocument.Parse(sprite).Root;
+            XElement spriteSVG = XDocument.Parse(spriteLocal).Root;
             spriteSVG.RemoveAllNamespaces();
-            var iconElements = spriteSVG.Descendants().Where(e => e.Name.LocalName == "symbol");
-            var options = new JsonSerializerOptions();
-            options.Converters.Add(new StringDictinaryConverter<TablerIcon>());
-            options.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
-            options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-
-            var iconsMeta = JsonSerializer.Deserialize<Dictionary<string, TablerIcon>>(metajson);
-
-            foreach (var iconMeta in iconsMeta)
+            var iconElements = spriteSVG.Descendants().Where(e => e.Name.LocalName == "symbol").ToList();
+            
+            foreach (var elements in iconElements)
             {
                 var icon = new GeneratedIcon
                 {
-                    Name = iconMeta.Key,
+                    Name = elements.Attribute("id").Value.Substring(7),
                     Author = "Paweł Kuna",
-                    Tags = iconMeta.Value.Tags
+                    Tags = []
                 };
 
-                if (!string.IsNullOrWhiteSpace(iconMeta.Value.Category))
-                {
-                    if (!icon.Tags.Contains(iconMeta.Value.Category))
-                    {
-                        icon.Tags.Add(iconMeta.Value.Category);
-                    }
-                }
-
-                var elements = iconElements.FirstOrDefault(x => x.Attribute("id")?.Value == $"tabler-{icon.Name}")?.Elements();
-                if (elements == null || !elements.Any())
-                {
-                    throw new SystemException($"Unable to find icon {icon.Name} in sprite");
-                }
-                icon.IconType = new TabBlazor.TablerIcon(Utilities.ExtractIconElements(elements));
+                icon.IconType = new TabBlazor.TablerIcon(Utilities.ExtractIconElements(elements.Elements()));
                 icons.Add(icon);
                 Console.WriteLine($"Icon '{icon.Name}' added");
             }
