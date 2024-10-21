@@ -147,9 +147,19 @@ namespace Tabler.Docs.Components.Icons
         public string Name { get; set; }
         public IIconType IconType { get; set; }
 
-        public string DotNetProperty => $"public static IIconType {Name} => new {IconType.ClassName}(@\"{IconType?.Elements}\");";
+        public string DotNetProperty
+        {
+            get
+            {
+                if (IconType.Filled)
+                {
+                    return $"public static IIconType {Name} => new {IconType.ClassName}(@\"{IconType?.Elements}\", true);";
+                }
+                
 
-      
+                return $"public static IIconType {Name} => new {IconType.ClassName}(@\"{IconType?.Elements}\");";
+            }
+        }
     }
 
 }
