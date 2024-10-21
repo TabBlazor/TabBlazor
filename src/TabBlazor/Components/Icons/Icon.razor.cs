@@ -13,11 +13,11 @@ namespace TabBlazor
         [Parameter] public int Rotate { get; set; }
         [Parameter] public string Title { get; set; }
 
-        private bool filled => Filled ?? IconType?.Filled ?? false;
+        //private bool filled => Filled ?? IconType?.Filled ?? false;
         private double strokeWidth => StrokeWidth ?? IconType?.StrokeWidth ?? 2;
         private string elements => IconType?.Elements;
 
-        private string FilledString => filled ? "currentColor" : "none";
+        //private string FilledString => filled ? "currentColor" : "none";
 
         protected override string ClassNames => ClassBuilder
             .AddIf($"{TextColor.GetColorClass("text")}", string.IsNullOrWhiteSpace(Color))

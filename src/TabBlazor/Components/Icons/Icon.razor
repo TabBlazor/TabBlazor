@@ -2,7 +2,7 @@
 @using System.Globalization
 @inherits TablerBaseComponent
 
-@if (filled)
+@if (IconType.Filled)
 {
     <svg xmlns="http://www.w3.org/2000/svg"
          class="@ClassNames"
@@ -10,9 +10,7 @@
          width="@Size"
          height="@Size"
          viewBox="0 0 24 24"
-     
          fill="currentColor"
-      
          @onclick="OnClick"
          @attributes="UnmatchedParameters"
          transform="rotate(@Rotate)">
@@ -41,7 +39,7 @@ else
          viewBox="0 0 24 24"
          stroke-width="@strokeWidth.ToString(CultureInfo.InvariantCulture)"
          stroke="currentColor"
-         fill="@FilledString"
+         fill="none"
          stroke-linecap="round"
          stroke-linejoin="round"
          @onclick="OnClick"
