@@ -1,31 +1,63 @@
 ﻿@namespace TabBlazor
 @using System.Globalization
 @inherits TablerBaseComponent
-<svg xmlns="http://www.w3.org/2000/svg"
-     class="@ClassNames"
-     color="@Color"
-     width="@Size"
-     height="@Size"
-     viewBox="0 0 24 24"
-     stroke-width="@strokeWidth.ToString(CultureInfo.InvariantCulture)"
-     stroke="currentColor"
-     fill="@FilledString"
-     stroke-linecap="round"
-     stroke-linejoin="round"
-     @onclick="OnClick"
-     @attributes="UnmatchedParameters"
-     transform="rotate(@Rotate)"
-     >
 
-    @if(!string.IsNullOrEmpty(Title))
-    {
-        <title>
-            @Title
-        </title>
-    }
+@if (filled)
+{
+    <svg xmlns="http://www.w3.org/2000/svg"
+         class="@ClassNames"
+         color="@Color"
+         width="@Size"
+         height="@Size"
+         viewBox="0 0 24 24"
+     
+         fill="currentColor"
+      
+         @onclick="OnClick"
+         @attributes="UnmatchedParameters"
+         transform="rotate(@Rotate)">
 
-    @if (elements != null)
-    {
-        @((MarkupString)elements)
-    }
-</svg>
+        @if (!string.IsNullOrEmpty(Title))
+        {
+            <title>
+                @Title
+            </title>
+        }
+
+        @if (elements != null)
+        {
+            @((MarkupString)elements)
+        }
+    </svg>
+
+}
+else
+{
+    <svg xmlns="http://www.w3.org/2000/svg"
+         class="@ClassNames"
+         color="@Color"
+         width="@Size"
+         height="@Size"
+         viewBox="0 0 24 24"
+         stroke-width="@strokeWidth.ToString(CultureInfo.InvariantCulture)"
+         stroke="currentColor"
+         fill="@FilledString"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         @onclick="OnClick"
+         @attributes="UnmatchedParameters"
+         transform="rotate(@Rotate)">
+
+        @if (!string.IsNullOrEmpty(Title))
+        {
+            <title>
+                @Title
+            </title>
+        }
+
+        @if (elements != null)
+        {
+            @((MarkupString)elements)
+        }
+    </svg>
+}
