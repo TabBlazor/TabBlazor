@@ -1,13 +1,10 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using IconGenerator.Converters;
-using Nager.Country;
+﻿using Nager.Country;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -92,9 +89,6 @@ namespace IconGenerator.Tabler
 
         }
 
-
-
-
         public static async Task<IEnumerable<GeneratedIcon>> GenerateIcons()
         {
             var icons = new List<GeneratedIcon>();
@@ -113,7 +107,9 @@ namespace IconGenerator.Tabler
                     Tags = []
                 };
 
-                icon.IconType = new TabBlazor.TablerIcon(Utilities.ExtractIconElements(elements.Elements()));
+                var isFilled = icon.Name.StartsWith("filled", StringComparison.InvariantCultureIgnoreCase);
+
+                icon.IconType = new TabBlazor.TablerIcon(Utilities.ExtractIconElements(elements.Elements()), isFilled);
                 icons.Add(icon);
                 Console.WriteLine($"Icon '{icon.Name}' added");
             }

@@ -26,12 +26,13 @@ namespace TabBlazor
 
     public class TablerIcon : IIconType
     {
-        public TablerIcon(string elements)
+        public TablerIcon(string elements, bool filled = false)
         {
             Elements = elements;
+            Filled = filled;
         }
         public double StrokeWidth => 2;
-        public bool Filled => false;
+        public bool Filled { get; set; }
         public string Elements { get; }
         public string ClassName => "TablerIcon";
         public IconProvider Provider => IconProvider.TablerIcons;

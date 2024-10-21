@@ -5,14 +5,6 @@
     {
       "library": "@tabler/icons-sprite@3.19.0",
       "destination": "Tabler/Sprites"
-    },
-    {
-      "library": "@tabler/icons@3.19.0",
-      "destination": "Tabler/Icons",
-      "files": [
-        "tabler-nodes-filled.json",
-        "tabler-nodes-outline.json"
-      ]
     }
   ]
 }
