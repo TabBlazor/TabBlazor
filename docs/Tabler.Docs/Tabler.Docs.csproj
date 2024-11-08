@@ -34,6 +34,9 @@
     <Content Update="Components\Helpers\ClickOutside\Multiple.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
+    <Content Update="Components\Toasts\ToastsProgramatic.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
   </ItemGroup>
 
 </Project>

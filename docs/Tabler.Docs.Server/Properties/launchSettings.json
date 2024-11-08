@@ -11,7 +11,7 @@
     "Tabler.Docs.Server": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "docs/treeviews",
+      "launchUrl": "docs/toasts",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
