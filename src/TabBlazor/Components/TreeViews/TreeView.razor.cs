@@ -1,4 +1,7 @@
-﻿namespace TabBlazor
+﻿using Microsoft.AspNetCore.Components.Web;
+using TabBlazor.Components.TreeViews;
+
+namespace TabBlazor
 {
     public partial class TreeView<TItem> : ComponentBase
     {
@@ -24,11 +27,17 @@
 
         [Parameter] public EventCallback<List<TItem>> ExpandedItemsChanged { get; set; }
 
+        [Parameter] public EventCallback<TItem> ItemDragged { get; set; }
+        [Parameter] public EventCallback<ItemDropped<TItem>> ItemDropped { get; set; }
+
+        [Parameter] public bool EnableDragAndDrop { get; set; } 
+
         protected bool isExpanded = false;
         private List<TItem> selectedItems = new List<TItem>();
         private List<TItem> expandedItems = new List<TItem>();
         private List<TItem> checkedItems = new List<TItem>();
 
+        public TItem DraggedItem;
 
         protected override async Task OnInitializedAsync()
         {
@@ -57,6 +66,23 @@
                     selectedItems.Add(SelectedItem);
                 }
             }
+        }
+
+        internal async Task SetDraggedAsync(TItem item)
+        {
+            DraggedItem = item;
+            await ItemDragged.InvokeAsync(item);
+        }
+
+        internal async Task SetDroppedAsync(TItem targetItem, DragEventArgs e)
+        {
+          
+            if (DraggedItem != null && targetItem != null && !targetItem.Equals(DraggedItem))
+            {
+                await ItemDropped.InvokeAsync(new ItemDropped<TItem> { Item = DraggedItem, TargetItem = targetItem, DragEventArgs = e });
+            }
+            DraggedItem = default;
+
         }
 
         private void SetChildSelector()

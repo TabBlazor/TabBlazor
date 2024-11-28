@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "defaultProvider": "unpkg",
+  "libraries": [
+    {
+      "library": "@tabler/icons-sprite@3.19.0",
+      "destination": "Tabler/Sprites"
+    }
+  ]
+}

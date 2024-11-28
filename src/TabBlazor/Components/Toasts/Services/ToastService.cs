@@ -1,11 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace TabBlazor.Services
+﻿namespace TabBlazor.Services
 {
     public class ToastService
     {
@@ -16,7 +9,7 @@ namespace TabBlazor.Services
         public async Task AddToastAsync(ToastModel toast)
         {
             AddToast(toast);
-            await Changed();
+            await UpdateAsync();
         }
 
         public async Task AddToastAsync<TComponent>(string title, string subTitle, RenderComponent<TComponent> component, ToastOptions options = null) where TComponent : IComponent
@@ -42,7 +35,7 @@ namespace TabBlazor.Services
         public async Task RemoveAllAsync()
         {
             toasts.Clear();
-            await Changed();
+            await UpdateAsync();
         }
 
         public async Task RemoveToastAsync(ToastModel toast)
@@ -60,15 +53,22 @@ namespace TabBlazor.Services
                 listLock.ExitWriteLock();
             }
 
-            await Changed();
+            await UpdateAsync();
         }
 
+        [Obsolete("Please use UpdateAsync, will be removed in future release")]
         public async Task Changed()
+        {
+            await UpdateAsync();
+        }
+
+        public async Task UpdateAsync()
         {
             if (OnChanged != null)
             {
                 await OnChanged.Invoke();
             }
+           
         }
 
         public event Func<Task> OnChanged;

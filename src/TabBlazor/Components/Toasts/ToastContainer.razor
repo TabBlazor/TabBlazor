@@ -2,12 +2,51 @@
 
 @namespace TabBlazor
 
-@if (ToastService.Toasts.Any())
-{
-    <div class="mt-1 toast-container" style="position: fixed; right: 0; z-index: 999999;">
-        @foreach (var toast in ToastService.Toasts.ToList())
-        {
-            <TabBlazor.Components.Toasts.ToastView Toast="toast" @key="toast" />
-        }
-    </div>
+@{
+
+    var topEndToasts = ToastService.Toasts.Where(e => e.Options.Position == ToastPosition.TopEnd).ToList();
+    var topStartToasts = ToastService.Toasts.Where(e => e.Options.Position == ToastPosition.TopStart).ToList();
+    var bottomEndToasts = ToastService.Toasts.Where(e => e.Options.Position == ToastPosition.BottomEnd).ToList();
+    var bottomStartToasts = ToastService.Toasts.Where(e => e.Options.Position == ToastPosition.BottomStart).ToList();
+
+    if (topEndToasts.Any())
+    {
+        <div class="mt-1 end-0 position-fixed toast-container" style="z-index: 999999;">
+            @foreach (var toast in topEndToasts)
+            {
+                <TabBlazor.Components.Toasts.ToastView Toast="toast" @key="toast" />
+            }
+        </div>
+    }
+
+    if (topStartToasts.Any())
+    {
+        <div class="mt-1 position-fixed toast-container" style="z-index: 999999;">
+            @foreach (var toast in topStartToasts)
+            {
+                <TabBlazor.Components.Toasts.ToastView Toast="toast" @key="toast" />
+            }
+        </div>
+    }
+
+     if (bottomEndToasts.Any())
+    {
+        <div class="mb-1 bottom-0 end-0 position-fixed toast-container" style="z-index: 999999;">
+            @foreach (var toast in bottomEndToasts)
+            {
+                <TabBlazor.Components.Toasts.ToastView Toast="toast" @key="toast" />
+            }
+        </div>
+    }
+
+      if (bottomStartToasts.Any())
+    {
+        <div class="mb-1 bottom-0 position-fixed toast-container" style="z-index: 999999;">
+            @foreach (var toast in bottomStartToasts)
+            {
+                <TabBlazor.Components.Toasts.ToastView Toast="toast" @key="toast" />
+            }
+        </div>
+    }
+
 }

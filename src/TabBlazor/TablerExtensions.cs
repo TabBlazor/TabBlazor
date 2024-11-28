@@ -22,7 +22,7 @@ namespace TabBlazor
                 .AddScoped<IModalService, ModalService>()
                 .AddScoped<TableFilterService>()
                 .AddScoped<IFormValidator, TablerDataAnnotationsValidator>()
-             .AddSingleton<FlagService>();
+                .AddSingleton<FlagService>();
         }
 
         public static TabBlazorBuilder AddTabBlazor(this IServiceCollection services, Action<TablerOptions> tablerOptions = null)

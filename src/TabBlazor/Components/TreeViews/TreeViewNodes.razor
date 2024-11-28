@@ -3,21 +3,26 @@
 <ul class="@(isRoot ? "tree": "")">
     @foreach (var item in Items)
     {
+
         var isExpanded = Root.AlwaysExpanded || Root.IsExpanded(item);
+        var allowDrop = CheckAllowDrop(item);
 
-        <li>
-            <div class="d-flex align-items-center mb-2 tree-container" style="padding-left:@(Level*20)px">
-
+                <li class="@GetNodeCss(item)" draggable="@(Root.EnableDragAndDrop ? "true" : "false")" ondragover=@(allowDrop ? "event.preventDefault();" : "")  @ondragstart="@(e=> DragStart(e, item))"  @ondrop:stopPropagation="true"   @ondragend="@(e=> DragEnd(e, item))" @ondrop="@(e=> OnDrop(e, item))">
+            <div class="@GetContainerCss(item)" style="padding-left:@(Level*20)px">
                 @if (HasChildren(item))
+
                 {
                     <Icon IconType="@(isExpanded ? InternalIcons.Circle_minus : InternalIcons.Circle_plus)" OnClick="@(() => Root.ToggleExpandedAsync(item))" class="icon me-2" />
                 }
+
                 else
+
                 {
                     <Icon class="icon me-2" />
                 }
 
                 @if (Root.CheckboxMode != CheckboxMode.None)
+
                 {
                     <span class="me-2">
                         <CheckboxTriState Value=@Root.IsChecked(item) ValueChanged="(() => Root.ToggleCheckedAsync(item))" />
@@ -32,11 +37,13 @@
 
 
             @if (HasChildren(item) && isExpanded)
+
             {
                 <TabBlazor.Components.TreeViews.TreeViewNodes Items="GetChildren(item)"
-                                                      Template="Template"
-                                                      ChildSelectorAsync="ChildSelectorAsync"
-                                                      Level="@(Level+1)" />
+                                                              Template="Template"
+                                                              ChildSelectorAsync="ChildSelectorAsync"
+                                                              Level="@(Level+1)"
+                                                              AllowDrop="allowDrop" />
             }
         </li>
 

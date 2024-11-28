@@ -5,7 +5,7 @@
     <Row>
         <RowCol Sm="12" Md="6" Lg="4">
             <label class="form-label">Delay</label>
-            <Input @bind-Value="toastOptions.Delay" />
+            <InputNumber class="form-control" @bind-Value="toastOptions.Delay" />
         </RowCol>
         <RowCol Sm="12" Md="4" Lg="3">
             <Checkbox @bind-Value="@toastOptions.ShowHeader" Label="Show header" />
@@ -13,6 +13,11 @@
         <RowCol Sm="12" Md="4" Lg="3">
             <Checkbox @bind-Value="@toastOptions.ShowProgress" Label="Show progress" />
         </RowCol>
+
+        <RowCol Sm="12" Md="4" Lg="3">
+            <ItemSelect Label="Position" TItem="ToastPosition" TValue="ToastPosition" Items="EnumHelper.GetList<ToastPosition>()" @bind-SelectedValue="toastOptions.Position" />
+        </RowCol>
+
     </Row>
 </Row>
 <Row class="mt-2">
@@ -23,13 +28,26 @@
 
 @code {
     private ToastOptions toastOptions = new ToastOptions();
-
     private async Task ShowToast()
     {
-        await ToastService.AddToastAsync(new ToastModel {
-            Title = "Toast options",
-            SubTitle = "Many options",
-            Message = "This is a toast with options",
-            Options = toastOptions });
+
+        var options = new ToastOptions
+            {
+                Position = toastOptions.Position,
+                Delay = toastOptions.Delay,
+                ShowHeader = toastOptions.ShowHeader,
+                ShowProgress = toastOptions.ShowProgress
+            };
+        await ToastService.AddToastAsync(new ToastModel
+            {
+
+                Title = "Toast options",
+                SubTitle = "Many options",
+                Message = "This is a toast with options",
+                Options = options
+            });
+
+
+
     }
 }

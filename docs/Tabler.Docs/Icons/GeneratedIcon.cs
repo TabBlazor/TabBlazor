@@ -11,7 +11,20 @@ namespace Tabler.Docs.Icons
         public string Author { get; set; }
         public List<string> Tags { get; set; }
         public IIconType IconType { get; set; }
-        public string DotNetProperty => $"public static IIconType {GetSafeName()} => new {IconType.ClassName}(@\"{IconType?.Elements}\");";
+        public string DotNetProperty => $"public static IIconType {GetSafeName()} => new {IconType.ClassName}(@\"{IconType?.Elements}\", {IconType.Filled.ToString().ToLower()});";
+
+        public string DotNetProperty2
+        {
+            get
+            {
+                if(IconType.Filled)
+                {
+                    return $"public static IIconType {GetSafeName()} => new {IconType.ClassName}(@\"{IconType?.Elements}\", {IconType.Filled.ToString().ToLower()});";
+
+                }
+                return $"public static IIconType {GetSafeName()} => new {IconType.ClassName}(@\"{IconType?.Elements}\");";
+            }
+        }
 
         public string GetSafeName()
         {

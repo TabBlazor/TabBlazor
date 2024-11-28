@@ -27,7 +27,7 @@
                 </div>
             }
 
-            <div class="modal-body" @ref="contentContainer" @onclick:stopPropagation @onkeydown:stopPropagation>
+            <div class="@GetModalBodyCss()" @ref="contentContainer" @onclick:stopPropagation @onkeydown:stopPropagation>
                 @ChildContent
             </div>
         </div>

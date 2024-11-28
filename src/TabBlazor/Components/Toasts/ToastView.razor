@@ -1,24 +1,33 @@
 ﻿<div class="toast show me-1 mb-1" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" data-toggle="toast">
 
     @if (Toast.Options.ShowHeader)
+
     {
         <div class="toast-header">
             <strong class="me-auto">@Toast.Title</strong>
             <small>@Toast.SubTitle</small>
-            <button type="button" class="ms-2 btn-close" data-dismiss="toast" aria-label="Close" @onclick="() => ToastService.RemoveToastAsync(Toast)">
-            </button>
+
+            @if (Toast.Options.AllowUserRemove)
+            {
+                <button type="button" class="ms-2 btn-close" data-dismiss="toast" aria-label="Close" @onclick="() => ToastService.RemoveToastAsync(Toast)" />
+            }
+          
+
         </div>
     }
 
     <div class="toast-body">
 
         @if (Toast.Contents != null)
+
         {
             <CascadingValue Value="this">
                 @Toast.Contents
             </CascadingValue>
         }
+
         else
+
         {
             @Toast.Message
         }
@@ -26,11 +35,19 @@
     </div>
 
 
-    @if (Toast.Options.AutoClose && Toast.Options.ShowProgress)
+    @if (Toast.Options.ShowProgress)
     {
         <div class="progress progress-sm">
-            <div class="progress-bar" style="width: @(_progress)%; transition:none" />
-        </div>
+
+        @if (Toast.Options.AutoClose)
+        {
+                <div class="progress-bar" style="width: @(_progress)%; transition:none" />
+        }
+        else
+        {
+             <div class="progress-bar progress-bar-indeterminate"  />
+        }
+       </div>
     }
 
 </div>

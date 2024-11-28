@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nager.Country" Version="3.1.1" />
+    <PackageReference Include="Nager.Country" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>

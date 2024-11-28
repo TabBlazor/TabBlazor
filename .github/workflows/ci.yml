@@ -11,12 +11,14 @@ jobs:
     runs-on: windows-2022
     steps:
         # Checkout the code
-        - uses: actions/checkout@v2
+        - uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
 
         - name: Setup .NET Core
           uses: actions/setup-dotnet@v1
           with:
-            dotnet-version: 7.0.x
+            dotnet-version: 8.0.x
       
         - name: Restore Workloads
           run: dotnet workload restore
@@ -35,7 +37,7 @@ jobs:
           with:
             github_token: ${{ secrets.PUBLISH_TOKEN }}
             publish_branch: gh-pages
-            publish_dir: docs/Tabler.Docs.Wasm/bin/Release/net7.0/publish/wwwroot
+            publish_dir: docs/Tabler.Docs.Wasm/bin/Release/net8.0/publish/wwwroot
             allow_empty_commit: false
             keep_files: false
             force_orphan: true

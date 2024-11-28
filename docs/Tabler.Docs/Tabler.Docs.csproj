@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,12 +18,12 @@
   </ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="Blazor-ApexCharts" Version="0.9.16-beta" />
-    <PackageReference Include="ClosedXML" Version="0.100.3" />
-    <PackageReference Include="ColorCode.HTML" Version="2.0.14" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.4" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+    <PackageReference Include="Blazor-ApexCharts" Version="3.4.0" />
+    <PackageReference Include="ClosedXML" Version="0.102.3" />
+    <PackageReference Include="ColorCode.HTML" Version="2.0.15" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +32,9 @@
 
   <ItemGroup>
     <Content Update="Components\Helpers\ClickOutside\Multiple.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Components\Toasts\ToastsProgramatic.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
   </ItemGroup>
