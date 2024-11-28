@@ -1,0 +1,20 @@
+﻿<ItemSelect Items="orders" @bind-SelectedValue="selectedOrder"
+            SelectedTextExpression="e=> e.Customer.CustomerName"
+            ListWidth="300px"
+            MaxListHeight="200px" Virtualize>
+    <ListTemplate>
+        @context.Customer.CustomerName [@context.OrderDate.ToString("d")]
+    </ListTemplate>
+</ItemSelect>
+
+<div class="mt-3">
+    @if (selectedOrder != null)
+    {
+        <div>@selectedOrder.Customer.CustomerName [@selectedOrder.OrderId]</div>
+    }
+</div>
+
+@code {
+    IEnumerable<Order> orders = Data.SampleData.GetOrders().OrderBy(e=>e.OrderDate);
+    Order selectedOrder;
+}

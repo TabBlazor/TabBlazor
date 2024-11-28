@@ -1,0 +1,61 @@
+﻿@using TabBlazor.Services
+@inject ToastService ToastService
+
+<ButtonList>
+    @if (toast == null)
+    {
+        <Button BackgroundColor="TablerColor.Primary" @onclick="ShowToast">Show Toast</Button>
+    }
+
+    else
+    {
+        <Button BackgroundColor="TablerColor.Success" @onclick="UpdateToast">Update</Button>
+        <Button BackgroundColor="TablerColor.Danger" @onclick="RemoveToast">Remove</Button>
+    }
+    </ButtonList>
+
+@code {
+
+    private ToastModel toast;
+    private int counter;
+
+    private async Task ShowToast()
+    {
+
+        toast = new ToastModel { Title = "Toast", SubTitle = DateTimeOffset.Now.ToString("T"), Message = "Starting Operation", Options = new ToastOptions { Delay = 0, AllowUserRemove = false, ShowProgress = true } };
+        await ToastService.AddToastAsync(toast);
+    }
+
+    private async Task UpdateToast()
+    {
+        if (counter == 0)
+        {
+            toast.Message = "Running Operation...";
+        }
+        else if (counter == 1)
+        {
+            toast.Message = "Finalize Operation...";
+        }
+        else if (counter == 2)
+        {
+            toast.Message = "Cleaning up...";
+        }
+        else
+        {
+            toast.Message = "I give up...";
+            toast.Options.ShowProgress = false;
+        }
+
+        toast.SubTitle = DateTimeOffset.Now.ToString("T");
+        await ToastService.UpdateAsync();
+
+        counter++;
+    }
+
+    private async Task RemoveToast()
+    {
+        await ToastService.RemoveToastAsync(toast);
+        counter = 0;
+        toast = null;
+    }
+}
