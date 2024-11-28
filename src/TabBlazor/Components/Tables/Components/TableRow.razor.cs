@@ -90,6 +90,7 @@ namespace TabBlazor.Components.Tables
 
         protected async Task Delete()
         {
+            if (Table.IsAddInProgress) return;  // Delete gets triggered by pressing 'Enter' while adding a new item
             await Table.OnDeleteItem(Item);
         }
 
