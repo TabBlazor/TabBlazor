@@ -146,6 +146,7 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent
         searchText = "";
         dropdown.Close();
         await SelectedValueChanged.InvokeAsync(SelectedValue);
+        await Changed.InvokeAsync(SelectedValue);
     }
 
     private async Task Search()
