@@ -118,6 +118,7 @@ namespace TabBlazor.Components.Tables
         bool HasActionColumn { get; }
         Func<TableItem, bool> AllowDeleteExpression { get; set; }
         Func<TableItem, bool> AllowEditExpression { get; set; }
+        bool IsAddInProgress { get; }
     }
 
     public interface ITableRowActions<TableItem>
