@@ -1,0 +1,28 @@
+﻿@page "/docs/plugins/charts"
+
+<Page>
+    <DocsExample Title="Charts">
+
+        <div class="mb-2">
+            More samples at <a href="https://apexcharts.github.io/Blazor-ApexCharts/" target="_blank">Blazor-ApexCharts</a>
+        </div>
+        <CodeSnippet ClassName="@typeof(ChartsPie).ToString()" Title="Pie chart">
+            <Example>
+                <ChartsPie />
+            </Example>
+        </CodeSnippet>
+
+        <CodeSnippet ClassName="@typeof(ChartsBar).ToString()" Title="Bar chart">
+            <Example>
+                <ChartsBar />
+            </Example>
+        </CodeSnippet>
+
+        <CodeSnippet ClassName="@typeof(ChartsDatetime).ToString()" Title="Datetime">
+            <Example>
+                <ChartsDatetime />
+            </Example>
+        </CodeSnippet>
+
+    </DocsExample>
+</Page>

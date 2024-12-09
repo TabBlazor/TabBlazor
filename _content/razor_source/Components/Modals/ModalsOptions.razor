@@ -1,0 +1,80 @@
+﻿@inject IModalService ModalService
+
+<Row>
+    <RowCol Sm="12" Md="6" Lg="4">
+        <label class="form-label">Size</label>
+        <Select Items="EnumHelper.GetList<ModalSize>()" @bind-SelectedValue="@modalOptions.Size" TextExpression="e => e.ToString()"/>
+    </RowCol>
+
+    <RowCol Sm="12" Md="6" Lg="4">
+        <label class="form-label">Fullscreen</label>
+        <Select Items="EnumHelper.GetList<ModalFullscreen>()" @bind-SelectedValue="@modalOptions.Fullscreen" TextExpression="e => e.ToString()"/>
+    </RowCol>
+
+    <RowCol Sm="12" Md="6" Lg="4">
+        <label class="form-label">Status</label>
+        <Select Items="EnumHelper.GetNullableList<TablerColor>()" @bind-SelectedValue="@modalOptions.StatusColor" TextExpression="e => e.ToString()" Clearable/>
+    </RowCol>
+
+    <RowCol Sm="12" Md="6" Lg="4">
+        <label class="form-label">Vertical position</label>
+        <Select Items="EnumHelper.GetList<ModalVerticalPosition>()" @bind-SelectedValue="@modalOptions.VerticalPosition"/>
+    </RowCol>
+
+    <Row class="mt-2">
+        <RowCol Sm="12" Md="4" Lg="3">
+            <Checkbox @bind-Value="@modalOptions.BlurBackground" Label="Blur background"/>
+        </RowCol>
+        <RowCol Sm="12" Md="4" Lg="3">
+            <Checkbox @bind-Value="@modalOptions.Backdrop" Label="Backdrop"/>
+        </RowCol>
+        <RowCol Sm="12" Md="4" Lg="3">
+            <Checkbox @bind-Value="@modalOptions.CloseOnClickOutside" Label="Close on click outside"/>
+        </RowCol>
+        <RowCol Sm="12" Md="4" Lg="3">
+            <Checkbox @bind-Value="@modalOptions.CloseOnEsc" Label="Close on Esc"/>
+        </RowCol>
+        <RowCol Sm="12" Md="4" Lg="3">
+            <Checkbox @bind-Value="@modalOptions.ShowHeader" Label="Show Header"/>
+        </RowCol>
+        <RowCol Sm="12" Md="4" Lg="3">
+            <Checkbox @bind-Value="@modalOptions.Draggable" Label="Draggable"/>
+        </RowCol>
+        <RowCol Sm="12" Md="4" Lg="3">
+            <Checkbox @bind-Value="@modalOptions.Scrollable" Label="Scrollable"/>
+        </RowCol>
+    </Row>
+</Row>
+<Row class="mt-2">
+    <RowCol>
+        <Button @onclick="ShowModal" BackgroundColor="TablerColor.Primary">Show Modal</Button>
+    </RowCol>
+</Row>
+
+<div>@message</div>
+
+
+@code {
+    private string message;
+    private ModalOptions modalOptions = new ModalOptions
+    {
+        ModalCssClass = "test-class"
+    };
+
+    protected async Task ShowModal()
+    {
+        message = string.Empty;
+        var component = new RenderComponent<TestModalContent>();
+        var result = await ModalService.ShowAsync("This is a Title", component, modalOptions);
+
+        if (result.Cancelled)
+        {
+            message = "Modal was cancelled!";
+        }
+        else
+        {
+            message = "Modal as ok!";
+        }
+    }
+
+}
