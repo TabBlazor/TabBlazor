@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Components;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
+//using static System.Net.WebRequestMethods;
 
 namespace Tabler.Docs.Services
 {
@@ -11,6 +13,9 @@ namespace Tabler.Docs.Services
     public interface ICodeSnippetService
     {
         public Task<string> GetCodeSnippet(string className);
+
+
+        public Task<byte[]> GetSamplePDF();
     }
 
     public class FakeSnippetService : ICodeSnippetService
@@ -18,6 +23,11 @@ namespace Tabler.Docs.Services
         public Task<string> GetCodeSnippet(string className)
         {
             return Task.FromResult("Source code view is disabled");
+        }
+
+        public Task<byte[]> GetSamplePDF()
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -39,21 +49,28 @@ namespace Tabler.Docs.Services
                 return await Task.FromResult($"Unable to find code at {codePath}");
             }
         }
+
+        public async Task<byte[]> GetSamplePDF()
+        {
+
+            string path99 = Directory.GetParent(Assembly.GetExecutingAssembly().Location).Parent.Parent.Parent.Parent.FullName + "\\Tabler.Docs\\wwwroot\\pdf\\sample.pdf";
+
+            return await File.ReadAllBytesAsync(path99);
+
+        }
     }
 
     public class GitHubSnippetService : ICodeSnippetService
     {
-        const string repo = "joadan/Blazor-Tabler";
-        //const string baseUrl = "https://raw.githubusercontent.com/joadan/TabBlazor/master/docs/Tabler.Docs";
         const string baseUrl = "https://tabblazor.com/_content/razor_source";
-     
         private readonly IHttpClientFactory httpClientFactory;
-
+        private readonly NavigationManager navManager;
         private Dictionary<string, string> cachedCode = new Dictionary<string, string>();
 
-        public GitHubSnippetService(IHttpClientFactory httpClientFactory)
+        public GitHubSnippetService(IHttpClientFactory httpClientFactory, NavigationManager navManager)
         {
             this.httpClientFactory = httpClientFactory;
+            this.navManager = navManager;
         }
 
         public async Task<string> GetCodeSnippet(string className)
@@ -75,7 +92,7 @@ namespace Tabler.Docs.Services
                     {
                         cachedCode[className] = code;
                     }
-                 
+
                 }
 
                 return cachedCode[className];
@@ -85,6 +102,14 @@ namespace Tabler.Docs.Services
             {
                 return $"Unable to load code. Error: {ex.Message}";
             }
+        }
+
+        public async Task<byte[]> GetSamplePDF()
+        {
+            var url = navManager.BaseUri + "_content/Tabler.Docs/pdf/sample.pdf";
+            using var httpClient = httpClientFactory.CreateClient("GitHub");
+            var arr = await httpClient.GetByteArrayAsync(url);
+            return arr;
         }
     }
 }

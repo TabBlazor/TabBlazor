@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace TabBlazor.Services
 {
@@ -22,6 +23,23 @@ namespace TabBlazor.Services
             }
 
             await jsRuntime.InvokeVoidAsync("tabBlazor.setTheme", theme);
+        }
+
+
+
+        public async Task<string> OpenContentWindow(string contentType, byte[] content, string urlSuffix = null, string name = null, string features = null)
+        {
+            return await jsRuntime.InvokeAsync<string>("tabBlazor.openContentWindow", contentType, content, urlSuffix, name, features);
+        }
+
+        public async Task<string> CreateObjectURLAsync(string contentType, byte[] content)
+        {
+            return await jsRuntime.InvokeAsync<string>("tabBlazor.createObjectURL", contentType, content);
+        }
+
+        public async Task RevokeObjectURLAsync(string objectURL)
+        {
+            await jsRuntime.InvokeVoidAsync("tabBlazor.revokeObjectURL", objectURL);
         }
 
         public async Task SaveAsBinary(string fileName, string contentType, byte[] content)
