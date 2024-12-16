@@ -68,8 +68,7 @@
 }
 
 .dropdown-item.highlight {
-    /*  background-color : var(--tblr-light);*/
-    background-color: lightgray;
+    background-color: rgba(var(--tblr-secondary-rgb), 0.4);
 }
 
 .tree, .tree ul {
