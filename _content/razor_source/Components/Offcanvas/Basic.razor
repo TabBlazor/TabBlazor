@@ -1,0 +1,30 @@
+﻿@using Tabler.Docs.Components.Modals;
+@inject IOffcanvasService offcanvasService;
+
+<DataGrid class="mb-3">
+    <DataGridItem Title="Position">
+        <ItemSelect  Items="EnumHelper.GetList<OffcanvasPosition>()" @bind-SelectedValue="options.Position" />
+     </DataGridItem>
+ 
+ <DataGridItem Title="Backdrop"> 
+        <Checkbox Switch @bind-Value=options.Backdrop /> </DataGridItem>
+</DataGrid>
+
+
+<Button OnClick=Open>Open</Button>
+
+ @code {
+    private TabBlazor.OffcanvasOptions options = new()
+    {
+        CloseOnEsc = true,
+        CloseOnClickOutside = true
+    };
+
+    private async Task Open()
+    {
+
+        var component = new RenderComponent<TestModalContent>().Set(e => e.ReportName, "Report Name");
+       await  offcanvasService.ShowAsync("Title goes here", component, options);
+    }
+
+}
