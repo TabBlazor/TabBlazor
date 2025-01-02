@@ -5,6 +5,9 @@ using TabBlazor.Components.Modals;
 using TabBlazor.Components.Tables;
 using TabBlazor.Components.Tables.Components;
 using TabBlazor.Services;
+// ReSharper disable AsyncApostle.ConfigureAwaitHighlighting
+// ReSharper disable AsyncApostle.AsyncAwaitMayBeElidedHighlighting
+// ReSharper disable AsyncApostle.AsyncMethodNamingHighlighting
 
 namespace TabBlazor
 {
@@ -160,7 +163,7 @@ namespace TabBlazor
                 var currentPageSize = PageSize;
                 PageNumber = 0;
                 PageSize = int.MaxValue;
-                SelectedItems = DataProvider.GetData(Columns, this, null).Result.First();
+                SelectedItems = (await DataProvider.GetData(Columns, this, CurrentItems).ConfigureAwait(false)).First();
                 PageNumber = currentPageNumber;
                 PageSize = currentPageSize;
             }
@@ -188,6 +191,7 @@ namespace TabBlazor
 
         public async Task Update(bool resetPage = false)
         {
+            if (DataProvider == null) return;
             if (CurrentEditItem == null || !TempItems.Any())
             {
                 TempItems = await DataProvider.GetData(Columns, this, Items, resetPage);
@@ -243,7 +247,7 @@ namespace TabBlazor
 
         public async Task LastPage()
         {
-            PageNumber = (int) Math.Ceiling((decimal) TotalCount / PageSize) - 1;
+            PageNumber = (int)Math.Ceiling((decimal)TotalCount / PageSize) - 1;
             await Update();
         }
 
@@ -280,10 +284,7 @@ namespace TabBlazor
 
         public async Task SetSelectedItem(Item item)
         {
-            if (SelectedItems == null)
-            {
-                SelectedItems = new List<Item>();
-            }
+            SelectedItems ??= [];
 
             if (IsSelected(item))
             {
@@ -362,7 +363,7 @@ namespace TabBlazor
             {
                 if (KeyboardNavigation)
                 {
-                    await tabService.PreventDefaultKey(table, "keydown", new[] {"ArrowUp", "ArrowDown"});
+                    await tabService.PreventDefaultKey(table, "keydown", ["ArrowUp", "ArrowDown"]);
                 }
 
                 tableInitialized = true;
@@ -372,7 +373,7 @@ namespace TabBlazor
 
         protected override void OnInitialized()
         {
-            DataProvider = DataProvider ?? new TheGridDataFactory<Item>();
+            DataProvider ??= new TheGridDataFactory<Item>();
             if (Hover)
             {
                 TableClass += " table-hover";
@@ -382,9 +383,9 @@ namespace TabBlazor
             {
                 {"class", TableClass}
             };
-            if (UnknownParameters?.ContainsKey("class") == true)
+            if (UnknownParameters?.TryGetValue("class", out var parameter) is true)
             {
-                baseAttributes["class"] = TableClass + " " + UnknownParameters["class"];
+                baseAttributes["class"] = TableClass + " " + parameter;
                 baseAttributes.Union(UnknownParameters.Where(x => x.Key != "class") ?? new Dictionary<string, object>()).ToDictionary(x => x.Key, x => x.Value);
             }
 
@@ -393,8 +394,8 @@ namespace TabBlazor
 
         public string GetTableCssClass()
         {
-            var classBuileder = new ClassBuilder();
-            return classBuileder
+            var classBuilder = new ClassBuilder();
+            return classBuilder
                 .Add("tabler-table")
                 .AddIf("grouped-table", HasGrouping)
                 .AddIf("table-responsive", Responsive)
@@ -403,12 +404,7 @@ namespace TabBlazor
 
         public bool IsSelected(Item item)
         {
-            if (SelectedItems == null)
-            {
-                return false;
-            }
-
-            return SelectedItems.Contains(item);
+            return SelectedItems != null && SelectedItems.Contains(item);
         }
 
         public bool IsEditingItem(Item item)
@@ -454,7 +450,7 @@ namespace TabBlazor
             }
             else
             {
-                tableItem = (Item) Activator.CreateInstance(typeof(Item));
+                tableItem = (Item)Activator.CreateInstance(typeof(Item));
             }
 
             Items.Add(tableItem);
