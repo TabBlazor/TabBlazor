@@ -55,6 +55,7 @@ namespace TabBlazor
                 return;
             }
 
+            RenderForm = true;
             Validator = GetValidator();
             
             if (EditContext == null || !EditContext.Model.Equals(Model))
@@ -64,8 +65,6 @@ namespace TabBlazor
             }
 
             EditContext.SetFieldCssClassProvider(new TabFieldCssClassProvider());
-
-            RenderForm = true;
         }
         
         private IFormValidator GetValidator() => Validator ?? Provider.GetRequiredService<IFormValidator>();
