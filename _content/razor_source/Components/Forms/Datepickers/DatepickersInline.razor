@@ -1,0 +1,9 @@
+﻿<Datepicker @bind-SelectedDate="selectedDate" Inline />
+
+<div class="mt-3">
+    Selected Date: @selectedDate?.ToString("d")
+</div>
+
+@code {
+    private DateTimeOffset? selectedDate = DateTimeOffset.Now.AddDays(14).Date;
+}

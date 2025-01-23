@@ -1,0 +1,42 @@
+﻿@using TabBlazor.Components.Modals
+@using System.ComponentModel.DataAnnotations
+
+<Table Item="Person" Items="Persons" OnItemEdited="Submit" EditMode="TableEditMode.Popup">
+    <Column Item="Person" Property="x => x.Name">
+        <Template>
+            @context.Name
+        </Template>
+        <EditorTemplate>
+            <InputText class="form-control" @bind-Value="context.Name"></InputText>
+            <TabValidationMessage For="() => context.Name"></TabValidationMessage>
+        </EditorTemplate>
+    </Column>
+</Table>
+
+@code {
+    public class Person
+    {
+        [Required]
+        [StringLength(10)]
+        public string Name { get; set; }
+    }
+    [Inject]
+    public IModalService Modal { get; set; }
+
+    private IList<Person> Persons { get; set; } = new List<Person>()
+    {
+        new()
+        {
+            Name = "Mr. Tab Blazor"
+        }
+    };
+
+    private async Task Submit(Person person)
+    {
+        await Modal.ShowDialogAsync(new DialogOptions()
+        {
+            MainText = "Form Is Valid",
+            SubText = $"Person Name: {person.Name}"
+        });
+    }
+}

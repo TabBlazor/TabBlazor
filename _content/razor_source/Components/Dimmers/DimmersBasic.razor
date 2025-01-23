@@ -1,0 +1,19 @@
+﻿<Button class="mb-3" Size="@ButtonSize.Small" BackgroundColor="TablerColor.Primary" @onclick="ToogleDimmer">Toogle Dimmer</Button>
+
+<Dimmer Active="isActive">
+    <div>
+        <h2>This is test</h2>
+        <Icon IconType="@TablerIcons.Printer" Size="48" Color="red"></Icon>
+    </div>
+</Dimmer>
+
+
+@code {
+    private bool isActive;
+
+    private void ToogleDimmer()
+    {
+        isActive = !isActive;
+    }
+
+}
