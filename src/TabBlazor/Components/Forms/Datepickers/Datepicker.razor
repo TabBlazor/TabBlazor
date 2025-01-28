@@ -7,69 +7,72 @@
 {
     <label class="form-label">@Label</label>
 }
-
-@if (Inline)
-{
-    @RenderCalender
-}
-else
-{
-    <Dropdown CloseOnClick="false" @ref="dropdown">
-        <ChildContent>
-            <div class="input-icon">
-                <input type="text" class="form-control cursor-pointer" value="@selectedDate?.ToString(Format)" placeholder="Search…">
-                <span class="input-icon-addon cursor-pointer">
+<div class="@FieldCssClasses">
+    @if (Inline)
+    {
+        @RenderCalender
+    }
+    else
+    {
+        <Dropdown CloseOnClick="false" @ref="dropdown">
+            <ChildContent>
+                <div class="input-icon">
+                    <input type="text" class="form-control cursor-pointer @FieldCssClasses"
+                           value="@selectedDate?.ToString(Format)" placeholder="Search…">
+                    <span class="input-icon-addon cursor-pointer">
                     <Icon class="icon"
-                          IconType="@InternalIcons.Calendar" />
+                          IconType="@InternalIcons.Calendar"/>
                 </span>
-            </div>
-        </ChildContent>
-
-        <DropdownTemplate>
-            <DropdownMenu>
-                <div class="m-2">
-                    @RenderCalender
                 </div>
-            </DropdownMenu>
+            </ChildContent>
 
-        </DropdownTemplate>
-    </Dropdown>
-}
+            <DropdownTemplate>
+                <DropdownMenu>
+                    <div class="m-2">
+                        @RenderCalender
+                    </div>
+                </DropdownMenu>
+
+            </DropdownTemplate>
+        </Dropdown>
+    }
+</div>
 
 @code{
 
     protected RenderFragment RenderCalender => __builder =>
     {
-    <div class="datepicker @(!Inline ? "datepicker-dropdown": "")">
-        <div class="datepicker-month">
+        <div class="datepicker @(!Inline ? "datepicker-dropdown" : "")">
+            <div class="datepicker-month">
             <span class="float-start">
                 <Icon OnClick="SetPreviousMonth" class="cursor-pointer"
-                      IconType="@InternalIcons.Arrow_left" />
+                      IconType="@InternalIcons.Arrow_left"/>
             </span>
-            <span>@GetCurrentMonth()</span>
-            <span>@currentDate.Year</span>
-            <span class="float-end">
+                <span>@GetCurrentMonth()</span>
+                <span>@currentDate.Year</span>
+                <span class="float-end">
                 <Icon OnClick="SetNextMonth" class="cursor-pointer"
-                      IconType="@InternalIcons.Arrow_right" />
+                      IconType="@InternalIcons.Arrow_right"/>
             </span>
-        </div>
-        <div class="datepicker-weekdays">
-            @foreach (var weekday in GetWeekdays())
+            </div>
+            <div class="datepicker-weekdays">
+                @foreach (var weekday in GetWeekdays())
                 {
-                <div @key="weekday">
-                    @weekday
-                </div>
+                    <div @key="weekday">
+                        @weekday
+                    </div>
                 }
-        </div>
-        <div class="datepicker-days">
+            </div>
+            <div class="datepicker-days">
 
-            @foreach (var date in GetDates())
+                @foreach (var date in GetDates())
                 {
-                <span @key="date" @onclick="(() => SetSelected(date))" class="@DayCss(date)">@date.Day</span>
+                    <span @key="date" @onclick="(() => SetSelected(date))" class="@DayCss(date)">@date.Day</span>
                 }
 
+            </div>
         </div>
-    </div>
     };
+
 }
 
