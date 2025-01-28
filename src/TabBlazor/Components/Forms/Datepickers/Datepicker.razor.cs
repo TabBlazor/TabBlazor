@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace TabBlazor
 {
@@ -13,8 +14,12 @@ namespace TabBlazor
         [Parameter] public string Format { get; set; } = "d";
         [Parameter] public TValue SelectedDate { get; set; }
         [Parameter] public EventCallback<TValue> SelectedDateChanged { get; set; }
+        [Parameter] public Expression<Func<TValue>> SelectedDateExpression { get; set; }
         [Parameter] public string Label { get; set; }
+        [CascadingParameter] private EditContext CascadedEditContext { get; set; }
 
+        private string FieldCssClasses { get; set; }
+        private FieldIdentifier? fieldIdentifier;
         private TValue value;
         private DateTimeOffset currentDate = DateTimeOffset.Now;
         private DateTimeOffset? selectedDate;
@@ -22,6 +27,45 @@ namespace TabBlazor
         private CultureInfo culture => CultureInfo.CurrentCulture;
 
         private Dropdown dropdown;
+
+        protected override void OnInitialized()
+        {
+            if (SelectedDateExpression != null)
+            {
+                fieldIdentifier = FieldIdentifier.Create(SelectedDateExpression);
+            }
+
+            if (CascadedEditContext != null)
+            {
+                CascadedEditContext.OnValidationStateChanged += SetValidationClasses;
+            }
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            Validate();
+        }
+
+        private void Validate()
+        {
+            if (fieldIdentifier is not { } fid)
+            {
+                return;
+            }
+            CascadedEditContext?.NotifyFieldChanged(fid);
+            CascadedEditContext?.Validate();
+        }
+        
+        private void SetValidationClasses(object sender, ValidationStateChangedEventArgs args)
+        {
+            if (fieldIdentifier is not { } fid)
+            {
+                return;
+            }
+
+            FieldCssClasses = CascadedEditContext?.FieldCssClass(fid) ?? "";
+        }
+
 
         protected override async Task OnParametersSetAsync()
         {
@@ -32,10 +76,7 @@ namespace TabBlazor
                 value = SelectedDate;
 
                 await SetSelected(ConvertToDateTimeOffset(SelectedDate));
-
             }
-
-
         }
 
         private TValue ConvertToTValue(DateTimeOffset? value)
@@ -89,6 +130,7 @@ namespace TabBlazor
         {
             currentDate = currentDate.AddMonths(-1);
         }
+
         private void SetNextMonth()
         {
             currentDate = currentDate.AddMonths(1);
@@ -122,9 +164,11 @@ namespace TabBlazor
             {
                 currentDate = (DateTimeOffset)date;
             }
+
             value = ConvertToTValue(selectedDate);
 
             await SelectedDateChanged.InvokeAsync(value);
+            Validate();
             if (!Inline && dropdown != null)
             {
                 dropdown.Close();
@@ -135,23 +179,26 @@ namespace TabBlazor
         {
             return date?.Month == currentDate.Month;
         }
+
         private bool IsSelected(DateTimeOffset? date)
         {
-            if (selectedDate == null || date == null) { return false; }
+            if (selectedDate == null || date == null)
+            {
+                return false;
+            }
+
             return selectedDate?.Date == date?.Date;
         }
 
         private string DayCss(DateTimeOffset? date)
         {
             return new ClassBuilder()
-            .Add("datepicker-day")
-            .AddIf("datepicker-not-month", !IsCurrentMonth(date))
-            .AddIf("datepicker-day-dropdown", !Inline)
-            .AddIf("strong", date?.Date == DateTimeOffset.Now.Date)
-            .AddIf(selectedColor.GetColorClass("bg") + " text-white", IsSelected(date))
-            .ToString();
-
+                .Add("datepicker-day")
+                .AddIf("datepicker-not-month", !IsCurrentMonth(date))
+                .AddIf("datepicker-day-dropdown", !Inline)
+                .AddIf("strong", date?.Date == DateTimeOffset.Now.Date)
+                .AddIf(selectedColor.GetColorClass("bg") + " text-white", IsSelected(date))
+                .ToString();
         }
     }
-
 }

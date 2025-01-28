@@ -8,6 +8,12 @@
         <InputText class="form-control" @bind-Value="Model.Name"></InputText>
         <TabValidationMessage For="(() => Model.Name)"></TabValidationMessage>
     </div>
+    
+    <div class="mb-3">
+        <label class="form-label">Birthday</label>
+        <Datepicker class="form-control" @bind-SelectedDate="Model.Birthday" />
+        <TabValidationMessage For="(() => Model.Birthday)"></TabValidationMessage>
+    </div>
 
     <Typeahead SearchMethod="SearchCustomers" @bind-SelectedValue=Model.Relation
                Debounce="1" MinimumLength=1 SearchPlaceholderText="Search customer..." ListWidth="100%"
@@ -32,6 +38,9 @@
         public string Name { get; set; }
         
         [Required]
+        public DateTimeOffset? Birthday { get; set; }
+        
+        [Required]
         public Customer Relation { get; set; }
     }
     
@@ -47,7 +56,7 @@
         await Modal.ShowDialogAsync(new DialogOptions()
         {
             MainText = "Form Is Valid",
-            SubText = $"Person Name: {Model.Name}"
+            SubText = $"Name: {Model.Name} Birthday: {Model.Birthday:d} Relation: {Model.Relation.CustomerName}"
         });
     }
     
