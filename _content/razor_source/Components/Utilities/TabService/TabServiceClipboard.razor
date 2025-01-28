@@ -1,0 +1,21 @@
+﻿@inject TablerService tabService
+
+<Button BackgroundColor=TablerColor.Primary OnClick="CopyToClipboard">Copy to clipboard</Button>
+<Button BackgroundColor=TablerColor.Primary OnClick="ReadFromClipboard">Read from clipboard</Button>
+
+@code {
+    private async Task CopyToClipboard()
+    {
+        var text = "This is a sample text";
+        await tabService.CopyToClipboard(text);
+        await tabService.ShowAlert($"'{text}' has been copied to clipboard");
+    }
+
+    private async Task ReadFromClipboard()
+    {
+        var text = await tabService.ReadFromClipboard();
+        await tabService.ShowAlert($"'{text}' has been read from clipboard");
+    }
+
+}
+

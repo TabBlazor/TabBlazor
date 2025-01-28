@@ -1,0 +1,21 @@
+﻿<ObjectBrowser Object=order />
+
+@code {
+    private Order order;
+
+    protected override void OnInitialized()
+    {
+        order = Data.SampleData.GetOrders().First();
+
+        var configuration = new Dictionary<string, string>();
+        configuration.Add("Name", "Jane");
+        configuration.Add("Age", "14");
+
+        order.OrderLines = new List<OrderLine> {
+            new OrderLine { ItemNumber = null, Quantity = 220, Status = OrderStatus.Active},
+        new OrderLine { ItemNumber = "Lamp3456", Quantity = 76, Status = OrderStatus.Shipped,
+        Configuration = configuration} };
+
+    }
+
+}

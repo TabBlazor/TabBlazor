@@ -1,0 +1,25 @@
+﻿@inject IModalService ModalService
+
+<Button @onclick="ShowModal" BackgroundColor="TablerColor.Primary">Show Modal</Button>
+<div>@message</div>
+
+
+@code {
+    private string message;
+    protected async Task ShowModal()
+    {
+        message = string.Empty;
+
+        var component = new RenderComponent<TestModalContent>().Set(e => e.ReportName, "Report Name");
+        var result = await ModalService.ShowAsync("This is a Title", component, new ModalOptions { Size = ModalSize.Large });
+
+        if (result.Cancelled)
+        {
+            message = "Modal was cancelled!";
+        }
+        else
+        {
+            message = "Modal as ok!";
+        }
+    }
+}

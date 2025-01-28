@@ -1,0 +1,26 @@
+﻿
+<Badge BackgroundColor="GetBackgroundColor()">@OrderStatus.ToString()</Badge>
+
+@code {
+    [Parameter] public OrderStatus OrderStatus { get; set; }
+
+    
+    private TablerColor GetBackgroundColor() {
+        switch (OrderStatus)
+        {
+            case OrderStatus.Active:
+                return TablerColor.Primary;
+            case OrderStatus.Shipped:
+                return TablerColor.Success;
+            case OrderStatus.OnHold:
+                return TablerColor.Warning;
+            case OrderStatus.Cancelled:
+                return TablerColor.Danger;
+            default:
+                return TablerColor.Default;
+        }
+    }
+
+
+
+}
