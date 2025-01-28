@@ -4,59 +4,62 @@
 @typeparam TItem
 @typeparam TValue
 
-<Dropdown @ref=dropdown CloseOnClick="false">
-    <ChildContent>
-        <div class="input-group input-group-flat" @onclick:stopPropagation>
-            @if (SelectedValue != null && !isInput)
-            {
-                <span class="form-control" tabindex=0 @onclick="@(() => SetInput(true))"> @SelectedTextExpression(SelectedValue)</span>
-                <span class="input-group-text" tabindex=0>
-                    <Icon IconType="@InternalIcons.X" class="icon" OnClick="ClearSelected" />
-                </span>
-            }
-            else
-            {
-                <input class="form-control" @ref="input" @bind="SearchText" type="text" @bind:event="oninput" placeholder="@SearchPlaceholderText" @onfocus="() => SetInput(true)"  @onblur="@(() => SetInput(false))">
-                <span class="input-group-text">
-
-                    @if (!string.IsNullOrWhiteSpace(searchText))
-                    {
-                        <Icon IconType="@InternalIcons.X" class="icon" OnClick="ClearSearch" />
-                    }
-                    else
-                    {
-                        <Icon IconType="@InternalIcons.Search" class="icon cursor-auto" />
-                    }
-                </span>
-            }
-
-        </div>
-    </ChildContent>
-
-    <DropdownTemplate>
-        <DropdownMenu style=@GetListStyle()>
-
-            @if (isSearching)
-            {
-                <div class="m-2 spinner-border" role="status" />
-            }
-            else if (listItems == null || !listItems.Any())
-            {
-                <div class="m-2">
-                    No results found
-                </div>
-            }
-            else
-            {
-                @foreach (var listItem in listItems)
+<div class=" @FieldCssClasses">
+    <Dropdown @ref=dropdown CloseOnClick="false">
+        <ChildContent>
+            <div class="input-icon" @onclick:stopPropagation>
+                @if (SelectedValue != null && !isInput)
                 {
-                    <DropdownItem Active="@IsSelected(listItem)" OnClick="@(() => SelectItem(listItem))">@ListTemplate(listItem)</DropdownItem>
+                    <span class="form-control @FieldCssClasses" tabindex=0
+                          @onclick="@(() => SetInput(true))"> @SelectedTextExpression(SelectedValue)</span>
+                    <span class="input-icon-addon" tabindex=0>
+                        <Icon IconType="@InternalIcons.X" class="icon" OnClick="ClearSelected"/>
+                    </span>
                 }
-            }
+                else
+                {
+                    <input class="form-control @FieldCssClasses" @ref="input" @bind="SearchText" type="text"
+                           @bind:event="oninput"
+                           placeholder="@SearchPlaceholderText" @onfocus="() => SetInput(true)"
+                           @onblur="@(() => SetInput(false))">
+                    <span class="input-icon-addon">
+                        @if (!string.IsNullOrWhiteSpace(searchText))
+                        {
+                            <Icon IconType="@InternalIcons.X" class="icon" OnClick="ClearSearch"/>
+                        }
+                        else
+                        {
+                            <Icon IconType="@InternalIcons.Search" class="icon cursor-auto"/>
+                        }
+                    </span>
+                }
 
-        </DropdownMenu>
-    </DropdownTemplate>
+            </div>
+        </ChildContent>
 
-</Dropdown>
+        <DropdownTemplate>
+            <DropdownMenu style=@GetListStyle()>
 
+                @if (isSearching)
+                {
+                    <div class="m-2 spinner-border" role="status"/>
+                }
+                else if (listItems == null || !listItems.Any())
+                {
+                    <div class="m-2">
+                        No results found
+                    </div>
+                }
+                else
+                {
+                    @foreach (var listItem in listItems)
+                    {
+                        <DropdownItem Active="@IsSelected(listItem)"
+                                      OnClick="@(() => SelectItem(listItem))">@ListTemplate(listItem)</DropdownItem>
+                    }
+                }
 
+            </DropdownMenu>
+        </DropdownTemplate>
+    </Dropdown>
+</div>

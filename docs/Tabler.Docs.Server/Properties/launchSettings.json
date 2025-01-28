@@ -3,7 +3,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "docs/offcanvas",
+      "launchUrl": "docs/forms/validation",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
