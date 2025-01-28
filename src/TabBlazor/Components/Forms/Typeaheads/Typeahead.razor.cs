@@ -4,15 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
+using Microsoft.AspNetCore.Components.Forms;
 using Timer = System.Timers.Timer;
 
 namespace TabBlazor;
 
-public partial class Typeahead<TItem, TValue> : TablerBaseComponent
+public partial class Typeahead<TItem, TValue> : TablerBaseComponent, IDisposable
 {
     [Parameter] public Func<string, Task<IEnumerable<TItem>>> SearchMethod { get; set; }
     [Parameter] public TValue SelectedValue { get; set; }
     [Parameter] public EventCallback<TValue> SelectedValueChanged { get; set; }
+    [Parameter] public Expression<Func<TValue>> SelectedValueExpression { get; set; }
     [Parameter] public EventCallback Changed { get; set; }
     [Parameter] public int Debounce { get; set; } = 300;
     [Parameter] public int MinimumLength { get; set; } = 3;
@@ -25,7 +27,11 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent
     [Parameter] public string ListWidth { get; set; }
     [Parameter] public Func<TValue, string> SelectedTextExpression { get; set; }
     [Parameter] public bool ShowOptionOnFocus { get; set; }
+    
+    [CascadingParameter] private EditContext CascadedEditContext { get; set; }
 
+    private string FieldCssClasses { get; set; }
+    private FieldIdentifier? fieldIdentifier;
     private IEnumerable<TItem> listItems;
     private string searchText;
     private Timer debounceTimer;
@@ -53,6 +59,27 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent
 
             ConvertExpression = item => item is TValue value ? value : default;
         }
+        
+        if (SelectedValueExpression != null)
+        {
+            fieldIdentifier = FieldIdentifier.Create(SelectedValueExpression);
+        }
+        
+        if (CascadedEditContext != null)
+        {
+            CascadedEditContext.OnValidationStateChanged += SetValidationClasses;
+        }
+    }
+    
+    private void SetValidationClasses(object sender, ValidationStateChangedEventArgs args)
+    {
+        if (fieldIdentifier is not { } fid) { return; }
+        FieldCssClasses = CascadedEditContext?.FieldCssClass(fid) ?? "";
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        Validate();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -109,6 +136,7 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent
         SelectedValue = default;
         await SelectedValueChanged.InvokeAsync(SelectedValue);
         dropdown.Close();
+        Validate();
     }
 
     private void ClearSearch()
@@ -146,6 +174,7 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent
         searchText = "";
         dropdown.Close();
         await SelectedValueChanged.InvokeAsync(SelectedValue);
+        Validate();
     }
 
     private async Task Search()
@@ -168,5 +197,23 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent
         listItems = (await SearchMethod?.Invoke(searchText)).Take(MaximumItems).ToArray();
         isSearching = false;
         await InvokeAsync(StateHasChanged);
+    }
+
+    private void Validate()
+    {
+        if (fieldIdentifier is not { } fid)
+        {
+            return;
+        }
+        CascadedEditContext?.NotifyFieldChanged(fid);
+        CascadedEditContext?.Validate();
+    }
+
+    public void Dispose()
+    {
+        if (CascadedEditContext != null)
+        {
+            CascadedEditContext.OnValidationStateChanged -= SetValidationClasses;
+        }
     }
 }

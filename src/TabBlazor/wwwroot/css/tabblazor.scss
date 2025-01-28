@@ -272,3 +272,11 @@ Dimmer
 .switch-icon-flip.active .switch-icon-b {
     opacity: 0;
 }
+
+
+.input-icon{
+    .form-control.is-valid,
+    .form-control.is-invalid{
+        background-image: none !important;
+    }
+}

@@ -272,4 +272,9 @@ Dimmer
   opacity: 0;
 }
 
+.input-icon .form-control.is-valid,
+.input-icon .form-control.is-invalid {
+  background-image: none !important;
+}
+
 /*# sourceMappingURL=tabblazor.css.map */
