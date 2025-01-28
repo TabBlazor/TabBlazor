@@ -12,6 +12,7 @@ namespace TabBlazor
         [Parameter] public bool? Filled { get; set; } 
         [Parameter] public int Rotate { get; set; }
         [Parameter] public string Title { get; set; }
+        [Parameter] public string CssClass { get; set; }
 
         //private bool filled => Filled ?? IconType?.Filled ?? false;
         private double strokeWidth => StrokeWidth ?? IconType?.StrokeWidth ?? 2;
@@ -22,6 +23,7 @@ namespace TabBlazor
         protected override string ClassNames => ClassBuilder
             .AddIf($"{TextColor.GetColorClass("text")}", string.IsNullOrWhiteSpace(Color))
             .AddIf("cursor-pointer", OnClick.HasDelegate)
+            .AddIf(CssClass, !string.IsNullOrWhiteSpace(CssClass))
             .ToString();
     }
 }
