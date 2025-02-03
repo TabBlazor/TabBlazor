@@ -280,3 +280,9 @@ Dimmer
         background-image: none !important;
     }
 }
+
+.icon {
+    &.cursor-pointer{
+        pointer-events: all;
+    }
+}
