@@ -1,0 +1,41 @@
+﻿@using TabBlazor
+
+<Autocomplete TItem="Order" @bind-Value="customerName" SearchMethod="Search" OnItemSelected="SelectedCustomer" GroupBy="order => order.Country"  ShowOptionOnFocus="true">
+    <ResultTemplate>
+        Order Customer (@context.OrderId):  @context.Customer.CustomerName
+    </ResultTemplate>
+    <NotFoundTemplate>
+        No order with customer name containing @($"'{customerName}'") found
+    </NotFoundTemplate>
+    <GroupingHeaderTemplate>
+        @if (context.ToString() == "Spain")
+        {
+            <Flag Size="FlagSize.XSmall" FlagType="Flags.Spain" class="pe-1"/> @context.ToString()
+        }
+        else
+        {
+            @context.ToString()    
+        }
+    </GroupingHeaderTemplate>
+</Autocomplete>
+
+Name: @customerName
+
+@code {
+    List<Order> orders = SampleData.GetOrders();
+    string customerName;
+
+    private Task<List<Order>> Search(string arg)
+    {
+        arg ??= "";
+        var result = orders
+            .Where(x => x.Customer.CustomerName.Contains(arg, StringComparison.InvariantCultureIgnoreCase))
+            .ToList();
+        return Task.FromResult(result);
+    }
+
+    private void SelectedCustomer(Order order)
+    {
+        customerName = order.Customer.CustomerName;
+    }
+}

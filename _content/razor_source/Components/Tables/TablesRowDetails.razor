@@ -1,0 +1,83 @@
+﻿
+<Table Item="Order" Items="orders" PageSize="10" Hover @ref="table" AddItemFactory="AddItem">
+    <HeaderTemplate>
+        <strong>Orders</strong>
+    </HeaderTemplate>
+
+    <ChildContent>
+        <Column Item="Order" Property="e=>e.Customer.CustomerName" Title="Customer" Sortable Searchable Groupable>
+            <EditorTemplate>
+                <input type="text" class="form-control" @bind-value="@context.Customer.CustomerName" />
+            </EditorTemplate>
+        </Column>
+        <Column Item="Order" Property="e=>e.Country" Title="Country" Sortable Searchable Groupable>
+            <EditorTemplate>
+                <input type="text" class="form-control" @bind-value="@context.Country" />
+            </EditorTemplate>
+        </Column>
+        <Column Item="Order" Property="e=>e.OrderType" Title="Order type" Sortable Searchable Groupable>
+            <EditorTemplate>
+                <Select Items="EnumHelper.GetList<OrderType>()" @bind-SelectedValue="@context.OrderType" TextExpression="e=> e.ToString()" ValueExpression="e=> e" Clearable />
+            </EditorTemplate>
+        </Column>
+
+        <Column Item="Order"  Title="" ActionColumn Width="130px">
+            <Template>
+                    <span @onclick="(() => table.EditItem(context))" @onclick:stopPropagation>
+                        <span class="clickable-text">Edit</span>
+                    </span>
+            </Template>
+            <EditorTemplate>
+                <span @onclick="(() => table.CloseEdit())" @onclick:stopPropagation>
+                    <span class="clickable-text">Save</span>
+                </span>
+                <span @onclick="(() => table.CancelEdit())" @onclick:stopPropagation>
+                    <span class="clickable-text">Cancel</span>
+                </span>
+            </EditorTemplate>
+        </Column>
+    </ChildContent>
+
+    <DetailsTemplate>
+        <Card>
+            <CardHeader>
+                @context.Customer.CustomerName - @context.OrderType order
+            </CardHeader>
+
+            <CardBody>
+                This is the details for this @context.OrderType order
+            </CardBody>
+        </Card>
+    </DetailsTemplate>
+</Table>
+
+
+
+
+@code {
+    [Inject] TabBlazor.Services.TablerService TablerService { get; set; }
+    private static List<Order> orders = SampleData.GetOrders();
+    private static List<Order> selectedOrders = new List<Order>();
+
+    private Table<Order> table;
+
+    private async Task OnItemEdit(Order order)
+    {
+        await TablerService.ShowAlert($"Edited order {order.OrderId}");
+    }
+
+    private async Task OnItemAdd(Order order)
+    {
+        await TablerService.ShowAlert($"Added order {order.OrderId}");
+    }
+
+    private async Task OnItemDelete(Order order)
+    {
+        await TablerService.ShowAlert($"Order deleted {order.OrderId}");
+    }
+
+    private Task<Order> AddItem()
+    {
+        return Task.FromResult(new Order { Customer = new Customer { CustomerName = "New customer" } });
+    }
+}
