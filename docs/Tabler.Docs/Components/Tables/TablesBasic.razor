@@ -8,6 +8,11 @@
     </HeaderTemplate>
 
     <ChildContent>
+        <Column Item="Order" Property="e=>e.OrderId" Title="OrderId" Sortable Searchable>
+            <EditorTemplate>
+                <input type="text" class="form-control" @bind-value="@context.OrderId" />
+            </EditorTemplate>
+        </Column>
         <Column Item="Order" Property="e=>e.Customer.CustomerName" Title="Customer" Sortable Searchable Groupable>
             <EditorTemplate>
                 <input type="text" class="form-control" @bind-value="@context.Customer.CustomerName" />

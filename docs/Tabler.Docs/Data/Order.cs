@@ -57,6 +57,8 @@ public class Order
     public OrderStatus OrderStatus { get; set; }
     public decimal GrossValue { get; set; }
 
+    public Guid? OrderExternalId { get; set; }
+
     public decimal NetValue
     {
         get => GrossValue * (1 - (DiscountPercentage / 100));
