@@ -6,7 +6,7 @@
 
 
 <div class="modal @GetModalWrapperClasses() fade show" id="tabblazor-modal-container" @ref="BlurContainer" @onkeydown="OnKeyDown" @onclick="OnClickOutside"
-     tabindex="-1" style="display: block; z-index: @modalViewSettings.ZIndex" aria-hidden="true">
+     tabindex="-1" style="display: block; z-index: @modalViewSettings.ZIndex" aria-state="modal">
     <div class="@GetModalCss()" role="document" @ondragend="OnDragEnd" @ondragstart="OnDragStart"
          style=@(GetModalStyle()) @ref="dragContainer" @onclick:stopPropagation>
         <div class="modal-content border">
