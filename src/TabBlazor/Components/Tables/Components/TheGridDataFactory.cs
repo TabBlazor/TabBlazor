@@ -14,6 +14,9 @@ namespace TabBlazor.Components.Tables
             {
                 var query = items.AsQueryable();
                 query = AddSearch(columns, state, query);
+
+                var jj = query.ToList();
+
                 if (addSorting)
                 {
                     query = AddSorting(columns, state, query);
@@ -50,7 +53,7 @@ namespace TabBlazor.Components.Tables
                 else
                 {
                     columnGroup.GroupBy = true;
-                    foreach (var r in query.GroupBy(columnGroup.Property))
+                    foreach (var r in query.GroupBy(columnGroup.PropertyNullSafe))
                     {
                         viewResult.Add(new TableResult<object, Item>(r.Key, r.ToList())
                         {
@@ -70,13 +73,13 @@ namespace TabBlazor.Components.Tables
             {
                 if (state.UseNaturalSort)
                 {
-                    query = NaturalOrderBy(query, sortColumn.Property, sortColumn.SortDescending);
+                    query = NaturalOrderBy(query, sortColumn.PropertyNullSafe, sortColumn.SortDescending);
                 }
                 else
                 {
                     query = sortColumn.SortDescending
-                        ? query.OrderByDescending(sortColumn.Property)
-                        : query.OrderBy(sortColumn.Property);
+                        ? query.OrderByDescending(sortColumn.PropertyNullSafe)
+                        : query.OrderBy(sortColumn.PropertyNullSafe);
                 }
             }
 

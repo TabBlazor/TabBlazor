@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TabBlazor.Components.Tables;
+using TabBlazor;
 using LinqKit;
 
 namespace TabBlazor
@@ -36,9 +37,9 @@ namespace TabBlazor
         [Parameter] public Expression<Func<Item, object>> Property { get; set; }
         [Parameter] public Expression<Func<Item, string, bool>> SearchExpression { get; set; }
         [Parameter] public SortOrder? Sort { get; set; }
-        [Parameter]public Align Align { get; set; }
+        [Parameter] public Align Align { get; set; }
         [Parameter] public bool Group { get; set; }
-        
+
         public bool SortColumn { get; set; }
         public bool GroupBy { get; set; }
         public bool SortDescending { get; set; }
@@ -76,7 +77,23 @@ namespace TabBlazor
             }
 
             Type = Property?.GetPropertyMemberInfo().GetMemberUnderlyingType();
+
+            PropertyNullSafe = (Expression<Func<Item, object>>)Property?.PropagateNull();
+
         }
+
+        public Expression<Func<Item, object>> PropertyNullSafe { get; private set; }
+
+        //private Expression<Func<Item, object>> propertyNullSafe;
+        //public Expression<Func<Item, object>> PropertyNullSafe
+        //{
+        //    get
+        //    {
+        //        if (Property == null) { return null; }
+        //        propertyNullSafe ??= (Expression<Func<Item, object>>)Property.PropagateNull();
+        //        return propertyNullSafe;
+        //    }
+        //}
 
         public Expression<Func<Item, bool>> GetFilter(ITableState<Item> state)
         {
@@ -100,8 +117,8 @@ namespace TabBlazor
         private Expression<Func<Item, bool>> NotNull()
         {
             return Expression.Lambda<Func<Item, bool>>(
-                Expression.NotEqual(Property.Body, Expression.Constant(null)),
-                Property.Parameters.ToArray()
+                Expression.NotEqual(PropertyNullSafe.Body, Expression.Constant(null)),
+                PropertyNullSafe.Parameters.ToArray()
             );
         }
 
@@ -140,11 +157,11 @@ namespace TabBlazor
                     {
                         sortOnColumn = false;
                     }
-                        SortDescending = !SortDescending;
+                    SortDescending = !SortDescending;
                 }
 
                 Table.Columns.ForEach(x => x.SortColumn = false);
-                
+
                 SortColumn = sortOnColumn;
                 await Table.Update();
             }
@@ -154,7 +171,8 @@ namespace TabBlazor
         {
             try
             {
-                return Property.Compile().Invoke(item);
+              return PropertyNullSafe.Compile().Invoke(item);
+               // return Property.Compile().Invoke(item);
             }
             catch (NullReferenceException)
             {
