@@ -141,7 +141,8 @@ namespace Tabler.Docs.Data
             {
                 OrderStatus = OrderStatus.Shipped, Customer = nascetur, Country = "Sweden",
                 OrderDate = DateTimeOffset.Now.AddDays(-27), GrossValue = 11345, DiscountPercentage = 12,
-                OrderType = OrderType.Phone
+                OrderType = OrderType.Phone,
+                OrderExternalId = Guid.Parse("D8F8F68F-AD6B-4D94-8F2F-A7D31BC36CFB")
             });
             orders.Add(new Order
             {
@@ -153,7 +154,8 @@ namespace Tabler.Docs.Data
             {
                 OrderStatus = OrderStatus.Cancelled, Customer = nascetur, Country = "Sweden",
                 OrderDate = DateTimeOffset.Now.AddDays(-299), GrossValue = 1235, DiscountPercentage = 12,
-                OrderType = OrderType.Mail
+                OrderType = OrderType.Mail,
+                OrderExternalId = Guid.Parse("D8F8F68F-AD6B-4D94-8F2F-A7D31BC36CFB")
             });
             orders.Add(new Order
             {
@@ -172,7 +174,8 @@ namespace Tabler.Docs.Data
             {
                 OrderStatus = OrderStatus.Active, Customer = justo, Country = "Spain",
                 OrderDate = DateTimeOffset.Now.AddDays(-13), GrossValue = 2800, DiscountPercentage = 12,
-                OrderType = OrderType.Mail
+                OrderType = OrderType.Mail,
+                OrderExternalId = Guid.Parse("6DF56C0E-9BF6-467B-B416-47B8CA52D9F5")
             });
             orders.Add(new Order
             {
@@ -190,7 +193,8 @@ namespace Tabler.Docs.Data
             {
                 OrderStatus = OrderStatus.Shipped, Customer = justo, Country = "Spain",
                 OrderDate = DateTimeOffset.Now.AddDays(-150), GrossValue = 22000, DiscountPercentage = 10,
-                OrderType = OrderType.Web
+                OrderType = OrderType.Web,
+                OrderExternalId = Guid.Parse("73A179F4-175B-40C7-BD3D-F394A9B1FCF5")
             });
             orders.Add(new Order
             {

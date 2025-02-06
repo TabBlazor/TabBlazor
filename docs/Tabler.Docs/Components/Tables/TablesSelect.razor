@@ -28,10 +28,11 @@
 </Table>
 
 
-<ul>
+<ul class="mt-2">
     @foreach (var order in selectedOrders)
     {
-        <li>@order.OrderId, @order.Customer.CustomerName</li>
+        <h3>Order: @order.OrderId - @order.Customer?.CustomerName</h3>
+        <ObjectBrowser Object="order"></ObjectBrowser>
     }
 </ul>
 
