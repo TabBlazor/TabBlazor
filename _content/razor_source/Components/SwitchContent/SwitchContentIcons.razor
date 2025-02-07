@@ -1,0 +1,42 @@
+﻿
+<div class="d-flex space-x-2">
+
+    <SwitchContent Animation="SwitchAnimation.Scale">
+        <DefaultTemplate>
+            <Icon class="icon" IconType="@TablerIcons.Heart" />
+        </DefaultTemplate>
+        <ActiveTemplate>
+            <Icon class="icon" IconType="@TablerIcons.Heart" Filled=true TextColor="TablerColor.Red" />
+        </ActiveTemplate>
+    </SwitchContent>
+
+
+    <SwitchContent Animation="SwitchAnimation.SlideLeft">
+        <DefaultTemplate>
+            <Icon class="icon" IconType="@TablerIcons.X" />
+        </DefaultTemplate>
+        <ActiveTemplate>
+            <Icon class="icon" IconType="@TablerIcons.Check" TextColor="TablerColor.Green" />
+        </ActiveTemplate>
+    </SwitchContent>
+
+    <SwitchContent Animation="SwitchAnimation.SlideUp">
+        <DefaultTemplate>
+            <Icon class="icon text-secondary" IconType="@TablerIcons.Arrow_down" />
+        </DefaultTemplate>
+        <ActiveTemplate>
+            <Icon class="icon text-secondary" IconType="@TablerIcons.Arrow_up" />
+        </ActiveTemplate>
+    </SwitchContent>
+
+    <SwitchContent Animation="SwitchAnimation.Flip">
+        <DefaultTemplate>
+            <Icon  IconType="@TablerIcons.Thumb_up" TextColor="TablerColor.Success" />
+        </DefaultTemplate>
+        <ActiveTemplate>
+            <Icon  IconType="@TablerIcons.Thumb_down" TextColor="TablerColor.Danger"/>
+        </ActiveTemplate>
+    </SwitchContent>
+
+</div>
+

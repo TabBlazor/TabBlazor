@@ -1,0 +1,52 @@
+﻿
+<ItemSelect SelectedValues="selectedCustomers" Items="customers" @ref="select" MaxListHeight="200px" RemoveSelectedFromList MultiSelect>
+
+    <ListTemplate>
+        @context.CustomerName
+    </ListTemplate>
+
+    <SelectedTemplate>
+        <Button @onkeydown:preventDefault>
+
+            @if (context == null || !context.Any())
+            {
+                <span>Customers</span>
+            }
+            else
+            {
+                <span>Select Customers...</span>
+                <Badge class="ms-2" BackgroundColor="TablerColor.Red">@context.Count</Badge>
+                <span @onclick="@(e => select.ClearSelected())" @onclick:stopPropagation>
+                    <Icon class="ms-2 icon" IconType="@TablerIcons.Trash" />
+                </span>
+            }
+
+        </Button>
+    </SelectedTemplate>
+
+    <HeaderTemplate>
+  
+        <div class="d-flex justify-content-center">
+            <h3>Header <Badge BackgroundColor=TablerColor.Green>New</Badge></h3>
+        </div>
+    </HeaderTemplate>
+
+    <FooterTemplate>
+        <div class="dropdown-divider"></div>
+
+        <div class="d-flex justify-content-center">
+            <Button Size="ButtonSize.Small">
+                <Icon class="icon me-1" IconType="@TablerIcons.Plus" />New customer
+            </Button>
+        </div>
+    </FooterTemplate>
+
+</ItemSelect>
+
+@code {
+    List<Customer> customers = Data.SampleData.GetCustomers();
+    List<Customer> selectedCustomers = new List<Customer>();
+
+    ItemSelect<Customer, Customer> select;
+
+}
