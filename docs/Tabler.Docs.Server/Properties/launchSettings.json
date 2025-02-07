@@ -11,7 +11,7 @@
     "Tabler.Docs.Server": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "docs/content-viewer",
+      "launchUrl": "docs/tables",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

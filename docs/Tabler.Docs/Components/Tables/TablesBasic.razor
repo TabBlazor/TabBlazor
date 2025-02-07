@@ -1,36 +1,36 @@
 ﻿@using Align = TabBlazor.Align
 
 <Table Item="Order" Items="orders" PageSize="10" 
-       @bind-SelectedItems="selectedOrders" OnItemDeleted="OnItemDelete"
-       ShowCheckboxes MultiSelect Hover Responsive>
+@bind-SelectedItems="selectedOrders" OnItemDeleted="OnItemDelete"
+ShowCheckboxes MultiSelect Hover Responsive>
     <HeaderTemplate>
         <strong>Orders</strong>
     </HeaderTemplate>
 
     <ChildContent>
-        <Column Item="Order" Property="e=>e.OrderId" Title="OrderId" Sortable Searchable>
+        <Column Item="Order" Property="e=>e.OrderId" Title="OrderId" Searchable Sortable>
             <EditorTemplate>
                 <input type="text" class="form-control" @bind-value="@context.OrderId" />
             </EditorTemplate>
         </Column>
-        <Column Item="Order" Property="e=>e.Customer.CustomerName" Title="Customer" Sortable Searchable Groupable>
+        <Column Item="Order" Property="e=>e.Customer.CustomerName" Title="Customer" Searchable  Sortable Groupable>
             <EditorTemplate>
                 <input type="text" class="form-control" @bind-value="@context.Customer.CustomerName" />
             </EditorTemplate>
         </Column>
-        <Column Item="Order" Property="e=>e.Country" Title="Country" Sortable Searchable Groupable SearchExpression="(e, s) => SearchCountry(e,s)">
+        <Column Item="Order" Property="e=>e.Country" Title="Country" Searchable Sortable Groupable>
             <EditorTemplate>
                 <input type="text" class="form-control" @bind-value="@context.Country" />
             </EditorTemplate>
         </Column>
-        
-        <Column Item="Order" Property="e=>e.NetValue" Title="Value" Align="Align.End" Sortable Searchable>
+
+        <Column Item="Order" Property="e=>e.NetValue" Title="Value" Align="Align.End" Searchable Sortable>
             <Template>
                 $@context.NetValue.ToString("N0")
             </Template>
         </Column>
-  
-        <Column Item="Order" Property="e=>e.OrderType" Title="Order type" Sortable Searchable Groupable>
+
+        <Column Item="Order" Property="e=>e.OrderType" Title="Order type" Sortable Groupable Searchable>
             <EditorTemplate>
                 <Select Items="EnumHelper.GetList<OrderType>()" @bind-SelectedValue="@context.OrderType" TextExpression="e=> e.ToString()" ValueExpression="e=> e" Clearable />
             </EditorTemplate>
@@ -53,6 +53,11 @@
     private static List<Order> orders = SampleData.GetOrders();
     private static List<Order> selectedOrders = new List<Order>();
 
+    protected override void OnInitialized()
+    {
+        orders.First().Customer = null;
+        base.OnInitialized();
+    }
 
     private async Task OnItemDelete(Order order)
     {

@@ -398,7 +398,7 @@
     {
         await Task.Yield();
         await chart?.UpdateSeriesAsync(true);
-        await orderTypeChart?.RenderAsync();
+        await orderTypeChart?.UpdateOptionsAsync(true, true, true);
         await orderDiscountChart?.UpdateSeriesAsync(true);
         await topCustomerChart?.UpdateSeriesAsync(true);
     }

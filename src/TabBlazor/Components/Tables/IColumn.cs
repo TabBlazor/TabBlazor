@@ -22,6 +22,8 @@ namespace TabBlazor.Components.Tables
         Task SortByAsync();
         Task GroupByMeAsync();
         Type Type { get; }
+
+        Expression<Func<Item, object>> PropertyNullSafe { get; }
         Expression<Func<Item, object>> Property { get; }
         Expression<Func<Item, string, bool>> SearchExpression { get; }
         object GetValue(Item item);
