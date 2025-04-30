@@ -19,6 +19,7 @@ namespace Tabler.Docs.Components.Icons
         private List<ListIcon> selectedIcons = new List<ListIcon>();
         private int size = 24;
         private int rotate = 0;
+        private IconAnimation animation = IconAnimation.None;
         private string searchText;
         private string color;
         private ContentRect iconContainerRect;
