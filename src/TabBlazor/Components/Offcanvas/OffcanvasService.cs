@@ -34,6 +34,16 @@ namespace TabBlazor
             OnChanged?.Invoke();
         }
 
+        public void Close(OffcanvasResult result)
+        {
+            if (models.Any())
+            {
+                var model = models.Pop();
+                model.TaskSource.SetResult(result);
+            }
+            OnChanged?.Invoke();
+        }
+
     }
 
 }
