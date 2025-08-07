@@ -9,6 +9,7 @@ namespace TabBlazor
         event Action OnChanged;
 
         void Close();
+        void Close(OffcanvasResult result);
         Task<OffcanvasResult> ShowAsync<TComponent>(string title, RenderComponent<TComponent> component, OffcanvasOptions options = null) where TComponent : IComponent;
     }
 }
