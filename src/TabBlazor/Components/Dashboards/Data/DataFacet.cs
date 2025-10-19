@@ -16,10 +16,8 @@ namespace TabBlazor.Dashboards
         public DataFilter<TItem> Filter { get; set; }
         public List<TItem> Items { get; set; }
         public IEnumerable<TItem> FilteredItems { get; set; }
-        //public string Label { get; set; }
         public bool Active { get; set; }
         public int CountAll { get; set; }
-     //   public int CountFiltered { get; set; }
         public Func<FacetFilter<TItem>, string> FilterLabel { get; set; }
 
         public string GetLabel()
@@ -30,22 +28,10 @@ namespace TabBlazor.Dashboards
                 }
                 else
                 {
-                    return $"{Filter.Name} ({CountAll})";
+                    return $"{Filter.Name} ({CountAll:N0})";
                 }
            
         }
-
-        //public void SetLabel()
-        //{
-        //    if (FilterLabel != null)
-        //    {
-        //        Label = FilterLabel(this);
-        //    }
-        //    else
-        //    {
-        //        Label = $"{Filter.Name} ({CountAll})";
-        //    }
-        //}
 
 
     }
