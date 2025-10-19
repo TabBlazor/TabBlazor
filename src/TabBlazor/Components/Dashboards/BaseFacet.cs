@@ -11,13 +11,17 @@ namespace TabBlazor.Dashboards
 
         [Parameter] public Func<FacetFilter<TItem>, string> FilterLabel { get; set; }
 
+        [Parameter] public Func<IEnumerable<FacetFilter<TItem>>, IEnumerable<FacetFilter<TItem>>> SortFilters { get; set; }
+
+        [Parameter] public int JockeIndex { get; set; } = 0;
+
+
         public bool IsExpanded;
         public DataFacet<TItem> Facet;
 
         protected override async Task OnInitializedAsync()
         {
-           // await SetFilterLabels();
-
+       
             await base.OnInitializedAsync();
         }
 
@@ -27,21 +31,7 @@ namespace TabBlazor.Dashboards
             base.OnInitialized();
         }
 
-        //private async Task SetFilterLabels()
-        //{
-        //    foreach (var facetFilter in Facet.Filters)
-        //    {
-        //        if(FilterLabel == null)
-        //        {
-        //            facetFilter.Label = $"{facetFilter.Filter.Name} ({facetFilter.CountFiltered}/{facetFilter.CountAll})";
-        //        }
-        //        else
-        //        {
-        //            facetFilter.Label = await FilterLabel(facetFilter);
-        //        }
-        //    }
-        //}
-
+      
         public IIconType GetExpandedIcon()
         {
             if(IsExpanded == true) { return InternalIcons.Chevron_up; }
@@ -52,19 +42,6 @@ namespace TabBlazor.Dashboards
         {
             IsExpanded = !IsExpanded;
         }
-
-        //public async Task<string> GetFilterLabel(FacetFilter<TItem> filter)
-        //{
-        //    if(filter == null) { return "Error!! no filter"; }
-
-        //    if(FilterLabel != null)
-        //    {
-        //        return await FilterLabel(filter);
-        //    }
-
-        //    return $"{filter.Filter.Name} ({filter.CountFiltered}/{filter.CountAll})";
-
-        //} 
 
 
         public void ResetFilters(bool runFilter)

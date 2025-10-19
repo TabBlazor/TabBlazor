@@ -18,7 +18,7 @@
             @if (IsExpanded != false)
             {
 
-                @foreach (var facetFilter in Facet.Filters)
+                @foreach (var facetFilter in GetSortedFilters())
                 {
                     <Checkbox Switch Label="@facetFilter.GetLabel()" Value=@facetFilter.Active ValueChanged="@(e => ValueChanged(facetFilter, e))" />
                 }

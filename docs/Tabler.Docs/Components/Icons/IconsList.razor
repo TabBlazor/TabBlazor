@@ -15,6 +15,16 @@
             <input class="form-control" type="number" step="1" @bind-value="@rotate" />
         </div>
       </RowCol>
+
+    <RowCol Auto>
+        <div class="form-group">
+            <label>Animation</label>
+
+            <Select Items="EnumHelper.GetList<IconAnimation>()" @bind-SelectedValue="animation" TextExpression="e => e.ToString()" />
+
+        </div>
+    </RowCol>
+
  <RowCol Auto>
         <div class="form-group">
             <label>Color</label>
@@ -77,7 +87,7 @@
                         <label class="me-1 mt-1">
                             <input type="checkbox" class="form-selectgroup-input" checked="@IsSelected(icon)" @onchange="@((e) => SelectIcon(icon))">
                             <span class="form-selectgroup-label">
-                                <Icon Size="@size" Rotate=@rotate IconType=icon.IconType Color="@color" />
+                                <Icon Size="@size" Animation=animation Rotate=@rotate IconType=icon.IconType Color="@color" />
                             </span>
                         </label>
                     </span>

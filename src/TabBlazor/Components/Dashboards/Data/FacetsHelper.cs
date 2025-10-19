@@ -91,17 +91,6 @@ namespace TabBlazor.Dashboards
 
                 var predicate = CreateRangePredicate(expression, groupMin, groupMax);
 
-                //var constantMin = Expression.Constant(groupMin);
-                //var bodyMin = Expression.GreaterThanOrEqual(expression.Body, constantMin);
-                //var predicateMin = Expression.Lambda<Func<TItem, bool>>(bodyMin, expression.Parameters);
-
-
-                //var constantMax = Expression.Constant(groupMax);
-                //var bodyMax = Expression.LessThanOrEqual(expression.Body, constantMax);
-                //var predicateMax = Expression.Lambda<Func<TItem, bool>>(bodyMax, expression.Parameters);
-
-                //var predicate = PredicateBuilder.And(predicateMin, predicateMax);
-
                 var groupItems = chunkGroup.ToList().SelectMany(e => e.ToList()).ToList();
 
                 var filter = new FacetFilter<TItem>
@@ -139,6 +128,7 @@ namespace TabBlazor.Dashboards
         {
             var facet = new DataFacet<TItem>();
             facet.Name = name;
+        
 
             var groups = items.GroupBy(expression);
 

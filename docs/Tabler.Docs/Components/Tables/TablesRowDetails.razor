@@ -1,5 +1,7 @@
-﻿
-<Table Item="Order" Items="orders" PageSize="10" Hover @ref="table" AddItemFactory="AddItem">
+﻿@using TabBlazor.Components
+@using TabBlazor
+
+<Table Item="Order" Items="orders" PageSize="10" Hover @ref="table" AddItemFactory="AddItem" ShowDetails="@(e => true)" >
     <HeaderTemplate>
         <strong>Orders</strong>
     </HeaderTemplate>

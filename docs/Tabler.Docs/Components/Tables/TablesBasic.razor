@@ -42,7 +42,8 @@ ShowCheckboxes MultiSelect Hover Responsive>
 <ul>
     @foreach (var order in selectedOrders)
     {
-        <li>@order.OrderId, @order.Customer.CustomerName</li>
+
+        <li>@order?.OrderId, @order?.Customer.CustomerName</li>
     }
 </ul>
 

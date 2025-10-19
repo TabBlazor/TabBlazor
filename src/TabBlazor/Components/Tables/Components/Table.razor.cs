@@ -25,7 +25,7 @@ namespace TabBlazor
         public IDictionary<string, object> UnknownParameters { get; set; }
 
         [Parameter] public bool ShowHeader { get; set; } = true;
-        [Parameter] public bool ShowTableHeader { get; set; } = true;   
+        [Parameter] public bool ShowTableHeader { get; set; } = true;
         [Parameter] public bool Selectable { get; set; }
         [Parameter] public bool ShowNoItemsLabel { get; set; } = true;
         [Parameter] public string TableClass { get; set; } = "table card-table table-vcenter no-footer";
@@ -53,6 +53,7 @@ namespace TabBlazor
         public bool AllowAdd => OnItemAdded.HasDelegate;
         public bool HasGrouping => Columns.Any(x => x.GroupBy);
         [Parameter] public RenderFragment<Item> DetailsTemplate { get; set; }
+        [Parameter] public Func<Item, bool> ShowDetails { get; set; }
         [Parameter] public bool ShowCheckboxes { get; set; }
         [Parameter] public Action<TableEditPopupOptions<Item>> EditPopupMutator { get; set; }
         public bool IsRowValid { get; set; }
@@ -414,7 +415,8 @@ namespace TabBlazor
 
         protected bool ShowDetailsRow(Item item)
         {
-            return DetailsTemplate != null && IsSelected(item);
+            var showDetails = ShowDetails == null || ShowDetails.Invoke(item);
+            return showDetails && DetailsTemplate != null && IsSelected(item);
         }
 
         private async Task UpdateSelected()
