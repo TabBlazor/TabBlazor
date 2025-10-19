@@ -1,0 +1,47 @@
+﻿<ResizeObserver class="p-1 border" OnResized=ElementResized OnWidthResized=WidthResized OnHeightResized=HeightResized>
+    <h4>Container Size:</h4>
+    <Row>
+        <RowCol Xs=12 Md=6>
+            <ul>
+                <li>X: @containerSize?.X</li>
+                <li>Y: @containerSize?.Y</li>
+                <li>Width: @containerSize?.Width</li>
+                <li>Height: @containerSize?.Height</li>
+            </ul>
+        </RowCol>
+
+           <RowCol Xs=12 Md=6>
+            <ul>
+                <li>Left: @containerSize?.Left</li>
+                <li>Right: @containerSize?.Right</li>
+                <li>Top: @containerSize?.Top</li>
+                <li>Bottom: @containerSize?.Bottom</li>
+            </ul>
+        </RowCol>
+
+    </Row>
+</ResizeObserver>
+
+<h3>@widthMessage</h3>
+<h3>@heightMessage</h3>
+
+@code {
+    private ContentRect containerSize;
+    private string widthMessage;
+    private string heightMessage;
+
+    private void ElementResized(ResizeObserverEntry resizeObserverEntry)
+    {
+        containerSize = resizeObserverEntry.ContentRect;
+    }
+
+    private void WidthResized(ResizeObserverEntry resizeObserverEntry)
+    {
+        widthMessage = $"Width is {resizeObserverEntry?.ContentRect?.Width}";
+    }
+
+    private void HeightResized(ResizeObserverEntry resizeObserverEntry)
+    {
+        heightMessage = $"Height is {resizeObserverEntry?.ContentRect?.Height}";
+    }
+}
