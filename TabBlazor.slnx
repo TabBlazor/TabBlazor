@@ -1,0 +1,28 @@
+<Solution>
+  <Folder Name="/.github/">
+    <File Path=".gitattributes" />
+    <File Path=".github/workflows/ci-pr.yml" />
+    <File Path=".github/workflows/ci.yml" />
+    <File Path=".github/workflows/create-release.yml" />
+    <File Path=".github/workflows/manual-build.yml" />
+  </Folder>
+  <Folder Name="/.items/">
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="README.md" />
+    <File Path="version.json" />
+  </Folder>
+  <Folder Name="/Docs/">
+    <Project Path="docs/Tabler.Docs.Server/Tabler.Docs.Server.csproj" />
+    <Project Path="docs/Tabler.Docs.Wasm/Tabler.Docs.Wasm.csproj" />
+    <Project Path="docs/Tabler.Docs/Tabler.Docs.csproj" />
+  </Folder>
+  <Folder Name="/Icons/">
+    <Project Path="Icons/IconGenerator/IconGenerator.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="TabBlazor.Tests/TabBlazor.Tests.csproj" />
+  </Folder>
+  <Project Path="src/TabBlazor.QuickTable.EntityFramework/TabBlazor.QuickTable.EntityFramework.csproj" />
+  <Project Path="src/TabBlazor/TabBlazor.csproj" />
+</Solution>
