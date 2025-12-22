@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nager.Country" Version="4.0.0" />
+    <PackageReference Include="Nager.Country" />
   </ItemGroup>
 
   <ItemGroup>

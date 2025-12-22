@@ -13,7 +13,6 @@ namespace IconGenerator
 {
     public static class Utilities
     {
-     
         public static string ExtractIconElements(IEnumerable<XElement> elements)
         {
             var elementsString = string.Join("", elements.Select(e => e));
@@ -38,7 +37,7 @@ namespace IconGenerator
             return elementsString;
         }
 
-        private static new Dictionary<string, string> ReWriteIds(XElement svg)
+        private static Dictionary<string, string> ReWriteIds(XElement svg)
         {
             var idList = new Dictionary<string, string>();
             var idElements = svg.Descendants().Where(e => e.Attribute("id") != null).ToList();
@@ -57,13 +56,11 @@ namespace IconGenerator
                     newId = Guid.NewGuid().ToString("N");
                     idList.Add(id, newId);
                 }
+
                 idElement.Attribute("id").Value = newId;
             }
 
             return idList;
-
-
-
         }
 
 
@@ -77,22 +74,22 @@ namespace IconGenerator
 
         public static void GeneratFlagsFile(string fileName, IEnumerable<GeneratedFlag> flags)
         {
-            var directory = Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).Parent.Parent;
+            var directory = Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).Parent
+                .Parent;
             var fileOutput = new StringBuilder();
             foreach (var flag in flags)
             {
-              
                 fileOutput.AppendLine(flag.DotNetProperty);
             }
 
             File.WriteAllText(Path.Combine(directory.FullName, "Generated", fileName + ".txt"), fileOutput.ToString());
-     
         }
 
 
         public static void GenerateIconsFile(string fileName, IEnumerable<GeneratedIcon> icons)
         {
-            var directory = Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).Parent.Parent;
+            var directory = Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).Parent
+                .Parent;
             var fileOutput = new StringBuilder();
             foreach (var icon in icons)
             {
@@ -103,9 +100,5 @@ namespace IconGenerator
             var json = JsonSerializer.Serialize(icons);
             File.WriteAllText(Path.Combine(directory.FullName, "Generated", fileName + ".json"), json);
         }
-
-     
-
-
     }
 }
