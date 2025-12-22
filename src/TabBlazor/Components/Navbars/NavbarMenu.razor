@@ -6,9 +6,8 @@
              @onclick="OnClick"
              @attributes="@UnmatchedParameters">
 
-    
-        <ul class="navbar-nav" @onclick=Navbar.ToogleExpand>
-            @ChildContent
-        </ul>
- 
+    <ul class="navbar-nav" @onclick="@Navbar.ToggleExpand">
+        @ChildContent
+    </ul>
+
 </HtmlElement>

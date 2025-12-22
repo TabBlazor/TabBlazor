@@ -1,28 +1,14 @@
-﻿
-using Microsoft.AspNetCore.Components;
+﻿namespace TabBlazor;
 
-namespace TabBlazor
+public partial class NavbarMenu : TablerBaseComponent
 {
-    public partial class NavbarMenu : TablerBaseComponent
-    {
-        [CascadingParameter(Name = "Navbar")] Navbar Navbar { get; set; }
+    [CascadingParameter(Name = "Navbar")] private Navbar Navbar { get; set; }
 
-        private bool isExpanded => Navbar.IsExpanded;
-        protected string HtmlTag => "div";
-        protected override string ClassNames => ClassBuilder
-              .Add("navbar-collapse")
-              .AddIf("collapse", !isExpanded)
-              .ToString();
+    private bool IsExpanded => Navbar.IsExpanded;
+    private string HtmlTag => "div";
 
-
-
-        public void ToogleExpanded()
-        {
-           
-            Navbar.ToogleExpand();
-        }
-
-        private string menuCollapse => isExpanded ? "" : "collapse";
-
-    }
+    protected override string ClassNames => ClassBuilder
+        .Add("navbar-collapse")
+        .AddIf("collapse", !IsExpanded)
+        .ToString();
 }
