@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<PackageId>TabBlazor</PackageId>
 		<Description>Blazor dashboard admin theme based on Tabler UI. Minimal Javascript</Description>
 		<Authors>Joakim Dangården</Authors>
@@ -38,9 +38,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="LinqKit.Core" Version="1.2.5" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
-		<PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="8.0.8" />
+		<PackageReference Include="LinqKit.Core" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" />
+		<PackageReference Include="Microsoft.Extensions.Localization.Abstractions" />
 	</ItemGroup>
 
 	<ItemGroup>

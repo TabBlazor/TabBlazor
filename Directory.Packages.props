@@ -1,0 +1,30 @@
+﻿<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.9.50" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageVersion Include="Blazor-ApexCharts" Version="3.4.0" />
+    <PackageVersion Include="ClosedXML" Version="0.102.3" />
+    <PackageVersion Include="ColorCode.HTML" Version="2.0.15" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
+    <PackageVersion Include="LinqKit.Core" Version="1.2.5" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.Extensions.Localization.Abstractions" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
+    <PackageVersion Include="Nager.Country" Version="4.0.0" />
+    <PackageVersion Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.9" />
+    <PackageVersion Include="System.Net.Http.Json" Version="8.0.0" />
+    <PackageVersion Include="Tenekon.MSBuild.Packaging.ProjectBuildInPackage" Version="2.0.0" />
+    <PackageVersion Include="xunit" Version="2.9.0" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+</Project>

@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
@@ -18,12 +18,12 @@
   </ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="Blazor-ApexCharts" Version="3.4.0" />
-    <PackageReference Include="ClosedXML" Version="0.102.3" />
-    <PackageReference Include="ColorCode.HTML" Version="2.0.15" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <PackageReference Include="Blazor-ApexCharts" />
+    <PackageReference Include="ClosedXML" />
+    <PackageReference Include="ColorCode.HTML" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
   </ItemGroup>
 
   <ItemGroup>
