@@ -45,9 +45,6 @@ namespace TabBlazor.Dashboards
                 Name = name
             };
 
-            var min = items.Min(expression);
-            var max = items.Max(expression);
-
             var dates = DateRangeGenerator.Generate();
 
             foreach (var dateRange in dates)
