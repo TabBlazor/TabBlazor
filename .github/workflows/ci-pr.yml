@@ -28,7 +28,7 @@ jobs:
         run: dotnet restore
 
       - name: Building Solution
-        run: dotnet build TabBlazor.sln --configuration Release --no-restore 
+        run: dotnet build TabBlazor.slnx --configuration Release --no-restore 
 
       - name: Testing
         run: dotnet test --no-build --configuration Release --no-restore --verbosity normal
