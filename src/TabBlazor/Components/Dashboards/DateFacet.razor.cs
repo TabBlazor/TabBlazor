@@ -27,6 +27,5 @@ namespace TabBlazor.Dashboards
          
             Dashboard.RunFilter();
         }
-
     }
 }

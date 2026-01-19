@@ -70,7 +70,8 @@ namespace Tabler.Docs.Data
                 OrderDate = DateTimeOffset.Now.AddDays(-1),
                 GrossValue = 23456,
                 DiscountPercentage = 18,
-                OrderType = OrderType.Web
+                OrderType = OrderType.Web,
+                Cultures = ["fr-FR", "en-US"]
             });
             orders.Add(new Order
             {
@@ -80,7 +81,8 @@ namespace Tabler.Docs.Data
                 OrderDate = DateTimeOffset.Now.AddDays(-1),
                 GrossValue = 12345,
                 DiscountPercentage = 11,
-                OrderType = OrderType.Contract
+                OrderType = OrderType.Contract,
+                Cultures = ["sv-SE", "en-US"]
             });
             orders.Add(new Order
             {
@@ -90,7 +92,8 @@ namespace Tabler.Docs.Data
                 OrderDate = DateTimeOffset.Now.AddDays(-7),
                 GrossValue = 1456,
                 DiscountPercentage = 24,
-                OrderType = OrderType.Contract
+                OrderType = OrderType.Contract,
+                Cultures = ["sv-SE", "en-US"]
             });
 
 
@@ -98,19 +101,22 @@ namespace Tabler.Docs.Data
             {
                 OrderStatus = OrderStatus.Active, Customer = ani, Country = "Sweden",
                 OrderDate = DateTimeOffset.Now.AddDays(-12), GrossValue = 34531, DiscountPercentage = 21,
-                OrderType = OrderType.Contract
+                OrderType = OrderType.Contract,
+                Cultures = ["sv-SE", "en-US"]
             });
             orders.Add(new Order
             {
                 OrderStatus = OrderStatus.Shipped, Customer = odio, Country = "Sweden",
                 OrderDate = DateTimeOffset.Now.AddDays(-100), GrossValue = 2800, DiscountPercentage = 12,
-                OrderType = OrderType.Mail
+                OrderType = OrderType.Mail,
+                Cultures = ["sv-SE", "en-US"]
             });
             orders.Add(new Order
             {
                 OrderStatus = OrderStatus.Active, Customer = odio, Country = "Sweden",
                 OrderDate = DateTimeOffset.Now.AddDays(-128), GrossValue = 12532, DiscountPercentage = 24,
-                OrderType = OrderType.Contract
+                OrderType = OrderType.Contract,
+                Cultures = ["sv-SE", "en-US"]
             });
             orders.Add(new Order
             {
@@ -122,40 +128,46 @@ namespace Tabler.Docs.Data
             {
                 OrderStatus = OrderStatus.Active, Customer = odio, Country = "Sweden",
                 OrderDate = DateTimeOffset.Now.AddDays(-321), GrossValue = 22000, DiscountPercentage = 10,
-                OrderType = OrderType.Contract
+                OrderType = OrderType.Contract,
+                Cultures = ["dk-DK", "de-DE"]
             });
             orders.Add(new Order
             {
                 OrderStatus = OrderStatus.Cancelled, Customer = odio, Country = "Sweden",
                 OrderDate = DateTimeOffset.Now.AddDays(-400), GrossValue = 3000, DiscountPercentage = 17,
-                OrderType = OrderType.Web
+                OrderType = OrderType.Web,
+                Cultures = ["sv-SE", "en-US"]
             });
 
             orders.Add(new Order
             {
                 OrderStatus = OrderStatus.Active, Customer = nascetur, Country = "Sweden",
                 OrderDate = DateTimeOffset.Now.AddDays(-17), GrossValue = 2134, DiscountPercentage = 10,
-                OrderType = OrderType.Phone
+                OrderType = OrderType.Phone,
+                Cultures = ["dk-DK", "de-DE"]
             });
             orders.Add(new Order
             {
                 OrderStatus = OrderStatus.Shipped, Customer = nascetur, Country = "Sweden",
                 OrderDate = DateTimeOffset.Now.AddDays(-27), GrossValue = 11345, DiscountPercentage = 12,
                 OrderType = OrderType.Phone,
-                OrderExternalId = Guid.Parse("D8F8F68F-AD6B-4D94-8F2F-A7D31BC36CFB")
+                OrderExternalId = Guid.Parse("D8F8F68F-AD6B-4D94-8F2F-A7D31BC36CFB"),
+                Cultures = ["sv-SE", "en-US"]
             });
             orders.Add(new Order
             {
                 OrderStatus = OrderStatus.Shipped, Customer = nascetur, Country = "Sweden",
                 OrderDate = DateTimeOffset.Now.AddDays(-124), GrossValue = 63400, DiscountPercentage = 32,
-                OrderType = OrderType.Mail
+                OrderType = OrderType.Mail,
+                Cultures = ["dk-DK", "de-DE"]
             });
             orders.Add(new Order
             {
                 OrderStatus = OrderStatus.Cancelled, Customer = nascetur, Country = "Sweden",
                 OrderDate = DateTimeOffset.Now.AddDays(-299), GrossValue = 1235, DiscountPercentage = 12,
                 OrderType = OrderType.Mail,
-                OrderExternalId = Guid.Parse("D8F8F68F-AD6B-4D94-8F2F-A7D31BC36CFB")
+                OrderExternalId = Guid.Parse("D8F8F68F-AD6B-4D94-8F2F-A7D31BC36CFB"),
+                Cultures = ["dk-DK", "de-DE"]
             });
             orders.Add(new Order
             {

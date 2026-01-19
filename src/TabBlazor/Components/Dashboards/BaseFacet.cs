@@ -13,8 +13,6 @@ namespace TabBlazor.Dashboards
 
         [Parameter] public Func<IEnumerable<FacetFilter<TItem>>, IEnumerable<FacetFilter<TItem>>> SortFilters { get; set; }
 
-        [Parameter] public int JockeIndex { get; set; } = 0;
-
 
         public bool IsExpanded;
         public DataFacet<TItem> Facet;
