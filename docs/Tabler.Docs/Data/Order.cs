@@ -52,6 +52,7 @@ public class Order
     [Required(ErrorMessage = "Customer is required")]
     public Customer Customer { get; set; }
     public string Country { get; set; }
+    public List<string> Cultures { get; set; } = [];
     public DateTimeOffset OrderDate { get; set; }
     public OrderType OrderType { get; set; }
     public OrderStatus OrderStatus { get; set; }
