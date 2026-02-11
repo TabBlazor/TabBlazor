@@ -25,13 +25,7 @@ namespace TabBlazor
 
         public void Close()
         {
-
-            if (models.Any())
-            {
-                models.Pop();
-            }
-
-            OnChanged?.Invoke();
+            Close(OffcanvasResult.Cancel());
         }
 
         public void Close(OffcanvasResult result)
