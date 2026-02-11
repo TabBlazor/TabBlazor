@@ -39,16 +39,16 @@
     protected async Task Show()
     {
         message = string.Empty;
-        var component = new RenderComponent<TestModalContent>();
+        var component = new RenderComponent<TestOffcanvasContent>();
         var result = await Offcanvas.ShowAsync("This is a Title", component, canvasOptions);
 
         if (result.Cancelled)
         {
-            message = "Modal was cancelled!";
+            message = "Offcanvas was cancelled!";
         }
         else
         {
-            message = "Modal as ok!";
+            message = "Offcanvas as ok!";
         }
     }
 

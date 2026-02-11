@@ -23,7 +23,7 @@
     private async Task Open()
     {
 
-        var component = new RenderComponent<TestModalContent>().Set(e => e.ReportName, "Report Name");
+        var component = new RenderComponent<TestOffcanvasContent>().Set(e => e.ReportName, "Report Name");
        await  offcanvasService.ShowAsync("Title goes here", component, options);
     }
 
