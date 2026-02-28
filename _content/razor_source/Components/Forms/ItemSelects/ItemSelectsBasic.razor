@@ -1,0 +1,19 @@
+﻿
+<ItemSelect Items="customers" @bind-SelectedValue="selectedCustomer" SelectedTextExpression="e=>e.CustomerName">
+    <ListTemplate>
+        @context.CustomerName
+    </ListTemplate>
+</ItemSelect>
+
+<div class="mt-3">
+    @if (selectedCustomer != null)
+    {
+        <div>@selectedCustomer.CustomerName [@selectedCustomer.CustomerId]</div>
+    }
+</div>
+
+@code {
+    List<Customer> customers = Data.SampleData.GetCustomers();
+    Customer selectedCustomer;
+
+}

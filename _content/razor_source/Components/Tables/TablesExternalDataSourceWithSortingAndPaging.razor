@@ -1,0 +1,78 @@
+﻿@using TabBlazor.Components.Tables.Components
+@using TabBlazor.Components.Tables
+<Row>
+    Select the kind of strategy that shall be used when the 'Select All' checkbox is clicked.
+    AllPages, for selecting /deselecting all items in all pages.
+    CurrentPage, for only selecting /deselecting in the current page.
+</Row>
+<Row class="mb-2">
+    <Select Items="EnumHelper.GetList<SelectAllStrategy>()"
+            @bind-SelectedValue="Strategy"
+            TextExpression="e => e.ToString()"
+            NoSelectedText="*Select Strategy*"/>
+</Row>
+
+<Table Item="Item" PageSize="10" Hover Responsive ShowCheckboxes MultiSelect DataProvider="customDataProvider"
+       @bind-SelectedItems="SelectedItems" SelectAllStrategy="Strategy">
+    <HeaderTemplate>
+        <strong>Items</strong>
+    </HeaderTemplate>
+
+    <ChildContent>
+        <Column Item="Item" Property="e => e.Name" Title="Customer" Sortable>
+            <EditorTemplate>
+                <input type="text" class="form-control" @bind-value="@context.Name"/>
+            </EditorTemplate>
+        </Column>
+    </ChildContent>
+</Table>
+
+@if (SelectedItems != null)
+{
+    <Row class="mb-3">
+        @foreach (var item in SelectedItems)
+        {
+            <Row>@item.Name</Row>
+        }
+
+    </Row>
+}
+
+@code {
+
+    public class Item
+    {
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Name { get; set; }
+    }
+
+    private IDataProvider<Item> customDataProvider = new MyCustomDataSource();
+    public List<Item> SelectedItems { get; set; }
+
+    public class MyCustomDataSource : IDataProvider<Item>
+    {
+        private List<TableResult<object, Item>> viewResult;
+
+        public MyCustomDataSource()
+        {
+            var elements = new List<Item>();
+            for (var i = 0; i < 18; i++)
+            {
+                elements.Add(new Item {Id = Guid.NewGuid(), Name = $"Customer {i}"});
+            }
+
+            viewResult = new List<TableResult<object, Item>> {new(null, elements)};
+        }
+
+        public async Task<IEnumerable<TableResult<object, Item>>> GetData(List<IColumn<Item>> columns, ITableState<Item> state, IEnumerable<Item> items, bool resetPage = false, bool addSorting = true, Item moveToItem = null)
+        {
+            //here you have to implement your own service call  for data and implement correctly sorting, paging ,grouping to get full benefit of this interface and Table implementation.
+            var list = viewResult.First().Skip(state.PageNumber * state.PageSize).Take(state.PageSize).ToList();
+            state.TotalCount = viewResult.SelectMany(vr => vr).Count();
+            return await Task.FromResult(new List<TableResult<object, Item>> {new(null, list)});
+        }
+    }
+
+    public SelectAllStrategy Strategy { get; set; } = SelectAllStrategy.AllPages;
+
+}

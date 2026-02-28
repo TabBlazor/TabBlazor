@@ -1,0 +1,30 @@
+﻿
+      
+        <div class="row g-2 align-items-center">
+            <div class="col-auto">
+                <Avatar Rounded="AvatarRounded.Default" Size="AvatarSize.Large" Data="_content/Tabler.Docs/img/avatars/009m.jpg" />
+            </div>
+            <div class="col">
+                <h4 class="card-title m-0">
+                    John Doe
+                </h4>
+                <div class="text-secondary">
+                    TabBlazor expert
+                </div>
+                <div class="small mt-1">
+                    <span class="badge bg-green"></span> Online (@Orders)
+                </div>
+            </div>
+            <div class="col-auto">
+                <Icon class="icon" IconType="@TablerIcons.X" OnClick="ToastView.Close" />
+            </div>
+        </div>
+
+
+@code {
+
+    [CascadingParameter] public TabBlazor.Components.Toasts.ToastView ToastView { get; set; }
+    [Parameter] public int Orders { get; set; }
+    [Parameter] public int Shipped { get; set; }
+}
+

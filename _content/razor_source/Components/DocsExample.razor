@@ -1,0 +1,47 @@
+﻿<div class="row justify-content-center">
+
+    <RowCol class="order-lg-last order-md-first order-sm-first order-first mb-4" Lg="3" Md="12" Sm="12">
+        <div class="sticky-top">
+            @if (ComponentType != null)
+            {
+                <Row>
+                    <RowCol Auto>
+                        <a href="https://github.com/joadan/Blazor-Tabler" class="btn btn-white btn-block mb-2" target="_blank" rel="noreferrer">
+                            <Icon IconType="@TablerIcons.Brand_github"/>
+                            Browse source code
+                        </a>
+                    </RowCol>
+                    <RowCol Auto>
+                        <Button BackgroundColor=TablerColor.White class="p-2  btn-icon mb-2" OnClick="OpenComponentModal">
+                            <Icon IconType="@TablerIcons.Code" class="me-2"/> Component API
+                        </Button>
+                    </RowCol>
+                </Row>
+            }
+
+            <h5 class="subheader">On this page</h5>
+            <ul class="list-unstyled">
+                @foreach (var codeSnippet in CodeSnippets)
+                {
+                    <li class="toc-entry toc-h2">
+                        <a href="javascript:void(0)" @onclick="@(() => NavigateTo(codeSnippet))">@codeSnippet.Title</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </RowCol>
+    <RowCol class="order-lg-first order-md-last order-sm-last order-last" Lg="9" Md="12" Sm="12">
+        <Card Size="CardSize.Default">
+            <CardBody>
+                <div class="d-flex">
+                    <h3 class="h1 mt-0 mb-3">@Title</h3>
+                </div>
+                @Description
+
+                <CascadingValue Value="@this">
+                    @ChildContent
+                </CascadingValue>
+            </CardBody>
+        </Card>
+    </RowCol>
+</div>

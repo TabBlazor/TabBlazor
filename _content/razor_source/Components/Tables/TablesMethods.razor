@@ -1,0 +1,90 @@
+﻿
+<Row class="mb-3">
+    <RowCol Auto>
+        <Button Size="ButtonSize.Small" BackgroundColor="TablerColor.Primary" OnClick="SelectOrder">Select Order</Button>
+    </RowCol>
+    <RowCol Auto>
+        <Button Size="ButtonSize.Small" BackgroundColor="TablerColor.Primary" OnClick="SelectAndMoveOrder">Select/Move Order</Button>
+    </RowCol>
+
+    <RowCol Auto>
+        <Button Size="ButtonSize.Small" BackgroundColor="TablerColor.Primary" OnClick="SetLastPage">Set Last Page</Button>
+    </RowCol>
+
+    <RowCol Auto>
+        <Button Size="ButtonSize.Small" BackgroundColor="TablerColor.Primary" OnClick="Search">Search</Button>
+    </RowCol>
+
+</Row>
+
+
+
+<Table Item="Order" @ref="table" Items="orders" PageSize="10"   @bind-SelectedItems="selectedOrders" ShowCheckboxes>
+    <HeaderTemplate>
+        <strong>Orders</strong>
+    </HeaderTemplate>
+
+    <ChildContent>
+        <Column Item="Order" Property="e=>e.Customer.CustomerName" Title="Customer" Sortable Searchable Groupable>
+            <EditorTemplate>
+                <input type="text" class="form-control" @bind-value="@context.Customer.CustomerName" />
+            </EditorTemplate>
+        </Column>
+        <Column Item="Order" Property="e=>e.Country" Title="Country" Sortable Searchable Groupable>
+            <EditorTemplate>
+                <input type="text" class="form-control" @bind-value="@context.Country" />
+            </EditorTemplate>
+        </Column>
+        <Column Item="Order" Property="e=>e.OrderType" Title="Order type" Sortable Searchable Groupable>
+            <EditorTemplate>
+                <Select Items="EnumHelper.GetList<OrderType>()" @bind-SelectedValue="@context.OrderType" TextExpression="e=> e.ToString()" ValueExpression="e=> e" Clearable />
+            </EditorTemplate>
+        </Column>
+    </ChildContent>
+
+</Table>
+
+
+<ul>
+    @foreach (var order in selectedOrders)
+    {
+        <li>@order.OrderId, @order.Customer.CustomerName</li>
+    }
+</ul>
+
+@code {
+
+    [Inject] TabBlazor.Services.TablerService TablerService { get; set; }
+    private Table<Order> table;
+    private static List<Order> orders = SampleData.GetOrders();
+    private static List<Order> selectedOrders = new List<Order>();
+
+    private async Task OnItemEdit(Order order)
+    {
+        await TablerService.ShowAlert($"Edited order {order.OrderId}");
+    }
+
+    private async Task Search()
+    {
+        await table.Search("Odi");
+    }
+
+    private async Task SetLastPage()
+    {
+        await table.LastPage();
+    }
+
+    private void SelectOrder()
+    {
+        var order = orders.Skip(2).First();
+        selectedOrders = new List<Order> { order };
+    }
+
+    private async Task SelectAndMoveOrder()
+    {
+        var order = orders.Skip(14).First();
+        selectedOrders = new List<Order> { order };
+        await table.MoveToItem(order);
+    }
+
+}

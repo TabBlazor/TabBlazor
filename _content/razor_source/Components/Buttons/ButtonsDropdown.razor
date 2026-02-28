@@ -1,0 +1,34 @@
+﻿<ButtonList>
+    <Dropdown>
+        <ChildContent>
+            <Button BackgroundColor="TablerColor.Primary" Type="ButtonType.Button" Text="Click me" IsDropdown />
+        </ChildContent>
+
+        <DropdownTemplate>
+            <DropdownMenu>
+                <DropdownItem>Item 1</DropdownItem>
+                <DropdownItem>Item 2</DropdownItem>
+                <DropdownItem>Item 3</DropdownItem>
+            </DropdownMenu>
+        </DropdownTemplate>
+
+    </Dropdown>
+
+    <Dropdown>
+        <ChildContent>
+            <Button BackgroundColor="TablerColor.Primary" Type="ButtonType.Button" Text="Any content" IsDropdown />
+        </ChildContent>
+
+        <DropdownTemplate>
+            <DropdownMenu class="p-0">
+                <Card class="m-0" Size="CardSize.Default">
+                    <CardBody>
+                        <h1>Aliens...</h1>
+                        <Icon IconType="@TablerIcons.Alien" Size="48" />
+                    </CardBody>
+                </Card>
+            </DropdownMenu>
+        </DropdownTemplate>
+
+    </Dropdown>
+</ButtonList>

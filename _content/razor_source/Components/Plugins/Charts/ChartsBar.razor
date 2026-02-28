@@ -1,0 +1,18 @@
+﻿<div class="row">
+    <div class="col-auto">
+        <ApexChart TItem="Order"
+                   XAxisType="XAxisType.Category">
+
+            <ApexPointSeries TItem="Order"
+                             Items="SampleData.GetOrders()"
+                             SeriesType="SeriesType.Bar"
+                             Name="Net Value"
+                             XValue="@(e => e.OrderType)"
+                             YAggregate="@(e => e.Sum(e => e.NetValue))"
+                             OrderBy="e=>e.X" />
+
+        </ApexChart>
+    </div>
+</div>
+
+

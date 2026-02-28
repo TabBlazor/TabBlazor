@@ -1,0 +1,24 @@
+﻿<ItemSelect Items="customers" @bind-SelectedValues="selectedCustomers" SelectedTextExpression="e=>e.CustomerName" ConvertExpression="e=>e.CustomerId" MultiSelect >
+    <ListTemplate>
+        @context.CustomerName
+    </ListTemplate>
+</ItemSelect>
+
+<div class="mt-3">
+    @foreach (var customer in selectedCustomers)
+    {
+        <div>@customer</div>
+    }
+</div>
+
+@code {
+    List<Customer> customers = Data.SampleData.GetCustomers();
+    List<Guid> selectedCustomers = new List<Guid>();
+
+
+    protected override void OnInitialized()
+    {
+   
+        selectedCustomers.Add(customers.First().CustomerId);
+    }
+}

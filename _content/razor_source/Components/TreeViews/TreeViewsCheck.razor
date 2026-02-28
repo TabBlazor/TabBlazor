@@ -1,0 +1,80 @@
+﻿
+<Row>
+    <RowCol Lg="3">
+        <ItemSelect Label="Checkbox Mode"  Items="EnumHelper.GetList<CheckboxMode>()" @bind-SelectedValue="checkboxMode" />
+    </RowCol>
+</Row>
+<Row>
+    <RowCol Auto>
+        <TreeView @ref="treeView" Items="@folders" ChildSelectorAsync="@(e=> Task.FromResult((IList<FileFolder>)e.SubFolders))" CheckboxMode="checkboxMode" @bind-CheckedItems="checkedFolders">
+            <Template>
+                <Card StatusStart="TablerColor.Danger" Size="CardSize.Small">
+                    <CardBody>
+                        <span>@context.FolderName (@context.SubFolders.Count)</span>
+                    </CardBody>
+                </Card>
+            </Template>
+        </TreeView>
+
+    </RowCol>
+</Row>
+
+
+<div class="mt-3">Checked Folders:</div>
+<ul>
+    @foreach (var folder in checkedFolders)
+    {
+        <li>@folder.FolderName</li>
+    }
+</ul>
+
+@code {
+    private TreeView<FileFolder> treeView;
+    List<FileFolder> folders = new List<FileFolder>();
+    List<FileFolder> checkedFolders = new List<FileFolder>();
+
+    private CheckboxMode checkboxMode = CheckboxMode.Single;
+
+    protected override void OnInitialized()
+    {
+
+        var drawings = new FileFolder("Drawings");
+
+        var architecture = new FileFolder("Arcitecture");
+        architecture.SubFolders.Add(new FileFolder("Folder1"));
+        architecture.SubFolders.Add(new FileFolder("Folder2"));
+        drawings.SubFolders.Add(architecture);
+
+        drawings.SubFolders.Add(new FileFolder("HVAC"));
+        drawings.SubFolders.Add(new FileFolder("Floorplans"));
+        folders.Add(drawings);
+
+        var documents = new FileFolder("Documents");
+        documents.SubFolders.Add(new FileFolder("Instructions"));
+        documents.SubFolders.Add(new FileFolder("History"));
+
+        folders.Add(documents);
+        folders.Add(new FileFolder("Images"));
+
+        checkedFolders = new List<FileFolder> { architecture };
+
+
+    }
+
+
+
+    public class FileFolder
+    {
+        public FileFolder() { }
+
+        public FileFolder(string folderName)
+        {
+            FolderName = folderName;
+        }
+
+        public string FolderName { get; set; }
+        public List<FileFolder> SubFolders { get; set; } = new List<FileFolder>();
+
+    }
+
+}

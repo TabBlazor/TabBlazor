@@ -1,0 +1,16 @@
+﻿<Select Items="Data.SampleData.GetCustomers()"
+            @bind-SelectedValue="selectedCustomer"
+            TextExpression="e=>e.CustomerName"
+            Clearable
+            NoSelectedText="*Select Customer*" />
+<br />
+
+@if (selectedCustomer != null)
+{
+    <div>Selected Customer : </div>
+    @selectedCustomer.CustomerName
+}
+
+@code {
+    private Customer selectedCustomer;
+}

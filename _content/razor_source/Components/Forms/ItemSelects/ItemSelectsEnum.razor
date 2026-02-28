@@ -1,0 +1,15 @@
+﻿
+
+<ItemSelect Label="Enum" TItem="OrderStatus" TValue="OrderStatus" Items="EnumHelper.GetList<OrderStatus>()"  @bind-SelectedValue="orderStatus" Clearable />
+
+<ItemSelect Label="Nullabel Enum" TItem="OrderStatus?" TValue="OrderStatus?" Items="EnumHelper.GetNullableList<OrderStatus>()" @bind-SelectedValue="orderStatusNullable" Clearable />
+
+
+<div class="mt-3">
+   @orderStatus
+</div>
+
+@code {
+    private OrderStatus orderStatus;
+    private OrderStatus? orderStatusNullable;
+}

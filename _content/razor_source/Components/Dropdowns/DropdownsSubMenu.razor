@@ -1,0 +1,48 @@
+﻿<Dropdown>
+    <ChildContent>
+        <Button BackgroundColor="TablerColor.Primary" Type="ButtonType.Button" Text="Click me" IsDropdown />
+    </ChildContent>
+
+    <DropdownTemplate>
+        <DropdownMenu>
+            <DropdownItem>
+                <ChildContent>
+                    Item 1
+                </ChildContent>
+                <SubMenu>
+                    <DropdownItem OnClick=@(() => MenuItemClicked("Sub Item 1"))>Sub Item 1</DropdownItem>
+                    <DropdownItem OnClick=@(() => MenuItemClicked("Sub Item 2"))>Sub Item 2</DropdownItem>
+                </SubMenu>
+            </DropdownItem>
+
+            <DropdownItem OnClick=@(() => MenuItemClicked("Item 2"))>Item 2</DropdownItem>
+            <DropdownItem>
+                <ChildContent>
+                    Item 3
+                </ChildContent>
+                <SubMenu>
+                    <DropdownItem OnClick=@(() => MenuItemClicked("Sub Item 1"))>Sub Item 1</DropdownItem>
+                    <DropdownItem>
+                        <ChildContent>
+                            Sub Item 2
+                        </ChildContent>
+                        <SubMenu>
+                            <DropdownItem OnClick=@(() => MenuItemClicked("Sub Sub Item 1"))>Sub Sub Item 1</DropdownItem>
+                            <DropdownItem OnClick=@(() => MenuItemClicked("Sub Sub Item 2"))>Sub Sub Item 2</DropdownItem>
+                        </SubMenu>
+                    </DropdownItem>
+                </SubMenu>
+            </DropdownItem>
+        </DropdownMenu>
+    </DropdownTemplate>
+</Dropdown>
+
+<div>You clicked: @message</div>
+
+@code {
+    private string message;
+    private void MenuItemClicked(string name)
+    {
+        message = name;
+    }
+}

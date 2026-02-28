@@ -1,0 +1,30 @@
+﻿
+<Row>
+    <RowCol Lg="6">
+        <Carousel @ref=carousel AutoSlide Indicators="CarouselIndicator.Dots" Controls OnItemActive="ItemActive">
+            <CarouselItem ImageSrc="_content/Tabler.Docs/img/photos/36e273986ed577b8.jpg" Data="@("Kalle")" />
+            <CarouselItem ImageSrc="_content/Tabler.Docs/img/photos/0986f97be719fb9a.jpg" Data="@("Anka")" />
+            <CarouselItem ImageSrc="_content/Tabler.Docs/img/photos/1194d63fe36a8670.jpg" Data="@("Roger")"  />
+        </Carousel>
+    </RowCol>
+</Row>
+
+<h3>
+    @message
+</h3>
+
+
+<Button @onclick="@(_ => carousel?.SetActiveItem(1))">Select second</Button>
+@code {
+    private string message;
+
+    private Carousel carousel;
+
+    private void ItemActive(CarouselItem item)
+    {
+
+        message = "Active Item: [" + item?.Data.ToString() + "] " + item?.ImageSrc; 
+
+    }
+
+}

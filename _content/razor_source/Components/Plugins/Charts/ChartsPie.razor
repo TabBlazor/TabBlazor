@@ -1,0 +1,32 @@
+﻿<div class="row">
+    <div class="col-auto">
+        <ApexChart TItem="Order"
+                   Options="GetOptions()">
+
+            <ApexPointSeries TItem="Order"
+            SeriesType="SeriesType.Pie"
+                        Items="SampleData.GetOrders()"
+                        Name="Net Value"
+                        XValue="@(e => e.OrderType.ToString())"
+                        YAggregate="@(e => e.Sum(e => e.NetValue))"
+                        OrderBy="e=>e.X" />
+
+        </ApexChart>
+    </div>
+</div>
+
+
+@code {
+
+    private ApexCharts.ApexChartOptions<Order> GetOptions()
+    {
+        var options = new ApexCharts.ApexChartOptions<Order>();
+        options.Theme = new Theme { Palette = PaletteType.Palette2 };
+        //options.Colors = new List<string> { "#206bc4" };
+        //options.Chart = new Chart { Sparkline = new ChartSparkline { Enabled = true } };
+        return options;
+    }
+
+
+
+}

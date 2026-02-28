@@ -1,0 +1,23 @@
+﻿@using System.Text
+@using Tabler.Docs.Services
+
+@if(content != null) {
+    <ContentViewer height="400" width="100%" ContentType="@contentType" Content="@content" UrlSuffix="#toolbar=1" />
+}
+
+
+@code {
+    private string contentType = "application/pdf";
+    private byte[] content;
+    [Inject] ICodeSnippetService CodeSnippetService { get; set; }
+    [Inject] TablerService TablerService { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+
+        content = await CodeSnippetService.GetSamplePDF();
+
+    }
+
+
+
+}
