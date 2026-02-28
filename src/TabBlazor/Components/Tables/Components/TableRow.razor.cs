@@ -20,7 +20,21 @@ namespace TabBlazor.Components.Tables
 
         protected override void OnInitialized()
         {
-            tableCells = new ElementReference[Table.VisibleColumns.Count + 2];
+            InitializeTableCells();
+        }
+
+        protected override void OnParametersSet()
+        {
+            InitializeTableCells();
+        }
+
+        private void InitializeTableCells()
+        {
+            var requiredSize = Table.VisibleColumns.Count + 2;
+            if (tableCells == null || tableCells.Length != requiredSize)
+            {
+                tableCells = new ElementReference[requiredSize];
+            }
         }
 
         protected int GetTabIndex()
