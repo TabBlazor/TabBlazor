@@ -11,7 +11,7 @@
            @onkeyup="HandleKeyup"
            @onfocus="OnFocus"
            @onblur="OnBlurTriggered"
-           @onkeypress:preventDefault
+           @onabort:stopPropagation
            placeholder="@Placeholder"
            autocomplete="off"
            class="form-control"/>
