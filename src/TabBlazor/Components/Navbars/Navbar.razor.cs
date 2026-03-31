@@ -9,12 +9,14 @@ public partial class Navbar : TablerBaseComponent, IDisposable
     [Parameter] public NavbarBackground Background { get; set; }
     [Parameter] public NavbarDirection Direction { get; set; }
     [Parameter] public bool IsExpanded { get; set; } = true;
+    [Parameter] public PageBreakpoint CollapseAt { get; set; } = PageBreakpoint.Sm;
     [Parameter] public NavLinkMatch? NavLinkMatch { get; set; }
 
     protected string HtmlTag => "div";
 
     protected override string ClassNames => ClassBuilder
-        .Add("navbar navbar-expand-md")
+        .Add("navbar")
+        .Add(CollapseAt.ToNavbarExpandClass())
         .AddIf("navbar-dark", Background == NavbarBackground.Dark)
         .AddIf("navbar-light", Background == NavbarBackground.Light)
         .AddIf("navbar-transparent", Background == NavbarBackground.Transparent)
@@ -71,3 +73,4 @@ public partial class Navbar : TablerBaseComponent, IDisposable
         }
     }
 }
+
