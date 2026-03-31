@@ -72,6 +72,11 @@ namespace TabBlazor.Services
             await jsRuntime.InvokeVoidAsync("tabBlazor.scrollToFragment", fragmentId);
         }
 
+        public async Task ScrollIntoView(string elementId, ScrollIntoViewOptions options)
+        {
+            await jsRuntime.InvokeVoidAsync("tabBlazor.scrollIntoView", options);
+        }
+
         public async Task ShowAlert(string message)
         {
             await jsRuntime.InvokeVoidAsync("tabBlazor.showAlert", message);
