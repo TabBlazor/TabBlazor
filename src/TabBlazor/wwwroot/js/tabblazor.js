@@ -138,7 +138,15 @@
         if (element) {
             element.scrollIntoView({
                 behavior: 'smooth'
-            });
+           });
+        }
+    },
+
+    scrollIntoView: (elementId, options) => {
+        var element = document.getElementById(elementId);
+
+        if (element) {
+            element.scrollIntoView(options);
         }
     },
 
