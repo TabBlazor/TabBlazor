@@ -5,12 +5,12 @@ on:
     branches: [ master ]
 
 env:
-  NETCORE_VERSION: '9.0.x'
+  NETCORE_VERSION: '10.0.x'
 
 jobs:
   build:
     name: Build and test
-    runs-on: windows-2022
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
         with:
