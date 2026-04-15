@@ -27,7 +27,7 @@ dotnet pack src/TabBlazor/TabBlazor.csproj -c Release
 dotnet pack src/TabBlazor.QuickTable.EntityFramework/TabBlazor.QuickTable.EntityFramework.csproj -c Release
 ```
 
-**SDK**: .NET 9.0 (pinned in `global.json`, rollForward: latestMinor)
+**SDK**: .NET 10.0 (pinned in `global.json`, rollForward: latestMinor)
 **Versioning**: Nerdbank.GitVersioning (`version.json`, currently 0.14-beta)
 
 ## Architecture
