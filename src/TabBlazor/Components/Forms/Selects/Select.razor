@@ -5,7 +5,7 @@
 @inherits TablerBaseComponent
 
 
-<div class="input-group input-group-flat">
+<div class="@InputGroupCss">
     <select class="@ClassNames" @onchange="ValueChanged" @attributes="UnmatchedParameters">
         @if (itemList.Count == 0)
         {

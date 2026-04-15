@@ -1,0 +1,29 @@
+@using TabBlazor
+
+<label class="form-label">Customer</label>
+<Autocomplete TItem="Customer" @bind-Value="customerName" SearchMethod="Search" OnItemSelected="SelectedCustomer"
+              DisplayMode="DisplayMode.Flush" Placeholder="Search customer" ShowOptionOnFocus="true">
+    <ResultTemplate>
+        @context.CustomerName
+    </ResultTemplate>
+</Autocomplete>
+<div class="mt-3">
+    Selected Customer: @customerName
+</div>
+
+@code {
+    List<Customer> customers = SampleData.GetCustomers();
+    string customerName;
+
+    private Task<List<Customer>> Search(string arg)
+    {
+        return Task.FromResult(customers.Where(x => x.CustomerName.Contains(arg, StringComparison.InvariantCultureIgnoreCase)).ToList());
+    }
+
+    private void SelectedCustomer(Customer customer)
+    {
+        customerName = customer.CustomerName;
+    }
+
+}
+

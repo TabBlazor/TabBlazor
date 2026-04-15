@@ -18,6 +18,7 @@ namespace TabBlazor
         [Parameter] public string ItemListEmptyText { get; set; } = "*No items*";
         [Parameter] public string NoSelectedText { get; set; } = "*Select*";
         [Parameter] public bool Clearable { get; set; }
+        [Parameter] public DisplayMode DisplayMode { get; set; } = DisplayMode.Default;
 
         protected List<ListItem<TItem, TValue>> itemList = new();
 
@@ -41,6 +42,11 @@ namespace TabBlazor
 
         protected override string ClassNames => ClassBuilder
           .Add("form-control form-select")
+          .AddIf("form-control-flush", DisplayMode == DisplayMode.Flush)
+          .ToString();
+
+        private string InputGroupCss => new ClassBuilder()
+          .AddIf("input-group input-group-flat", Clearable)
           .ToString();
 
         protected bool IsSelected(TValue value)

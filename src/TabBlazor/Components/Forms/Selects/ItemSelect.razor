@@ -19,8 +19,8 @@
                     }
                     else
                     {
-                        <div class="input-group input-group-flat">
-                            <div class="form-control form-select @FieldCssClasses" tabindex="0">
+                        <div class="@InputGroupCss">
+                            <div class="form-control form-select @FieldCssClasses @GetCssClasses()" tabindex="0">
                                 @if (!selectedItems.Any())
                                 {
                                     @NoSelectedText

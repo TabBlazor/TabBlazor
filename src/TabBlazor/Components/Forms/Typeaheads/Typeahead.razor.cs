@@ -27,10 +27,16 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent, IDisposable
     [Parameter] public string ListWidth { get; set; }
     [Parameter] public Func<TValue, string> SelectedTextExpression { get; set; }
     [Parameter] public bool ShowOptionOnFocus { get; set; }
-    
+    [Parameter] public DisplayMode DisplayMode { get; set; } = DisplayMode.Default;
+
     [CascadingParameter] private EditContext CascadedEditContext { get; set; }
 
     private string FieldCssClasses { get; set; }
+    private string InputCssClasses => new ClassBuilder()
+        .Add("form-control")
+        .Add(FieldCssClasses)
+        .AddIf("form-control-flush", DisplayMode == DisplayMode.Flush)
+        .ToString();
     private FieldIdentifier? fieldIdentifier;
     private IEnumerable<TItem> listItems;
     private string searchText;

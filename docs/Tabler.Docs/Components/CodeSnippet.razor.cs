@@ -41,11 +41,11 @@ namespace Tabler.Docs.Components
                     html = html.Substring(0, index);
                 }
 
+                html = html.TrimEnd();
                 var code = formatter.GetHtmlString(html, Languages.Html);
-
                 if (!string.IsNullOrWhiteSpace(cSharp))
                 {
-                    code += "<div class='mt-1'>" + formatter.GetHtmlString(cSharp, Languages.CSharp) + "</div>";
+                    code += "<div class='mt-1'>" + formatter.GetHtmlString(cSharp.TrimEnd(), Languages.CSharp) + "</div>";
                 }
 
 
