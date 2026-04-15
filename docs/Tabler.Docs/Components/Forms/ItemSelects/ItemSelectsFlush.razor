@@ -1,0 +1,12 @@
+﻿
+<ItemSelect Items="customers" @bind-SelectedValue="selectedCustomer" SelectedTextExpression="e=>e.CustomerName" DisplayMode="DisplayMode.Flush">
+    <ListTemplate>
+        @context.CustomerName
+    </ListTemplate>
+</ItemSelect>
+
+
+@code {
+    List<Customer> customers = Data.SampleData.GetCustomers();
+    Customer selectedCustomer;
+}

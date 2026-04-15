@@ -1,5 +1,12 @@
-﻿<ValueInput class="mb-2" @bind-Value="intValue" Label="int value" />
-<span class="mb-3">Int Value: @intValue</span>
+﻿<div class="form-group mb-3">
+    <ValueInput class="" @bind-Value="intValue" Label="INT"/>
+    <span class="mb-3">INT Value: @intValue</span>
+</div>
+
+<div class="form-group">
+    <ValueInput class="" @bind-Value="guidValue" Label="GUID"/>
+    <span class="mb-3">GUID Value: @guidValue</span>
+</div>
 
 @code {
     int intValue = 1234;

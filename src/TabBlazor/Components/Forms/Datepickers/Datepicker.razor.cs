@@ -16,9 +16,15 @@ namespace TabBlazor
         [Parameter] public EventCallback<TValue> SelectedDateChanged { get; set; }
         [Parameter] public Expression<Func<TValue>> SelectedDateExpression { get; set; }
         [Parameter] public string Label { get; set; }
+        [Parameter] public DisplayMode DisplayMode { get; set; } = DisplayMode.Default;
         [CascadingParameter] private EditContext CascadedEditContext { get; set; }
 
         private string FieldCssClasses { get; set; }
+        private string InputCssClasses => new ClassBuilder()
+            .Add("form-control cursor-pointer")
+            .Add(FieldCssClasses)
+            .AddIf("form-control-flush", DisplayMode == DisplayMode.Flush)
+            .ToString();
         private FieldIdentifier? fieldIdentifier;
         private TValue value;
         private DateTimeOffset currentDate = DateTimeOffset.Now;

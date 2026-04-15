@@ -17,12 +17,14 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
         new ClassBuilder()
             .Add(ValidationClasses)
             .Add("form-control")
+            .AddIf("form-control-flush", DisplayMode == DisplayMode.Flush)
             .AddIf(CssClass, CssClass != null)
             .ToString();
 
     private FieldIdentifier FieldIdentifier { get; set; }
 
     [Parameter] public string CssClass { get; set; }
+    [Parameter] public DisplayMode DisplayMode { get; set; } = DisplayMode.Default;
     [Parameter] public string ResultHeader { get; set; }
     [Parameter] public RenderFragment<TItem> ResultTemplate { get; set; }
     [Parameter] public RenderFragment NotFoundTemplate { get; set; }

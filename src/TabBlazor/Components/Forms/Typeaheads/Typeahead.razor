@@ -10,7 +10,7 @@
             <div class="input-icon" @onclick:stopPropagation>
                 @if (SelectedValue != null && !isInput)
                 {
-                    <span class="form-control @FieldCssClasses" tabindex=0
+                    <span class="@InputCssClasses" tabindex=0
                           @onclick="@(() => SetInput(true))"> @SelectedTextExpression(SelectedValue)</span>
                     <span class="input-icon-addon" tabindex=0>
                         <Icon IconType="@InternalIcons.X" class="icon" OnClick="ClearSelected"/>
@@ -18,7 +18,7 @@
                 }
                 else
                 {
-                    <input class="form-control @FieldCssClasses" @ref="input" @bind="SearchText" type="text"
+                    <input class="@InputCssClasses" @ref="input" @bind="SearchText" type="text"
                            @bind:event="oninput"
                            placeholder="@SearchPlaceholderText" @onfocus="() => SetInput(true)"
                            @onblur="@(() => SetInput(false))">
