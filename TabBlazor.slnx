@@ -5,6 +5,7 @@
     <File Path=".github/workflows/ci.yml" />
     <File Path=".github/workflows/create-release.yml" />
     <File Path=".github/workflows/manual-build.yml" />
+    <File Path=".github\copilot-instructions.md" />
   </Folder>
   <Folder Name="/.items/">
     <File Path="Directory.Packages.props" />
