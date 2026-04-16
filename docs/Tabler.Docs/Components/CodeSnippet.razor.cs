@@ -15,9 +15,9 @@ namespace Tabler.Docs.Components
         [CascadingParameter] DocsExample DocsExample { get; set; }
         [Parameter] public string Title { get; set; }
         [Parameter] public bool SetBackground { get; set; }
-        [Parameter] public string ClassName { get; set; }
+        public string ClassName { get; set; }
+        [Parameter] public Type Component { get; set; }
         [Parameter] public RenderFragment Description { get; set; }
-        [Parameter] public RenderFragment Example { get; set; }
 
         protected string Code;
 
@@ -25,6 +25,8 @@ namespace Tabler.Docs.Components
 
         protected override async Task OnInitializedAsync()
         {
+            ClassName ??= Component.ToString();
+            
             DocsExample.AddCodeSnippet(this);
 
             if (!string.IsNullOrWhiteSpace(ClassName) && string.IsNullOrEmpty(Code))
