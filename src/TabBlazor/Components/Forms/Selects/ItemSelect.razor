@@ -10,7 +10,7 @@
 
 <Dimmer Active="Disabled" ShowSpinner="false">
     <div @onkeydown="OnKey" @onkeydown:stopPropagation="dropdown?.IsExpanded==true" class="@FieldCssClasses">
-        <Dropdown @ref="dropdown" CloseOnClick="false" OnExpanded="DropdownExpanded">
+        <Dropdown @ref="dropdown" CloseOnClick="false" OnExpanded="DropdownExpanded" Positioning="Positioning" Placement="Placement">
             <ChildContent>
                 <div @onkeydown:preventDefault="dropdown?.IsExpanded==true">
                     @if (SelectedTemplate != null)

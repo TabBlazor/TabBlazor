@@ -5,7 +5,7 @@
 @typeparam TValue
 
 <div class=" @FieldCssClasses">
-    <Dropdown @ref=dropdown CloseOnClick="false">
+    <Dropdown @ref=dropdown CloseOnClick="false" Positioning="Positioning" Placement="Placement">
         <ChildContent>
             <div class="input-icon" @onclick:stopPropagation>
                 @if (SelectedValue != null && !isInput)

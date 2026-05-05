@@ -1,0 +1,52 @@
+<p class="text-secondary">
+    Each row's "Assigned to" cell contains an <code>ItemSelect</code> with
+    <code>Positioning="Positioning.Fixed"</code>. The dropdown menu escapes the
+    table's overflow clipping instead of being clipped or pushed below the row.
+</p>
+
+<div style="max-height: 220px; overflow: auto; border: 1px solid var(--tblr-border-color);">
+    <table class="table table-vcenter card-table">
+        <thead>
+            <tr>
+                <th>Order</th>
+                <th>Status</th>
+                <th>Assigned to</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in rows)
+            {
+                <tr>
+                    <td class="fw-bold">@row.Id</td>
+                    <td><Badge BackgroundColor="TablerColor.Green">Open</Badge></td>
+                    <td style="min-width: 220px;">
+                        <ItemSelect TItem="Customer" TValue="Customer"
+                                    Items="customers"
+                                    SelectedValue="row.AssignedTo"
+                                    SelectedValueChanged="@(c => row.AssignedTo = c)"
+                                    SelectedTextExpression="c => c.CustomerName"
+                                    Positioning="Positioning.Fixed"
+                                    Placement="Placement.BottomStart"
+                                    NoSelectedText="*Pick assignee*">
+                            <ListTemplate>@context.CustomerName</ListTemplate>
+                        </ItemSelect>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    record Row(string Id) { public Customer AssignedTo { get; set; } }
+
+    List<Customer> customers = Data.SampleData.GetCustomers();
+    List<Row> rows = new()
+    {
+        new Row("ORD-1042"),
+        new Row("ORD-1043"),
+        new Row("ORD-1044"),
+        new Row("ORD-1045"),
+        new Row("ORD-1046"),
+    };
+}

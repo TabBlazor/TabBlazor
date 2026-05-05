@@ -28,15 +28,19 @@ function ensurePopper(scriptUrl) {
 export async function create(reference, popper, options, scriptUrl) {
     const lib = await ensurePopper(scriptUrl);
 
+    const boundary = options.strategy === 'fixed' ? document.body : 'clippingParents';
+
     const popperOpts = {
         placement: options.placement,
         strategy: options.strategy,
         modifiers: [
             { name: 'offset', options: { offset: [0, options.offset || 0] } },
-            { name: 'preventOverflow', options: { padding: 8 } },
-            { name: 'flip', options: { padding: 8 } }
+            { name: 'preventOverflow', options: { padding: 8, boundary } },
+            { name: 'flip', options: { padding: 8, boundary } }
         ]
     };
+
+    popper.style.zIndex = popper.style.zIndex || '1080';
 
     const instance = lib.createPopper(reference, popper, popperOpts);
 

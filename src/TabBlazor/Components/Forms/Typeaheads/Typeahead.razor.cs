@@ -28,6 +28,8 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent, IDisposable
     [Parameter] public Func<TValue, string> SelectedTextExpression { get; set; }
     [Parameter] public bool ShowOptionOnFocus { get; set; }
     [Parameter] public DisplayMode DisplayMode { get; set; } = DisplayMode.Default;
+    [Parameter] public Positioning Positioning { get; set; } = Positioning.Default;
+    [Parameter] public Placement Placement { get; set; } = Placement.BottomStart;
 
     [CascadingParameter] private EditContext CascadedEditContext { get; set; }
 

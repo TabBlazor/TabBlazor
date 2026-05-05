@@ -1,0 +1,8 @@
+.popper-host {
+    display: inline-block;
+}
+
+.popper-host ::deep .dropdown-menu {
+    position: static;
+    margin: 0;
+}

@@ -1,0 +1,21 @@
+@inject IModalService ModalService
+
+<p class="text-secondary">
+    Open the modal and use the assignee select. The result list escapes the
+    scrollable modal body.
+</p>
+
+<Button @onclick="ShowModal" BackgroundColor="TablerColor.Primary">Open modal with select</Button>
+<div class="mt-2">@message</div>
+
+@code {
+    string message;
+
+    async Task ShowModal()
+    {
+        message = string.Empty;
+        var component = new RenderComponent<ItemSelectsInModalContent>();
+        var result = await ModalService.ShowAsync("Assign customer", component, new ModalOptions { Size = ModalSize.Medium });
+        message = result.Cancelled ? "Cancelled" : "Saved";
+    }
+}
