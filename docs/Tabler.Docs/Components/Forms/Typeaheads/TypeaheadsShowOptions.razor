@@ -2,8 +2,8 @@
     Selected Customer: @selectedCustomer?.CustomerName
 </div>
 
-<Typeahead SearchMethod="SearchCustomers" @bind-SelectedValue=selectedCustomer
-           Debounce="1" MinimumLength=1 SearchPlaceholderText="Search customer..."
+<Typeahead SearchMethod="SearchCustomers" @bind-SelectedValue="selectedCustomer"
+           Debounce="1" MinimumLength="1" SearchPlaceholderText="Search customer..."
            ListWidth="100%"
            SelectedTextExpression="e=>e.CustomerName" ShowOptionOnFocus="true">
 
@@ -14,7 +14,7 @@
 
 @code {
     private Customer selectedCustomer;
-    private List<Customer> customers = Data.SampleData.GetCustomers();
+    private readonly List<Customer> customers = SampleData.GetCustomers();
 
     private async Task<IEnumerable<Customer>> SearchCustomers(string searchText)
     {
