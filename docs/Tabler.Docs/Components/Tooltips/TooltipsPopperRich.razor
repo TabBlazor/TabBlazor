@@ -1,0 +1,82 @@
+<div class="d-flex gap-4 flex-wrap">
+    <Tooltip Positioning="Positioning.Absolute" Placement="Placement.Right" Offset="12">
+        <ChildContent>
+            <Button BackgroundColor="TablerColor.Primary">
+                <Icon IconType="@TablerIcons.User" class="me-2" /> User details
+            </Button>
+        </ChildContent>
+        <TooltipTemplate>
+            <div class="tooltip-card">
+                <div class="d-flex align-items-center mb-2">
+                    <Avatar Size="AvatarSize.Medium" BackgroundColor="TablerColor.Azure">JD</Avatar>
+                    <div class="ms-2 text-start">
+                        <div class="fw-bold">Jane Doe</div>
+                        <div class="text-secondary small">Engineering · Stockholm</div>
+                    </div>
+                </div>
+                <table class="table table-sm table-borderless m-0 text-start">
+                    <tbody>
+                        <tr>
+                            <td class="pe-3"><Icon IconType="@TablerIcons.Mail" Size="16" class="me-1" /> Email</td>
+                            <td>jane@example.com</td>
+                        </tr>
+                        <tr>
+                            <td class="pe-3"><Icon IconType="@TablerIcons.Phone" Size="16" class="me-1" /> Phone</td>
+                            <td>+46 70 123 45 67</td>
+                        </tr>
+                        <tr>
+                            <td class="pe-3"><Icon IconType="@TablerIcons.Map_pin" Size="16" class="me-1" /> Office</td>
+                            <td>HQ · Floor 3</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </TooltipTemplate>
+    </Tooltip>
+
+    <Tooltip Positioning="Positioning.Absolute" Placement="Placement.Bottom" Offset="12">
+        <ChildContent>
+            <Button BackgroundColor="TablerColor.Green">
+                <Icon IconType="@TablerIcons.Chart_bar" class="me-2" /> Stats
+            </Button>
+        </ChildContent>
+        <TooltipTemplate>
+            <div class="tooltip-card">
+                <div class="fw-bold mb-2">Last 7 days</div>
+                <table class="table table-sm table-borderless m-0 text-start">
+                    <tbody>
+                        <tr>
+                            <td><Icon IconType="@TablerIcons.Trending_up" Size="16" class="me-1 text-green" /> Visits</td>
+                            <td class="text-end fw-bold">12,403</td>
+                        </tr>
+                        <tr>
+                            <td><Icon IconType="@TablerIcons.Shopping_cart" Size="16" class="me-1 text-blue" /> Orders</td>
+                            <td class="text-end fw-bold">312</td>
+                        </tr>
+                        <tr>
+                            <td><Icon IconType="@TablerIcons.Alert_triangle" Size="16" class="me-1 text-orange" /> Errors</td>
+                            <td class="text-end fw-bold">7</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </TooltipTemplate>
+    </Tooltip>
+</div>
+
+<style>
+    .tooltip-card {
+        min-width: 260px;
+        padding: 0.5rem 0.25rem;
+    }
+
+    .tooltip-card .table td {
+        color: #fff;
+        padding: 0.15rem 0.25rem;
+        border: none;
+    }
+
+    .tooltip-card .text-secondary {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+</style>
