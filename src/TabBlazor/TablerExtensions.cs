@@ -15,7 +15,10 @@ namespace TabBlazor
 
             services.Configure(tablerOptions);
 
-            return services
+            var probe = new TablerOptions();
+            tablerOptions(probe);
+
+            services
                 .AddScoped<ToastService>()
                 .AddScoped<TablerService>()
                 .AddScoped<IOffcanvasService, OffcanvasService>()
@@ -23,6 +26,13 @@ namespace TabBlazor
                 .AddScoped<TableFilterService>()
                 .AddScoped<IFormValidator, TablerDataAnnotationsValidator>()
                 .AddSingleton<FlagService>();
+
+            if (probe.EnablePopper)
+            {
+                services.AddScoped<IPopperService, PopperService>();
+            }
+
+            return services;
         }
 
         public static TabBlazorBuilder AddTabBlazor(this IServiceCollection services, Action<TablerOptions> tablerOptions = null)

@@ -1,6 +1,13 @@
-﻿@namespace TabBlazor
-<div class="tooltip-wrapper">
-    <span>
+@namespace TabBlazor
+@using TabBlazor.Services
+@implements IAsyncDisposable
+@inject IServiceProvider ServiceProvider
+
+<div class="tooltip-wrapper @(UsePopper ? "popper" : null)"
+     @ref="referenceEl"
+     @onmouseover="@OnMouseOverAsync"
+     @onmouseout="@OnMouseOutAsync">
+    <div class="tooltip-content" @ref="popperEl" role="tooltip">
         @if (TooltipTemplate != null)
         {
             @TooltipTemplate
@@ -9,8 +16,7 @@
         {
             @Text
         }
-
-    </span>
+    </div>
     @ChildContent
 </div>
 
@@ -18,4 +24,52 @@
     [Parameter] public RenderFragment ChildContent { get; set; }
     [Parameter] public RenderFragment TooltipTemplate { get; set; }
     [Parameter] public string Text { get; set; }
+    [Parameter] public Positioning Positioning { get; set; } = Positioning.Default;
+    [Parameter] public Placement Placement { get; set; } = Placement.Top;
+    [Parameter] public int Offset { get; set; } = 8;
+
+    private ElementReference referenceEl;
+    private ElementReference popperEl;
+    private IPopperService popperService;
+    private IPopperInstance popperInstance;
+    private bool UsePopper => Positioning != Positioning.Default;
+
+    protected override void OnInitialized()
+    {
+        if (UsePopper)
+        {
+            popperService = (IPopperService)ServiceProvider.GetService(typeof(IPopperService))
+                ?? throw new InvalidOperationException(
+                    "Popper not registered. Set TablerOptions.EnablePopper = true in AddTabBlazor.");
+        }
+    }
+
+    private async Task OnMouseOverAsync()
+    {
+        if (!UsePopper) return;
+        if (popperInstance == null)
+        {
+            popperInstance = await popperService.CreateAsync(referenceEl, popperEl, new PopperOptions
+            {
+                Placement = Placement,
+                Strategy = Positioning,
+                Offset = Offset
+            });
+        }
+        await popperInstance.ShowAsync();
+    }
+
+    private async Task OnMouseOutAsync()
+    {
+        if (!UsePopper || popperInstance == null) return;
+        await popperInstance.HideAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (popperInstance != null)
+        {
+            await popperInstance.DisposeAsync();
+        }
+    }
 }

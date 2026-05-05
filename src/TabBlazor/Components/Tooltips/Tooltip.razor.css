@@ -1,15 +1,10 @@
-﻿.tooltip-wrapper {
+.tooltip-wrapper {
     position: relative;
     display: inline-block;
 }
 
-span {
+.tooltip-content {
     visibility: hidden;
-    position: absolute;
-   /* width: 120px;*/
-    bottom: 100%;
-    left: 50%;
-    margin-left: -60px;
     background-color: #363636;
     color: #fff;
     text-align: center;
@@ -18,17 +13,37 @@ span {
     z-index: 1;
 }
 
-    span::after {
-        content: "";
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        margin-left: -5px;
-        border-width: 5px;
-        border-style: solid;
-        border-color: #555 transparent transparent transparent;
-    }
+/* Default mode: pure CSS positioning */
+.tooltip-wrapper:not(.popper) .tooltip-content {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px;
+}
 
-.tooltip-wrapper:hover span {
+.tooltip-wrapper:not(.popper) .tooltip-content::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.tooltip-wrapper:not(.popper):hover .tooltip-content {
+    visibility: visible;
+}
+
+/* Popper mode: take out of flow immediately so the trigger doesn't shift on first show.
+   Popper overwrites top/left via inline transform once createPopper runs. */
+.tooltip-wrapper.popper .tooltip-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.tooltip-wrapper.popper .tooltip-content[data-show] {
     visibility: visible;
 }

@@ -15,6 +15,7 @@ namespace Tabler.Docs
                .AddTabler(options =>
                {
                    options.AssemblyScanFilter = () => [typeof(Flags).Assembly];
+                   options.EnablePopper = true;
                })
                .AddSingleton<AppService>();
         }
