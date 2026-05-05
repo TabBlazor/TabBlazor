@@ -1,0 +1,10 @@
+<Datepicker @bind-SelectedDate="selectedDate" DisplayMode="DisplayMode.Flush" />
+
+<div class="mt-3">
+    Selected Date: @selectedDate.ToString("d")
+</div>
+
+@code {
+    private DateTimeOffset selectedDate = DateTimeOffset.Now.Date;
+}
+

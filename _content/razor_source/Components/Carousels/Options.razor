@@ -1,0 +1,53 @@
+﻿
+<DataGrid>
+    <DataGridItem Title="Controls">
+        <Checkbox Switch @bind-Value=controls />
+    </DataGridItem>
+
+    <DataGridItem Title="AutoSlide">
+        <Checkbox Switch @bind-Value=autoSlide />
+    </DataGridItem>
+
+    <DataGridItem Title="Slide Interval">
+        <InputNumber @bind-Value=slideInterval class="form-control" />
+    </DataGridItem>
+
+    <DataGridItem Title="Slide Interval">
+        <InputNumber @bind-Value=slideInterval class="form-control" />
+    </DataGridItem>
+
+
+    <DataGridItem Title="Indicators">
+        <ItemSelect Items="EnumHelper.GetList<CarouselIndicator>()" @bind-SelectedValue="indicator" />
+    </DataGridItem>
+
+      <DataGridItem Title="Indicators Direction">
+      <ItemSelect Items="EnumHelper.GetList<CarouselIndicatorDirection>()" @bind-SelectedValue="indicatorDirection" />
+  </DataGridItem>
+   
+</DataGrid>
+
+
+
+<Row class="mt-3">
+    <RowCol Lg="6">
+        <Carousel Controls=controls AutoSlide=autoSlide SlideInterval=slideInterval Indicators="indicator" IndicatorsDirection="indicatorDirection">
+            <CarouselItem ImageSrc="_content/Tabler.Docs/img/photos/36e273986ed577b8.jpg" />
+            <CarouselItem ImageSrc="_content/Tabler.Docs/img/photos/0986f97be719fb9a.jpg" />
+            <CarouselItem ImageSrc="_content/Tabler.Docs/img/photos/1194d63fe36a8670.jpg" />
+            <CarouselItem ImageSrc="_content/Tabler.Docs/img/photos/3d2998219313cd37.jpg" />
+            <CarouselItem ImageSrc="_content/Tabler.Docs/img/photos/3b05a157d2edde04.jpg" />
+            <CarouselItem ImageSrc="_content/Tabler.Docs/img/photos/4f668538bdd3fd7f.jpg" />
+            
+            
+        </Carousel>
+    </RowCol>
+</Row>
+
+@code {
+    private bool controls = true;
+    private bool autoSlide = true;
+    private int slideInterval = 5000;
+    private CarouselIndicator indicator = CarouselIndicator.Default;
+    private CarouselIndicatorDirection indicatorDirection;
+}

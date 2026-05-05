@@ -1,0 +1,39 @@
+﻿@page "/docs/tooltips"
+
+<Page>
+    <DocsExample Title="Tooltip" ComponentType="typeof(TabBlazor.Tooltip)">
+
+        <CodeSnippet Component="@typeof(TooltipsBasic)" Title="Basics"/>
+          
+        <CodeSnippet Component="@typeof(TooltipsTemplate)" Title="Template">
+            <Description>
+                The tool tip can hold a template
+            </Description>
+        </CodeSnippet>
+
+        <CodeSnippet Component="@typeof(TooltipsPopper)" Title="Popper positioning">
+            <Description>
+                Opt-in popper.js positioning via <code>Positioning</code> and <code>Placement</code>.
+                Requires <code>options.EnablePopper = true</code> in <code>AddTabBlazor</code>. The
+                popper script loads lazily on first use. <code>flip</code> and <code>preventOverflow</code>
+                modifiers keep the tooltip on screen automatically.
+            </Description>
+        </CodeSnippet>
+
+        <CodeSnippet Component="@typeof(TooltipsPopperRich)" Title="Rich content (table + icons)">
+            <Description>
+                Popper-positioned tooltips can render arbitrary HTML via <code>TooltipTemplate</code>.
+                Useful for user cards, stats panels, previews — anything that would be cramped in a
+                CSS-only tooltip.
+            </Description>
+        </CodeSnippet>
+
+        <CodeSnippet Component="@typeof(TooltipsPopperFixed)" Title="Fixed strategy in scroll container">
+            <Description>
+                Use <code>Positioning.Fixed</code> when the tooltip lives inside a clipping ancestor
+                (scroll container, modal) and you want it to escape.
+            </Description>
+        </CodeSnippet>
+
+    </DocsExample>
+</Page>

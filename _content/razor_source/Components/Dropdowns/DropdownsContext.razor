@@ -1,0 +1,24 @@
+﻿<Dropdown @ref="dropdown">
+    <DropdownTemplate>
+        <DropdownMenu>
+            <DropdownItem>Item 1</DropdownItem>
+            <DropdownItem>Item 2</DropdownItem>
+            <DropdownItem>Item 3</DropdownItem>
+        </DropdownMenu>
+    </DropdownTemplate>
+</Dropdown>
+
+
+<div @oncontextmenu="openMenu" @oncontextmenu:preventDefault>
+    Right click me to open context menu..
+</div>
+
+
+@code {
+    private Dropdown dropdown;
+    private void openMenu(MouseEventArgs e)
+    {
+        dropdown.OpenAsContextMenu(e);
+    }
+
+}

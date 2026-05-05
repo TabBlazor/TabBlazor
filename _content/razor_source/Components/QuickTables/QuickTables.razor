@@ -1,0 +1,16 @@
+﻿@page "/docs/quick-tables"
+@using TabBlazor.Components.QuickTables
+<style type="text/css">
+    .quick-table-example {
+        height:  300px;
+    }
+</style>
+<Page>
+    <DocsExample Title="Table" ComponentType="typeof(QuickTable<>)">
+        <CodeSnippet SetBackground Component="@typeof(QuickTablesInMemory)" Title="In Memory"/> 
+        
+        <CodeSnippet SetBackground Component="@typeof(QuickTablesEF)" Title="Entity Framework"/>
+        
+        <CodeSnippet SetBackground Component="@typeof(QuickTablesVirtualize)" Title="Virtualize"/>
+    </DocsExample>
+</Page>

@@ -1,0 +1,37 @@
+﻿@using System.Globalization
+<ItemSelect Label="Set Culture"
+            SearchMethod="SearchCulture"
+            Items="@cultures"
+            SelectedTextExpression="e=>e.EnglishName"
+            @bind-SelectedValue=" culture"
+            Changed="CultureChanged"
+            MaxListHeight="300px">
+    <ListTemplate>
+        @context.EnglishName
+    </ListTemplate>
+</ItemSelect>
+<div class="mt-3" />
+
+<Datepicker @bind-SelectedDate="selectedDate" Label="Select a date" />
+
+<div class="mt-3">
+    Selected Date: @selectedDate.ToString("d")
+</div>
+
+@code {
+    private DateTimeOffset selectedDate = DateTimeOffset.Now.AddDays(14).Date;
+    List<CultureInfo> cultures = CultureInfo.GetCultures(CultureTypes.NeutralCultures).ToList();
+    private CultureInfo culture = CultureInfo.CurrentCulture;
+
+    private List<CultureInfo> SearchCulture(string searchText)
+    {
+        return cultures.Where(e => e.EnglishName.Contains(searchText, StringComparison.InvariantCultureIgnoreCase)).ToList();
+    }
+
+    private void CultureChanged()
+    {
+        CultureInfo.DefaultThreadCurrentCulture = culture;
+    }
+
+}
+

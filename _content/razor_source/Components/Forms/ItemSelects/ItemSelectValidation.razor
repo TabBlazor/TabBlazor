@@ -1,0 +1,46 @@
+﻿@using System.ComponentModel.DataAnnotations
+<TablerForm @ref="Form" Model="Model" OnValidSubmit="Submit">
+    <ItemSelect Items="customers" @bind-SelectedValues="Model.Customers" SelectedTextExpression="e => e.CustomerName" MultiSelect>
+        <ListTemplate>
+            @context.CustomerName
+        </ListTemplate>
+    </ItemSelect>
+    <TabValidationMessage For="() => Model.Customers"></TabValidationMessage>
+    <Button BackgroundColor="TablerColor.Primary" Type="ButtonType.Submit" Text="Save" class="mt-1"></Button>
+</TablerForm>
+
+@code {
+    List<Customer> customers;
+
+    private SelectModel Model { get; set; }
+    private TablerForm Form { get; set; }
+
+    protected override void OnInitialized()
+    {
+        customers = SampleData.GetCustomers();
+        Model = new SelectModel
+        {
+            Customers = new List<Customer>()
+        };
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Form.Validate();
+        }
+    }
+
+    public class SelectModel
+    {
+        [Required, MinLength(2)]
+        public List<Customer> Customers { get; set; } = new();
+    }
+
+    private void Submit()
+    {
+        Model.Customers.Clear();
+        StateHasChanged();
+    }
+}

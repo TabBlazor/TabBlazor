@@ -1,0 +1,41 @@
+@using System.ComponentModel.DataAnnotations
+<TablerForm @ref="Form" Model="Model" OnValidSubmit="Submit">
+    <div class="form-group mb-3">
+        <ValueInput @bind-Value="Model.Amount" Label="Amount" />
+        <TabValidationMessage For="() => Model.Amount"></TabValidationMessage>
+    </div>
+    <div class="form-group mb-3">
+        <ValueInput @bind-Value="Model.Id" Label="GUID" />
+        <TabValidationMessage For="() => Model.Id"></TabValidationMessage>
+    </div>
+    <Button BackgroundColor="TablerColor.Primary" Type="ButtonType.Submit" Text="Save" class="mt-1"></Button>
+</TablerForm>
+
+@code {
+    private ValueInputModel Model { get; set; } = new();
+    private TablerForm Form { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Form.Validate();
+        }
+    }
+
+    public class ValueInputModel
+    {
+        [Required]
+        [Range(1, 1000, ErrorMessage = "Amount must be between 1 and 1000")]
+        public int Amount { get; set; }
+
+        [Required(ErrorMessage = "A valid GUID is required")]
+        public Guid Id { get; set; } = Guid.NewGuid();
+    }
+
+    private void Submit()
+    {
+        Model = new ValueInputModel();
+        StateHasChanged();
+    }
+}

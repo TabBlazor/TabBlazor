@@ -1,0 +1,68 @@
+﻿@using TabBlazor.Components.Modals
+@using Microsoft.AspNetCore.Components
+@using System.ComponentModel.DataAnnotations
+
+<TablerForm Model="@Model" OnValidSubmit="Submit">
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <InputText class="form-control" @bind-Value="Model.Name"></InputText>
+        <TabValidationMessage For="(() => Model.Name)"></TabValidationMessage>
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label">Birthday</label>
+        <Datepicker class="form-control" @bind-SelectedDate="Model.Birthday" />
+        <TabValidationMessage For="(() => Model.Birthday)"></TabValidationMessage>
+    </div>
+
+    <Typeahead SearchMethod="SearchCustomers" @bind-SelectedValue=Model.Relation
+               Debounce="1" MinimumLength=1 SearchPlaceholderText="Search customer..." ListWidth="100%"
+               SelectedTextExpression="e=>e.CustomerName">
+
+        <ListTemplate>
+            @context.CustomerName
+        </ListTemplate>
+    </Typeahead>
+    <TabValidationMessage For="() => Model.Relation"/>
+
+    <Button Type="ButtonType.Submit" Text="Save" class="mt-1"></Button>
+</TablerForm>
+
+@code {
+    [Inject] public IModalService Modal { get; set; }
+    
+    public class Person
+    {
+        [Required]
+        [StringLength(10)]
+        public string Name { get; set; }
+        
+        [Required]
+        public DateTimeOffset? Birthday { get; set; }
+        
+        [Required]
+        public Customer Relation { get; set; }
+    }
+    
+    private List<Customer> customers = Data.SampleData.GetCustomers();
+
+    private Person Model { get; set; } = new Person()
+    {
+        Name = "Mr. Tab Blazor"
+    };
+
+    private async Task Submit(EditContext obj)
+    {
+        await Modal.ShowDialogAsync(new DialogOptions()
+        {
+            MainText = "Form Is Valid",
+            SubText = $"Name: {Model.Name} Birthday: {Model.Birthday:d} Relation: {Model.Relation.CustomerName}"
+        });
+    }
+    
+    private async Task<IEnumerable<Customer>> SearchCustomers(string searchText)
+    {
+        await Task.Delay(500); //Simulate a loading time
+        return customers.Where(e => e.CustomerName.Contains(searchText, StringComparison.CurrentCultureIgnoreCase));
+    }
+}

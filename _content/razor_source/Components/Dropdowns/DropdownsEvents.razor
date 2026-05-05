@@ -1,0 +1,35 @@
+﻿<Row>
+    <RowCol Auto>
+        <Dropdown OnExpanded=Expanded>
+            <ChildContent>
+                <Button BackgroundColor="TablerColor.Primary" Type="ButtonType.Button" Text="Click me" IsDropdown />
+            </ChildContent>
+
+            <DropdownTemplate>
+                <DropdownMenu>
+                    <span class="dropdown-header">Dropdown header</span>
+                    <DropdownItem Active>Active</DropdownItem>
+                    <DropdownItem>Normal</DropdownItem>
+                    <div class="dropdown-divider"></div>
+                    <DropdownItem Disabled>Disabled</DropdownItem>
+                </DropdownMenu>
+            </DropdownTemplate>
+        </Dropdown>
+    </RowCol>
+
+    <RowCol Auto>
+        @message
+    </RowCol>
+</Row>
+
+@code {
+    private string message;
+    private void Expanded(bool expanded)
+    {
+        message = "Dropdown expanded: " + expanded;
+    }
+
+
+
+
+}

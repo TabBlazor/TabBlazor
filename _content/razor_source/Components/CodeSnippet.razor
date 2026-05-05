@@ -1,0 +1,24 @@
+﻿<Card class="mb-3">
+    <CardHeader id="@Id">
+        <h4 class="card-title">@Title</h4>
+    </CardHeader>
+
+    <CardBody>
+        @Description
+
+        <div class="p-3 @ExampleBackground()">
+            @if (Component != null)
+            {
+                <DynamicComponent Type="Component"/>
+            }
+        </div>
+
+        <div class="card-code">
+            <figure class="highlight markdown">
+                @((MarkupString)@Code)
+            </figure>
+        </div>
+
+    </CardBody>
+</Card>
+

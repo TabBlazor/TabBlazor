@@ -1,0 +1,61 @@
+﻿
+
+<p>
+    Use <kbd>Arrow &#8593</kbd> and <kbd>Arrow &#8595;</kbd> between rows, <kbd>Enter</kbd> or <kbd>Space</kbd> will expand the ItemSelect component.
+</p>
+
+
+<Alert BackgroundColor="TablerColor.Warning">
+    <div class="text-secondary">
+        <p>
+            Please note that currently there is an issue in WASM using Keyboard support and input component using onchange event.
+            This is most likely related to issue <a href="https://github.com/dotnet/aspnetcore/pull/31612">Fix "no event handler" in simultaneous blur+removal case</a>
+            This example is using oninput instead.
+        </p>
+    </div>
+</Alert>
+
+
+<Table Item="Order" Items="orders" PageSize="int.MaxValue" ShowCheckboxes MultiSelect KeyboardNavigation OnItemDeleted="ItemDeleted" ResetSortCycle>
+    <HeaderTemplate>
+        <strong>Orders</strong>
+    </HeaderTemplate>
+
+    <ChildContent>
+        <Column Item="Order" Property="e=>e.Customer.CustomerName" Title="Customer" Sortable Searchable Groupable>
+            <Template>
+
+                @if (!context.Customer.CustomerName.StartsWith("C"))
+                {
+                    <input type="text" class="form-control" @bind-value="@context.Customer.CustomerName" @bind-value:event="oninput" />
+                }
+
+
+            </Template>
+        </Column>
+        <Column Item="Order" Property="e=>e.Country" Title="Country" Sortable Searchable Groupable>
+            <Template>
+                <input type="text" class="form-control" @bind-value="@context.Country" @bind-value:event="oninput" />
+            </Template>
+        </Column>
+
+        <Column Item="Order" Property="e=>e.OrderType" Title="Type" Sortable Searchable Groupable>
+            <Template>
+                <ItemSelect Items="EnumHelper.GetList<OrderType>()" @bind-SelectedValue="context.OrderType" Clearable />
+            </Template>
+        </Column>
+
+    </ChildContent>
+
+</Table>
+
+@code {
+    private List<Order> orders = SampleData.GetOrders();
+
+
+    private void ItemDeleted(Order order)
+    {
+
+    }
+
+}

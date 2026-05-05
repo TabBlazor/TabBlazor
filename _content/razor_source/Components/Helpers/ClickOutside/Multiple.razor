@@ -1,0 +1,33 @@
+﻿
+<ClickOutside OnClickOutside=@(()=>OutsideClicked("Content 1")) Strategy="ClickOutside.RegisterStrategy.OnClick" Concurrence="ClickOutside.ConcurrenceStrategy.One">
+    <div class="p-1 border">
+        <h3>Content 1</h3>
+        Click me to register for click event from outside.<br/>
+        I will receive only the first click event outside.<br/>
+        Click me again to register for another click event from outside.
+    </div>
+</ClickOutside>
+
+<br />
+<ClickOutside OnClickOutside=@(()=>OutsideClicked("Content 2")) Strategy="ClickOutside.RegisterStrategy.OnRender" Concurrence="ClickOutside.ConcurrenceStrategy.Many">
+    <div class="p-1 border">
+        <h3>Content 2</h3>
+        I register for click events on render. <br/>
+        I will receive all click events from outside.
+    </div>
+</ClickOutside>
+
+@code {
+    [Inject] private ToastService toastService { get; set; }
+    private ContentRect containerSize;
+
+    private void ElementResized(ResizeObserverEntry resizeObserverEntry)
+    {
+        containerSize = resizeObserverEntry.ContentRect;
+    }
+
+    private async Task OutsideClicked(string component)
+    {
+        await toastService.AddToastAsync(new ToastModel { Title = @DateTime.Now.ToString("T"), Message = $"You clicked outside container {component}..." });
+    }
+}

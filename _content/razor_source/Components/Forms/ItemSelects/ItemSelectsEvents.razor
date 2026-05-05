@@ -1,0 +1,25 @@
+﻿<Row>
+    <RowCol Auto>
+        <ItemSelect Items="customers" @bind-SelectedValue="selectedCustomer" SelectedTextExpression="e=>e.CustomerName" OnExpanded="Expanded">
+    <ListTemplate>
+        @context.CustomerName
+    </ListTemplate>
+</ItemSelect>
+    </RowCol>
+    <RowCol Auto>
+        @message
+    </RowCol>
+</Row>
+
+
+@code {
+    List<Customer> customers = Data.SampleData.GetCustomers();
+    Customer selectedCustomer;
+    private string message;
+
+    private void Expanded(bool expanded)
+    {
+        message = $"Expanded: {expanded}";
+    }
+
+}

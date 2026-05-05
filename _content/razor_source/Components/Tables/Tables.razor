@@ -1,0 +1,46 @@
+﻿@page "/docs/tables"
+
+<Page>
+    <DocsExample Title="Table" ComponentType="typeof(Table<>)">
+        <CodeSnippet SetBackground Component="@typeof(TablesBasic)" Title="Basics"/>
+
+         <CodeSnippet SetBackground Component="@typeof(TablesRowDetails)" Title="Details Template">
+            <Description>
+                The details template makes it easy to show more details for a row by clicking on it
+            </Description>
+        </CodeSnippet>
+
+        <CodeSnippet SetBackground Component="@typeof(TablesColumnHeaderTemplate)" Title="Header Template"/>
+
+        <CodeSnippet SetBackground Component="@typeof(TablesSelect)" Title="Select"/>
+
+        <CodeSnippet SetBackground Component="@typeof(TablesKeyboard)" Title="Keyboard Navigation"/>
+
+        <CodeSnippet SetBackground Component="@typeof(TablesMethods)" Title="Methods"/>
+
+        <CodeSnippet SetBackground Component="@typeof(TableCustomRowAction)" Title="Custom Row Actions"/>
+
+        <CodeSnippet SetBackground Component="@typeof(TablesEdit)" Title="Edit"/>
+        
+        <CodeSnippet SetBackground Component="@typeof(TablesEditWithCancelStrategy)" Title="Edit with cancel strategy">
+            <Description>
+                When editing a row and the cancelled button is clicked, the state of the line will be reverted to how it initially was.<br/>
+                This is an experimental feature that uses reflection to set the values, use with caution.<br/>
+                It's also possible to change the default behaviour for all tables through the startup registration of TabBlazor.<br/>
+            </Description>
+        </CodeSnippet>
+
+        <CodeSnippet SetBackground Component="@typeof(TablesNaturalSort)" Title="Natural Sort order">
+            <Description>
+                UseNaturalSort makes the table use a more natural sorting order
+            </Description>
+        </CodeSnippet>
+
+        <CodeSnippet SetBackground Component="@typeof(TablesExternalDataSourceWithSortingAndPaging)" Title="External data source for table">
+            <Description>
+                External Data Provider with sorting and paging for those who need to get data prepared on server side with control of Table built in pagination and sorting functionalities
+            </Description>
+        </CodeSnippet> 
+
+    </DocsExample>
+</Page>

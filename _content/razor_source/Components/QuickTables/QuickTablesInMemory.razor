@@ -1,0 +1,23 @@
+﻿@using TabBlazor.Components.QuickTables
+@using Microsoft.EntityFrameworkCore
+@inject IDataService Data
+
+<div class="card">
+    <QuickTable TGridItem="Tabler.Docs.Data.Country" Pagination="pagination" Items="orders" Class="quick-table-example">
+        <PropertyColumn Property="@(x => x.Name)"></PropertyColumn>
+        <PropertyColumn Property="@(x => x.Code)"></PropertyColumn>
+        <PropertyColumn Property="@(x => x.Medals.Total)"></PropertyColumn>
+    </QuickTable>
+    <Paginator Value="@pagination" />
+</div>
+
+@code {
+    PaginationState pagination = new PaginationState { ItemsPerPage = 15 };
+    private static IQueryable<Tabler.Docs.Data.Country> orders = new List<Tabler.Docs.Data.Country>().AsQueryable();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        orders = (await Data.Countries.ToListAsync()).AsQueryable();
+    }
+}

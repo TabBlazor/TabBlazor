@@ -1,0 +1,40 @@
+﻿<Dropdown>
+    <ChildContent>
+        <Button BackgroundColor="TablerColor.Primary" Type="ButtonType.Button" Text="Click me" IsDropdown />
+    </ChildContent>
+
+    <DropdownTemplate>
+        <DropdownMenu>
+            <div class="dropdown-menu-columns">
+                <div class="dropdown-menu-column">
+                    <DropdownItem>A Item 1</DropdownItem>
+                    <DropdownItem>A Item 2</DropdownItem>
+                    <DropdownItem>A Item 3</DropdownItem>
+                    <DropdownItem>
+                        <ChildContent>
+                            A Item 4
+                        </ChildContent>
+                        <SubMenu>
+                            <DropdownItem>Sub Item 1</DropdownItem>
+                            <DropdownItem>Sub Item 2</DropdownItem>
+                        </SubMenu>
+                    </DropdownItem>
+                </div>
+                <div class="dropdown-menu-column">
+                    <DropdownItem>B Item 1</DropdownItem>
+                    <DropdownItem>B Item 2</DropdownItem>
+                    <DropdownItem>B Item 3</DropdownItem>
+                     <DropdownItem>
+                        <ChildContent>
+                            B Item 4
+                        </ChildContent>
+                        <SubMenu>
+                            <DropdownItem>Sub Item 1</DropdownItem>
+                            <DropdownItem>Sub Item 2</DropdownItem>
+                        </SubMenu>
+                    </DropdownItem>
+                </div>
+            </div>
+        </DropdownMenu>
+    </DropdownTemplate>
+</Dropdown>

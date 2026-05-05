@@ -1,0 +1,34 @@
+﻿<Card>
+    <CardBody>
+        <div class="d-flex align-items-center">
+            <div class="subheader">Sales</div>
+            <div class="ms-auto lh-1">
+                <Dropdown>
+                    <ChildContent>
+                        <a class="dropdown-toggle text-secondary" aria-haspopup="true" aria-expanded="false">
+                            Last 7 days
+                        </a>
+                    </ChildContent>
+                    <DropdownTemplate>
+                        <DropdownMenu>
+                            <DropdownItem>Last 7 Days</DropdownItem>
+                            <DropdownItem>Last 30 days</DropdownItem>
+                            <DropdownItem>Last 3 months</DropdownItem>
+                        </DropdownMenu>
+                    </DropdownTemplate>
+                    
+                </Dropdown>
+            </div>
+        </div>
+        <div class="h1 mb-3">75%</div>
+        <div class="d-flex mb-2">
+            <div>Conversion rate</div>
+            <div class="ms-auto">
+                <span class="text-green d-inline-flex align-items-center lh-1">
+                    7% <Icon class="ms-1" Size="16" IconType="@TablerIcons.Trending_up" />
+                </span>
+            </div>
+        </div>
+        <Progress Size="ProgressSize.Small" Percentage="75" />
+    </CardBody>
+</Card>

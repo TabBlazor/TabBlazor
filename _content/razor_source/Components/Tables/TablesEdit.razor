@@ -1,0 +1,97 @@
+﻿<Row class="mb-3">
+    <RowCol Sm="12" Md="6" Lg="4">
+        <label class="form-label">Edit Mode</label>
+        <Select Items="EnumHelper.GetList<TableEditMode>()" @bind-SelectedValue="@tableEditMode" TextExpression="e=> e.ToString()" />
+    </RowCol>
+</Row>
+
+
+<Table Item="Order" Items="orders" PageSize="10" AddItemFactory="AddItem" OnItemEdited="OnItemEdit" OnBeforeEdit="BeforeEdit"
+        OnItemAdded="OnItemAdd" OnItemDeleted="OnItemDelete"
+       ShowCheckboxes MultiSelect Hover Responsive EditMode=tableEditMode EditPopupMutator=EditPopupOptions>
+    <HeaderTemplate>
+        <strong>Orders</strong>
+    </HeaderTemplate>
+
+    <ChildContent>
+
+        <Column Item="Order" Property="e=>e.Customer.CustomerName" Title="Customer" Sortable Searchable Groupable>
+            <EditorTemplate>
+                <input type="text" class="form-control" @bind-value="@context.Customer.CustomerName" />
+            </EditorTemplate>
+        </Column>
+        <Column Item="Order" Property="e=>e.Country" Title="Country" Sortable Searchable Groupable>
+            <EditorTemplate>
+                <input type="text" class="form-control" @bind-value="@context.Country" />
+            </EditorTemplate>
+        </Column>
+        <Column Item="Order" Property="e=>e.OrderType" Title="Order type" Sortable Searchable Groupable>
+            <EditorTemplate>
+                <Select Items="EnumHelper.GetList<OrderType>()" @bind-SelectedValue="@context.OrderType" TextExpression="e=> e.ToString()" ValueExpression="e=> e" Clearable />
+            </EditorTemplate>
+        </Column>
+    </ChildContent>
+
+</Table>
+
+
+@code {
+
+    [Inject] TabBlazor.Services.TablerService TablerService { get; set; }
+    [Inject] TabBlazor.Services.IModalService ModalService { get; set; }
+    private static List<Order> orders = SampleData.GetOrders();
+  
+    private TableEditMode tableEditMode;
+
+
+    private async Task OnItemEdit(Order order)
+    {
+        await ShowDialog($"Edited order {order.OrderId}");
+    }
+
+    private async Task OnItemAdd(Order order)
+    {
+        await ShowDialog($"Added order {order.OrderId}");
+    }
+
+    private async Task OnItemDelete(Order order)
+    {
+        await ShowDialog($"Order deleted {order.OrderId}");
+    }
+
+    private async Task ShowDialog(string title)
+    {
+        await ModalService.ShowDialogAsync(new TabBlazor.Components.Modals.DialogOptions
+            {
+                CancelText = "",
+                StatusColor = TablerColor.Primary,
+                IconType = @TablerIcons.Info_circle,
+                MainText = title
+            });
+    }
+
+    private Task<Order> AddItem()
+    {
+        return Task.FromResult(new Order { Customer = new Customer { CustomerName = "New customer" } });
+    }
+
+
+    //This is optional if you like to control the edit popup.
+    private void EditPopupOptions(TableEditPopupOptions<Order> options)
+    {
+        if (options.IsAddInProgress)
+        {
+            options.Title = "Add new order";
+        }
+        else
+        {
+            options.Title = $"Edit order {options.CurrentEditItem.OrderId}, {options.CurrentEditItem.Customer.CustomerName}";
+        }
+        options.ModalOptions.Draggable = true;
+    }
+
+    private void BeforeEdit(Order order)
+    {
+        Console.WriteLine(order.OrderId);
+    }
+}

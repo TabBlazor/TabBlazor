@@ -1,0 +1,75 @@
+﻿<h3>Basic</h3>
+
+
+<TabBlazor.Navigation Bordered OnItemClicked="ItemClicked">
+    <NavigationItem Title="Jocke">
+        <MenuIcon>
+            <Icon class="icon" IconType="@TablerIcons.Alarm" />
+        </MenuIcon>
+
+        <SubMenu>
+            <NavigationItem Title="Sub1" />
+            <NavigationItem Title="Sub2" />
+        </SubMenu>
+    </NavigationItem>
+
+    <NavigationItem Title="Kalle" />
+
+    <NavigationItem Title="Cissi">
+        <MenuIcon>
+            <Icon class="icon" IconType="@TablerIcons.Alarm" />
+        </MenuIcon>
+
+        <SubMenu>
+            <NavigationItem Title="Rio" />
+            <NavigationItem Title="Nova">
+                <SubMenu>
+                    <NavigationItem>
+                        <h3>This is my content</h3>
+                    </NavigationItem>
+                    <NavigationItem Title="Sub2" />
+                </SubMenu>
+            </NavigationItem>
+
+            <NavigationItem Title="Anders">
+                <MenuIcon>
+                    <Icon class="icon" IconType="@TablerIcons.Alarm" />
+                </MenuIcon>
+
+                <SubMenu>
+                    <NavigationItem Title="Frida" />
+                    <NavigationItem Title="Lemon" />
+                </SubMenu>
+            </NavigationItem>
+
+            <NavigationItem Title="Helen">
+                <MenuIcon>
+                    <Icon class="icon" IconType="@TablerIcons.Alarm" />
+                </MenuIcon>
+
+                <SubMenu>
+                    <NavigationItem Title="Carl" />
+                    <NavigationItem Title="Karin" />
+                </SubMenu>
+            </NavigationItem>
+
+        </SubMenu>
+
+    </NavigationItem>
+
+</TabBlazor.Navigation>
+
+<h3>@message</h3>
+
+
+@code {
+    private string message;
+
+
+    private void ItemClicked(NavigationItem nav)
+    {
+        message = "You clicked: " + nav?.Title;
+    }
+
+
+}

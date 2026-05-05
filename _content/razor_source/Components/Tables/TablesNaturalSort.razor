@@ -1,0 +1,37 @@
+﻿
+<Table Item="Item" Items="items" PageSize="10" Hover Responsive UseNaturalSort>
+    <HeaderTemplate>
+        <strong>Items</strong>
+    </HeaderTemplate>
+
+    <ChildContent>
+        <Column Item="Item" Property="e => e.Name" Title="Customer" Sortable Searchable>
+            <EditorTemplate>
+                <input type="text" class="form-control" @bind-value="@context.Name" />
+            </EditorTemplate>
+        </Column>
+    </ChildContent>
+</Table>
+
+@code {
+    private static List<Item> items = new();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        for (int i = 1; i <= 40; i++)
+        {
+            items.Add(new Item
+            {
+                Name = $"Item {i}"
+            });
+        }
+    }
+
+    public class Item
+    {
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Name { get; set; }
+    }
+}

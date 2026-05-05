@@ -1,0 +1,31 @@
+﻿@inject IModalService ModalService
+
+<div class="text-center">
+    <Icon class="icon-lg" TextColor="TablerColor.Red" IconType="@TablerIcons.Alert_triangle" />
+
+    <h3>Are you sure?</h3>
+    <p class="text-secondary">Are you sure you want to create this report?<br>
+    What you've done cannot be reverted.</p>
+
+    <div class="modal-footer">
+        <div class="w-100">
+            <div class="row">
+                <div class="col">
+                    <Button BackgroundColor="TablerColor.Default" class="btn btn-white w-100" OnClick="@(() => ModalService.Close())">
+                        Cancel
+                    </Button>
+                </div>
+                <div class="col">
+                    <Button BackgroundColor="TablerColor.Danger" class="btn btn-white w-100" OnClick="@(() => ModalService.Close(ModalResult.Ok()))">
+                        Create 
+                    </Button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+
+}

@@ -1,0 +1,35 @@
+﻿@using TabBlazor.Components.QuickTables
+@inject IDataService Data
+<style>
+    .quick-table tr {
+         height: 45px;
+     }
+</style>
+<div class="card">
+    <QuickTable TGridItem="Tabler.Docs.Data.Country" Virtualize="true" ItemsProvider="ItemsProvider" ItemSize="30" class="quick-table-example">
+        <PropertyColumn Property="@(x => x.Name)" Sortable="true" IsDefaultSort="SortDirection.Ascending"></PropertyColumn>
+        <PropertyColumn Property="@(x => x.Code)" Sortable="true"></PropertyColumn>
+        <PropertyColumn Property="@(x => x.Medals.Gold)"></PropertyColumn>
+    </QuickTable>
+</div>
+
+@code {
+
+    private GridItemsProvider<Tabler.Docs.Data.Country> ItemsProvider { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ItemsProvider = async req =>
+        {
+            var sortBy = req.GetSortByProperties().SingleOrDefault();
+            var gridItemsProviderResult = await Data.GetCountriesAsync(
+                req.StartIndex,
+                req.Count,
+                sortBy.PropertyName,
+                sortBy.Direction == SortDirection.Ascending,
+                req.CancellationToken);
+            return gridItemsProviderResult;
+        };
+    }
+
+}
