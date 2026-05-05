@@ -67,8 +67,10 @@
   min-width: 99%;
 }
 
-.dropdown-item.highlight {
-  background-color: rgba(var(--tblr-secondary-rgb), 0.4);
+.dropdown-item.highlight,
+.dropdown-item.highlight:focus {
+  color: var(--tblr-dropdown-link-active-color);
+  background-color: var(--tblr-dropdown-link-active-bg);
 }
 
 .tree, .tree ul {

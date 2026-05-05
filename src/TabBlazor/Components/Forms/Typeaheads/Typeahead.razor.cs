@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using Microsoft.AspNetCore.Components.Forms;
+using TabBlazor.Services;
 using Timer = System.Timers.Timer;
 
 namespace TabBlazor;
@@ -33,6 +35,8 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent, IDisposable
 
     [CascadingParameter] private EditContext CascadedEditContext { get; set; }
 
+    [Inject] private TablerService TablerService { get; set; }
+
     private string FieldCssClasses { get; set; }
     private string InputCssClasses => new ClassBuilder()
         .Add("form-control")
@@ -48,6 +52,8 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent, IDisposable
     private ElementReference input;
     private bool isInput;
     private bool setFocus;
+    private int highlightedIndex = -1;
+    private bool eventsHookedUp;
 
     protected override void OnInitialized()
     {
@@ -100,6 +106,40 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent, IDisposable
             setFocus = false;
         }
 
+        if (!eventsHookedUp && isInput)
+        {
+            await TablerService.PreventDefaultKey(input, "keydown", new[] { "Enter", "ArrowUp", "ArrowDown" });
+            eventsHookedUp = true;
+        }
+    }
+
+    private async Task HandleKey(KeyboardEventArgs args)
+    {
+        if (listItems == null || !listItems.Any() || dropdown?.IsExpanded != true)
+        {
+            if (args.Key == "Escape") dropdown?.Close();
+            return;
+        }
+
+        var items = listItems.ToList();
+
+        if (args.Key == "ArrowDown")
+        {
+            highlightedIndex = (highlightedIndex + 1) % items.Count;
+        }
+        else if (args.Key == "ArrowUp")
+        {
+            highlightedIndex = highlightedIndex <= 0 ? items.Count - 1 : highlightedIndex - 1;
+        }
+        else if (args.Key == "Enter" && highlightedIndex >= 0 && highlightedIndex < items.Count)
+        {
+            await SelectItem(items[highlightedIndex]);
+        }
+        else if (args.Key == "Escape")
+        {
+            dropdown.Close();
+            highlightedIndex = -1;
+        }
     }
 
     private async Task SetInput(bool value)
@@ -180,6 +220,7 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent, IDisposable
     {
         SelectedValue = ConvertExpression(item);
         searchText = "";
+        highlightedIndex = -1;
         dropdown.Close();
         await SelectedValueChanged.InvokeAsync(SelectedValue);
         Validate();
@@ -200,6 +241,7 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent, IDisposable
     private async Task ExecuteSearchASync()
     {
         isSearching = true;
+        highlightedIndex = -1;
         dropdown.Open();
         await InvokeAsync(StateHasChanged);
         listItems = (await SearchMethod?.Invoke(searchText)).Take(MaximumItems).ToArray();

@@ -20,6 +20,7 @@
                 {
                     <input class="@InputCssClasses" @ref="input" @bind="SearchText" type="text"
                            @bind:event="oninput"
+                           @onkeyup="HandleKey"
                            placeholder="@SearchPlaceholderText" @onfocus="() => SetInput(true)"
                            @onblur="@(() => SetInput(false))">
                     <span class="input-icon-addon">
@@ -52,9 +53,13 @@
                 }
                 else
                 {
-                    @foreach (var listItem in listItems)
+                    var items = listItems.ToList();
+                    for (var i = 0; i < items.Count; i++)
                     {
-                        <DropdownItem Active="@IsSelected(listItem)"
+                        var listItem = items[i];
+                        var idx = i;
+                        <DropdownItem Highlight="@(idx == highlightedIndex)"
+                                      Active="@IsSelected(listItem)"
                                       OnClick="@(() => SelectItem(listItem))">@ListTemplate(listItem)</DropdownItem>
                     }
                 }
