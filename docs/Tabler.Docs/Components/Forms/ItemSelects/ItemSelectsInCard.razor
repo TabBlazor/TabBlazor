@@ -1,0 +1,30 @@
+<p class="text-secondary">
+    Tabler Cards apply <code>overflow: hidden</code> for rounded corners. A
+    dropdown near the card edge would normally be clipped. With
+    <code>Positioning.Fixed</code> the menu escapes the card.
+</p>
+
+<div style="max-width: 360px;">
+    <Card>
+        <CardHeader>
+            <CardTitle>Assignment</CardTitle>
+        </CardHeader>
+        <CardBody>
+            <label class="form-label">Customer</label>
+            <ItemSelect TItem="Customer" TValue="Customer"
+                        Items="customers"
+                        @bind-SelectedValue="selected"
+                        SelectedTextExpression="c => c.CustomerName"
+                        Positioning="Positioning.Fixed"
+                        Placement="Placement.BottomStart"
+                        NoSelectedText="*Pick customer*">
+                <ListTemplate>@context.CustomerName</ListTemplate>
+            </ItemSelect>
+        </CardBody>
+    </Card>
+</div>
+
+@code {
+    Customer selected;
+    List<Customer> customers = Data.SampleData.GetCustomers();
+}

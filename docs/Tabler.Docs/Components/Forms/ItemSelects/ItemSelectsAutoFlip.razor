@@ -1,0 +1,26 @@
+<p class="text-secondary">
+    The trigger is pinned to the bottom of the viewport. Opening the select
+    has no room below, so the menu flips upward to stay on screen.
+</p>
+
+<div style="height: 80vh; position: relative; border: 1px dashed var(--tblr-border-color); border-radius: 8px; padding: 16px;">
+    <span class="text-secondary">Demo area — the trigger below sits at the bottom edge.</span>
+
+    <div style="position: absolute; bottom: 16px; left: 16px; right: 16px;">
+        <label class="form-label">Customer (menu flips up)</label>
+        <ItemSelect TItem="Customer" TValue="Customer"
+                    Items="customers"
+                    @bind-SelectedValue="selected"
+                    SelectedTextExpression="c => c.CustomerName"
+                    Positioning="Positioning.Fixed"
+                    Placement="Placement.BottomStart"
+                    NoSelectedText="*Pick customer*">
+            <ListTemplate>@context.CustomerName</ListTemplate>
+        </ItemSelect>
+    </div>
+</div>
+
+@code {
+    Customer selected;
+    List<Customer> customers = Data.SampleData.GetCustomers();
+}

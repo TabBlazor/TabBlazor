@@ -25,5 +25,39 @@
         
         <CodeSnippet Component="@typeof(ItemSelectValidation)" Title="Validation"/>
 
+        <CodeSnippet Component="@typeof(ItemSelectsInTable)" Title="Inside a table">
+            <Description>
+                Use <code>Positioning="Positioning.Fixed"</code> when the select sits
+                inside a scroll container or table cell with overflow clipping. The
+                menu is positioned in the viewport so it isn't clipped. Requires
+                <code>options.EnablePopper = true</code> in <code>AddTabBlazor</code>.
+            </Description>
+        </CodeSnippet>
+
+        <CodeSnippet Component="@typeof(ItemSelectsAutoFlip)" Title="Auto-flip near edge">
+            <Description>
+                The last row's menu would normally be clipped at the bottom of the
+                scroll container. With dynamic positioning the menu flips upward so
+                it stays on screen.
+            </Description>
+        </CodeSnippet>
+
+        <CodeSnippet Component="@typeof(ItemSelectsInCard)" Title="Inside a Card">
+            <Description>
+                Cards apply <code>overflow: hidden</code> for rounded corners. With
+                <code>Positioning.Fixed</code> the dropdown menu escapes the card so
+                it isn't clipped.
+            </Description>
+        </CodeSnippet>
+
+        <CodeSnippet Component="@typeof(ItemSelectsInModal)" Title="Inside a Modal">
+            <Description>
+                Modal bodies often scroll independently of the page. Without dynamic
+                positioning, a dropdown opened near the modal's bottom edge clips
+                against the modal body. <code>Positioning.Fixed</code> renders the
+                menu in the viewport above the modal.
+            </Description>
+        </CodeSnippet>
+
     </DocsExample>
 </Page>

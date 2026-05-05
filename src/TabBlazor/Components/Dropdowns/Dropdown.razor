@@ -1,4 +1,4 @@
-﻿@inherits TablerBaseComponent
+@inherits TablerBaseComponent
 @namespace TabBlazor
 <ClickOutside OnClickOutside="OnClickOutside">
     <CascadingValue Name=Dropdown Value=this>
@@ -6,6 +6,7 @@
                  class="@ClassNames"
                  @onclick="OnDropdownClick"
                  @attributes="@UnmatchedParameters"
+                 ElementRefChanged="@(r => referenceEl = r)"
                  style="@GetSyle()">
 
 
@@ -13,7 +14,7 @@
 
         @if (isExpanded)
         {
-            <div @onclick:stopPropagation="!CloseOnClick">
+            <div @ref="popperEl" class="@(UsePopper ? "popper-host" : null)" @onclick:stopPropagation="!CloseOnClick">
                 @DropdownTemplate
             </div>
 

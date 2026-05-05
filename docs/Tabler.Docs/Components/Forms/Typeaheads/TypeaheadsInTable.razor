@@ -1,0 +1,56 @@
+<p class="text-secondary">
+    <code>Typeahead</code> with <code>Positioning="Positioning.Fixed"</code>
+    inside a scrollable table. The result list escapes the cell's overflow.
+</p>
+
+<div style="max-height: 220px; overflow: auto; border: 1px solid var(--tblr-border-color);">
+    <table class="table table-vcenter card-table">
+        <thead>
+            <tr>
+                <th style="width: 120px;">Order</th>
+                <th>Customer</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in rows)
+            {
+                <tr>
+                    <td class="fw-bold">@row.Id</td>
+                    <td style="min-width: 260px;">
+                        <Typeahead TItem="Customer" TValue="Customer"
+                                   SearchMethod="SearchCustomers"
+                                   SelectedValue="row.Customer"
+                                   SelectedValueChanged="@(c => row.Customer = c)"
+                                   SelectedTextExpression="c => c.CustomerName"
+                                   Debounce="1" MinimumLength="1"
+                                   SearchPlaceholderText="Search customer..."
+                                   Positioning="Positioning.Fixed"
+                                   Placement="Placement.BottomStart">
+                            <ListTemplate>@context.CustomerName</ListTemplate>
+                        </Typeahead>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    record Row(string Id) { public Customer Customer { get; set; } }
+
+    List<Customer> customers = Data.SampleData.GetCustomers();
+    List<Row> rows = new()
+    {
+        new Row("ORD-1042"),
+        new Row("ORD-1043"),
+        new Row("ORD-1044"),
+        new Row("ORD-1045"),
+        new Row("ORD-1046"),
+    };
+
+    async Task<IEnumerable<Customer>> SearchCustomers(string searchText)
+    {
+        await Task.Delay(150);
+        return customers.Where(e => e.CustomerName.Contains(searchText, StringComparison.CurrentCultureIgnoreCase));
+    }
+}

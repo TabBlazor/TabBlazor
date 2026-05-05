@@ -1,0 +1,37 @@
+@inject IModalService ModalService
+
+<div style="max-height: 200px; overflow: auto;">
+    <p>This modal body is scrollable. The select menu would normally be clipped here.</p>
+    <p>Filler line.</p>
+    <p>Filler line.</p>
+
+    <div class="mb-3">
+        <label class="form-label">Customer</label>
+        <ItemSelect TItem="Customer" TValue="Customer"
+                    Items="customers"
+                    @bind-SelectedValue="selected"
+                    SelectedTextExpression="c => c.CustomerName"
+                    Positioning="Positioning.Fixed"
+                    Placement="Placement.BottomStart"
+                    NoSelectedText="*Pick customer*">
+            <ListTemplate>@context.CustomerName</ListTemplate>
+        </ItemSelect>
+    </div>
+
+    <p>More filler so the body scrolls.</p>
+    <p>More filler so the body scrolls.</p>
+    <p>More filler so the body scrolls.</p>
+</div>
+
+<div class="modal-footer">
+    <Button BackgroundColor="TablerColor.Default" OnClick="Cancel">Cancel</Button>
+    <Button BackgroundColor="TablerColor.Primary" OnClick="Save" Disabled="selected == null">Save</Button>
+</div>
+
+@code {
+    Customer selected;
+    List<Customer> customers = Data.SampleData.GetCustomers();
+
+    void Save() => ModalService.Close(ModalResult.Ok(selected));
+    void Cancel() => ModalService.Close(ModalResult.Cancel());
+}

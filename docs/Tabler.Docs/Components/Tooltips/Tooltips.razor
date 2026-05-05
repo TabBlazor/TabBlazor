@@ -11,18 +11,17 @@
             </Description>
         </CodeSnippet>
 
-        <CodeSnippet Component="@typeof(TooltipsPopper)" Title="Popper positioning">
+        <CodeSnippet Component="@typeof(TooltipsPopper)" Title="Dynamic positioning">
             <Description>
-                Opt-in popper.js positioning via <code>Positioning</code> and <code>Placement</code>.
-                Requires <code>options.EnablePopper = true</code> in <code>AddTabBlazor</code>. The
-                popper script loads lazily on first use. <code>flip</code> and <code>preventOverflow</code>
-                modifiers keep the tooltip on screen automatically.
+                Opt-in dynamic positioning via <code>Positioning</code> and <code>Placement</code>.
+                Requires <code>options.EnablePopper = true</code> in <code>AddTabBlazor</code>.
+                The tooltip auto-flips and shifts to stay on screen.
             </Description>
         </CodeSnippet>
 
         <CodeSnippet Component="@typeof(TooltipsPopperRich)" Title="Rich content (table + icons)">
             <Description>
-                Popper-positioned tooltips can render arbitrary HTML via <code>TooltipTemplate</code>.
+                Dynamic-positioned tooltips can render arbitrary HTML via <code>TooltipTemplate</code>.
                 Useful for user cards, stats panels, previews — anything that would be cramped in a
                 CSS-only tooltip.
             </Description>
