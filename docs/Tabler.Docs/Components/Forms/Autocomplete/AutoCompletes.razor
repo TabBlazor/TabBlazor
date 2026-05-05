@@ -8,5 +8,14 @@
         <CodeSnippet Component="@typeof(AutocompleteShowOptions)" Title="ShowOptions"/>
         <CodeSnippet Component="@typeof(AutocompleteGrouping)" Title="Grouping"/>
         <CodeSnippet Component="@typeof(AutocompleteFlush)" Title="Flush"/>
+
+        <CodeSnippet Component="@typeof(AutocompleteInTable)" Title="Inside a table">
+            <Description>
+                Use <code>Positioning="Positioning.Fixed"</code> when the autocomplete sits
+                inside a scroll container or table cell. The result list is positioned in
+                the viewport so it isn't clipped by overflow. Requires
+                <code>options.EnablePopper = true</code> in <code>AddTabBlazor</code>.
+            </Description>
+        </CodeSnippet>
     </DocsExample>
 </Page>

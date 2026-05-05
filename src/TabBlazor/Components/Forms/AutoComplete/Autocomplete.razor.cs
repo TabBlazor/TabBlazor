@@ -7,10 +7,11 @@ using Timer = System.Timers.Timer;
 
 namespace TabBlazor;
 
-public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
+public partial class Autocomplete<TItem> : TablerBaseComponent, IAsyncDisposable
 {
-    [Inject]public TablerService TablerService { get; set; }
-    
+    [Inject] public TablerService TablerService { get; set; }
+    [Inject] private IServiceProvider ServiceProvider { get; set; }
+
     [CascadingParameter] protected EditContext EditContext { get; set; }
 
     private string FieldCssClasses =>
@@ -45,6 +46,9 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
     [Parameter] public bool ShowOptionOnFocus { get; set; }
     [Parameter] public string Placeholder { get; set; }
     [Parameter] public int MinimumLength { get; set; } = 2;
+    [Parameter] public Positioning Positioning { get; set; } = Positioning.Default;
+    [Parameter] public Placement Placement { get; set; } = Placement.BottomStart;
+    [Parameter] public int PopperOffset { get; set; } = 2;
 
     private int SelectedIndex { get; set; } = -1;
     private List<TItem> Result { get; set; }
@@ -55,8 +59,13 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
 
     private string searchText;
     private ElementReference _searchInput;
+    private ElementReference _menuRef;
     private bool _eventsHookedUp;
     private string ValidationClasses => EditContext?.FieldCssClass(FieldIdentifier) ?? "";
+
+    private IPopperService popperService;
+    private IPopperInstance popperInstance;
+    private bool UsePopper => Positioning != Positioning.Default;
 
     protected override void OnInitialized()
     {
@@ -73,6 +82,13 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
             AutoReset = false
         };
         Timer.Elapsed += async (sender, args) => await DoSearch();
+
+        if (UsePopper)
+        {
+            popperService = ServiceProvider.GetService(typeof(IPopperService)) as IPopperService
+                ?? throw new InvalidOperationException(
+                    "Popper not registered. Set TablerOptions.EnablePopper = true in AddTabBlazor.");
+        }
     }
 
     protected override void OnParametersSet()
@@ -211,10 +227,6 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
         IsShowingSuggestions = false;
     }
 
-    public void Dispose()
-    {
-        Timer.Dispose();
-    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -222,6 +234,34 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IDisposable
         {
             await TablerService.PreventDefaultKey(_searchInput, "keydown", new[] { "Enter" });
             _eventsHookedUp = true;
+        }
+
+        if (!UsePopper) return;
+
+        if (IsShowingSuggestions && popperInstance == null)
+        {
+            popperInstance = await popperService.CreateAsync(_searchInput, _menuRef, new PopperOptions
+            {
+                Placement = Placement,
+                Strategy = Positioning,
+                Offset = PopperOffset
+            });
+            await popperInstance.ShowAsync();
+        }
+        else if (!IsShowingSuggestions && popperInstance != null)
+        {
+            await popperInstance.DisposeAsync();
+            popperInstance = null;
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        Timer?.Dispose();
+        if (popperInstance != null)
+        {
+            await popperInstance.DisposeAsync();
+            popperInstance = null;
         }
     }
 

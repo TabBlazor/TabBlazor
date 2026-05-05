@@ -44,12 +44,27 @@ namespace Tabler.Docs.Components
                 }
 
                 html = html.TrimEnd();
-                var code = formatter.GetHtmlString(html, Languages.Html);
+
+                var razorMap = new Dictionary<string, string>();
+                var n = 0;
+                var preserved = Regex.Replace(html, @"@[A-Za-z_][A-Za-z0-9_]*", m =>
+                {
+                    var key = $"__RZ{n++}__";
+                    razorMap[key] = m.Value;
+                    return key;
+                });
+
+                var code = formatter.GetHtmlString(preserved, Languages.Html);
+
+                foreach (var kvp in razorMap)
+                {
+                    code = code.Replace(kvp.Key, $"<span class=\"razor\">{kvp.Value}</span>");
+                }
+
                 if (!string.IsNullOrWhiteSpace(cSharp))
                 {
                     code += "<div class='mt-1'>" + formatter.GetHtmlString(cSharp.TrimEnd(), Languages.CSharp) + "</div>";
                 }
-
 
                 code = HighlightRazor(code);
 
