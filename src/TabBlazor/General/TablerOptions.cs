@@ -22,4 +22,12 @@ public class TablerOptions
     /// URL of the popper.js UMD script. Loaded once on first use of IPopperService.
     /// </summary>
     public string PopperScriptUrl { get; set; } = "https://unpkg.com/@popperjs/core@2";
+
+    /// <summary>
+    /// Default Positioning for components that don't specify one
+    /// (Dropdown, Autocomplete, ItemSelect, Typeahead, Tooltip).
+    /// Setting this to anything other than <see cref="Positioning.Default"/> implies
+    /// <see cref="EnablePopper"/> = true.
+    /// </summary>
+    public Positioning DefaultPositioning { get; set; } = Positioning.Default;
 }

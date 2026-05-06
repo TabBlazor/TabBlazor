@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Options;
 
 namespace TabBlazor
 {
@@ -10,6 +11,8 @@ namespace TabBlazor
         [Parameter] public TablerColor BackgroundColor { get; set; } = TablerColor.Default;
         [Parameter] public RenderFragment ChildContent { get; set; }
         [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+        [Inject] protected IOptionsMonitor<TablerOptions> Options { get; set; }
 
         [Parameter(CaptureUnmatchedValues = true)]
         public IDictionary<string, object> UnmatchedParameters { get; set; }

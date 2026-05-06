@@ -58,7 +58,7 @@ public partial class ItemSelect<TItem, TValue> : TablerBaseComponent, IDisposabl
     [Parameter] public string Label { get; set; }
     [Parameter] public string DropdownMenuCss { get; set; }
     [Parameter] public DisplayMode DisplayMode { get; set; } = DisplayMode.Default;
-    [Parameter] public Positioning Positioning { get; set; } = Positioning.Default;
+    [Parameter] public Positioning? Positioning { get; set; }
     [Parameter] public Placement Placement { get; set; } = Placement.BottomStart;
 
     private bool FocusSearch;

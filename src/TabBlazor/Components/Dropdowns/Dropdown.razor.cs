@@ -14,11 +14,14 @@ namespace TabBlazor
         [Parameter] public DropdownDirection SubMenusDirection { get; set; } = DropdownDirection.End;
         [Parameter] public EventCallback<bool> OnExpanded { get; set; }
 
-        [Parameter] public Positioning Positioning { get; set; } = Positioning.Default;
+        [Parameter] public Positioning? Positioning { get; set; }
         [Parameter] public Placement Placement { get; set; } = Placement.BottomStart;
         [Parameter] public int PopperOffset { get; set; } = 2;
 
         [Inject] private IServiceProvider ServiceProvider { get; set; }
+
+        private Positioning EffectivePositioning =>
+            Positioning ?? Options.CurrentValue.DefaultPositioning;
 
         public bool IsExpanded => isExpanded;
 
@@ -33,7 +36,7 @@ namespace TabBlazor
         private IPopperService popperService;
         private IPopperInstance popperInstance;
 
-        public bool UsePopper => Positioning != Positioning.Default;
+        public bool UsePopper => EffectivePositioning != TabBlazor.Positioning.Default;
 
         protected override string ClassNames => ClassBuilder
             .AddIf("dropdown", Direction == DropdownDirection.Down)
@@ -62,7 +65,7 @@ namespace TabBlazor
                 popperInstance = await popperService.CreateAsync(referenceEl, popperEl, new PopperOptions
                 {
                     Placement = Placement,
-                    Strategy = Positioning,
+                    Strategy = EffectivePositioning,
                     Offset = PopperOffset
                 });
                 await popperInstance.ShowAsync();

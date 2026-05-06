@@ -1,0 +1,33 @@
+@page "/setup"
+
+<Page>
+    <PageTitle>Setup</PageTitle>
+
+    <DocsExample Title="Setup">
+
+        <CodeSnippet Component="@typeof(SetupBasic)" Title="Register TabBlazor">
+            <Description>
+                Add <code>AddTabBlazor</code> to your service registration. The optional
+                <code>options</code> delegate exposes library-wide defaults.
+            </Description>
+        </CodeSnippet>
+
+        <CodeSnippet Component="@typeof(SetupDefaultPositioning)" Title="Default Positioning">
+            <Description>
+                <code>DefaultPositioning</code> applies to every component with a
+                <code>Positioning</code> parameter (<code>Dropdown</code>,
+                <code>Autocomplete</code>, <code>ItemSelect</code>, <code>Typeahead</code>,
+                <code>Tooltip</code>) when the call site does not set one explicitly.
+                Setting it to anything other than <code>Positioning.Default</code>
+                automatically enables Popper. Per-component overrides still win.
+            </Description>
+        </CodeSnippet>
+
+        <CodeSnippet Component="@typeof(SetupFullOptions)" Title="All options">
+            <Description>
+                Full configuration surface.
+            </Description>
+        </CodeSnippet>
+
+    </DocsExample>
+</Page>

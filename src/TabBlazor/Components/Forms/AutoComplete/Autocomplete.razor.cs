@@ -46,9 +46,12 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IAsyncDisposable
     [Parameter] public bool ShowOptionOnFocus { get; set; }
     [Parameter] public string Placeholder { get; set; }
     [Parameter] public int MinimumLength { get; set; } = 2;
-    [Parameter] public Positioning Positioning { get; set; } = Positioning.Default;
+    [Parameter] public Positioning? Positioning { get; set; }
     [Parameter] public Placement Placement { get; set; } = Placement.BottomStart;
     [Parameter] public int PopperOffset { get; set; } = 2;
+
+    private Positioning EffectivePositioning =>
+        Positioning ?? Options.CurrentValue.DefaultPositioning;
 
     private int SelectedIndex { get; set; } = -1;
     private List<TItem> Result { get; set; }
@@ -65,7 +68,7 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IAsyncDisposable
 
     private IPopperService popperService;
     private IPopperInstance popperInstance;
-    private bool UsePopper => Positioning != Positioning.Default;
+    private bool UsePopper => EffectivePositioning != TabBlazor.Positioning.Default;
 
     protected override void OnInitialized()
     {
@@ -243,7 +246,7 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IAsyncDisposable
             popperInstance = await popperService.CreateAsync(_searchInput, _menuRef, new PopperOptions
             {
                 Placement = Placement,
-                Strategy = Positioning,
+                Strategy = EffectivePositioning,
                 Offset = PopperOffset
             });
             await popperInstance.ShowAsync();
