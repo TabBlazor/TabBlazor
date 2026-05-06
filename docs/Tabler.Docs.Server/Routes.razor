@@ -1,0 +1,9 @@
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+<Router AppAssembly="@typeof(Program).Assembly"
+        AdditionalAssemblies="new [] { typeof(MainLayout).Assembly }"
+        NotFoundPage="typeof(NotFoundPage)">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+    </Found>
+</Router>

@@ -1,10 +1,28 @@
-<Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="new [] { typeof(MainLayout).Assembly }">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-    </Found>
-    <NotFound>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p>Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</Router>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TabBlazor - A blazor admin template based on Tabler UI - minimal javascript</title>
+    <base href="/" />
+
+    <link rel="stylesheet" href="@("https://unpkg.com/@tabler/core@1.4.0/dist/css/tabler.min.css")">
+    <link rel="stylesheet" href="_content/TabBlazor/css/tabblazor.min.css?v=@ThisAssembly.AssemblyFileVersion" />
+    <script src="_content/TabBlazor/js/tabblazor.js?v=@ThisAssembly.AssemblyFileVersion"></script>
+
+    <link href="Tabler.Docs.Server.styles.css" rel="stylesheet" />
+    <link href="_content/Tabler.Docs/css/tabler-docs.css" rel="stylesheet" />
+    <HeadOutlet />
+</head>
+<body data-bs-theme="">
+    <Routes />
+
+    <div id="blazor-error-ui">
+        An error has occurred. This application may no longer respond until reloaded.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="_framework/blazor.web.js"></script>
+</body>
+</html>

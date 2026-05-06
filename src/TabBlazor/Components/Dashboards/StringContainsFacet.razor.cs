@@ -3,7 +3,7 @@ namespace TabBlazor.Dashboards;
 public partial class StringContainsFacet<TItem> : BaseFacet<TItem> where TItem : class
 {
     [Parameter] public Expression<Func<TItem, IEnumerable<string>>> Expression { get; set; }
-    [Parameter] public StringComparer? StringComparer { get; set; }
+    [Parameter] public StringComparer StringComparer { get; set; }
 
     protected override void OnInitialized()
     {

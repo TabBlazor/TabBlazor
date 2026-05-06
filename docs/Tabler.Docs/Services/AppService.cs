@@ -1,25 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Tabler.Docs.Services
+namespace Tabler.Docs.Services;
+
+public class AppService
 {
-    public class AppService
+    public Action OnSettingsUpdated;
+    public AppSettings Settings { get; } = new();
+
+    public void SettingsUpdated()
     {
-        private AppSettings settings = new AppSettings();
-
-        public AppSettings Settings => settings;
-        public Action OnSettingsUpdated;
-
-        public void SettingsUpdated()
-        {
-            OnSettingsUpdated.Invoke();
-        }
-
-
-
-
+        OnSettingsUpdated?.Invoke();
     }
 }

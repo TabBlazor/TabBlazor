@@ -1,115 +1,115 @@
-﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
-//using static System.Net.WebRequestMethods;
+using Microsoft.AspNetCore.Components;
 
-namespace Tabler.Docs.Services
+namespace Tabler.Docs.Services;
+
+public interface ICodeSnippetService
 {
+    public Task<string> GetCodeSnippet(string className);
+    public Task<byte[]> GetSamplePDF();
+}
 
-    public interface ICodeSnippetService
+public class FakeSnippetService : ICodeSnippetService
+{
+    public Task<string> GetCodeSnippet(string className)
     {
-        public Task<string> GetCodeSnippet(string className);
-
-
-        public Task<byte[]> GetSamplePDF();
+        return Task.FromResult("Source code view is disabled");
     }
 
-    public class FakeSnippetService : ICodeSnippetService
+    public Task<byte[]> GetSamplePDF()
     {
-        public Task<string> GetCodeSnippet(string className)
+        throw new NotImplementedException();
+    }
+}
+
+public class LocalSnippetService : ICodeSnippetService
+{
+    public async Task<string> GetCodeSnippet(string className)
+    {
+        var basePath = GetSolutionRoot();
+        const string projectName = "Tabler.Docs";
+        var classPath = projectName + className.Substring(projectName.Length)
+            .Replace(".", Path.DirectorySeparatorChar.ToString());
+        var codePath = Path.Combine(basePath, $"{classPath}.razor");
+
+        if (File.Exists(codePath))
         {
-            return Task.FromResult("Source code view is disabled");
+            return await File.ReadAllTextAsync(codePath);
         }
 
-        public Task<byte[]> GetSamplePDF()
-        {
-            throw new NotImplementedException();
-        }
+        return $"Unable to find code at {codePath}";
     }
 
-    public class LocalSnippetService : ICodeSnippetService
+    public async Task<byte[]> GetSamplePDF()
     {
-        public async Task<string> GetCodeSnippet(string className)
-        {
-            var basePath = Directory.GetParent(Assembly.GetExecutingAssembly().Location).Parent.Parent.Parent.Parent.FullName;
-            const string projectName = "Tabler.Docs";
-            var classPath = projectName + className.Substring(projectName.Length).Replace(".", Path.DirectorySeparatorChar.ToString());
-            var codePath = Path.Combine(basePath, $"{classPath}.razor");
-
-            if (File.Exists(codePath))
-            {
-                return await Task.FromResult(File.ReadAllText(codePath));
-            }
-            else
-            {
-                return await Task.FromResult($"Unable to find code at {codePath}");
-            }
-        }
-
-        public async Task<byte[]> GetSamplePDF()
-        {
-
-            string path99 = Directory.GetParent(Assembly.GetExecutingAssembly().Location).Parent.Parent.Parent.Parent.FullName + "\\Tabler.Docs\\wwwroot\\pdf\\sample.pdf";
-
-            return await File.ReadAllBytesAsync(path99);
-
-        }
+        var path = Path.Combine(GetSolutionRoot(), "Tabler.Docs", "wwwroot", "pdf", "sample.pdf");
+        return await File.ReadAllBytesAsync(path);
     }
 
-    public class GitHubSnippetService : ICodeSnippetService
+    private static string GetSolutionRoot()
     {
-        const string baseUrl = "https://tabblazor.com/_content/razor_source";
-        private readonly IHttpClientFactory httpClientFactory;
-        private readonly NavigationManager navManager;
-        private Dictionary<string, string> cachedCode = new Dictionary<string, string>();
-
-        public GitHubSnippetService(IHttpClientFactory httpClientFactory, NavigationManager navManager)
+        var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location);
+        for (var i = 0; i < 4 && dir is not null; i++)
         {
-            this.httpClientFactory = httpClientFactory;
-            this.navManager = navManager;
+            dir = dir.Parent;
         }
 
-        public async Task<string> GetCodeSnippet(string className)
+        if (dir is null)
         {
-            try
-            {
-                if (!cachedCode.ContainsKey(className))
-                {
-                    var baseName = "Tabler.Docs.";
-                    var path = baseUrl + "/" + className.Replace(baseName, "").Replace(".", "/") + ".razor";
-
-                    using var httpClient = httpClientFactory.CreateClient("GitHub");
-                    using var stream = await httpClient.GetStreamAsync(path);
-                    StreamReader reader = new StreamReader(stream);
-
-                    var code = reader.ReadToEnd();
-
-                    if (!cachedCode.ContainsKey(className))
-                    {
-                        cachedCode[className] = code;
-                    }
-
-                }
-
-                return cachedCode[className];
-
-            }
-            catch (Exception ex)
-            {
-                return $"Unable to load code. Error: {ex.Message}";
-            }
+            throw new InvalidOperationException("Unable to resolve solution root from assembly location.");
         }
 
-        public async Task<byte[]> GetSamplePDF()
+        return dir.FullName;
+    }
+}
+
+public class GitHubSnippetService : ICodeSnippetService
+{
+    private const string baseUrl = "https://tabblazor.com/_content/razor_source";
+    private readonly ConcurrentDictionary<string, string> cachedCode = new();
+    private readonly IHttpClientFactory httpClientFactory;
+    private readonly NavigationManager navManager;
+
+    public GitHubSnippetService(IHttpClientFactory httpClientFactory, NavigationManager navManager)
+    {
+        this.httpClientFactory = httpClientFactory;
+        this.navManager = navManager;
+    }
+
+    public async Task<string> GetCodeSnippet(string className)
+    {
+        try
         {
-            var url = navManager.BaseUri + "_content/Tabler.Docs/pdf/sample.pdf";
+            if (cachedCode.TryGetValue(className, out var cached))
+            {
+                return cached;
+            }
+
+            var baseName = "Tabler.Docs.";
+            var path = baseUrl + "/" + className.Replace(baseName, "").Replace(".", "/") + ".razor";
+
             using var httpClient = httpClientFactory.CreateClient("GitHub");
-            var arr = await httpClient.GetByteArrayAsync(url);
-            return arr;
+            var code = await httpClient.GetStringAsync(path);
+
+            cachedCode[className] = code;
+            return code;
         }
+        catch (Exception ex)
+        {
+            return $"Unable to load code. Error: {ex.Message}";
+        }
+    }
+
+    public async Task<byte[]> GetSamplePDF()
+    {
+        var url = navManager.BaseUri + "_content/Tabler.Docs/pdf/sample.pdf";
+        using var httpClient = httpClientFactory.CreateClient("GitHub");
+        var arr = await httpClient.GetByteArrayAsync(url);
+        return arr;
     }
 }
