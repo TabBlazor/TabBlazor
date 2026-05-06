@@ -18,6 +18,12 @@ namespace TabBlazor
             var probe = new TablerOptions();
             tablerOptions(probe);
 
+            if (probe.DefaultPositioning != Positioning.Default)
+            {
+                probe.EnablePopper = true;
+                services.PostConfigure<TablerOptions>(o => o.EnablePopper = true);
+            }
+
             services
                 .AddScoped<ToastService>()
                 .AddScoped<TablerService>()

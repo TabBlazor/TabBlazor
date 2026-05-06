@@ -1,0 +1,11 @@
+@using Microsoft.Extensions.DependencyInjection
+
+@code {
+    private static void Configure(IServiceCollection services)
+    {
+        services.AddTabBlazor(options =>
+        {
+            options.DefaultPositioning = Positioning.Fixed;
+        });
+    }
+}

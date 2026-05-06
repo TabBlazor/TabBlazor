@@ -1,5 +1,6 @@
 @namespace TabBlazor
 @using TabBlazor.Services
+@inherits TablerBaseComponent
 @implements IAsyncDisposable
 @inject IServiceProvider ServiceProvider
 
@@ -21,10 +22,9 @@
 </div>
 
 @code {
-    [Parameter] public RenderFragment ChildContent { get; set; }
     [Parameter] public RenderFragment TooltipTemplate { get; set; }
     [Parameter] public string Text { get; set; }
-    [Parameter] public Positioning Positioning { get; set; } = Positioning.Default;
+    [Parameter] public Positioning? Positioning { get; set; }
     [Parameter] public Placement Placement { get; set; } = Placement.Top;
     [Parameter] public int Offset { get; set; } = 8;
 
@@ -32,7 +32,9 @@
     private ElementReference popperEl;
     private IPopperService popperService;
     private IPopperInstance popperInstance;
-    private bool UsePopper => Positioning != Positioning.Default;
+    private Positioning EffectivePositioning =>
+        Positioning ?? Options.CurrentValue.DefaultPositioning;
+    private bool UsePopper => EffectivePositioning != TabBlazor.Positioning.Default;
 
     protected override void OnInitialized()
     {
@@ -52,7 +54,7 @@
             popperInstance = await popperService.CreateAsync(referenceEl, popperEl, new PopperOptions
             {
                 Placement = Placement,
-                Strategy = Positioning,
+                Strategy = EffectivePositioning,
                 Offset = Offset
             });
         }
