@@ -1,6 +1,4 @@
-﻿
-
-<TreeView  Items="@folders" ChildSelectorAsync="e=> GetSubFoldersAsync(e)" @bind-SelectedItem="selectedFolder">
+﻿<TreeView Items="@folders" ChildSelectorAsync="e=> GetSubFoldersAsync(e)" @bind-SelectedItem="selectedFolder">
     <Template>
         <Card StatusStart="TablerColor.Danger" Size="CardSize.Small">
             <CardBody>
@@ -16,49 +14,43 @@
 </ul>
 
 @code {
-    private TreeView<FileFolder> treeView;
-    List<FileFolder> folders = new List<FileFolder>();
+    readonly List<FileFolder> folders = new();
     public FileFolder selectedFolder { get; set; }
+
     protected override void OnInitialized()
     {
-
         var drawings = new FileFolder("Drawings", 1);
         folders.Add(drawings);
-
     }
 
     private async Task<IList<FileFolder>> GetSubFoldersAsync(FileFolder folder)
     {
-
         await Task.Delay(200);
 
         if (folder.SubFolders == null)
         {
-            folder.SubFolders = new List<FileFolder>();
+            folder.SubFolders = new();
             var level = folder.Level + 1;
-            for (int i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
-                folder.SubFolders.Add(new FileFolder($"{level}_Sub: {i}", level));
+                folder.SubFolders.Add(new($"{level}_Sub: {i}", level));
             }
         }
 
         return folder.SubFolders;
-
-    } 
-
+    }
 
     public class FileFolder
     {
-
         public FileFolder(string folderName, int level)
         {
             FolderName = folderName;
             Level = level;
         }
+
         public int Level { get; set; }
         public string FolderName { get; set; }
         public List<FileFolder> SubFolders { get; set; }
-
     }
 
 }

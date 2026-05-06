@@ -53,7 +53,8 @@ namespace Tabler.Docs.Services
         public async Task<byte[]> GetSamplePDF()
         {
 
-            string path99 = Directory.GetParent(Assembly.GetExecutingAssembly().Location).Parent.Parent.Parent.Parent.FullName + "\\Tabler.Docs\\wwwroot\\pdf\\sample.pdf";
+            var basePath = Directory.GetParent(Assembly.GetExecutingAssembly().Location).Parent.Parent.Parent.Parent.FullName;
+            var path99 = Path.Combine(basePath, "Tabler.Docs", "wwwroot", "pdf", "sample.pdf");
 
             return await File.ReadAllBytesAsync(path99);
 
