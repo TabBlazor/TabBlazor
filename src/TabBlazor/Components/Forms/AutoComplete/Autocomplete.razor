@@ -18,7 +18,7 @@
     @if (IsShowingSuggestions)
     {
         <ClickOutside OnClickOutside="OnClickOutside">
-            <div class="dropdown-menu dropdown-menu-left show dropdown-project">
+            <div @ref="_menuRef" class="dropdown-menu dropdown-menu-left show dropdown-project">
                 @if (!string.IsNullOrEmpty(ResultHeader))
                 {
                     <span class="dropdown-header">@ResultHeader</span>

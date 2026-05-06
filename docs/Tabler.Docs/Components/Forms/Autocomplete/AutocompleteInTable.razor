@@ -1,0 +1,57 @@
+@using TabBlazor
+
+<p class="text-secondary">
+    <code>Autocomplete</code> with <code>Positioning="Positioning.Fixed"</code>
+    inside a scrollable table. The result list escapes the cell's overflow.
+</p>
+
+<div style="max-height: 220px; overflow: auto; border: 1px solid var(--tblr-border-color);">
+    <table class="table table-vcenter card-table">
+        <thead>
+            <tr>
+                <th style="width: 120px;">Order</th>
+                <th>Customer</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in rows)
+            {
+                <tr>
+                    <td class="fw-bold">@row.Id</td>
+                    <td style="min-width: 260px;">
+                        <Autocomplete TItem="Customer"
+                                      Value="@row.CustomerName"
+                                      ValueChanged="@(v => row.CustomerName = v)"
+                                      SearchMethod="Search"
+                                      OnItemSelected="@(c => row.CustomerName = c.CustomerName)"
+                                      Placeholder="Search customer..."
+                                      MinimumLength="1"
+                                      Positioning="Positioning.Fixed"
+                                      Placement="Placement.BottomStart">
+                            <ResultTemplate>@context.CustomerName</ResultTemplate>
+                        </Autocomplete>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    record Row(string Id) { public string CustomerName { get; set; } }
+
+    List<Customer> customers = SampleData.GetCustomers();
+    List<Row> rows = new()
+    {
+        new Row("ORD-1042"),
+        new Row("ORD-1043"),
+        new Row("ORD-1044"),
+        new Row("ORD-1045"),
+        new Row("ORD-1046"),
+    };
+
+    Task<List<Customer>> Search(string arg)
+    {
+        return Task.FromResult(customers.Where(x => x.CustomerName.Contains(arg, StringComparison.InvariantCultureIgnoreCase)).ToList());
+    }
+}
