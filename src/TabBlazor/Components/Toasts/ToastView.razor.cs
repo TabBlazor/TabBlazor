@@ -8,9 +8,11 @@ using TabBlazor.Services;
 
 namespace TabBlazor.Components.Toasts
 {
+    /// <summary>Renders a single toast notification, with optional auto-close countdown. Managed by <c>ToastService</c>.</summary>
     public partial class ToastView : IDisposable
     {
         [Inject] ToastService ToastService { get;set;}
+        /// <summary>The toast model to render.</summary>
         [Parameter] public ToastModel Toast { get; set; }
 
         private CountdownTimer _countdownTimer;

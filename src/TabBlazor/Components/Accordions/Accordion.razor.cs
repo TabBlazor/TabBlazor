@@ -1,8 +1,12 @@
 ﻿namespace TabBlazor;
 
+/// <summary>
+/// A container for collapsible <see cref="AccordionItem"/> panels. By default only one item is open at a time.
+/// </summary>
 public partial class Accordion : TablerBaseComponent
 {
     private List<AccordionItem> Items { get; set; } = new();
+    /// <summary>When true, multiple items can be expanded at once. Defaults to false.</summary>
     [Parameter]public bool MultipleOpen { get; set; }
 
     public void AddAccordionItem(AccordionItem item)

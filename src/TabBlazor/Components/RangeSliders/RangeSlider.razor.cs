@@ -5,20 +5,36 @@ using System.Linq;
 
 namespace TabBlazor
 {
+    /// <summary>
+    /// A range/slider input supporting either a single value or multiple drag points, over a numeric range
+    /// (<see cref="Min"/>/<see cref="Max"/>/<see cref="Step"/>) or a discrete <see cref="Range"/> of values.
+    /// <typeparamref name="TValue"/> is the value type.
+    /// </summary>
     public partial class RangeSlider<TValue> : ComponentBase
     {
+        /// <summary>The single selected value. Supports two-way binding via <c>@bind-Value</c>.</summary>
         [Parameter] public TValue Value { get; set; }
+        /// <summary>Raised when the single value changes.</summary>
         [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
+        /// <summary>The selected values when using multiple drag points. Supports <c>@bind-Values</c>.</summary>
         [Parameter] public List<TValue> Values { get; set; }
+        /// <summary>Raised when the multi-point values change.</summary>
         [Parameter] public EventCallback<List<TValue>> ValuesChanged { get; set; }
+        /// <summary>Discrete set of selectable values. Mutually exclusive with <see cref="Min"/>/<see cref="Max"/>/<see cref="Step"/>.</summary>
         [Parameter] public List<TValue> Range { get; set; }
+        /// <summary>Projects a value to its display label.</summary>
         [Parameter] public Func<TValue, string> LabelExpression { get; set; }
 
+        /// <summary>Minimum value. Defaults to 0. Not used with <see cref="Range"/>.</summary>
         [Parameter] public double Min { get; set; } = 0.0;
+        /// <summary>Maximum value. Defaults to 10. Not used with <see cref="Range"/>.</summary>
         [Parameter] public double Max { get; set; } = 10.0;
+        /// <summary>Step increment. Defaults to 1. Cannot be combined with <see cref="Range"/>.</summary>
         [Parameter] public double Step { get; set; } = 1.0;
 
+        /// <summary>When true, shows min/max labels. Defaults to false.</summary>
         [Parameter] public bool ShowLabels { get; set; } = false;
+        /// <summary>Unmatched HTML attributes applied to the slider input.</summary>
         [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> UnmatchedParameters { get; set; }
 
         private bool SingleDragPoint => Values == null || !Values.Any();

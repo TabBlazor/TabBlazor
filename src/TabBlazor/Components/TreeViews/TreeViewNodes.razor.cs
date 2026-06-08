@@ -10,15 +10,21 @@ using System.Xml.Linq;
 
 namespace TabBlazor.Components.TreeViews
 {
+    /// <summary>Renders one level of nodes within a <see cref="TreeView{TItem}"/>. Used internally and recursively.</summary>
     public partial class TreeViewNodes<TItem> : ComponentBase
     {
         [CascadingParameter(Name = "Root")] private TreeView<TItem> Root { get; set; }
+        /// <summary>The nodes to render at this level.</summary>
         [Parameter] public IList<TItem> Items { get; set; }
+        /// <summary>Function returning a node's children.</summary>
         [Parameter] public Func<TItem, Task<IList<TItem>>> ChildSelectorAsync { get; set; } = node => null;
+        /// <summary>Template rendered for each node.</summary>
         [Parameter] public RenderFragment<TItem> Template { get; set; }
 
+        /// <summary>The nesting depth of this level (0 = root).</summary>
         [Parameter] public int Level { get; set; }
 
+        /// <summary>When true, nodes at this level accept drops. Defaults to false.</summary>
         [Parameter] public bool AllowDrop { get; set; }
 
         private bool CheckAllowDrop(TItem item)

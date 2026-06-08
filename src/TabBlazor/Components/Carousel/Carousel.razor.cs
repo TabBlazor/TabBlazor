@@ -3,22 +3,32 @@ using System.Timers;
 
 namespace TabBlazor
 {
+    /// <summary>
+    /// A slideshow of <see cref="CarouselItem"/> panels with optional controls, indicators and auto-advance.
+    /// </summary>
     public partial class Carousel : IDisposable
     {
         private List<CarouselItem> carouselItems { get; set; } = new();
         private System.Timers.Timer slideTimer = new System.Timers.Timer();
         internal CarouselItem activeItem;
 
+        /// <summary>The carousel items.</summary>
         [Parameter] public RenderFragment ChildContent { get; set; }
 
+        /// <summary>When true, shows previous/next controls. Defaults to false.</summary>
         [Parameter] public bool Controls { get; set; }
+        /// <summary>The indicator style (none, dots, thumbnails).</summary>
         [Parameter] public CarouselIndicator Indicators { get; set; }
+        /// <summary>The orientation of the indicators.</summary>
         [Parameter] public CarouselIndicatorDirection IndicatorsDirection { get; set; }
 
 
 
+        /// <summary>Time between auto-advance slides, in milliseconds. Defaults to 5000.</summary>
         [Parameter] public int SlideInterval { get; set; } = 5000;
+        /// <summary>When true, slides advance automatically. Defaults to true.</summary>
         [Parameter] public bool AutoSlide { get; set; } = true;
+        /// <summary>Raised when the active item changes.</summary>
         [Parameter] public EventCallback<CarouselItem> OnItemActive { get; set; }
 
         public CarouselItem ActiveItem => activeItem;
@@ -105,6 +115,7 @@ namespace TabBlazor
 
         }
 
+        /// <summary>Activates the item at the given index.</summary>
         public void SetActiveItem(int index)
         {
             var item = carouselItems.ElementAtOrDefault(index);
@@ -114,6 +125,7 @@ namespace TabBlazor
             }
         }
 
+        /// <summary>Activates the given item.</summary>
         public void SetActiveItem(CarouselItem item)
         {
             activeItem = item;
@@ -131,6 +143,7 @@ namespace TabBlazor
             });
         }
 
+        /// <summary>Advances to the next item, wrapping to the first.</summary>
         public void MoveNext()
         {
             if (carouselItems.Count == 0) { return; }
@@ -148,6 +161,7 @@ namespace TabBlazor
         }
 
 
+        /// <summary>Moves to the previous item, wrapping to the last.</summary>
         public void MovePrevious()
         {
             if (carouselItems.Count == 0) { return; }

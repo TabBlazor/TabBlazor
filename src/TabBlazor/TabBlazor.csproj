@@ -13,13 +13,23 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryType>git</RepositoryType>
 		<PackageIcon>TabBlazorLogo.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 
-	<!--<PropertyGroup>
+	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	</PropertyGroup>-->
+		<NoWarn>$(NoWarn);CS1591</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<DebugType>portable</DebugType>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<Content Remove="compilerconfig.json" />
@@ -30,6 +40,8 @@
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+		<None Include="AGENTS.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 

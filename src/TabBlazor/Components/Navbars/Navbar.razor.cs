@@ -2,14 +2,23 @@
 
 namespace TabBlazor;
 
+/// <summary>
+/// A responsive navigation bar hosting <see cref="NavbarMenuItem"/> entries, supporting horizontal or vertical
+/// layout and collapsing below a configurable breakpoint.
+/// </summary>
 public partial class Navbar : TablerBaseComponent, IDisposable
 {
     private readonly List<NavbarMenuItem> navbarItems = new();
     [Inject] private NavigationManager navigationManager { get; set; }
+    /// <summary>The navbar background style (dark, light, transparent).</summary>
     [Parameter] public NavbarBackground Background { get; set; }
+    /// <summary>Horizontal or vertical layout.</summary>
     [Parameter] public NavbarDirection Direction { get; set; }
+    /// <summary>Whether the navbar starts expanded. Defaults to true.</summary>
     [Parameter] public bool IsExpanded { get; set; } = true;
+    /// <summary>The breakpoint below which the navbar collapses. Defaults to <see cref="PageBreakpoint.Sm"/>.</summary>
     [Parameter] public PageBreakpoint CollapseAt { get; set; } = PageBreakpoint.Sm;
+    /// <summary>How active links are matched against the current URL.</summary>
     [Parameter] public NavLinkMatch? NavLinkMatch { get; set; }
 
     protected string HtmlTag => "div";

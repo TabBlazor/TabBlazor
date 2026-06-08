@@ -2,12 +2,16 @@
 
 namespace TabBlazor
 {
+    /// <summary>The root container for a tree of <see cref="NavigationItem"/> entries (e.g. a sidebar menu).</summary>
     public partial class Navigation : NavigationBase
     {
+        /// <summary>When true, renders bordered navigation styling. Defaults to false.</summary>
         [Parameter] public bool Bordered { get; set; }
 
+        /// <summary>Raised when a navigation item is clicked.</summary>
         [Parameter] public EventCallback<NavigationItem> OnItemClicked { get; set; }
 
+        /// <summary>When true, clicking an item expands its sub-menu rather than navigating. Defaults to false.</summary>
         [Parameter] public bool ExpandOnClick { get; set; }
 
       

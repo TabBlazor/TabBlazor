@@ -2,21 +2,33 @@ using System.Diagnostics;
 
 namespace TabBlazor.Dashboards;
 
+/// <summary>
+/// A faceted-filtering dashboard over a set of <typeparamref name="TItem"/> records. Child facets
+/// (<see cref="EqualFacet{TItem}"/>, <see cref="DateFacet{TItem}"/>, etc.) and filters narrow
+/// <see cref="FilteredItems"/>; bind your visuals to that. <typeparamref name="TItem"/> is the record type.
+/// </summary>
 public partial class Dashboard<TItem> where TItem : class
 {
     private readonly List<DataFacet<TItem>> facets = new();
     private readonly List<DataFilter<TItem>> filters = new();
 
+    /// <summary>Time taken by the last <see cref="RunFilter"/> pass, in milliseconds.</summary>
     public long LastRunFilterMilliseconds;
+    /// <summary>The full source data set.</summary>
     [Parameter] public IEnumerable<TItem> Items { get; set; }
+    /// <summary>Dashboard content (facets, filters, visuals), receiving the dashboard as context.</summary>
     [Parameter] public RenderFragment<Dashboard<TItem>> ChildContent { get; set; }
 
+    /// <summary>Raised after the filtered result set changes.</summary>
     [Parameter] public EventCallback OnUpdate { get; set; }
 
+    /// <summary>When true, writes filter timing to the console. Defaults to false.</summary>
     [Parameter] public bool Debug { get; set; }
 
+    /// <summary>The items remaining after all active facets and filters are applied.</summary>
     public IQueryable<TItem> FilteredItems { get; private set; }
 
+    /// <summary>The complete, unfiltered item set.</summary>
     public IQueryable<TItem> AllItems { get; private set; }
 
 
@@ -100,6 +112,7 @@ public partial class Dashboard<TItem> where TItem : class
     }
 
 
+    /// <summary>Re-applies all active filters and facets, updating <see cref="FilteredItems"/> and raising <see cref="OnUpdate"/>.</summary>
     public void RunFilter()
     {
         var sw = new Stopwatch();

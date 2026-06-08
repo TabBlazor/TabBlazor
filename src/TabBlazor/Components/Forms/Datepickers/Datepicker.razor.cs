@@ -8,14 +8,25 @@ using Microsoft.AspNetCore.Components.Forms;
 
 namespace TabBlazor
 {
+    /// <summary>
+    /// Calendar-based date picker bound to a <see cref="DateTime"/> or <see cref="DateTimeOffset"/> value
+    /// (or their nullable variants). Renders either inline or inside a dropdown opened from a text input.
+    /// </summary>
     public partial class Datepicker<TValue> : TablerBaseComponent
     {
+        /// <summary>When true, renders the calendar inline instead of inside a dropdown. Defaults to false.</summary>
         [Parameter] public bool Inline { get; set; }
+        /// <summary>The .NET date format string used to display the selected date in the input. Defaults to "d" (short date).</summary>
         [Parameter] public string Format { get; set; } = "d";
+        /// <summary>The currently selected date. <typeparamref name="TValue"/> must be <see cref="DateTime"/> or <see cref="DateTimeOffset"/> (or nullable).</summary>
         [Parameter] public TValue SelectedDate { get; set; }
+        /// <summary>Invoked when the selected date changes; enables two-way binding via @bind-SelectedDate.</summary>
         [Parameter] public EventCallback<TValue> SelectedDateChanged { get; set; }
+        /// <summary>Expression identifying the bound field, used for validation inside an <see cref="EditContext"/>.</summary>
         [Parameter] public Expression<Func<TValue>> SelectedDateExpression { get; set; }
+        /// <summary>Optional label rendered above the picker.</summary>
         [Parameter] public string Label { get; set; }
+        /// <summary>Controls how the input is styled. Defaults to <see cref="DisplayMode.Default"/>.</summary>
         [Parameter] public DisplayMode DisplayMode { get; set; } = DisplayMode.Default;
         [CascadingParameter] private EditContext CascadedEditContext { get; set; }
 

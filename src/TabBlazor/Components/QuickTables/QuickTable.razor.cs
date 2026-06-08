@@ -3,6 +3,12 @@ using TabBlazor.Components.QuickTables.Infrastructure;
 
 namespace TabBlazor.Components.QuickTables;
 
+/// <summary>
+/// A high-performance data grid with optional virtualization, sorting, pagination and resizable columns.
+/// Supply data through either <see cref="Items"/> (an <see cref="IQueryable{T}"/>) or <see cref="ItemsProvider"/>
+/// (for server-side / async sources such as EF Core), and define columns with <c>PropertyColumn</c> /
+/// <c>TemplateColumn</c> in <see cref="ChildContent"/>. <typeparamref name="TGridItem"/> is the row type.
+/// </summary>
 [CascadingTypeParameter(nameof(TGridItem))]
 public partial class QuickTable<TGridItem> : IAsyncDisposable
 {
@@ -43,19 +49,31 @@ public partial class QuickTable<TGridItem> : IAsyncDisposable
         columnsFirstCollectedSubscriber.SubscribeOrMove(internalGridContext.ColumnsFirstCollected);
     }
 
+    /// <summary>The data source as an <see cref="IQueryable{T}"/>. Mutually exclusive with <see cref="ItemsProvider"/>.</summary>
     [Parameter] public IQueryable<TGridItem> Items { get; set; }
+    /// <summary>A callback that supplies rows on demand (paging/sorting applied), for async or remote data. Mutually exclusive with <see cref="Items"/>.</summary>
     [Parameter] public GridItemsProvider<TGridItem> ItemsProvider { get; set; }
+    /// <summary>Additional CSS class(es) applied to the table element.</summary>
     [Parameter] public string Class { get; set; }
+    /// <summary>The table theme. Defaults to <c>"default"</c>.</summary>
     [Parameter] public string Theme { get; set; } = "default";
+    /// <summary>Column definitions (<c>PropertyColumn</c>, <c>TemplateColumn</c>) for the grid.</summary>
     [Parameter] public RenderFragment ChildContent { get; set; }
+    /// <summary>When true, rows are virtualized for large data sets. Defaults to false.</summary>
     [Parameter] public bool Virtualize { get; set; }
+    /// <summary>The fixed row height in pixels used when virtualizing. Defaults to 50.</summary>
     [Parameter] public float ItemSize { get; set; } = 50;
+    /// <summary>When true, columns can be resized by dragging. Defaults to false.</summary>
     [Parameter] public bool ResizableColumns { get; set; }
+    /// <summary>Projects a row to a stable key used for diffing. Defaults to the item itself.</summary>
     [Parameter] public Func<TGridItem, object> ItemKey { get; set; } = x => x!;
+    /// <summary>Optional pagination state. When set, the grid pages rather than showing all rows.</summary>
     [Parameter] public PaginationState Pagination { get; set; }
 
     [Inject] private IServiceProvider Services { get; set; } = default!;
+    /// <summary>The column the grid is currently sorted by, or null when unsorted.</summary>
     public ColumnBase<TGridItem> SortByColumn { get; set; }
+    /// <summary>True when the current sort is ascending.</summary>
     public bool SortByAscending { get; set; }
 
     public ValueTask DisposeAsync()
@@ -115,6 +133,9 @@ public partial class QuickTable<TGridItem> : IAsyncDisposable
         collectingColumns = false;
     }
 
+    /// <summary>Sorts the grid by the given column, then refreshes the data.</summary>
+    /// <param name="column">The column to sort by.</param>
+    /// <param name="direction">The direction; <see cref="SortDirection.Auto"/> toggles when re-sorting the same column.</param>
     public Task SortByColumnAsync(ColumnBase<TGridItem> column, SortDirection direction = SortDirection.Auto)
     {
         SortByAscending = direction switch
@@ -131,12 +152,14 @@ public partial class QuickTable<TGridItem> : IAsyncDisposable
         return RefreshDataAsync();
     }
 
+    /// <summary>Opens the display-options popup for the given column.</summary>
     public void ShowColumnOptions(ColumnBase<TGridItem> column)
     {
         displayOptionsForColumn = column;
         StateHasChanged();
     }
 
+    /// <summary>Re-queries the data source and re-renders the grid.</summary>
     public async Task RefreshDataAsync()
     {
         await RefreshDataCoreAsync();

@@ -3,8 +3,10 @@
 namespace TabBlazor
 {
 
+    /// <summary>A small status dot. Color comes from <see cref="TablerBaseComponent.BackgroundColor"/>.</summary>
     public partial class StatusDot : TablerBaseComponent
     {
+        /// <summary>When true, the dot pulses. Defaults to false.</summary>
         [Parameter] public bool Animate { get; set; }
 
 

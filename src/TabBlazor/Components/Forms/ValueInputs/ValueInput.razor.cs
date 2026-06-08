@@ -6,6 +6,11 @@ using System.Linq.Expressions;
 
 namespace TabBlazor
 {
+    /// <summary>
+    /// A generic text-backed input that parses and binds to a strongly typed <typeparamref name="TValue"/>,
+    /// integrating with an ambient <see cref="EditContext"/> for validation. Reports a parse failure as a
+    /// validation message instead of throwing.
+    /// </summary>
     public partial class ValueInput<TValue> : TablerBaseComponent, IDisposable
     {
         private string currentValue;
@@ -13,15 +18,22 @@ namespace TabBlazor
         private string FieldCssClasses;
         private ValidationMessageStore validationMessageStore;
 
+        /// <summary>The bound value. Supports two-way binding via <c>@bind-Value</c>.</summary>
         [Parameter] public TValue Value { get; set; }
+        /// <summary>Raised when a successfully parsed value changes.</summary>
         [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
+        /// <summary>Identifies the bound field for validation; set automatically by <c>@bind-Value</c>.</summary>
         [Parameter] public Expression<Func<TValue>> ValueExpression { get; set; }
+        /// <summary>The label text shown for the input.</summary>
         [Parameter] public string Label { get; set; }
+        /// <summary>Controls the visual layout (e.g. flush). Defaults to <see cref="DisplayMode.Default"/>.</summary>
         [Parameter] public DisplayMode DisplayMode { get; set; } = DisplayMode.Default;
+        /// <summary>Validation message shown when the entered text cannot be parsed to <typeparamref name="TValue"/>.</summary>
         [Parameter] public string ParsingErrorMessage { get; set; }
 
         [CascadingParameter] private EditContext CascadedEditContext { get; set; }
 
+        /// <summary>True when the current input parsed successfully to <typeparamref name="TValue"/>.</summary>
         public bool IsValid { get; set; } = true;
 
         private string CurrentValue

@@ -6,14 +6,22 @@ using TabBlazor.Services;
 
 namespace TabBlazor
 {
+    /// <summary>
+    /// Renders a single open modal's chrome (header, body, sizing, dragging). Created internally by
+    /// <see cref="IModalService"/>; you usually don't place this directly.
+    /// </summary>
     public partial class ModalView : ComponentBase, IDisposable
     {
 
         [Inject] protected TablerService TablerService { get; set; }
         [Inject] private IModalService ModalService { get; set; }
+        /// <summary>The modal title.</summary>
         [Parameter] public string Title { get; set; }
+        /// <summary>The modal appearance/behavior options (size, draggable, close triggers, etc.).</summary>
         [Parameter] public ModalOptions Options { get; set; }
+        /// <summary>The modal body content.</summary>
         [Parameter] public RenderFragment ChildContent { get; set; }
+        /// <summary>Raised when the modal is closed.</summary>
         [Parameter] public EventCallback OnClosed { get; set; }
 
         public string HeaderCssClass { get; private set; }

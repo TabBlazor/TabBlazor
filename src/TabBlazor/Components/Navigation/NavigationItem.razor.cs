@@ -2,14 +2,19 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace TabBlazor
 {
+    /// <summary>An entry within a <see cref="Navigation"/>, optionally containing a nested sub-menu.</summary>
     public partial class NavigationItem : NavigationBase
     {
 
+        /// <summary>The item label text.</summary>
         [Parameter] public string Title { get; set; }
-     
+
+        /// <summary>Optional icon content shown before the title.</summary>
         [Parameter] public RenderFragment MenuIcon { get; set; }
+        /// <summary>Optional nested sub-menu content.</summary>
         [Parameter] public RenderFragment SubMenu { get; set; }
 
+        /// <summary>Arbitrary data associated with the item.</summary>
         [Parameter] public object Data { get; set; }
 
 

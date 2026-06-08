@@ -9,9 +9,14 @@ using TabBlazor.Services;
 
 namespace TabBlazor
 {
+    /// <summary>
+    /// A diagnostic component that reflects over an object (or collection) and renders its properties in a table,
+    /// drilling into nested objects via modals. Useful for debugging/inspection.
+    /// </summary>
     public partial class ObjectBrowser
     {
         [Inject] public IModalService ModalService { get; set; }
+        /// <summary>The object or collection to inspect.</summary>
         [Parameter] public object Object { get; set; }
 
         private Type objectType;
