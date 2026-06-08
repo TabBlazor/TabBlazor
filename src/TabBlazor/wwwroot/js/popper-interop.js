@@ -11,15 +11,31 @@ function ensurePopper(scriptUrl) {
             existing.addEventListener('error', () => reject(new Error('popper script failed')));
             return;
         }
+        // Hide AMD loader (e.g. Monaco's RequireJS) so popper UMD picks the
+        // browser-global branch and attaches to window.Popper.
+        const savedDefine = window.define;
+        const hasAmd = typeof savedDefine === 'function' && savedDefine.amd;
+        if (hasAmd) {
+            try { window.define = undefined; } catch (_) { }
+        }
+        const restoreDefine = () => {
+            if (hasAmd) {
+                try { window.define = savedDefine; } catch (_) { }
+            }
+        };
         const s = document.createElement('script');
         s.src = scriptUrl;
         s.async = true;
         s.setAttribute('data-tabblazor-popper', '');
         s.onload = () => {
+            restoreDefine();
             if (window.Popper) resolve(window.Popper);
             else reject(new Error('popper loaded but window.Popper missing'));
         };
-        s.onerror = () => reject(new Error('failed loading popper from ' + scriptUrl));
+        s.onerror = () => {
+            restoreDefine();
+            reject(new Error('failed loading popper from ' + scriptUrl));
+        };
         document.head.appendChild(s);
     });
     return popperLoadPromise;

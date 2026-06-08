@@ -16,6 +16,7 @@ namespace Tabler.Docs
                {
                    options.AssemblyScanFilter = () => [typeof(Flags).Assembly];
                    options.EnablePopper = true;
+                   options.DefaultPositioning = Positioning.Absolute;
                })
                .AddSingleton<AppService>();
         }
