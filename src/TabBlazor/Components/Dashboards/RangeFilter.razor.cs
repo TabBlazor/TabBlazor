@@ -2,9 +2,12 @@
 
 namespace TabBlazor.Dashboards
 {
+    /// <summary>A dashboard filter with min/max inputs that constrains a numeric property to a range.</summary>
     public partial class RangeFilter<TItem> : DashboardComponent<TItem> where TItem : class
     {
+        /// <summary>The numeric property to constrain.</summary>
         [Parameter] public Expression<Func<TItem, decimal>> Expression { get; set; }
+        /// <summary>The filter's display name.</summary>
         [Parameter] public string Name { get; set; }
 
         private decimal allMin;
@@ -13,6 +16,7 @@ namespace TabBlazor.Dashboards
         private decimal min;
         private decimal max;
 
+        /// <summary>Optional custom content rendered for the filter.</summary>
         [Parameter] public RenderFragment<DataFacet<TItem>> Facet { get; set; }
      
         private DataFilter<TItem> filter;

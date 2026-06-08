@@ -11,6 +11,12 @@ using TabBlazor.Services;
 
 namespace TabBlazor
 {
+    /// <summary>
+    /// Base class for the standard <c>Table</c> component: a feature-rich table over a list of
+    /// <typeparamref name="Item"/> with editing (inline or popup), selection, grouping, paging, search and
+    /// detail rows. Define columns in <see cref="ChildContent"/>; wire <see cref="OnItemEdited"/>,
+    /// <see cref="OnItemAdded"/> and <see cref="OnItemDeleted"/> to enable the corresponding actions.
+    /// </summary>
     public class TableBase<Item> : ComponentBase, IPopupEditTable<Item>, ITable<Item>, IInlineEditTable<Item>, IDetailsTable<Item>, ITableRow<Item>, ITableState<Item>
     {
         private Item StateBeforeEdit;
@@ -21,27 +27,47 @@ namespace TabBlazor
         [Inject] private IModalService modalService { get; set; }
         [Inject] private IOptionsMonitor<TablerOptions> tablerOptions { get; set; }
 
+        /// <summary>Unmatched HTML attributes applied to the table element.</summary>
         [Parameter(CaptureUnmatchedValues = true)]
         public IDictionary<string, object> UnknownParameters { get; set; }
 
+        /// <summary>When true, shows the header area above the table. Defaults to true.</summary>
         [Parameter] public bool ShowHeader { get; set; } = true;
+        /// <summary>When true, shows the column header row. Defaults to true.</summary>
         [Parameter] public bool ShowTableHeader { get; set; } = true;
+        /// <summary>When true, rows can be selected. Defaults to false.</summary>
         [Parameter] public bool Selectable { get; set; }
+        /// <summary>When true, shows a label when there are no items. Defaults to true.</summary>
         [Parameter] public bool ShowNoItemsLabel { get; set; } = true;
+        /// <summary>CSS classes for the table element. Defaults to Tabler card-table styling.</summary>
         [Parameter] public string TableClass { get; set; } = "table card-table table-vcenter no-footer";
+        /// <summary>The validation rule set applied while editing. Defaults to <c>"default"</c>.</summary>
         [Parameter] public string ValidationRuleSet { get; set; } = "default";
+        /// <summary>Optional custom content for the table header area.</summary>
         [Parameter] public RenderFragment HeaderTemplate { get; set; }
+        /// <summary>The column definitions for the table.</summary>
         [Parameter] public RenderFragment ChildContent { get; set; }
+        /// <summary>Raised when a row is clicked.</summary>
         [Parameter] public EventCallback<Item> OnRowClicked { get; set; }
+        /// <summary>Raised before an item enters edit mode.</summary>
         [Parameter] public EventCallback<Item> OnBeforeEdit { get; set; }
+        /// <summary>Raised when an edited item is saved. Having a handler enables editing.</summary>
         [Parameter] public EventCallback<Item> OnItemEdited { get; set; }
+        /// <summary>Raised when a new item is added. Having a handler enables adding.</summary>
         [Parameter] public EventCallback<Item> OnItemAdded { get; set; }
+        /// <summary>Raised when an item is deleted. Having a handler enables deletion.</summary>
         [Parameter] public EventCallback<Item> OnItemDeleted { get; set; }
+        /// <summary>When true, highlights rows on hover. Defaults to false.</summary>
         [Parameter] public bool Hover { get; set; }
+        /// <summary>When true, wraps the table for horizontal scrolling on small screens. Defaults to false.</summary>
         [Parameter] public bool Responsive { get; set; }
+        /// <summary>Factory used to create a new item when adding; defaults to <c>Activator.CreateInstance</c>.</summary>
         [Parameter] public Func<Task<Item>> AddItemFactory { get; set; }
+        /// <summary>Custom delete confirmation; return false to cancel. Overrides <see cref="ConfirmDelete"/>.</summary>
         [Parameter] public Func<Item, Task<bool>> ConfirmDeleteFunction { get; set; }
+        /// <summary>When true, shows a confirm dialog before deleting. Defaults to true.</summary>
         [Parameter] public bool ConfirmDelete { get; set; } = true;
+        /// <summary>How rows are edited (e.g. inline or popup).</summary>
         [Parameter] public TableEditMode EditMode { get; set; }
 
         [Parameter] public OnCancelStrategy? CancelStrategy { get; set; }

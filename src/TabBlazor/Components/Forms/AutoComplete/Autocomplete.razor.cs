@@ -7,6 +7,11 @@ using Timer = System.Timers.Timer;
 
 namespace TabBlazor;
 
+/// <summary>
+/// A text input with debounced async suggestions. Returns the typed string value (use <c>Typeahead</c> to bind
+/// a selected object). Supply results via <see cref="SearchMethod"/>; suggestions can be grouped and templated.
+/// <typeparamref name="TItem"/> is the suggestion item type.
+/// </summary>
 public partial class Autocomplete<TItem> : TablerBaseComponent, IAsyncDisposable
 {
     [Inject] public TablerService TablerService { get; set; }
@@ -24,30 +29,54 @@ public partial class Autocomplete<TItem> : TablerBaseComponent, IAsyncDisposable
 
     private FieldIdentifier FieldIdentifier { get; set; }
 
+    /// <summary>Additional CSS class(es) for the input.</summary>
     [Parameter] public string CssClass { get; set; }
+    /// <summary>Controls the visual layout (e.g. flush). Defaults to <see cref="DisplayMode.Default"/>.</summary>
     [Parameter] public DisplayMode DisplayMode { get; set; } = DisplayMode.Default;
+    /// <summary>Optional header text shown above the results list.</summary>
     [Parameter] public string ResultHeader { get; set; }
+    /// <summary>Template rendered for each suggestion.</summary>
     [Parameter] public RenderFragment<TItem> ResultTemplate { get; set; }
+    /// <summary>Template shown when no suggestions match.</summary>
     [Parameter] public RenderFragment NotFoundTemplate { get; set; }
+    /// <summary>Raised when the text value changes.</summary>
     [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    /// <summary>Identifies the bound field for validation; set automatically by <c>@bind-Value</c>.</summary>
     [Parameter] public Expression<Func<string>> ValueExpression { get; set; }
+    /// <summary>Raised when the input loses focus.</summary>
     [Parameter] public EventCallback<FocusEventArgs> OnBlur { set; get; }
+    /// <summary>The text value. Supports two-way binding via <c>@bind-Value</c>.</summary>
     [Parameter] public string Value { get; set; }
+    /// <summary>Delay in milliseconds before searching after typing. Defaults to 300.</summary>
     [Parameter] public int Debounce { get; set; } = 300;
+    /// <summary>Optional grouping key for suggestions.</summary>
     [Parameter] public Expression<Func<TItem, object>> GroupBy { get; set; }
+    /// <summary>Projects a grouping key to its header text.</summary>
     [Parameter] public Func<object, string> GroupingHeaderExpression { get; set; }
+    /// <summary>Template for group headers.</summary>
     [Parameter] public RenderFragment<object> GroupingHeaderTemplate { get; set; }
-    
+
+    /// <summary>Async function returning suggestions for the current search text. Required.</summary>
     [Parameter] public Func<string, Task<List<TItem>>> SearchMethod { get; set; }
+    /// <summary>Raised when a suggestion is selected.</summary>
     [Parameter] public EventCallback<TItem> OnItemSelected { get; set; }
+    /// <summary>When set, only the text after the last occurrence of this character is searched (e.g. for tags).</summary>
     [Parameter] public string SeparatorCharacter { get; set; }
+    /// <summary>When true, the input is disabled. Defaults to false.</summary>
     [Parameter] public bool Disabled { get; set; } = false;
+    /// <summary>When true, skips EditContext validation notifications. Defaults to false.</summary>
     [Parameter] public bool DisableValidation { get; set; }
+    /// <summary>When true, shows suggestions as soon as the input is focused. Defaults to false.</summary>
     [Parameter] public bool ShowOptionOnFocus { get; set; }
+    /// <summary>Placeholder text for the input.</summary>
     [Parameter] public string Placeholder { get; set; }
+    /// <summary>Minimum characters before searching. Defaults to 2.</summary>
     [Parameter] public int MinimumLength { get; set; } = 2;
+    /// <summary>Positioning strategy for the suggestions popup. When null, uses the configured default.</summary>
     [Parameter] public Positioning? Positioning { get; set; }
+    /// <summary>Popper placement of the suggestions. Defaults to <see cref="Placement.BottomStart"/>.</summary>
     [Parameter] public Placement Placement { get; set; } = Placement.BottomStart;
+    /// <summary>Popper offset in pixels. Defaults to 2.</summary>
     [Parameter] public int PopperOffset { get; set; } = 2;
 
     private Positioning EffectivePositioning =>

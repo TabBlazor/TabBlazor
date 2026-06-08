@@ -18,9 +18,18 @@
 		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 
-	<!--<PropertyGroup>
+	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	</PropertyGroup>-->
+		<NoWarn>$(NoWarn);CS1591</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<DebugType>portable</DebugType>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<Content Remove="compilerconfig.json" />
@@ -32,6 +41,7 @@
 			<PackagePath></PackagePath>
 		</None>
 		<None Include="README.md" Pack="true" PackagePath="\" />
+		<None Include="AGENTS.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 

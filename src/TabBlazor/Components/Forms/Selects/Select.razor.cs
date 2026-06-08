@@ -6,18 +6,34 @@ using TabBlazor.Components.Selects;
 
 namespace TabBlazor
 {
+    /// <summary>
+    /// A native single-select dropdown bound to a list of items, with optional clearing and custom text/value
+    /// projection. <typeparamref name="TItem"/> is the source item type; <typeparamref name="TValue"/> is the
+    /// selected value type. When the two differ, supply <see cref="ConvertExpression"/>.
+    /// </summary>
     public partial class Select<TItem, TValue> : TablerBaseComponent
     {
+        /// <summary>The items shown in the dropdown.</summary>
         [Parameter] public List<TItem> Items { get; set; }
+        /// <summary>The currently selected value. Supports two-way binding via <c>@bind-SelectedValue</c>.</summary>
         [Parameter] public TValue SelectedValue { get; set; }
+        /// <summary>Raised when the selected value changes.</summary>
         [Parameter] public EventCallback<TValue> SelectedValueChanged { get; set; }
+        /// <summary>Raised after a selection change, in addition to <see cref="SelectedValueChanged"/>.</summary>
         [Parameter] public EventCallback Updated { get; set; }
+        /// <summary>Projects an item to its display text. Defaults to <c>item.ToString()</c> when not set.</summary>
         [Parameter] public Func<TItem, string> TextExpression { get; set; }
+        /// <summary>Projects an item to its bound value. Required when <typeparamref name="TItem"/> and <typeparamref name="TValue"/> differ.</summary>
         [Parameter] public Func<TItem, TValue> ConvertExpression { get; set; }
+        /// <summary>Determines whether a given item is rendered as disabled (non-selectable).</summary>
         [Parameter] public Func<TItem, bool> DisabledExpression { get; set; }
+        /// <summary>Text shown when <see cref="Items"/> is empty. Defaults to <c>"*No items*"</c>.</summary>
         [Parameter] public string ItemListEmptyText { get; set; } = "*No items*";
+        /// <summary>Placeholder shown when nothing is selected. Defaults to <c>"*Select*"</c>.</summary>
         [Parameter] public string NoSelectedText { get; set; } = "*Select*";
+        /// <summary>When true, shows a clear button to reset the selection. Defaults to false.</summary>
         [Parameter] public bool Clearable { get; set; }
+        /// <summary>Controls the visual layout (e.g. flush). Defaults to <see cref="DisplayMode.Default"/>.</summary>
         [Parameter] public DisplayMode DisplayMode { get; set; } = DisplayMode.Default;
 
         protected List<ListItem<TItem, TValue>> itemList = new();

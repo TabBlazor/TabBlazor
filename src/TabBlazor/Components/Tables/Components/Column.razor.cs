@@ -9,12 +9,18 @@ using LinqKit;
 
 namespace TabBlazor
 {
+    /// <summary>
+    /// A column definition for the standard <c>Table</c> component. Bind <see cref="Property"/> for sorting,
+    /// searching and grouping, or supply a <see cref="Template"/> for custom cell content.
+    /// <typeparamref name="Item"/> is the table row type.
+    /// </summary>
     public class ColumnBase<Item> : ComponentBase, IColumn<Item>
     {
         [Inject] protected TableFilterService FilterService { get; set; }
 
         private string _title;
 
+        /// <summary>The column header text. Falls back to the bound <see cref="Property"/> name when not set.</summary>
         [Parameter]
         public string Title
         {
@@ -22,22 +28,39 @@ namespace TabBlazor
             set { _title = value; }
         }
 
+        /// <summary>The owning table, supplied via cascading parameter.</summary>
         [CascadingParameter(Name = "Table")] public ITable<Item> Table { get; set; }
+        /// <summary>Optional fixed column width (CSS value).</summary>
         [Parameter] public string Width { get; set; }
+        /// <summary>When true, the column can be sorted. Requires <see cref="Property"/>. Defaults to false.</summary>
         [Parameter] public bool Sortable { get; set; }
+        /// <summary>When true, the column participates in search. Requires <see cref="Property"/>. Defaults to false.</summary>
         [Parameter] public bool Searchable { get; set; }
+        /// <summary>When true, the table can be grouped by this column. Defaults to false.</summary>
         [Parameter] public bool Groupable { get; set; }
+        /// <summary>Additional CSS class(es) for the column's cells.</summary>
         [Parameter] public string CssClass { get; set; }
+        /// <summary>Whether the column is visible. Defaults to true.</summary>
         [Parameter] public bool Visible { get; set; } = true;
+        /// <summary>When true, marks this as the row-actions column. Defaults to false.</summary>
         [Parameter] public bool ActionColumn { get; set; }
+        /// <summary>Optional custom header content, overriding <see cref="Title"/>.</summary>
         [Parameter] public RenderFragment HeaderTemplate { get; set; }
+        /// <summary>Custom cell content for the row. When omitted, the bound property value is shown.</summary>
         [Parameter] public RenderFragment<Item> Template { get; set; }
+        /// <summary>Custom editor content shown while editing the row.</summary>
         [Parameter] public RenderFragment<Item> EditorTemplate { get; set; }
+        /// <summary>Custom content for the group header row when grouping by this column.</summary>
         [Parameter] public RenderFragment<TableResult<object, Item>> GroupingTemplate { get; set; }
+        /// <summary>The property this column binds to, e.g. <c>@(x => x.Name)</c>. Required for sort/search/group.</summary>
         [Parameter] public Expression<Func<Item, object>> Property { get; set; }
+        /// <summary>Optional custom search predicate, overriding the default contains search.</summary>
         [Parameter] public Expression<Func<Item, string, bool>> SearchExpression { get; set; }
+        /// <summary>Initial sort order for this column, if any.</summary>
         [Parameter] public SortOrder? Sort { get; set; }
+        /// <summary>Cell content alignment.</summary>
         [Parameter] public Align Align { get; set; }
+        /// <summary>When true, the table starts grouped by this column. Defaults to false.</summary>
         [Parameter] public bool Group { get; set; }
 
         public bool SortColumn { get; set; }

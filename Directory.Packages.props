@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.9.50" />
+    <GlobalPackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Blazor-ApexCharts" Version="6.1.0" />

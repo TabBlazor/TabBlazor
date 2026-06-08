@@ -9,11 +9,14 @@ using TabBlazor.Services;
 
 namespace TabBlazor.Components.ObjectBrowser
 {
+    /// <summary>Renders a clickable value that opens an <see cref="TabBlazor.ObjectBrowser"/> on the value when clicked.</summary>
     public partial class PropertyValueLink
     {
         [Inject] public IModalService ModalService { get; set; }
+        /// <summary>The value to inspect when the link is clicked.</summary>
         [Parameter] public object PropertyValue { get; set; }
 
+        /// <summary>The link content to display.</summary>
         [Parameter] public RenderFragment ChildContent { get; set; }
 
         private async Task ObjectDetails()

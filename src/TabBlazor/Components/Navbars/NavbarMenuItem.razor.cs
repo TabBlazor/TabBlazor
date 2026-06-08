@@ -4,6 +4,7 @@ using System;
 
 namespace TabBlazor
 {
+    /// <summary>An item within a <see cref="Navbar"/>, optionally a link and/or a container for a sub-menu.</summary>
     public partial class NavbarMenuItem : TablerBaseComponent, IDisposable
     {
         [CascadingParameter(Name = "Navbar")] Navbar Navbar { get; set; }
@@ -11,11 +12,17 @@ namespace TabBlazor
 
         [Inject] private NavigationManager NavigationManager { get; set; }
 
+        /// <summary>The navigation URL. When set, the item renders as a link.</summary>
         [Parameter] public string Href { get; set; }
+        /// <summary>The item label text.</summary>
         [Parameter] public string Text { get; set; }
+        /// <summary>Optional icon content shown before the text.</summary>
         [Parameter] public RenderFragment MenuItemIcon { get; set; }
+        /// <summary>Optional nested sub-menu content.</summary>
         [Parameter] public RenderFragment SubMenu { get; set; }
+        /// <summary>Whether the sub-menu starts expanded. Defaults to false.</summary>
         [Parameter] public bool Expanded { get; set; }
+        /// <summary>When true, a sub-menu can be expanded/collapsed. Defaults to true.</summary>
         [Parameter] public bool Expandable { get; set; } = true;
 
         public bool IsTopMenuItem => ParentMenuItem == null;

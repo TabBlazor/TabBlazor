@@ -6,10 +6,14 @@ using System.Linq;
 
 namespace TabBlazor
 {
+    /// <summary>The menu container holding <see cref="DropdownItem"/> entries inside a <see cref="Dropdown"/>.</summary>
     public partial class DropdownMenu : TablerBaseComponent, IDisposable
     {
+        /// <summary>When true, shows a pointer arrow on the menu. Defaults to false.</summary>
         [Parameter] public bool Arrow { get; set; } = false;
+        /// <summary>When true, styles the menu as a card. Defaults to false.</summary>
         [Parameter] public bool Card { get; set; } = false;
+        /// <summary>Raised when the menu is disposed.</summary>
         [Parameter] public EventCallback Disposed { get; set; }
 
         private List<DropdownItem> subMenuItems = new();

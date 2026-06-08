@@ -6,14 +6,21 @@ using System.Linq;
 
 namespace TabBlazor
 {
+    /// <summary>A single selectable item within a <see cref="DropdownMenu"/>, optionally with a sub-menu.</summary>
     public partial class DropdownItem : TablerBaseComponent, IDisposable
     {
+        /// <summary>The owning dropdown, supplied via cascading parameter.</summary>
         [CascadingParameter(Name = "Dropdown")] public Dropdown Dropdown { get; set; }
+        /// <summary>The parent menu, supplied via cascading parameter.</summary>
         [CascadingParameter(Name = "DropdownMenu")] public DropdownMenu ParentMenu { get; set; }
+        /// <summary>When true, marks the item as active. Defaults to false.</summary>
         [Parameter] public bool Active { get; set; }
+        /// <summary>When true, the item is disabled. Defaults to false.</summary>
         [Parameter] public bool Disabled { get; set; }
+        /// <summary>When true, highlights the item. Defaults to false.</summary>
         [Parameter] public bool Highlight { get; set; }
 
+        /// <summary>Optional nested sub-menu content shown on hover/click.</summary>
         [Parameter] public RenderFragment SubMenu { get; set; }
         private List<DropdownItem> subItems = new();
 

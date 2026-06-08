@@ -1,12 +1,19 @@
 namespace TabBlazor.Components.QuickTables;
 
+/// <summary>
+/// A <see cref="QuickTable{TGridItem}"/> column bound to a property of the row via an expression. Derives the
+/// cell text, default title and sort order from <see cref="Property"/>. <typeparamref name="TProp"/> is the
+/// property type.
+/// </summary>
 public class PropertyColumn<TGridItem, TProp> : ColumnBase<TGridItem>, ISortBuilderColumn<TGridItem>
 {
     private Func<TGridItem, string> _cellTextFunc;
     private Expression<Func<TGridItem, TProp>> _lastAssignedProperty;
     private GridSort<TGridItem> _sortBuilder;
 
+    /// <summary>The property expression to display and sort by, e.g. <c>@(p => p.Name)</c>. Required.</summary>
     [Parameter] [EditorRequired] public Expression<Func<TGridItem, TProp>> Property { get; set; } = default!;
+    /// <summary>Optional format string applied when the property type implements <see cref="IFormattable"/>.</summary>
     [Parameter] public string Format { get; set; }
 
     GridSort<TGridItem> ISortBuilderColumn<TGridItem>.SortBuilder => _sortBuilder;

@@ -6,16 +6,28 @@ using TabBlazor.Services;
 
 namespace TabBlazor
 {
+    /// <summary>
+    /// A toggleable dropdown menu. Place the trigger in child content and the menu in <see cref="DropdownTemplate"/>.
+    /// When <see cref="Positioning"/> requires it, uses Popper (enable via <c>TablerOptions.EnablePopper</c>).
+    /// </summary>
     public partial class Dropdown : TablerBaseComponent, IAsyncDisposable
     {
+        /// <summary>The dropdown menu content (typically a <c>DropdownMenu</c>).</summary>
         [Parameter] public RenderFragment DropdownTemplate { get; set; }
+        /// <summary>When true, the dropdown closes after an item is clicked. Defaults to true.</summary>
         [Parameter] public bool CloseOnClick { get; set; } = true;
+        /// <summary>The direction the menu opens.</summary>
         [Parameter] public DropdownDirection Direction { get; set; }
+        /// <summary>The direction sub-menus open. Defaults to <see cref="DropdownDirection.End"/>.</summary>
         [Parameter] public DropdownDirection SubMenusDirection { get; set; } = DropdownDirection.End;
+        /// <summary>Raised when the dropdown opens or closes.</summary>
         [Parameter] public EventCallback<bool> OnExpanded { get; set; }
 
+        /// <summary>Positioning strategy. When null, uses the configured default.</summary>
         [Parameter] public Positioning? Positioning { get; set; }
+        /// <summary>Popper placement of the menu. Defaults to <see cref="Placement.BottomStart"/>.</summary>
         [Parameter] public Placement Placement { get; set; } = Placement.BottomStart;
+        /// <summary>Popper offset in pixels. Defaults to 2.</summary>
         [Parameter] public int PopperOffset { get; set; } = 2;
 
         [Inject] private IServiceProvider ServiceProvider { get; set; }
@@ -23,6 +35,7 @@ namespace TabBlazor
         private Positioning EffectivePositioning =>
             Positioning ?? Options.CurrentValue.DefaultPositioning;
 
+        /// <summary>True while the dropdown is open.</summary>
         public bool IsExpanded => isExpanded;
 
         protected bool isExpanded;
@@ -107,16 +120,19 @@ namespace TabBlazor
             Toogle();
         }
 
+        /// <summary>Toggles the dropdown open/closed.</summary>
         public void Toogle()
         {
             SetExpanded(!isExpanded);
         }
 
+        /// <summary>Opens the dropdown.</summary>
         public void Open()
         {
             SetExpanded(true);
         }
 
+        /// <summary>Opens the dropdown as a context menu positioned at the mouse event coordinates.</summary>
         public void OpenAsContextMenu(MouseEventArgs e)
         {
             isContextMenu = true;
@@ -126,6 +142,7 @@ namespace TabBlazor
             InvokeAsync(StateHasChanged);
         }
 
+        /// <summary>Closes the dropdown.</summary>
         public void Close()
         {
             SetExpanded(false);

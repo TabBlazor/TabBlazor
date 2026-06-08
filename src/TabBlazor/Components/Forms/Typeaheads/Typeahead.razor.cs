@@ -11,26 +11,50 @@ using Timer = System.Timers.Timer;
 
 namespace TabBlazor;
 
+/// <summary>
+/// A search-as-you-type selector that binds a chosen value. Unlike <c>Autocomplete</c>, it returns a strongly
+/// typed selection. <typeparamref name="TItem"/> is the suggestion type; <typeparamref name="TValue"/> is the
+/// bound value type — supply <see cref="ConvertExpression"/> when they differ.
+/// </summary>
 public partial class Typeahead<TItem, TValue> : TablerBaseComponent, IDisposable
 {
+    /// <summary>Async function returning suggestions for the search text. Required.</summary>
     [Parameter] public Func<string, Task<IEnumerable<TItem>>> SearchMethod { get; set; }
+    /// <summary>The selected value. Supports two-way binding via <c>@bind-SelectedValue</c>.</summary>
     [Parameter] public TValue SelectedValue { get; set; }
+    /// <summary>Raised when the selected value changes.</summary>
     [Parameter] public EventCallback<TValue> SelectedValueChanged { get; set; }
+    /// <summary>Identifies the bound field for validation; set automatically by <c>@bind-SelectedValue</c>.</summary>
     [Parameter] public Expression<Func<TValue>> SelectedValueExpression { get; set; }
+    /// <summary>Raised after the selection changes.</summary>
     [Parameter] public EventCallback Changed { get; set; }
+    /// <summary>Delay in milliseconds before searching after typing. Defaults to 300.</summary>
     [Parameter] public int Debounce { get; set; } = 300;
+    /// <summary>Minimum characters before searching. Defaults to 3.</summary>
     [Parameter] public int MinimumLength { get; set; } = 3;
+    /// <summary>Maximum number of suggestions shown. Defaults to 20.</summary>
     [Parameter] public int MaximumItems { get; set; } = 20;
+    /// <summary>Placeholder text for the search box.</summary>
     [Parameter] public string SearchPlaceholderText { get; set; } = "";
+    /// <summary>Template rendered for each suggestion.</summary>
     [Parameter] public RenderFragment<TItem> ListTemplate { get; set; }
+    /// <summary>Projects a suggestion item to its bound value. Required when <typeparamref name="TItem"/> and <typeparamref name="TValue"/> differ.</summary>
     [Parameter] public Func<TItem, TValue> ConvertExpression { get; set; }
+    /// <summary>Projects a suggestion item to a unique id.</summary>
     [Parameter] public Func<TItem, string> IdExpression { get; set; }
+    /// <summary>Optional max height (CSS) of the suggestions list.</summary>
     [Parameter] public string MaxListHeight { get; set; }
+    /// <summary>Optional width (CSS) of the suggestions list.</summary>
     [Parameter] public string ListWidth { get; set; }
+    /// <summary>Projects the selected value to its display text.</summary>
     [Parameter] public Func<TValue, string> SelectedTextExpression { get; set; }
+    /// <summary>When true, shows suggestions as soon as the input is focused. Defaults to false.</summary>
     [Parameter] public bool ShowOptionOnFocus { get; set; }
+    /// <summary>Controls the visual layout (e.g. flush). Defaults to <see cref="DisplayMode.Default"/>.</summary>
     [Parameter] public DisplayMode DisplayMode { get; set; } = DisplayMode.Default;
+    /// <summary>Positioning strategy for the suggestions popup. When null, uses the configured default.</summary>
     [Parameter] public Positioning? Positioning { get; set; }
+    /// <summary>Popper placement of the suggestions. Defaults to <see cref="Placement.BottomStart"/>.</summary>
     [Parameter] public Placement Placement { get; set; } = Placement.BottomStart;
 
     [CascadingParameter] private EditContext CascadedEditContext { get; set; }

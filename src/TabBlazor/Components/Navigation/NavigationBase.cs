@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace TabBlazor
 {
+    /// <summary>
+    /// Base class for <see cref="Navigation"/> and <see cref="NavigationItem"/>, managing the parent/child tree,
+    /// expansion and active state.
+    /// </summary>
     public abstract class NavigationBase : TablerBaseComponent, IDisposable
     {
+        /// <summary>The parent node in the navigation tree, supplied via cascading parameter.</summary>
         [CascadingParameter] public NavigationBase Parent { get; set; }
 
 

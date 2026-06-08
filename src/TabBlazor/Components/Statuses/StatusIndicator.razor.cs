@@ -3,8 +3,10 @@
 namespace TabBlazor
 {
 
+    /// <summary>A status indicator (pulsing ring). Color comes from <see cref="TablerBaseComponent.BackgroundColor"/>.</summary>
     public partial class StatusIndicator : TablerBaseComponent
     {
+        /// <summary>When true, the indicator animates. Defaults to false.</summary>
         [Parameter] public bool Animate { get; set; }
 
 
