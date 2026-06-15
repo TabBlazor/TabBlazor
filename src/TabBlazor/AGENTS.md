@@ -6,6 +6,12 @@ without reading the source. For per-symbol detail, read the shipped XML docs
 (`TabBlazor.xml`, next to `TabBlazor.dll` in the package) or step into source via
 Source Link.
 
+**Start here for the full component surface:** `componentapi.json` (package root) is a
+machine-readable manifest of every component and its parameters — name, type, whether
+it's `[Parameter]`/`[CascadingParameter]`, `EditorRequired`, default value, the
+declaring type for inherited params, and the XML summary. One read, no reflection or
+decompile needed. Schema: `tabblazor-component-api/v1`.
+
 - Package: `TabBlazor` (component library), `TabBlazor.QuickTable.EntityFramework` (optional EF Core integration)
 - Root namespace: `TabBlazor`
 - Target: .NET 10, Blazor (Server + WebAssembly). `browser` is a supported platform.

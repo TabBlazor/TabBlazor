@@ -342,3 +342,5 @@ healthchecksdb
 # SQLLite
 *.db-shm
 *.db-wal
+# Generated component API manifest (produced at pack time)
+src/TabBlazor/componentapi.json
