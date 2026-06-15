@@ -8,6 +8,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Blazor-ApexCharts" Version="6.1.0" />
+    <PackageVersion Include="bunit" Version="2.7.2" />
     <PackageVersion Include="ClosedXML" Version="0.105.0" />
     <PackageVersion Include="ColorCode.HTML" Version="2.0.15" />
     <PackageVersion Include="coverlet.collector" Version="10.0.0" />
