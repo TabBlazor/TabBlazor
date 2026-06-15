@@ -3,7 +3,7 @@
 
 @namespace  TabBlazor.Components.Tables
 
-<tr class="is-inline-edit data-row" @ref="editRow">
+<tr class="is-inline-edit data-row @(InlineEditTable.ShowSavingDimmer && InlineEditTable.IsSaving ? "is-saving" : null)" @ref="editRow">
 
     @if (InlineEditTable.ShowCheckboxes)
     {
@@ -32,8 +32,14 @@
     {
         <td>
             <div class="row-action-edit">
-                <button class="btn btn-primary btn-sm" @onclick:stopPropagation type="submit" disabled="@(!InlineEditTable.IsRowValid)">Save</button>
-                <button class="btn btn-secondary btn-sm" @onclick:stopPropagation type="button" @onclick="OnEditItemCanceled">Cancel</button>
+                <button class="btn btn-primary btn-sm" @onclick:stopPropagation type="submit" disabled="@(!InlineEditTable.IsRowValid || InlineEditTable.IsSaving)">
+                    @if (InlineEditTable.IsSaving)
+                    {
+                        <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                    }
+                    Save
+                </button>
+                <button class="btn btn-secondary btn-sm" @onclick:stopPropagation type="button" @onclick="OnEditItemCanceled" disabled="@InlineEditTable.IsSaving">Cancel</button>
             </div>
         </td>
 

@@ -76,6 +76,8 @@ namespace TabBlazor.Components.Tables
         Task CloseEdit();
         Task CancelEdit();
         bool IsRowValid { get; }
+        bool IsSaving { get; }
+        bool ShowSavingDimmer { get; }
         Action<TableEditPopupOptions<TItem>> EditPopupMutator { get; set; }
 
     }
@@ -91,6 +93,8 @@ namespace TabBlazor.Components.Tables
         Task CloseEdit();
         Task CancelEdit();
         bool IsRowValid { get; }
+        bool IsSaving { get; }
+        bool ShowSavingDimmer { get; }
         bool HasActionColumn { get; }
     }
 

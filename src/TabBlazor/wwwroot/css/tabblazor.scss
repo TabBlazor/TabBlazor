@@ -197,6 +197,14 @@ Dimmer
     text-align: right;
 }
 
+.tabler-table tr.is-inline-edit.is-saving td {
+    opacity: 0.5;
+}
+
+.tabler-table tr.is-inline-edit.is-saving .row-action-edit {
+    opacity: 1;
+}
+
 .tabler-table .sorting {
     opacity: 0.3;
 }

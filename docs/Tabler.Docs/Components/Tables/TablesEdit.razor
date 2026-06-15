@@ -46,13 +46,17 @@
 
     private async Task OnItemEdit(Order order)
     {
+        await SimulateSlowSave();
         await ShowDialog($"Edited order {order.OrderId}");
     }
 
     private async Task OnItemAdd(Order order)
     {
+        await SimulateSlowSave();
         await ShowDialog($"Added order {order.OrderId}");
     }
+
+    private static Task SimulateSlowSave() => Task.Delay(1000);
 
     private async Task OnItemDelete(Order order)
     {
