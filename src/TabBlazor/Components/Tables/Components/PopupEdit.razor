@@ -5,7 +5,7 @@
 
     <ModalView Title="@popupOptions.Title" Options="@popupOptions.ModalOptions" OnClosed=CancelEdit >
         <Dimmer Active="@(Table.ShowSavingDimmer && Table.IsSaving)">
-            @foreach (var column in Table.VisibleColumns)
+            @foreach (var column in Table.EditColumns)
             {
                 <div class="form-group mb-3 row">
                     <label class="form-label col-3 col-form-label">@column.Title</label>

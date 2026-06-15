@@ -84,7 +84,8 @@ namespace TabBlazor
         [Parameter] public Action<TableEditPopupOptions<Item>> EditPopupMutator { get; set; }
         public bool IsRowValid { get; set; }
         public List<IColumn<Item>> Columns { get; } = new();
-        public List<IColumn<Item>> VisibleColumns => Columns.Where(x => x.Visible).ToList();
+        public List<IColumn<Item>> VisibleColumns => Columns.Where(x => x.Visible && x.ShowIn != ColumnVisibility.EditOnly).ToList();
+        public List<IColumn<Item>> EditColumns => Columns.Where(x => x.ShowIn != ColumnVisibility.ViewOnly && (x.Visible || x.ShowIn == ColumnVisibility.EditOnly)).ToList();
         public bool IsAddInProgress { get; set; }
         public Item CurrentEditItem { get; private set; }
 
