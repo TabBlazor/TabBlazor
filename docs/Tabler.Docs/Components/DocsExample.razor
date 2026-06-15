@@ -6,14 +6,17 @@
             {
                 <Row>
                     <RowCol Auto>
-                        <a href="https://github.com/joadan/Blazor-Tabler" class="btn btn-white btn-block mb-2" target="_blank" rel="noreferrer">
+                        <a href="https://github.com/joadan/Blazor-Tabler" class="btn btn-white btn-block mb-2"
+                           target="_blank" rel="noreferrer">
                             <Icon IconType="@TablerIcons.Brand_github"/>
                             Browse source code
                         </a>
                     </RowCol>
                     <RowCol Auto>
-                        <Button BackgroundColor=TablerColor.White class="p-2  btn-icon mb-2" OnClick="OpenComponentModal">
-                            <Icon IconType="@TablerIcons.Code" class="me-2"/> Component API
+                        <Button BackgroundColor=TablerColor.White class="p-2  btn-icon mb-2"
+                                OnClick="OpenComponentModal">
+                            <Icon IconType="@TablerIcons.Code" class="me-2"/>
+                            Component API
                         </Button>
                     </RowCol>
                 </Row>
@@ -31,17 +34,17 @@
         </div>
     </RowCol>
     <RowCol class="order-lg-first order-md-last order-sm-last order-last" Lg="9" Md="12" Sm="12">
-        <Card Size="CardSize.Default">
-            <CardBody>
-                <div class="d-flex">
-                    <h3 class="h1 mt-0 mb-3">@Title</h3>
-                </div>
-                @Description
-
-                <CascadingValue Value="@this">
-                    @ChildContent
-                </CascadingValue>
-            </CardBody>
-        </Card>
+        <div class="d-flex">
+            <h3 class="h1 m-0">@Title</h3>
+        </div>
+        @if (Description != null)
+        {
+            <div class="fst-italic fs-5">@Description</div>
+        }
+        <div class="mt-2">
+            <CascadingValue Value="@(this)">
+                @ChildContent
+            </CascadingValue>
+        </div>
     </RowCol>
 </div>
