@@ -95,6 +95,8 @@ namespace TabBlazor
         /// <summary>When true, the editing row is dimmed while its save handler runs. Defaults to true.</summary>
         [Parameter] public bool ShowSavingDimmer { get; set; } = true;
 
+        private RefreshState lastRefreshState;
+
         public async Task OnValidSubmit(EditContext editContext)
         {
             IsSaving = true;
@@ -401,7 +403,31 @@ namespace TabBlazor
 
         protected override async Task OnParametersSetAsync()
         {
-            await Update();
+            var current = RefreshState.Capture(this);
+            var needsRefresh = current.NeedsRefresh(lastRefreshState);
+            lastRefreshState = current;
+
+            if (needsRefresh)
+            {
+                await Update();
+            }
+        }
+
+        private sealed record RefreshState(
+            IList<Item> Items,
+            int? ItemsCount,
+            IDataProvider<Item> DataProvider,
+            int PageSize)
+        {
+            public static RefreshState Capture(ITable<Item> table) =>
+                new(table.Items, table.Items?.Count, table.DataProvider, table.PageSize);
+
+            public bool NeedsRefresh(RefreshState previous) =>
+                previous is null
+                || !ReferenceEquals(Items, previous.Items)
+                || ItemsCount != previous.ItemsCount
+                || !ReferenceEquals(DataProvider, previous.DataProvider)
+                || PageSize != previous.PageSize;
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
