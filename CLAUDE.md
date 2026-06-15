@@ -75,10 +75,22 @@ Tabler CSS framework. Custom styles in `src/TabBlazor/wwwroot/css/tabblazor.scss
 - `TabBlazor.Tests/` — xUnit tests
 - `Icons/IconGenerator/` — Tool to generate icon components
 
+## Testing
+
+xUnit + [bUnit](https://bunit.dev/) (Blazor component rendering) in `TabBlazor.Tests/`.
+
+- **Pure logic** (ClassBuilder, EnumHelper, PredicateBuilder, services): plain xUnit, no render.
+- **Component render tests**: inherit `TabBlazorTestContext` (base `BunitContext` that calls `AddTabBlazor()` and sets loose JS interop). Live under `Components/`, mirroring `src/TabBlazor/Components/` layout.
+- **`Render<T>(...)`, not `RenderComponent<T>`** — TabBlazor has its own `RenderComponent<T>` type that clashes with bUnit's method name.
+- **Naming**: `Method_does_x_when_y` (e.g. `Adds_disabled_class_when_disabled`). One test file per component/class.
+- Coverage collected in CI via `coverlet.collector` (informational artifact, not a gate).
+
+**When adding or editing a component, add or update its tests** in the same change: cover the rendered element, CSS classes from parameters, `ChildContent`, and any `EventCallback`. Components requiring JS interop (inject `IJSRuntime`/`TablerService`/`IPopperService`) or an impractical cascading/generic parent may be left untested — note this in the PR.
+
 ## CI/CD
 
-- PRs: build + test (`ci-pr.yml`, windows-2022 runner)
-- Master push: build + test + publish docs to GitHub Pages (`ci.yml`)
+- PRs + master push: build + test with coverage (`ci.yml`, ubuntu-latest)
+- Master push also publishes docs to GitHub Pages
 - Releases: manual workflow packs + pushes to NuGet (`create-release.yml`)
 
 ## Commit Messages

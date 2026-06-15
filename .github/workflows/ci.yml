@@ -63,7 +63,15 @@ jobs:
         run: dotnet build TabBlazor.slnx --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test --no-build --configuration Release --no-restore --verbosity normal
+        run: dotnet test --no-build --configuration Release --no-restore --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+
+      - name: Upload coverage artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage
+          path: ./coverage/**/coverage.cobertura.xml
+          if-no-files-found: ignore
 
       - name: Publish WASM docs
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
