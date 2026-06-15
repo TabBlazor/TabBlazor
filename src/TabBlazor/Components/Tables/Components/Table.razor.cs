@@ -88,17 +88,36 @@ namespace TabBlazor
         public bool IsAddInProgress { get; set; }
         public Item CurrentEditItem { get; private set; }
 
+        /// <summary>True while the row being edited is saving (the OnItemEdited/OnItemAdded handler is running).</summary>
+        public bool IsSaving { get; private set; }
+
+        /// <summary>When true, the editing row is dimmed while its save handler runs. Defaults to true.</summary>
+        [Parameter] public bool ShowSavingDimmer { get; set; } = true;
+
         public async Task OnValidSubmit(EditContext editContext)
         {
-            if (IsAddInProgress)
+            IsSaving = true;
+            await Refresh();
+
+            try
             {
-                await OnItemAdded.InvokeAsync(CurrentEditItem);
+                if (IsAddInProgress)
+                {
+                    await OnItemAdded.InvokeAsync(CurrentEditItem);
+                }
+                else
+                {
+                    await OnItemEdited.InvokeAsync(CurrentEditItem);
+                }
             }
-            else
+            catch
             {
-                await OnItemEdited.InvokeAsync(CurrentEditItem);
+                IsSaving = false;
+                await Refresh();
+                throw;
             }
 
+            IsSaving = false;
             await CloseEdit();
         }
 

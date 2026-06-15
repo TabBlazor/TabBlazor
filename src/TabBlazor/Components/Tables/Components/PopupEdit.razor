@@ -4,33 +4,35 @@
 {
 
     <ModalView Title="@popupOptions.Title" Options="@popupOptions.ModalOptions" OnClosed=CancelEdit >
-        @foreach (var column in Table.VisibleColumns)
-        {
-            <div class="form-group mb-3 row">
-                <label class="form-label col-3 col-form-label">@column.Title</label>
-                <div class="col">
-                    @if (column.EditorTemplate != null)
-                    {
-                        @column.EditorTemplate(Table.CurrentEditItem)
-                    }
-                    else if (column.Template != null)
-                    {
-                        @column.Template(Table.CurrentEditItem)
-                    }
-                    else
-                    {
-                        @column.GetValue(Table.CurrentEditItem)
-                    }
+        <Dimmer Active="@(Table.ShowSavingDimmer && Table.IsSaving)">
+            @foreach (var column in Table.VisibleColumns)
+            {
+                <div class="form-group mb-3 row">
+                    <label class="form-label col-3 col-form-label">@column.Title</label>
+                    <div class="col">
+                        @if (column.EditorTemplate != null)
+                        {
+                            @column.EditorTemplate(Table.CurrentEditItem)
+                        }
+                        else if (column.Template != null)
+                        {
+                            @column.Template(Table.CurrentEditItem)
+                        }
+                        else
+                        {
+                            @column.GetValue(Table.CurrentEditItem)
+                        }
+                    </div>
+                </div>
+
+            }
+            <div class="form-footer">
+                <div class="d-flex">
+                    <Button BackgroundColor=TablerColor.Secondary OnClick="CancelEdit" Disabled="Table.IsSaving">Cancel</Button>
+                    <button class="btn btn-primary ms-auto" type="submit" disabled="@(!Table.IsRowValid || Table.IsSaving)">Save</button>
                 </div>
             </div>
-
-        }
-        <div class="form-footer">
-            <div class="d-flex">
-                <Button BackgroundColor=TablerColor.Secondary OnClick="CancelEdit">Cancel</Button>
-                <button class="btn btn-primary ms-auto" type="submit" disabled="@(!Table.IsRowValid)">Save</button>
-            </div>
-        </div>
+        </Dimmer>
 
     </ModalView>
 }
