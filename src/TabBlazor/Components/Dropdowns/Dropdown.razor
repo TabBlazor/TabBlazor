@@ -1,6 +1,6 @@
 @inherits TablerBaseComponent
 @namespace TabBlazor
-<ClickOutside OnClickOutside="OnClickOutside">
+<ClickOutside OnClickOutside="OnClickOutside" Active="isExpanded">
     <CascadingValue Name=Dropdown Value=this>
     <HtmlElement Tag="@(Direction==DropdownDirection.Down ? "div": "span")"
                  class="@ClassNames"

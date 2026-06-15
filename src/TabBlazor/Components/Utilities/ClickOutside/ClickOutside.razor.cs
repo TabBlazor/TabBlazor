@@ -26,6 +26,15 @@ public partial class ClickOutside
     public ConcurrenceStrategy Concurrence { get; set; } = ConcurrenceStrategy.One;
 
     /// <summary>
+    /// When set, the handler is registered while <c>true</c> and removed while <c>false</c>, regardless of
+    /// <see cref="Strategy"/>. Use this to detect outside clicks for content that is shown programmatically
+    /// (e.g. a context menu) rather than after the wrapped element is clicked. When null (default), registration
+    /// follows <see cref="Strategy"/>.
+    /// </summary>
+    [Parameter]
+    public bool? Active { get; set; }
+
+    /// <summary>
     /// Additional HTML attributes applied to the wrapping element.
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)]
@@ -71,9 +80,30 @@ public partial class ClickOutside
         await OnClickOutside.InvokeAsync();
     }
 
+    private bool? lastActive;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
+
+        if (Active.HasValue)
+        {
+            if (Active != lastActive)
+            {
+                lastActive = Active;
+                if (Active.Value)
+                {
+                    await JSRuntime.InvokeVoidAsync("tabBlazor.clickOutsideHandler.addEvent", Id, false, DotNetObjectReference.Create(this));
+                }
+                else
+                {
+                    await JSRuntime.InvokeVoidAsync("tabBlazor.clickOutsideHandler.removeEvent", Id);
+                }
+            }
+
+            return;
+        }
+
         if (firstRender && Strategy == RegisterStrategy.OnRender)
         {
             await JSRuntime.InvokeVoidAsync("tabBlazor.clickOutsideHandler.addEvent", Id, Concurrence == ConcurrenceStrategy.One, DotNetObjectReference.Create(this));
@@ -93,7 +123,7 @@ public partial class ClickOutside
 
     private async Task AddClickOutsideHandler()
     {
-        if (Strategy == RegisterStrategy.OnClick)
+        if (!Active.HasValue && Strategy == RegisterStrategy.OnClick)
         {
             await JSRuntime.InvokeVoidAsync("tabBlazor.clickOutsideHandler.addEvent", Id, Concurrence == ConcurrenceStrategy.One, DotNetObjectReference.Create(this));
         }
