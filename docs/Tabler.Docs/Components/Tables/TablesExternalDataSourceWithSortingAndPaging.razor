@@ -66,9 +66,20 @@
 
         public async Task<IEnumerable<TableResult<object, Item>>> GetData(List<IColumn<Item>> columns, ITableState<Item> state, IEnumerable<Item> items, bool resetPage = false, bool addSorting = true, Item moveToItem = null)
         {
-            //here you have to implement your own service call  for data and implement correctly sorting, paging ,grouping to get full benefit of this interface and Table implementation.
-            var list = viewResult.First().Skip(state.PageNumber * state.PageSize).Take(state.PageSize).ToList();
-            state.TotalCount = viewResult.SelectMany(vr => vr).Count();
+            //Replace this with your own service call. The columns argument carries the active sort column,
+            //so apply sorting (and grouping if needed) before paging to get the full benefit of this interface.
+            var query = viewResult.SelectMany(vr => vr).AsQueryable();
+
+            var sortColumn = columns?.FirstOrDefault(c => c.SortColumn);
+            if (addSorting && sortColumn != null)
+            {
+                query = sortColumn.SortDescending
+                    ? query.OrderByDescending(sortColumn.PropertyNullSafe)
+                    : query.OrderBy(sortColumn.PropertyNullSafe);
+            }
+
+            state.TotalCount = query.Count();
+            var list = query.Skip(state.PageNumber * state.PageSize).Take(state.PageSize).ToList();
             return await Task.FromResult(new List<TableResult<object, Item>> {new(null, list)});
         }
     }
