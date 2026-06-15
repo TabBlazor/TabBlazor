@@ -44,6 +44,24 @@
 		<None Include="AGENTS.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
+	<PropertyGroup>
+		<ComponentApiGeneratorProject>$(MSBuildThisFileDirectory)..\..\tools\ComponentApiGenerator\ComponentApiGenerator.csproj</ComponentApiGeneratorProject>
+		<ComponentApiManifest>$(MSBuildThisFileDirectory)componentapi.json</ComponentApiManifest>
+		<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);AddComponentApiToPackage</TargetsForTfmSpecificContentInPackage>
+	</PropertyGroup>
+
+	<Target Name="GenerateComponentApi" DependsOnTargets="Build">
+		<Exec Command="dotnet run --project &quot;$(ComponentApiGeneratorProject)&quot; -c $(Configuration) -- --assembly &quot;$(TargetPath)&quot; --xmldoc &quot;$(TargetDir)$(TargetName).xml&quot; --output &quot;$(ComponentApiManifest)&quot;" />
+	</Target>
+
+	<Target Name="AddComponentApiToPackage" DependsOnTargets="GenerateComponentApi">
+		<ItemGroup>
+			<TfmSpecificPackageFile Include="$(ComponentApiManifest)">
+				<PackagePath>/</PackagePath>
+			</TfmSpecificPackageFile>
+		</ItemGroup>
+	</Target>
+
 
 	<ItemGroup>
 		<SupportedPlatform Include="browser" />

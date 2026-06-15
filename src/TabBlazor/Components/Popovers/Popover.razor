@@ -16,17 +16,3 @@
 
 
 </div>
-
-@code {
-    [Parameter] public RenderFragment ChildContent { get; set; }
-    [Parameter] public RenderFragment PopoverTemplate { get; set; }
-
-
-    private bool showPopup = false;
-
-    private void TooglePopup()
-    {
-        showPopup = !showPopup;
-    }
-
-}
