@@ -3,6 +3,7 @@
     public enum TableEditMode
     {
         Inline = 0,
-        Popup = 1
+        Popup = 1,
+        Custom = 2
     }
 }

@@ -1,0 +1,40 @@
+@inject IModalService ModalService
+
+<Table Item="Order" Items="orders" PageSize="10"
+       EditMode="TableEditMode.Custom"
+       CustomEdit="EditOrderAsync"
+       OnItemEdited="OnOrderSaved"
+       OnItemAdded="OnOrderAdded"
+       OnItemDeleted="OnOrderDeleted"
+       AddItemFactory="CreateOrder"
+       Hover Responsive>
+    <HeaderTemplate>
+        <strong>Orders</strong>
+    </HeaderTemplate>
+    <ChildContent>
+        <Column Item="Order" Property="e=>e.Customer.CustomerName" Title="Customer" Sortable Searchable />
+        <Column Item="Order" Property="e=>e.Country" Title="Country" Sortable Searchable />
+        <Column Item="Order" Property="e=>e.OrderType" Title="Order type" Sortable />
+        <Column Item="Order" Property="e=>e.DiscountPercentage" Title="Discount %" />
+    </ChildContent>
+</Table>
+
+@code {
+    private List<Order> orders = SampleData.GetOrders();
+
+    // EditMode=Custom: show your own modal for the item and return its ModalResult.
+    private Task<ModalResult> EditOrderAsync(Order order) =>
+        ModalService.ShowAsync<CustomOrderEditModal>("Edit order",
+            new RenderComponent<CustomOrderEditModal>().Set(c => c.Model, order));
+
+    // The edited item is mutated in place, so this only needs to persist/refresh.
+    private void OnOrderSaved(Order order) { }
+
+    // In Custom mode the table does not insert new items into the list, so add it here.
+    private void OnOrderAdded(Order order) => orders.Add(order);
+
+    private void OnOrderDeleted(Order order) { }
+
+    private Task<Order> CreateOrder() =>
+        Task.FromResult(new Order { Customer = new Customer("New customer") });
+}

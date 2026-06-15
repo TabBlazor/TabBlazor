@@ -1,7 +1,7 @@
 ﻿<Row class="mb-3">
     <RowCol Sm="12" Md="6" Lg="4">
         <label class="form-label">Edit Mode</label>
-        <Select Items="EnumHelper.GetList<TableEditMode>()" @bind-SelectedValue="@tableEditMode" TextExpression="e=> e.ToString()" />
+        <Select Items="editModes" @bind-SelectedValue="@tableEditMode" TextExpression="e=> e.ToString()" />
     </RowCol>
 </Row>
 
@@ -47,6 +47,9 @@
     private static List<Order> orders = SampleData.GetOrders();
   
     private TableEditMode tableEditMode;
+
+    // Custom mode has its own demo (TablesCustomEdit); this demo covers the built-in editors.
+    private readonly List<TableEditMode> editModes = new() { TableEditMode.Inline, TableEditMode.Popup };
 
 
     private async Task OnItemEdit(Order order)

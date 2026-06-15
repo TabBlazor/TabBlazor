@@ -108,9 +108,9 @@ namespace TabBlazor.Components.Tables
             await Table.OnDeleteItem(Item);
         }
 
-        protected void Edit()
+        protected Task Edit()
         {
-            Table.EditItem(Item);
+            return Table.EditItemAsync(Item);
         }
 
     }
