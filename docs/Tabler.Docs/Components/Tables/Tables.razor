@@ -21,7 +21,16 @@
         <CodeSnippet SetBackground Component="@typeof(TableCustomRowAction)" Title="Custom Row Actions"/>
 
         <CodeSnippet SetBackground Component="@typeof(TablesEdit)" Title="Edit"/>
-        
+
+        <CodeSnippet SetBackground Component="@typeof(TablesCustomEdit)" Title="Custom edit modal">
+            <Description>
+                Set <code>EditMode="TableEditMode.Custom"</code> and supply a <code>CustomEdit</code> delegate that
+                shows your own component as a modal and returns a <code>ModalResult</code>. Your component owns the
+                layout and validation; on a non-cancelled result the table raises <code>OnItemEdited</code> /
+                <code>OnItemAdded</code> and refreshes.
+            </Description>
+        </CodeSnippet>
+
         <CodeSnippet SetBackground Component="@typeof(TablesEditWithCancelStrategy)" Title="Edit with cancel strategy">
             <Description>
                 When editing a row and the cancelled button is clicked, the state of the line will be reverted to how it initially was.<br/>

@@ -70,13 +70,22 @@ namespace TabBlazor
         /// <summary>How rows are edited (e.g. inline or popup).</summary>
         [Parameter] public TableEditMode EditMode { get; set; }
 
+        /// <summary>
+        /// Required when <see cref="EditMode"/> is <see cref="TableEditMode.Custom"/>. Invoked when a row is
+        /// edited or a new row is added; show your own modal for the supplied item and return its
+        /// <see cref="ModalResult"/>. On a non-cancelled result the table raises <see cref="OnItemEdited"/> /
+        /// <see cref="OnItemAdded"/> (with the result's data, or the original item) and refreshes. The custom
+        /// component owns layout and validation.
+        /// </summary>
+        [Parameter] public Func<Item, Task<ModalResult>> CustomEdit { get; set; }
+
         [Parameter] public OnCancelStrategy? CancelStrategy { get; set; }
 
         protected IEnumerable<TableResult<object, Item>> TempItems { get; set; } = Enumerable.Empty<TableResult<object, Item>>();
         public bool ReloadingItems { get; set; }
         protected IDictionary<string, object> Attributes { get; set; }
         public bool ChangedItem { get; set; }
-        public bool AllowAdd => OnItemAdded.HasDelegate;
+        public bool AllowAdd => OnItemAdded.HasDelegate && (EditMode != TableEditMode.Custom || CustomEdit != null);
         public bool HasGrouping => Columns.Any(x => x.GroupBy);
         [Parameter] public RenderFragment<Item> DetailsTemplate { get; set; }
         [Parameter] public Func<Item, bool> ShowDetails { get; set; }
@@ -318,7 +327,9 @@ namespace TabBlazor
         [Parameter] public Func<Item, bool> AllowEditExpression { get; set; }
         [Parameter] public bool KeyboardNavigation { get; set; }
         public bool AllowDelete => OnItemDeleted.HasDelegate;
-        public bool AllowEdit => OnItemEdited.HasDelegate && !IsAddInProgress;
+        public bool AllowEdit =>
+            (EditMode == TableEditMode.Custom ? CustomEdit != null : OnItemEdited.HasDelegate)
+            && !IsAddInProgress;
         public Item SelectedItem { get; set; }
 
         public async Task RowClicked(Item item)
@@ -397,6 +408,26 @@ namespace TabBlazor
 
             CurrentEditItem = tableItem;
             StateHasChanged();
+        }
+
+        public async Task EditItemAsync(Item tableItem)
+        {
+            if (EditMode == TableEditMode.Custom)
+            {
+                if (CustomEdit is null) return;
+
+                var result = await CustomEdit(tableItem);
+                if (result is { Cancelled: false })
+                {
+                    var edited = result.Data is Item updated ? updated : tableItem;
+                    await OnItemEdited.InvokeAsync(edited);
+                    await Update();
+                }
+
+                return;
+            }
+
+            EditItem(tableItem);
         }
 
         [Parameter] public bool UseNaturalSort { get; set; } = false;
@@ -513,6 +544,25 @@ namespace TabBlazor
         {
             if (IsAddInProgress)
             {
+                return;
+            }
+
+            if (EditMode == TableEditMode.Custom)
+            {
+                if (CustomEdit is null) return;
+
+                var newItem = AddItemFactory != null
+                    ? await AddItemFactory()
+                    : (Item)Activator.CreateInstance(typeof(Item));
+
+                var result = await CustomEdit(newItem);
+                if (result is { Cancelled: false })
+                {
+                    var added = result.Data is Item created ? created : newItem;
+                    await OnItemAdded.InvokeAsync(added);
+                    await Update();
+                }
+
                 return;
             }
 

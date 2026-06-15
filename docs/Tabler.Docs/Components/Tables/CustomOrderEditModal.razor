@@ -1,0 +1,36 @@
+@inject IModalService ModalService
+
+<div>
+    <Row>
+        <RowCol Md="6">
+            <label class="form-label">Customer</label>
+            <input class="form-control" @bind-value="Model.Customer.CustomerName" />
+        </RowCol>
+        <RowCol Md="6">
+            <label class="form-label">Country</label>
+            <input class="form-control" @bind-value="Model.Country" />
+        </RowCol>
+    </Row>
+    <Row class="mt-3">
+        <RowCol Md="6">
+            <label class="form-label">Order type</label>
+            <Select Items="EnumHelper.GetList<OrderType>()" @bind-SelectedValue="Model.OrderType" TextExpression="e => e.ToString()" ValueExpression="e => e" />
+        </RowCol>
+        <RowCol Md="6">
+            <label class="form-label">Discount %</label>
+            <input type="number" class="form-control" @bind-value="Model.DiscountPercentage" />
+        </RowCol>
+    </Row>
+
+    <div class="d-flex mt-4">
+        <Button BackgroundColor="TablerColor.Secondary" OnClick="Cancel">Cancel</Button>
+        <Button BackgroundColor="TablerColor.Primary" class="ms-auto" OnClick="Save">Save</Button>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Order Model { get; set; }
+
+    private void Save() => ModalService.Close(ModalResult.Ok(Model));
+    private void Cancel() => ModalService.Close(ModalResult.Cancel());
+}

@@ -117,6 +117,7 @@ namespace TabBlazor.Components.Tables
         EventCallback<List<TableItem>> SelectedItemsChanged { get; }
         Task OnDeleteItem(TableItem item);
         void EditItem(TableItem item);
+        Task EditItemAsync(TableItem item);
         Task SetSelectedItem(TableItem item);
         Task RowClicked(TableItem item);
         bool KeyboardNavigation { get; }
