@@ -68,6 +68,7 @@ namespace TabBlazor.Components.Tables
     {
         List<IColumn<TItem>> Columns { get; }
         List<IColumn<TItem>> VisibleColumns { get; }
+        List<IColumn<TItem>> EditColumns { get; }
 
         bool ShowCheckboxes { get; }
         TItem CurrentEditItem { get; }

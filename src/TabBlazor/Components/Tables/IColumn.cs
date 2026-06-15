@@ -16,6 +16,7 @@ namespace TabBlazor.Components.Tables
         bool Searchable { get; set; }
         bool Groupable { get; set; }
         bool Visible { get; set; }
+        ColumnVisibility ShowIn { get; set; }
         bool SortDescending { get; }
         bool GroupBy { get; set; }
         Align Align { get; set; }

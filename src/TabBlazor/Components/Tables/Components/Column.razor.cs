@@ -42,6 +42,12 @@ namespace TabBlazor
         [Parameter] public string CssClass { get; set; }
         /// <summary>Whether the column is visible. Defaults to true.</summary>
         [Parameter] public bool Visible { get; set; } = true;
+        /// <summary>
+        /// Controls where the column appears: in the grid, in the edit form, or both. Defaults to
+        /// <see cref="ColumnVisibility.ViewAndEdit"/>. <see cref="ColumnVisibility.EditOnly"/> is supported in
+        /// popup edit mode only.
+        /// </summary>
+        [Parameter] public ColumnVisibility ShowIn { get; set; } = ColumnVisibility.ViewAndEdit;
         /// <summary>When true, marks this as the row-actions column. Defaults to false.</summary>
         [Parameter] public bool ActionColumn { get; set; }
         /// <summary>Optional custom header content, overriding <see cref="Title"/>.</summary>
