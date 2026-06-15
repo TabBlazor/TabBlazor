@@ -14,7 +14,7 @@
 
         @if (isExpanded)
         {
-            <div @ref="popperEl" class="@(UsePopper ? "popper-host" : null)" @onclick:stopPropagation="!CloseOnClick">
+            <div @ref="popperEl" class="@(UsePopper ? "popper-host" : null)" @onclick:stopPropagation="true">
                 @DropdownTemplate
             </div>
 

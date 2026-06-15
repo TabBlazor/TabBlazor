@@ -22,7 +22,6 @@ namespace TabBlazor
 
         /// <summary>Optional nested sub-menu content shown on hover/click.</summary>
         [Parameter] public RenderFragment SubMenu { get; set; }
-        private List<DropdownItem> subItems = new();
 
         private bool hasSubMenu => SubMenu != null;
         private bool subMenuVisible;
