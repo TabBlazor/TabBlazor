@@ -53,6 +53,7 @@ internal sealed class PopperService : IPopperService, IAsyncDisposable
 internal sealed class PopperInstance : IPopperInstance
 {
     private readonly IJSObjectReference js;
+    private bool disposed;
 
     public PopperInstance(IJSObjectReference js) => this.js = js;
 
@@ -82,11 +83,18 @@ internal sealed class PopperInstance : IPopperInstance
 
     public async ValueTask DisposeAsync()
     {
+        if (disposed)
+        {
+            return;
+        }
+
+        disposed = true;
         try
         {
             await js.InvokeVoidAsync("destroy");
             await js.DisposeAsync();
         }
         catch (JSDisconnectedException) { }
+        catch (ObjectDisposedException) { }
     }
 }

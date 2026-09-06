@@ -76,6 +76,8 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent, IDisposable
     private ElementReference input;
     private bool isInput;
     private bool setFocus;
+    private ElementReference selectedElement;
+    private bool focusSelected;
     private int highlightedIndex = -1;
     private bool eventsHookedUp;
 
@@ -130,6 +132,15 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent, IDisposable
             setFocus = false;
         }
 
+        if (focusSelected)
+        {
+            focusSelected = false;
+            if (SelectedValue != null && !isInput)
+            {
+                await selectedElement.FocusAsync();
+            }
+        }
+
         if (!eventsHookedUp && isInput)
         {
             await TablerService.PreventDefaultKey(input, "keydown", new[] { "Enter", "ArrowUp", "ArrowDown" });
@@ -157,6 +168,7 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent, IDisposable
         }
         else if (args.Key == "Enter" && highlightedIndex >= 0 && highlightedIndex < items.Count)
         {
+            focusSelected = true;
             await SelectItem(items[highlightedIndex]);
         }
         else if (args.Key == "Escape")
@@ -168,7 +180,7 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent, IDisposable
 
     private async Task SetInput(bool value)
     {
-        isInput = value;
+        LeaveOrEnterInput(value);
         setFocus = value;
 
         if ((listItems == null || !listItems.Any()))
@@ -240,11 +252,21 @@ public partial class Typeahead<TItem, TValue> : TablerBaseComponent, IDisposable
         return style;
     }
 
+    private void LeaveOrEnterInput(bool value)
+    {
+        isInput = value;
+        if (!value)
+        {
+            eventsHookedUp = false;
+        }
+    }
+
     private async Task SelectItem(TItem item)
     {
         SelectedValue = ConvertExpression(item);
         searchText = "";
         highlightedIndex = -1;
+        LeaveOrEnterInput(false);
         dropdown.Close();
         await SelectedValueChanged.InvokeAsync(SelectedValue);
         Validate();
