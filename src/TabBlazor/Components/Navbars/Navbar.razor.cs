@@ -14,6 +14,10 @@ public partial class Navbar : TablerBaseComponent, IDisposable
     [Parameter] public NavbarBackground Background { get; set; }
     /// <summary>Horizontal or vertical layout.</summary>
     [Parameter] public NavbarDirection Direction { get; set; }
+    /// <summary>Folds a vertical navbar down to an icon rail. Ignored for horizontal navbars. Defaults to <see cref="NavbarFold.None"/>.</summary>
+    [Parameter] public NavbarFold Fold { get; set; } = NavbarFold.None;
+    /// <summary>Optional content pinned to the bottom of a vertical navbar, e.g. a user block.</summary>
+    [Parameter] public RenderFragment Footer { get; set; }
     /// <summary>Whether the navbar starts expanded. Defaults to true.</summary>
     [Parameter] public bool IsExpanded { get; set; } = true;
     /// <summary>The breakpoint below which the navbar collapses. Defaults to <see cref="PageBreakpoint.Sm"/>.</summary>
@@ -30,7 +34,25 @@ public partial class Navbar : TablerBaseComponent, IDisposable
         .AddIf("navbar-light", Background == NavbarBackground.Light)
         .AddIf("navbar-transparent", Background == NavbarBackground.Transparent)
         .AddIf("navbar-vertical", Direction == NavbarDirection.Vertical)
+        .AddIf("navbar-folded", IsFolded(NavbarFold.Folded))
+        .AddIf("navbar-folded-hover", IsFolded(NavbarFold.FoldedHover))
         .ToString();
+
+    protected string Theme => Background == NavbarBackground.Dark ? "dark" : null;
+
+    private bool IsFolded(NavbarFold fold) => Direction == NavbarDirection.Vertical && Fold == fold;
+
+    public bool IsFoldedNavbar => IsFolded(NavbarFold.Folded) || IsFolded(NavbarFold.FoldedHover);
+
+    private bool ClosesSubMenusOnNavigation => Direction == NavbarDirection.Horizontal || IsFoldedNavbar;
+
+    private void OnMouseLeave()
+    {
+        if (IsFolded(NavbarFold.FoldedHover))
+        {
+            CloseAll();
+        }
+    }
 
     public void Dispose()
     {
@@ -45,7 +67,7 @@ public partial class Navbar : TablerBaseComponent, IDisposable
 
     private void LocationChanged(object sender, LocationChangedEventArgs e)
     {
-        if (Direction == NavbarDirection.Horizontal)
+        if (ClosesSubMenusOnNavigation)
         {
             CloseAll();
         }

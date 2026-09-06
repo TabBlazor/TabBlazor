@@ -46,7 +46,7 @@ Add to `_Imports.razor`:
 Reference styles and scripts in `App.razor` (or `index.html` for WebAssembly):
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@tabler/core@1.4.0/dist/css/tabler.min.css" />
+<link rel="stylesheet" href="https://unpkg.com/@tabler/core@1.5.0/dist/css/tabler.min.css" />
 <link rel="stylesheet" href="_content/TabBlazor/css/tabblazor.min.css" />
 <script src="_content/TabBlazor/js/tabblazor.js"></script>
 ```

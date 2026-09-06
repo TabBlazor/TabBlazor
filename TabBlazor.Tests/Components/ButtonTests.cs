@@ -50,6 +50,25 @@ namespace TabBlazor.Tests.Components
         }
 
         [Fact]
+        public void Adds_plain_ghost_class_when_ghost_without_color()
+        {
+            var cut = Render<Button>(p => p.Add(b => b.BackgroundColorType, ColorType.Ghost));
+            Assert.Contains("btn-ghost", cut.Find("button").ClassList);
+        }
+
+        [Fact]
+        public void Adds_colored_ghost_class_when_ghost_with_color()
+        {
+            var cut = Render<Button>(p => p
+                .Add(b => b.BackgroundColorType, ColorType.Ghost)
+                .Add(b => b.BackgroundColor, TablerColor.Primary));
+
+            var classes = cut.Find("button").ClassList;
+            Assert.Contains("btn-ghost-primary", classes);
+            Assert.DoesNotContain("btn-ghost", classes);
+        }
+
+        [Fact]
         public void Renders_anchor_when_type_is_link()
         {
             var cut = Render<Button>(p => p

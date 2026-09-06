@@ -24,6 +24,7 @@ namespace TabBlazor.Tests.Components
         [Theory]
         [InlineData(ProgressSize.Small, "progress-sm")]
         [InlineData(ProgressSize.Large, "progress-lg")]
+        [InlineData(ProgressSize.ExtraLarge, "progress-xl")]
         public void Adds_size_class(ProgressSize size, string expected)
         {
             var cut = Render<Progress>(p => p.Add(x => x.Size, size));

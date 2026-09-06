@@ -6,8 +6,10 @@
              @onclick="OnClick"
              @attributes="@UnmatchedParameters">
 
-    <ul class="navbar-nav" @onclick="@Navbar.ToggleExpand">
-        @ChildContent
-    </ul>
+    <ClickOutside Active="Navbar.IsFoldedNavbar" OnClickOutside="Navbar.CloseAll">
+        <ul class="navbar-nav" @onclick="@Navbar.ToggleExpand">
+            @ChildContent
+        </ul>
+    </ClickOutside>
 
 </HtmlElement>

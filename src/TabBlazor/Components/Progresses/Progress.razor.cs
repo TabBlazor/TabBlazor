@@ -13,7 +13,9 @@ namespace TabBlazor
         /// <summary>Thin bar.</summary>
         Small,
         /// <summary>Thick bar.</summary>
-        Large
+        Large,
+        /// <summary>Extra thick bar.</summary>
+        ExtraLarge
     }
 
     /// <summary>A progress bar supporting a fixed percentage or an indeterminate animation.</summary>
@@ -35,6 +37,7 @@ namespace TabBlazor
               .Add(BackgroundColor.GetColorClass("bg", ColorType.Default))
               .AddCompare("progress-sm", Size, ProgressSize.Small)
               .AddCompare("progress-lg", Size, ProgressSize.Large)
+              .AddCompare("progress-xl", Size, ProgressSize.ExtraLarge)
               .ToString();
 
         protected string BarClassNames => ClassBuilder

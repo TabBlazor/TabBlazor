@@ -5,7 +5,8 @@
     <HtmlElement Tag="@HtmlTag"
                  class="@ClassNames"
                  @onclick="OnClick"
-                 @attributes="@UnmatchedParameters" data-bs-theme="@(Background == NavbarBackground.Dark ? "dark" : "")">
+                 @onmouseleave="OnMouseLeave"
+                 @attributes="@UnmatchedParameters" data-bs-theme="@Theme">
 
         <div class="container-fluid">
 
@@ -13,6 +14,12 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
                 @ChildContent
+            @if (Footer != null)
+            {
+                <div class="navbar-footer">
+                    @Footer
+                </div>
+            }
         </div>
     </HtmlElement>
 </CascadingValue>

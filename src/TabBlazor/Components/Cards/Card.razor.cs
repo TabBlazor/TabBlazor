@@ -31,6 +31,21 @@ namespace TabBlazor
     }
 
     /// <summary>
+    /// Direction of a <see cref="Card.Gradient"/> background.
+    /// </summary>
+    public enum CardGradientDirection
+    {
+        /// <summary>Gradient fades in from the top edge.</summary>
+        Top,
+        /// <summary>Gradient fades in from the start (left) edge.</summary>
+        Start,
+        /// <summary>Gradient fades in from the end (right) edge.</summary>
+        End,
+        /// <summary>Gradient fades in from the bottom edge.</summary>
+        Bottom
+    }
+
+    /// <summary>
     /// Tabler card container that groups related content. Compose with
     /// <see cref="CardHeader"/>, <see cref="CardBody"/>, <see cref="CardFooter"/> and related child components.
     /// </summary>
@@ -51,6 +66,21 @@ namespace TabBlazor
         /// <summary>When set, renders the card as an anchor linking to this URL instead of a plain <c>div</c>.</summary>
         [Parameter] public string LinkTo { get; set; }
 
+        /// <summary>Color of a gradient background. Defaults to <see cref="TablerColor.Default"/>, which renders no gradient.</summary>
+        [Parameter] public TablerColor Gradient { get; set; } = TablerColor.Default;
+
+        /// <summary>Edge the <see cref="Gradient"/> fades in from. Defaults to <see cref="CardGradientDirection.Top"/>.</summary>
+        [Parameter] public CardGradientDirection GradientDirection { get; set; } = CardGradientDirection.Top;
+
+        /// <summary>When <c>true</c>, animates the <see cref="Gradient"/> background. Defaults to <c>false</c>.</summary>
+        [Parameter] public bool GradientAnimated { get; set; }
+
+        /// <summary>When <c>true</c>, renders the card with a dashed border. Defaults to <c>false</c>.</summary>
+        [Parameter] public bool Dashed { get; set; }
+
+        /// <summary>When <c>true</c>, renders the card without background or shadow, with a dashed border. Defaults to <c>false</c>.</summary>
+        [Parameter] public bool Transparent { get; set; }
+
         protected string HtmlTag => string.IsNullOrWhiteSpace(LinkTo)
             ? "div"
             : "a";
@@ -62,12 +92,22 @@ namespace TabBlazor
         protected override string ClassNames => ClassBuilder
             .Add("card")
             .AddIf("card-stacked", Stacked)
+            .AddIf("card-dashed", Dashed)
+            .AddIf("card-transparent", Transparent)
+            .AddIf("card-gradient", HasGradient)
+            .Add(Gradient.GetColorClass("card-gradient"))
+            .AddIf("card-gradient-start", HasGradient && GradientDirection == CardGradientDirection.Start)
+            .AddIf("card-gradient-end", HasGradient && GradientDirection == CardGradientDirection.End)
+            .AddIf("card-gradient-bottom", HasGradient && GradientDirection == CardGradientDirection.Bottom)
+            .AddIf("card-gradient-animated", HasGradient && GradientAnimated)
             .Add(BackgroundColor.GetColorClass("bg"))
             .Add(TextColor.GetColorClass("text"))
             .AddCompare("card-sm", Size, CardSize.Small)
             .AddCompare("card-md", Size, CardSize.Medium)
             .AddCompare("card-lg", Size, CardSize.Large)
             .ToString();
+
+        private bool HasGradient => Gradient != TablerColor.Default;
 
         protected string StatusClassNames(string position, TablerColor color)
         {

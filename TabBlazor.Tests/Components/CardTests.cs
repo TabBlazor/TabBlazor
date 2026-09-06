@@ -39,6 +39,58 @@ namespace TabBlazor.Tests.Components
         }
 
         [Fact]
+        public void Adds_gradient_classes_when_gradient_set()
+        {
+            var cut = Render<Card>(p => p.Add(c => c.Gradient, TablerColor.Primary));
+
+            var classes = cut.Find("div.card").ClassList;
+            Assert.Contains("card-gradient", classes);
+            Assert.Contains("card-gradient-primary", classes);
+        }
+
+        [Fact]
+        public void Omits_gradient_classes_by_default()
+        {
+            var cut = Render<Card>(p => p.Add(c => c.GradientDirection, CardGradientDirection.End).Add(c => c.GradientAnimated, true));
+
+            var classes = cut.Find("div.card").ClassList;
+            Assert.DoesNotContain("card-gradient", classes);
+            Assert.DoesNotContain("card-gradient-end", classes);
+            Assert.DoesNotContain("card-gradient-animated", classes);
+        }
+
+        [Theory]
+        [InlineData(CardGradientDirection.Start, "card-gradient-start")]
+        [InlineData(CardGradientDirection.End, "card-gradient-end")]
+        [InlineData(CardGradientDirection.Bottom, "card-gradient-bottom")]
+        public void Adds_gradient_direction_class(CardGradientDirection direction, string expected)
+        {
+            var cut = Render<Card>(p => p.Add(c => c.Gradient, TablerColor.Green).Add(c => c.GradientDirection, direction));
+            Assert.Contains(expected, cut.Find("div.card").ClassList);
+        }
+
+        [Fact]
+        public void Adds_animated_class_when_gradient_animated()
+        {
+            var cut = Render<Card>(p => p.Add(c => c.Gradient, TablerColor.Green).Add(c => c.GradientAnimated, true));
+            Assert.Contains("card-gradient-animated", cut.Find("div.card").ClassList);
+        }
+
+        [Fact]
+        public void Adds_dashed_class_when_dashed()
+        {
+            var cut = Render<Card>(p => p.Add(c => c.Dashed, true));
+            Assert.Contains("card-dashed", cut.Find("div.card").ClassList);
+        }
+
+        [Fact]
+        public void Adds_transparent_class_when_transparent()
+        {
+            var cut = Render<Card>(p => p.Add(c => c.Transparent, true));
+            Assert.Contains("card-transparent", cut.Find("div.card").ClassList);
+        }
+
+        [Fact]
         public void Renders_top_status_bar_when_status_top_set()
         {
             var cut = Render<Card>(p => p.Add(c => c.StatusTop, TablerColor.Primary));

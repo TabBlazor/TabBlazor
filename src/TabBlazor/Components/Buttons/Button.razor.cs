@@ -96,6 +96,8 @@ namespace TabBlazor
         /// </summary>
         [Parameter] public string LinkTo { get; set; }
 
+        private bool IsPlainGhost => BackgroundColorType == ColorType.Ghost && BackgroundColor == TablerColor.Default;
+
         protected string HtmlTag => Type switch
         {
             ButtonType.Input => "input",
@@ -121,6 +123,7 @@ namespace TabBlazor
         protected override string ClassNames => ClassBuilder
                 .Add("btn")
                 .Add(BackgroundColor.GetColorClass("btn", BackgroundColorType))
+                .AddIf("btn-ghost", IsPlainGhost)
                 .Add(TextColor.GetColorClass("text"))
                 .AddIf("disabled", Disabled)
                 .AddIf("btn-block", Block)

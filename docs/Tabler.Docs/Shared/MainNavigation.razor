@@ -1,4 +1,21 @@
-﻿<Navbar Background=appService.Settings.NavbarBackground CollapseAt="PageBreakpoint.Md" Direction=appService.Settings.NavbarDirection NavLinkMatch="Microsoft.AspNetCore.Components.Routing.NavLinkMatch.All" IsExpanded="false">
+﻿<Navbar Background=appService.Settings.NavbarBackground CollapseAt="PageBreakpoint.Md" Direction=appService.Settings.NavbarDirection Fold=appService.Settings.NavbarFold NavLinkMatch="Microsoft.AspNetCore.Components.Routing.NavLinkMatch.All" IsExpanded="false">
+    <Footer>
+        @if (appService.Settings.NavbarDirection == NavbarDirection.Vertical)
+        {
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="app-settings" class="nav-link">
+                        <Avatar Data="_content/Tabler.Docs/img/avatars/004m.jpg" Size="AvatarSize.Small" />
+                        <span class="nav-link-title ms-2">
+                            Paweł Kuna
+                            <div class="small text-secondary">UI Designer</div>
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        }
+    </Footer>
+    <ChildContent>
 
     <a href="https://github.com/joadan/Blazor-Tabler" class="navbar-brand navbar-brand-autodark">
         <img src="_content/Tabler.Docs/img/TabBlazorLogoWhite.png" alt="Tabler" class="navbar-brand-image me-2">
@@ -121,4 +138,5 @@
             </SubMenu>
         </NavbarMenuItem>
     </NavbarMenu>
+    </ChildContent>
 </Navbar>

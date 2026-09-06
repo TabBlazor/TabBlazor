@@ -28,6 +28,12 @@ namespace Tabler.Docs.Components.General
             appService.SettingsUpdated();
         }
 
+        private void SetNavFold(NavbarFold navbarFold)
+        {
+            settings.NavbarFold = navbarFold;
+            appService.SettingsUpdated();
+        }
+
 
         private async void SetDarkMode(bool value)
         {
