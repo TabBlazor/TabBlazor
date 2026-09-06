@@ -15,7 +15,7 @@
             </span>
         }
 
-        <span class="nav-link-title">
+        <span class="@(isSubMenu ? null : "nav-link-title")">
             @if (ChildContent != null)
             {
                 @ChildContent

@@ -20,6 +20,13 @@ namespace TabBlazor.Tests.Components
         }
 
         [Fact]
+        public void Adds_center_class_when_centered()
+        {
+            var cut = Render<ButtonList>(p => p.Add(x => x.Centered, true));
+            Assert.Contains("btn-list-center", cut.Find("div").ClassList);
+        }
+
+        [Fact]
         public void Adds_text_color_class()
         {
             var cut = Render<ButtonList>(p => p.Add(x => x.TextColor, TablerColor.Primary));

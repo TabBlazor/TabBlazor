@@ -38,6 +38,7 @@ namespace TabBlazor.Tests.Components
         [InlineData(AvatarRounded.RoundedLarge, "rounded-lg")]
         [InlineData(AvatarRounded.Circle, "rounded-circle")]
         [InlineData(AvatarRounded.None, "rounded-0")]
+        [InlineData(AvatarRounded.Square, "avatar-square")]
         public void Adds_rounded_class(AvatarRounded rounded, string expected)
         {
             var cut = Render<Avatar>(p => p.Add(a => a.Rounded, rounded));

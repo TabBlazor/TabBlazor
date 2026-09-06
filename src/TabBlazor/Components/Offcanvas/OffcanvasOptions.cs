@@ -7,6 +7,8 @@
         public string WrapperCssClass { get; set; }
         public OffcanvasPosition Position { get; set; }
         public bool CloseOnEsc { get; set; } = false;
+        /// <summary>When <c>true</c>, renders a narrower panel. Defaults to <c>false</c>.</summary>
+        public bool Narrow { get; set; } = false;
     }
 
     public enum OffcanvasPosition

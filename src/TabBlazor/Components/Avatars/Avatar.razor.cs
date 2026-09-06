@@ -32,7 +32,9 @@ namespace TabBlazor
         /// <summary>Fully circular.</summary>
         Circle,
         /// <summary>Square (no rounding).</summary>
-        None
+        None,
+        /// <summary>Square with the theme's default border radius.</summary>
+        Square
     }
 
     /// <summary>
@@ -67,7 +69,8 @@ namespace TabBlazor
                 { AvatarRounded.Rounded, "rounded" },
                 { AvatarRounded.RoundedLarge, "rounded-lg" },
                 { AvatarRounded.Circle, "rounded-circle" },
-                { AvatarRounded.None, "rounded-0" }
+                { AvatarRounded.None, "rounded-0" },
+                { AvatarRounded.Square, "avatar-square" }
             }).ToString();
     }
 }
