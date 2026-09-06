@@ -10,7 +10,7 @@
             <div class="input-icon" @onclick:stopPropagation>
                 @if (SelectedValue != null && !isInput)
                 {
-                    <span class="@InputCssClasses" tabindex=0
+                    <span class="@InputCssClasses" tabindex=0 @ref="selectedElement"
                           @onclick="@(() => SetInput(true))"> @SelectedTextExpression(SelectedValue)</span>
                     <span class="input-icon-addon" tabindex=0>
                         <Icon IconType="@InternalIcons.X" class="icon" OnClick="ClearSelected"/>

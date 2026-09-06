@@ -85,8 +85,9 @@ namespace TabBlazor
             }
             else if (!isExpanded && popperInstance != null)
             {
-                await popperInstance.DisposeAsync();
+                var instanceToDispose = popperInstance;
                 popperInstance = null;
+                await instanceToDispose.DisposeAsync();
             }
         }
 
