@@ -17,6 +17,10 @@
   top: 0.5rem;
 }
 
+.navbar-vertical:is(.navbar-folded, .navbar-folded-hover:not(:hover):not(:has(:focus-visible))) .navbar-brand-text {
+  display: none;
+}
+
 pre.highlight,
 .highlight pre {
   max-height: 30rem;

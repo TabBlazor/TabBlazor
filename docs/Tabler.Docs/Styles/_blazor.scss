@@ -18,3 +18,7 @@
 }
 
 
+
+.navbar-vertical:is(.navbar-folded, .navbar-folded-hover:not(:hover):not(:has(:focus-visible))) .navbar-brand-text {
+    display: none;
+}
