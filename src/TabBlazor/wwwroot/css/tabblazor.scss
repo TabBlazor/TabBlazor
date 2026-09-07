@@ -281,3 +281,19 @@ Dimmer
         pointer-events: all;
     }
 }
+
+.navbar.navbar-vertical.navbar-folded .navbar-collapse .nav-item > .dropdown-menu.show {
+    max-height: calc(100vh - 1rem);
+    overflow-y: auto;
+}
+
+.navbar.navbar-vertical.navbar-folded .navbar-collapse .nav-item > .dropdown-menu .dropdown-menu {
+    position: static;
+    inset: auto;
+    min-width: 0;
+    margin: 0;
+    padding: 0 0 0 var(--tblr-dropdown-item-padding-x);
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+}

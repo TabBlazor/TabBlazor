@@ -1,16 +1,19 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using System;
+using System.Threading.Tasks;
+using TabBlazor.Services;
 
 namespace TabBlazor
 {
     /// <summary>An item within a <see cref="Navbar"/>, optionally a link and/or a container for a sub-menu.</summary>
-    public partial class NavbarMenuItem : TablerBaseComponent, IDisposable
+    public partial class NavbarMenuItem : TablerBaseComponent, IAsyncDisposable
     {
         [CascadingParameter(Name = "Navbar")] Navbar Navbar { get; set; }
         [CascadingParameter(Name = "Parent")] NavbarMenuItem ParentMenuItem { get; set; }
 
         [Inject] private NavigationManager NavigationManager { get; set; }
+        [Inject] private IServiceProvider ServiceProvider { get; set; }
 
         /// <summary>The navigation URL. When set, the item renders as a link.</summary>
         [Parameter] public string Href { get; set; }
@@ -29,6 +32,11 @@ namespace TabBlazor
 
         protected string HtmlTag => "li";
         protected bool isExpanded;
+        private ElementReference itemElement;
+        private ElementReference subMenuElement;
+        private IPopperService popperService;
+        private IPopperInstance flyoutPopper;
+        private bool refreshFlyoutPopper;
       
         protected bool IsDropdown => SubMenu != null && Expandable;
 
@@ -38,9 +46,54 @@ namespace TabBlazor
         {
             isExpanded = Expanded;
             Navbar?.AddNavbarMenuItem(this);
+            popperService = ServiceProvider.GetService(typeof(IPopperService)) as IPopperService;
 
             NavigationManager.LocationChanged += LocationChanged;
 
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (!UsesFlyoutPopper || !isExpanded)
+            {
+                await DisposeFlyoutPopperAsync();
+                return;
+            }
+
+            if (flyoutPopper == null)
+            {
+                flyoutPopper = await popperService.CreateAsync(itemElement, subMenuElement, new PopperOptions
+                {
+                    Placement = Placement.RightStart,
+                    Strategy = Positioning.Fixed,
+                    Offset = 4
+                });
+                await flyoutPopper.ShowAsync();
+            }
+            else if (refreshFlyoutPopper)
+            {
+                refreshFlyoutPopper = false;
+                await flyoutPopper.UpdateAsync();
+            }
+        }
+
+        private bool UsesFlyoutPopper =>
+            popperService != null
+            && IsDropdown
+            && IsTopMenuItem
+            && Navbar?.Direction == NavbarDirection.Vertical
+            && Navbar.Fold == NavbarFold.Folded;
+
+        private async Task DisposeFlyoutPopperAsync()
+        {
+            if (flyoutPopper == null)
+            {
+                return;
+            }
+
+            var instanceToDispose = flyoutPopper;
+            flyoutPopper = null;
+            await instanceToDispose.DisposeAsync();
         }
 
         private void LocationChanged(object sender, LocationChangedEventArgs e)
@@ -88,18 +141,34 @@ namespace TabBlazor
             }
 
             isExpanded = expand;
-
+            ParentMenuItem?.OnChildMenuToggled();
         }
 
-        public void Dispose()
+        private void OnChildMenuToggled()
+        {
+            if (!IsTopMenuItem)
+            {
+                ParentMenuItem?.OnChildMenuToggled();
+                return;
+            }
+
+            if (flyoutPopper != null)
+            {
+                refreshFlyoutPopper = true;
+                StateHasChanged();
+            }
+        }
+
+        public async ValueTask DisposeAsync()
         {
             Navbar?.RemoveNavbarMenuItem(this);
-           
+
             if (NavigationManager != null)
             {
                 NavigationManager.LocationChanged -= LocationChanged;
             }
 
+            await DisposeFlyoutPopperAsync();
         }
     }
 }

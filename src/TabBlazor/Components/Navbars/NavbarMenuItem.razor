@@ -4,7 +4,8 @@
 <HtmlElement Tag="@HtmlTag"
              class="@ClassNames"
              @onclick="OnClick"
-             @attributes="@UnmatchedParameters">
+             @attributes="@UnmatchedParameters"
+             ElementRefChanged="@(r => itemElement = r)">
 
     <a class="@(isSubMenu ? "dropdown-item":"nav-link") @(IsDropdown ? "dropdown-toggle": "")" @onclick="ToogleDropdown" href="@Href" @onclick:stopPropagation=IsDropdown>
 
@@ -30,7 +31,7 @@
     @if (SubMenu != null && isExpanded && Expandable)
     {
         <CascadingValue Value="this" Name="Parent">
-            <ul data-bs-popper="none" class="dropdown-menu show @(NavbarIsHorizontalAndDark ? "bg-dark" : "")">
+            <ul @ref="subMenuElement" data-bs-popper="none" class="dropdown-menu show @(NavbarIsHorizontalAndDark ? "bg-dark" : "")">
                 @SubMenu
             </ul>
         </CascadingValue>
