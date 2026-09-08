@@ -103,14 +103,30 @@ namespace TabBlazor
 
         private bool IsActive()
         {
-            if (Href == null) { return false; }
+            if (Href == null || Navbar?.NavLinkMatch == null) { return false; }
 
-            if (Navbar.NavLinkMatch == null) { return false; }
+            var currentPath = PathWithoutQuery(NavigationManager.ToBaseRelativePath(NavigationManager.Uri));
+            var hrefPath = PathWithoutQuery(Href);
 
-            var navLinkMatch = (NavLinkMatch)Navbar.NavLinkMatch;
+            if (Navbar.NavLinkMatch == NavLinkMatch.All)
+            {
+                return string.Equals(currentPath, hrefPath, StringComparison.OrdinalIgnoreCase);
+            }
 
-            var relativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri).ToLower();
-            return navLinkMatch == NavLinkMatch.All ? relativePath == Href.ToLower() : relativePath.StartsWith(Href.ToLower());
+            if (hrefPath.Length == 0)
+            {
+                return true;
+            }
+
+            return currentPath.StartsWith(hrefPath, StringComparison.OrdinalIgnoreCase)
+                   && (currentPath.Length == hrefPath.Length || currentPath[hrefPath.Length] == '/');
+        }
+
+        private static string PathWithoutQuery(string url)
+        {
+            var end = url.IndexOfAny(new[] { '?', '#' });
+            var path = end >= 0 ? url.Substring(0, end) : url;
+            return Uri.UnescapeDataString(path.Trim('/'));
         }
 
 
