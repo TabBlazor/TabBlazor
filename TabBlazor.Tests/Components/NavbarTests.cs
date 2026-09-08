@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace TabBlazor.Tests.Components
 {
     public class NavbarTests : TabBlazorTestContext
@@ -88,6 +92,38 @@ namespace TabBlazor.Tests.Components
         {
             var cut = Render<Navbar>(p => p.AddChildContent("x"));
             Assert.Single(cut.FindAll("button.navbar-toggler"));
+        }
+
+        [Theory]
+        [InlineData(NavLinkMatch.All, "Default/all", "/Default/all", true)]
+        [InlineData(NavLinkMatch.All, "default/all?q=Order&page=2", "/Default/all?q=Order", true)]
+        [InlineData(NavLinkMatch.All, "Default/all/1234", "/Default/all", false)]
+        [InlineData(NavLinkMatch.All, "Default/Swegon.Orders", "/Default/all", false)]
+        [InlineData(NavLinkMatch.Prefix, "Default/all/1234?q=x", "/Default/all", true)]
+        [InlineData(NavLinkMatch.Prefix, "Default/Swegon.Orders.Changes", "/Default/Swegon.Orders", false)]
+        public void Marks_menu_item_active_when_href_matches_current_path(NavLinkMatch match, string currentUrl,
+            string href, bool expectedActive)
+        {
+            Services.GetRequiredService<NavigationManager>().NavigateTo(currentUrl);
+
+            var cut = Render<Navbar>(p => p
+                .Add(n => n.NavLinkMatch, match)
+                .AddChildContent<NavbarMenuItem>(item => item
+                    .Add(i => i.Text, "Item")
+                    .Add(i => i.Href, href)));
+
+            Assert.Equal(expectedActive, cut.Find("li.nav-item").ClassList.Contains("active"));
+        }
+
+        [Fact]
+        public void Does_not_mark_menu_item_active_without_nav_link_match()
+        {
+            Services.GetRequiredService<NavigationManager>().NavigateTo("Default/all");
+
+            var cut = Render<Navbar>(p => p
+                .AddChildContent<NavbarMenuItem>(item => item.Add(i => i.Href, "/Default/all")));
+
+            Assert.DoesNotContain("active", cut.Find("li.nav-item").ClassList);
         }
     }
 }
