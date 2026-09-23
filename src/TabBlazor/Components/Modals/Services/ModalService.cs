@@ -28,12 +28,14 @@ namespace TabBlazor.Services
         private Stack<ModalModel> modals = new Stack<ModalModel>();
         internal ModalModel modalModel;
         private readonly NavigationManager navigationManager;
+        private string currentPath;
 
         public IEnumerable<ModalModel> Modals { get { return modals; } }
               
         public Task<ModalResult> ShowAsync<TComponent>(string title, RenderComponent<TComponent> component, ModalOptions modalOptions = null) where TComponent : IComponent
         {
             modalModel = new ModalModel(component.Contents, title, modalOptions);
+            currentPath = PathWithoutQuery(navigationManager.Uri);
             modals.Push(modalModel);
             OnChanged?.Invoke();
             return modalModel.Task;
@@ -49,8 +51,17 @@ namespace TabBlazor.Services
          
         private void LocationChanged(object sender, LocationChangedEventArgs e)
         {
-            CloseAll();
+            var path = PathWithoutQuery(e.Location);
+            var samePath = path == currentPath;
+            currentPath = path;
+
+            if (!samePath)
+            {
+                CloseAll();
+            }
         }
+
+        private static string PathWithoutQuery(string uri) => uri.Split('?', '#')[0];
 
         private void CloseAll()
         {

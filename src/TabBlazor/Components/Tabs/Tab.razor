@@ -3,7 +3,7 @@
 
 
 <li class="nav-item">
-    <a @onclick=Activate @onkeydown=ActivateOnEnter tabindex="0" class="nav-link cursor-pointer @TitleCssClass" data-toggle="tab" @attributes="PreloadHandlers">
+    <a href="@Href" @onclick=Activate @onclick:preventDefault="PreventClickNavigation" @onkeydown=ActivateOnEnter tabindex="@TabIndex" class="nav-link cursor-pointer @TitleCssClass" data-toggle="tab" @attributes="PreloadHandlers">
         @if (Header != null)
         {
             @Header
