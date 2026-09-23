@@ -13,6 +13,28 @@
                     Use Header template to set tab header
                 </Description>
             </CodeSnippet>
+
+            <CodeSnippet Component="@typeof(TabsPreload)" Title="Preload on hover">
+                <Description>
+                    Set <code>Preload="TabPreload.Hover"</code> to start rendering a tab's content hidden as soon as its header is hovered, focused or pressed, so it is ready when clicked.
+                    Use <code>PreloadDelay</code> to require the pointer to rest before preloading, <code>KeepAlive</code> to keep visited tabs rendered,
+                    and <code>OnActivated</code> or the <code>IsActiveTab</code> cascading value to react when preloaded content becomes visible (e.g. redraw a chart).
+                </Description>
+            </CodeSnippet>
+
+            <CodeSnippet Component="@typeof(TabsChartRedraw)" Title="Redraw preloaded content">
+                <Description>
+                    Content preloaded while hidden has no size. Use <code>OnActivated</code> to redraw it once the tab is shown.
+                    Content components can instead read <code>[CascadingParameter(Name = "IsActiveTab")] bool IsActiveTab</code>.
+                </Description>
+            </CodeSnippet>
+
+            <CodeSnippet Component="@typeof(TabsKeepAlive)" Title="Keep alive">
+                <Description>
+                    By default a tab's content is discarded when another tab is activated. Set <code>KeepAlive="true"</code> to keep visited tabs rendered,
+                    preserving their state (input, scroll position, loaded data) when switching back.
+                </Description>
+            </CodeSnippet>
         </DocsExample>
 
     </Page>

@@ -1,4 +1,4 @@
-﻿@namespace TabBlazor
+@namespace TabBlazor
 @inherits TablerBaseComponent
 
 @using Microsoft.AspNetCore.Components
@@ -15,9 +15,15 @@
 
     <div class="card-body">
         <div class="tab-content">
-            <div class="tab-pane active show">
-                <div> @ActiveTab?.ChildContent</div>
-            </div>
+            @foreach (var tab in tabs.Where(renderedTabs.Contains))
+            {
+                var isActive = tab == ActiveTab;
+                <div @key="tab" class="tab-pane @(isActive ? "active show" : null)">
+                    <CascadingValue Name="IsActiveTab" Value="isActive">
+                        <div>@tab.ChildContent</div>
+                    </CascadingValue>
+                </div>
+            }
         </div>
     </div>
 </div>
