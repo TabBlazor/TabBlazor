@@ -30,6 +30,7 @@ namespace TabBlazor
                 .AddScoped<IOffcanvasService, OffcanvasService>()
                 .AddScoped<IModalService, ModalService>()
                 .AddScoped<TableFilterService>()
+                .AddScoped<TabsUrlParameterRegistry>()
                 .AddScoped<IFormValidator, TablerDataAnnotationsValidator>()
                 .AddSingleton<FlagService>();
 

@@ -1,4 +1,4 @@
-@page "/setup"
+﻿@page "/setup"
 
 <Page>
     <PageTitle>Setup</PageTitle>
@@ -20,6 +20,15 @@
                 <code>Tooltip</code>) when the call site does not set one explicitly.
                 Setting it to anything other than <code>Positioning.Default</code>
                 automatically enables Popper. Per-component overrides still win.
+            </Description>
+        </CodeSnippet>
+
+        <CodeSnippet Component="@typeof(SetupTabsDefaults)" Title="Tabs defaults">
+            <Description>
+                <code>Tabs</code> sets defaults for every <code>Tabs</code> component: <code>Preload</code>,
+                <code>PreloadDelay</code>, <code>KeepAlive</code> and <code>UrlHistory</code>.
+                Parameters set on a <code>Tabs</code> or <code>Tab</code> still win. <code>UrlParameter</code>
+                has no global default, since each <code>Tabs</code> on a page needs its own.
             </Description>
         </CodeSnippet>
 

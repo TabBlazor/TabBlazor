@@ -1,4 +1,4 @@
-@using Microsoft.Extensions.DependencyInjection
+﻿@using Microsoft.Extensions.DependencyInjection
 @using TabBlazor.Components.Tables
 
 @code {
@@ -11,6 +11,10 @@
             options.PopperScriptUrl = "https://unpkg.com/@popperjs/core@2";
             options.DefaultOnCancelStrategy = OnCancelStrategy.AsIs;
             options.AssemblyScanFilter = () => AppDomain.CurrentDomain.GetAssemblies().ToList();
+            options.Tabs.Preload = TabPreload.None;
+            options.Tabs.PreloadDelay = 0;
+            options.Tabs.KeepAlive = false;
+            options.Tabs.UrlHistory = TabUrlHistory.Replace;
         });
     }
 }

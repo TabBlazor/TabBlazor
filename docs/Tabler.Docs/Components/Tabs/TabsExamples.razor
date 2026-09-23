@@ -29,6 +29,14 @@
                 </Description>
             </CodeSnippet>
 
+            <CodeSnippet Component="@typeof(TabsDeepLink)" Title="Deep linking">
+                <Description>
+                    Set <code>UrlParameter</code> to store the selected tab in the query string, so a URL like <code>?demo-tab=orders</code> opens that tab and tab headers become real links.
+                    Tabs are identified by <code>Id</code>, or by their 1-based position when no Id is set. Use <code>Id</code> for tabs that are conditional, data-driven or may be reordered, since positions shift.
+                    Selecting a tab replaces the current history entry; set <code>UrlHistory="TabUrlHistory.Push"</code> to add one per tab instead.
+                </Description>
+            </CodeSnippet>
+
             <CodeSnippet Component="@typeof(TabsKeepAlive)" Title="Keep alive">
                 <Description>
                     By default a tab's content is discarded when another tab is activated. Set <code>KeepAlive="true"</code> to keep visited tabs rendered,

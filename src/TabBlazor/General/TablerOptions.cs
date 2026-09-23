@@ -30,4 +30,10 @@ public class TablerOptions
     /// <see cref="EnablePopper"/> = true.
     /// </summary>
     public Positioning DefaultPositioning { get; set; } = Positioning.Default;
+
+    /// <summary>
+    /// Global defaults for <c>Tabs</c> (preload, keep-alive, URL history).
+    /// Parameters set on a component take precedence.
+    /// </summary>
+    public TabsOptions Tabs { get; set; } = new();
 }

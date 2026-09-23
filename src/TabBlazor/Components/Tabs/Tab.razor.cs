@@ -11,8 +11,13 @@ namespace TabBlazor
         [Parameter] public string Title { get; set; }
         /// <summary>Optional custom header content, overriding <see cref="Title"/>.</summary>
         [Parameter] public RenderFragment Header { get; set; }
-        /// <summary>Whether this tab is selected initially. Defaults to false.</summary>
+        /// <summary>Whether this tab is selected initially. Defaults to false. A tab selected by the URL takes precedence.</summary>
         [Parameter] public bool Active { get; set; }
+        /// <summary>
+        /// Permanent identifier used in the URL when <see cref="Tabs.UrlParameter"/> is set, e.g. <c>?tab=orders</c>.
+        /// Must be unique within its <c>Tabs</c>. Without it, the tab is identified by its 1-based position.
+        /// </summary>
+        [Parameter] public string Id { get; set; }
         /// <summary>Preload mode for this tab, overriding <see cref="Tabs.Preload"/> when set.</summary>
         [Parameter] public TabPreload? Preload { get; set; }
         /// <summary>Invoked when this tab's content starts preloading, before it is shown.</summary>
@@ -23,6 +28,12 @@ namespace TabBlazor
         private CancellationTokenSource hoverIntent;
 
         string TitleCssClass => ContainerTabSet.ActiveTab == this ? "active" : null;
+
+        string Href => ContainerTabSet.GetTabUrl(this);
+
+        string TabIndex => Href == null ? "0" : null;
+
+        bool PreventClickNavigation => Href != null && !ContainerTabSet.NavigatesThroughLink;
 
         Dictionary<string, object> PreloadHandlers => ContainerTabSet.GetPreloadMode(this) == TabPreload.Hover
             ? new()
@@ -36,11 +47,7 @@ namespace TabBlazor
 
         protected override async Task OnInitializedAsync()
         {
-            ContainerTabSet.AddTab(this);
-            if (Active)
-            {
-                ContainerTabSet.SetActivateTab(this);
-            }
+            ContainerTabSet.RegisterTab(this, Active);
 
             if (ContainerTabSet.GetPreloadMode(this) == TabPreload.Eager)
             {
@@ -56,7 +63,7 @@ namespace TabBlazor
 
         void ActivateOnEnter(KeyboardEventArgs e)
         {
-            if (e.Key == "Enter")
+            if (e.Key == "Enter" && Href == null)
             {
                 Activate();
             }
@@ -65,7 +72,7 @@ namespace TabBlazor
         void Activate()
         {
             CancelHoverIntent();
-            ContainerTabSet.SetActivateTab(this);
+            ContainerTabSet.ActivateFromUser(this);
             OnClick.InvokeAsync();
         }
 
@@ -73,12 +80,12 @@ namespace TabBlazor
         {
             CancelHoverIntent();
 
-            if (ContainerTabSet.PreloadDelay > 0)
+            if (ContainerTabSet.EffectivePreloadDelay > 0)
             {
                 hoverIntent = new CancellationTokenSource();
                 try
                 {
-                    await Task.Delay(ContainerTabSet.PreloadDelay, hoverIntent.Token);
+                    await Task.Delay(ContainerTabSet.EffectivePreloadDelay, hoverIntent.Token);
                 }
                 catch (TaskCanceledException)
                 {

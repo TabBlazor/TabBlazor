@@ -1,0 +1,14 @@
+@using Microsoft.Extensions.DependencyInjection
+
+@code {
+    private static void Configure(IServiceCollection services)
+    {
+        services.AddTabBlazor(options =>
+        {
+            options.Tabs.Preload = TabPreload.Hover;
+            options.Tabs.PreloadDelay = 100;
+            options.Tabs.KeepAlive = true;
+            options.Tabs.UrlHistory = TabUrlHistory.Push;
+        });
+    }
+}

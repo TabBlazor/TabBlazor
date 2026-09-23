@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Web;
+using Bunit.TestDoubles;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TabBlazor.Tests.Components
 {
@@ -30,12 +33,16 @@ namespace TabBlazor.Tests.Components
         }
 
         private RenderFragment TabItem(string name, TabPreload? preload = null, bool active = false,
-            Action? onPreload = null, Action? onActivated = null) => builder =>
+            Action? onPreload = null, Action? onActivated = null, string? id = null) => builder =>
         {
             builder.OpenComponent<Tab>(0);
             builder.SetKey(name);
             builder.AddAttribute(1, nameof(Tab.Title), name);
             builder.AddAttribute(2, nameof(Tab.Active), active);
+            if (id != null)
+            {
+                builder.AddAttribute(7, nameof(Tab.Id), id);
+            }
             if (preload != null)
             {
                 builder.AddAttribute(3, nameof(Tab.Preload), preload);
@@ -58,12 +65,15 @@ namespace TabBlazor.Tests.Components
             builder.CloseComponent();
         };
 
-        private IRenderedComponent<Tabs> RenderTabs(TabPreload preload = TabPreload.None, bool keepAlive = false,
-            int preloadDelay = 0, params RenderFragment[] items) =>
+        private IRenderedComponent<Tabs> RenderTabs(TabPreload? preload = null, bool? keepAlive = null,
+            int? preloadDelay = null, string? urlParameter = null, TabUrlHistory? urlHistory = null,
+            params RenderFragment[] items) =>
             Render<Tabs>(p => p
                 .Add(t => t.Preload, preload)
                 .Add(t => t.KeepAlive, keepAlive)
                 .Add(t => t.PreloadDelay, preloadDelay)
+                .Add(t => t.UrlParameter, urlParameter)
+                .Add(t => t.UrlHistory, urlHistory)
                 .AddChildContent(b =>
                 {
                     foreach (var item in items)
@@ -74,6 +84,18 @@ namespace TabBlazor.Tests.Components
 
         private static AngleSharp.Dom.IElement Header(IRenderedComponent<Tabs> cut, int index) =>
             cut.FindAll("a.nav-link")[index];
+
+        private BunitNavigationManager Navigation => Services.GetRequiredService<BunitNavigationManager>();
+
+        private IRenderedComponent<Tabs> RenderLinkedTabs(string url, TabUrlHistory? urlHistory = null,
+            params RenderFragment[] items)
+        {
+            Navigation.NavigateTo(url);
+            return RenderTabs(urlParameter: "tab", urlHistory: urlHistory, items: items);
+        }
+
+        private static string ActiveContent(IRenderedComponent<Tabs> cut) =>
+            cut.Find("div.tab-pane.active span").ClassName!;
 
         [Fact]
         public void Renders_card_with_header_tabs()
@@ -373,6 +395,381 @@ namespace TabBlazor.Tests.Components
             var pane = Assert.Single(cut.FindAll("div.tab-pane"));
             Assert.NotNull(pane.QuerySelector(".content-one"));
             Assert.Contains("active", pane.ClassList);
+        }
+
+        [Fact]
+        public void Selects_tab_by_id_from_url()
+        {
+            var cut = RenderLinkedTabs("/?tab=orders", items: [TabItem("one"), TabItem("two", id: "orders")]);
+
+            Assert.Equal("content-two", ActiveContent(cut));
+        }
+
+        [Fact]
+        public void Selects_tab_by_position_from_url()
+        {
+            var cut = RenderLinkedTabs("/?tab=3", items: [TabItem("one"), TabItem("two"), TabItem("three")]);
+
+            Assert.Equal("content-three", ActiveContent(cut));
+        }
+
+        [Fact]
+        public void Id_match_wins_over_position()
+        {
+            var cut = RenderLinkedTabs("/?tab=2", items: [TabItem("one"), TabItem("two"), TabItem("three", id: "2")]);
+
+            Assert.Equal("content-three", ActiveContent(cut));
+        }
+
+        [Fact]
+        public void Url_selection_wins_over_active_parameter()
+        {
+            var cut = RenderLinkedTabs("/?tab=1", items: [TabItem("one"), TabItem("two", active: true)]);
+
+            Assert.Equal("content-one", ActiveContent(cut));
+        }
+
+        [Theory]
+        [InlineData("/?tab=missing")]
+        [InlineData("/?tab=9")]
+        [InlineData("/?tab=0")]
+        public void Unknown_url_value_falls_back_to_default_tab(string url)
+        {
+            var cut = RenderLinkedTabs(url, items: [TabItem("one"), TabItem("two", active: true)]);
+
+            Assert.Equal("content-two", ActiveContent(cut));
+        }
+
+        [Fact]
+        public void Ignores_url_when_url_parameter_is_not_set()
+        {
+            Navigation.NavigateTo("/?tab=2");
+
+            var cut = RenderTabs(items: [TabItem("one"), TabItem("two")]);
+
+            Assert.Equal("content-one", ActiveContent(cut));
+            Assert.Null(Header(cut, 1).GetAttribute("href"));
+        }
+
+        [Fact]
+        public void Invokes_on_activated_for_tab_selected_from_url()
+        {
+            var activated = new List<string>();
+            RenderLinkedTabs("/?tab=2", items:
+            [
+                TabItem("one", onActivated: () => activated.Add("one")),
+                TabItem("two", onActivated: () => activated.Add("two"))
+            ]);
+
+            Assert.Equal(["two"], activated);
+        }
+
+        [Fact]
+        public void Renders_tab_urls_as_header_links()
+        {
+            var cut = RenderLinkedTabs("/page?filter=open", items: [TabItem("one"), TabItem("two", id: "orders"), TabItem("three")]);
+
+            Assert.Equal("http://localhost/page?filter=open", Header(cut, 0).GetAttribute("href"));
+            Assert.Equal("http://localhost/page?filter=open&tab=orders", Header(cut, 1).GetAttribute("href"));
+            Assert.Equal("http://localhost/page?filter=open&tab=3", Header(cut, 2).GetAttribute("href"));
+            Assert.Null(Header(cut, 1).GetAttribute("tabindex"));
+        }
+
+        [Fact]
+        public void Encodes_and_decodes_tab_id_in_url()
+        {
+            var cut = RenderLinkedTabs("/page?tab=sales%20%26%20orders", items: [TabItem("one"), TabItem("two", id: "sales & orders")]);
+
+            Assert.Equal("content-two", ActiveContent(cut));
+            Assert.Equal("http://localhost/page?tab=sales%20%26%20orders", Header(cut, 1).GetAttribute("href"));
+        }
+
+        [Fact]
+        public void Keeps_fragment_when_writing_url()
+        {
+            var cut = RenderLinkedTabs("/page?filter=open#details", items: [TabItem("one"), TabItem("two")]);
+
+            Header(cut, 1).Click();
+
+            Assert.Equal("http://localhost/page?filter=open&tab=2#details", Navigation.Uri);
+        }
+
+        [Fact]
+        public void Repeated_url_parameter_uses_first_value_and_is_collapsed_on_click()
+        {
+            var cut = RenderLinkedTabs("/page?tab=2&tab=3", items: [TabItem("one"), TabItem("two"), TabItem("three")]);
+
+            Assert.Equal("content-two", ActiveContent(cut));
+
+            Header(cut, 2).Click();
+
+            Assert.Equal("http://localhost/page?tab=3", Navigation.Uri);
+        }
+
+        [Fact]
+        public void Clicking_tab_replaces_url()
+        {
+            var cut = RenderLinkedTabs("/page", items: [TabItem("one"), TabItem("two", id: "orders")]);
+
+            Header(cut, 1).Click();
+
+            Assert.Equal("http://localhost/page?tab=orders", Navigation.Uri);
+            Assert.True(Navigation.History.First().Options.ReplaceHistoryEntry);
+            Assert.Equal("content-two", ActiveContent(cut));
+        }
+
+        [Fact]
+        public void Clicking_default_tab_removes_url_parameter()
+        {
+            var cut = RenderLinkedTabs("/page?tab=2&filter=open", items: [TabItem("one"), TabItem("two")]);
+
+            Header(cut, 0).Click();
+
+            Assert.Equal("http://localhost/page?filter=open", Navigation.Uri);
+            Assert.Equal("content-one", ActiveContent(cut));
+        }
+
+        [Fact]
+        public void Clicking_tab_does_not_navigate_when_history_is_push()
+        {
+            var cut = RenderLinkedTabs("/page", TabUrlHistory.Push, items: [TabItem("one"), TabItem("two")]);
+            var historyCount = Navigation.History.Count;
+
+            Header(cut, 1).Click();
+
+            Assert.Equal(historyCount, Navigation.History.Count);
+            Assert.Equal("content-two", ActiveContent(cut));
+            Assert.Equal("http://localhost/page?tab=2", Header(cut, 1).GetAttribute("href"));
+        }
+
+        [Fact]
+        public void Url_change_selects_matching_tab()
+        {
+            var cut = RenderLinkedTabs("/page", items: [TabItem("one"), TabItem("two"), TabItem("three", id: "orders")]);
+
+            Navigation.NavigateTo("/page?tab=orders");
+
+            cut.WaitForAssertion(() => Assert.Equal("content-three", ActiveContent(cut)));
+        }
+
+        [Fact]
+        public void Removing_url_parameter_selects_default_tab()
+        {
+            var cut = RenderLinkedTabs("/page?tab=2", items: [TabItem("one"), TabItem("two")]);
+
+            Navigation.NavigateTo("/page");
+
+            cut.WaitForAssertion(() => Assert.Equal("content-one", ActiveContent(cut)));
+        }
+
+        [Fact]
+        public void Url_change_keeps_other_tabs_url_parameter()
+        {
+            Navigation.NavigateTo("/page?inner=2");
+            var outer = RenderTabs(urlParameter: "outer", items: [TabItem("one"), TabItem("two")]);
+            var inner = Render<Tabs>(p => p
+                .Add(t => t.UrlParameter, "inner")
+                .AddChildContent(b => { TabItem("a")(b); TabItem("b")(b); }));
+
+            Header(outer, 1).Click();
+
+            Assert.Equal("http://localhost/page?inner=2&outer=2", Navigation.Uri);
+            Assert.Contains("active", inner.FindAll("a.nav-link")[1].ClassList);
+        }
+
+        [Fact]
+        public void Two_tabs_with_different_url_parameters_stay_independent()
+        {
+            Navigation.NavigateTo("/page");
+            var orders = RenderTabs(urlParameter: "orders", items: [TabItem("one"), TabItem("two"), TabItem("three")]);
+            var settings = Render<Tabs>(p => p
+                .Add(t => t.UrlParameter, "settings")
+                .AddChildContent(b => { TabItem("a", id: "general")(b); TabItem("b", id: "security")(b); }));
+
+            Header(orders, 2).Click();
+            settings.FindAll("a.nav-link")[1].Click();
+
+            Assert.Equal("http://localhost/page?orders=3&settings=security", Navigation.Uri);
+            Assert.Contains("active", Header(orders, 2).ClassList);
+            Assert.Contains("active", settings.FindAll("a.nav-link")[1].ClassList);
+            Assert.Equal("http://localhost/page?orders=2&settings=security", Header(orders, 1).GetAttribute("href"));
+
+            Navigation.NavigateTo("/page?orders=2&settings=security");
+
+            orders.WaitForAssertion(() => Assert.Contains("active", Header(orders, 1).ClassList));
+            Assert.Contains("active", settings.FindAll("a.nav-link")[1].ClassList);
+        }
+
+        private sealed class PageSwitcher : ComponentBase
+        {
+            [Parameter] public string Page { get; set; } = "first";
+
+            protected override void BuildRenderTree(RenderTreeBuilder builder)
+            {
+                builder.OpenComponent<Tabs>(0);
+                builder.SetKey(Page);
+                builder.AddAttribute(1, nameof(Tabs.UrlParameter), "tab");
+                builder.AddAttribute(2, nameof(Tabs.ChildContent), (RenderFragment)(content =>
+                {
+                    content.OpenComponent<Tab>(0);
+                    content.AddAttribute(1, nameof(Tab.Title), Page);
+                    content.CloseComponent();
+                }));
+                builder.CloseComponent();
+            }
+        }
+
+        [Fact]
+        public void Throws_when_two_tabs_share_url_parameter()
+        {
+            RenderTabs(urlParameter: "tab", items: [TabItem("one")]);
+
+            var exception = Assert.ThrowsAny<InvalidOperationException>(() =>
+                RenderTabs(urlParameter: "TAB", items: [TabItem("two")]));
+            Assert.Contains("UrlParameter 'TAB'", exception.Message);
+        }
+
+        [Fact]
+        public async Task Allows_url_parameter_again_after_previous_tabs_is_disposed()
+        {
+            RenderTabs(urlParameter: "tab", items: [TabItem("one")]);
+            await DisposeComponentsAsync();
+
+            RenderTabs(urlParameter: "tab", items: [TabItem("two")]);
+        }
+
+        [Fact]
+        public void Allows_replacing_tabs_with_same_url_parameter_in_one_render()
+        {
+            var cut = Render<PageSwitcher>();
+
+            cut.Render(p => p.Add(s => s.Page, "second"));
+
+            Assert.Equal("second", cut.Find("a.nav-link").TextContent.Trim());
+        }
+
+        [Fact]
+        public void Binds_lowercase_id_attribute()
+        {
+            Navigation.NavigateTo("/?tab=orders");
+
+            var tabs = Render<Tabs>(p => p
+                .Add(t => t.UrlParameter, "tab")
+                .AddChildContent(b =>
+                {
+                    TabItem("one")(b);
+                    b.OpenComponent<Tab>(10);
+                    b.AddMultipleAttributes(11, new Dictionary<string, object> { ["id"] = "orders", ["Title"] = "two" });
+                    b.CloseComponent();
+                }));
+
+            Assert.Contains("active", tabs.FindAll("a.nav-link")[1].ClassList);
+        }
+
+        [Fact]
+        public void Throws_on_duplicate_tab_id()
+        {
+            Assert.ThrowsAny<InvalidOperationException>(() =>
+                RenderTabs(items: [TabItem("one", id: "same"), TabItem("two", id: "same")]));
+        }
+
+        [Fact]
+        public async Task Stops_following_url_after_dispose()
+        {
+            RenderLinkedTabs("/page", items: [TabItem("one"), TabItem("two")]);
+            await DisposeComponentsAsync();
+
+            Navigation.NavigateTo("/page?tab=2");
+        }
+
+        private void ConfigureTabsDefaults(Action<TabsOptions> configure) =>
+            Services.Configure<TablerOptions>(options => configure(options.Tabs));
+
+        [Fact]
+        public void Global_preload_wires_hover_preload()
+        {
+            ConfigureTabsDefaults(o => o.Preload = TabPreload.Hover);
+            var cut = RenderTabs(items: [TabItem("one"), TabItem("two")]);
+
+            Header(cut, 1).TriggerEvent("onmouseenter", new MouseEventArgs());
+
+            Assert.Equal(2, cut.FindAll("div.tab-pane").Count);
+        }
+
+        [Fact]
+        public void Tabs_preload_overrides_global_preload()
+        {
+            ConfigureTabsDefaults(o => o.Preload = TabPreload.Hover);
+            var cut = RenderTabs(TabPreload.None, items: [TabItem("one"), TabItem("two")]);
+
+            Assert.Throws<MissingEventHandlerException>(() =>
+                Header(cut, 1).TriggerEvent("onmouseenter", new MouseEventArgs()));
+        }
+
+        [Fact]
+        public void Tab_preload_overrides_global_preload()
+        {
+            ConfigureTabsDefaults(o => o.Preload = TabPreload.Eager);
+            var cut = RenderTabs(items: [TabItem("one"), TabItem("two", preload: TabPreload.None)]);
+
+            Assert.Single(cut.FindAll("div.tab-pane"));
+        }
+
+        [Fact]
+        public void Global_preload_delay_postpones_hover_preload()
+        {
+            ConfigureTabsDefaults(o => { o.Preload = TabPreload.Hover; o.PreloadDelay = 10_000; });
+            var cut = RenderTabs(items: [TabItem("one"), TabItem("two")]);
+
+            Header(cut, 1).TriggerEvent("onmouseenter", new MouseEventArgs());
+
+            Assert.Single(cut.FindAll("div.tab-pane"));
+        }
+
+        [Fact]
+        public void Global_keep_alive_keeps_visited_tabs()
+        {
+            ConfigureTabsDefaults(o => o.KeepAlive = true);
+            var cut = RenderTabs(items: [TabItem("one"), TabItem("two")]);
+
+            Header(cut, 1).Click();
+
+            Assert.Equal(2, cut.FindAll("div.tab-pane").Count);
+        }
+
+        [Fact]
+        public void Tabs_keep_alive_overrides_global_keep_alive()
+        {
+            ConfigureTabsDefaults(o => o.KeepAlive = true);
+            var cut = RenderTabs(keepAlive: false, items: [TabItem("one"), TabItem("two")]);
+
+            Header(cut, 1).Click();
+
+            Assert.Single(cut.FindAll("div.tab-pane"));
+        }
+
+        [Fact]
+        public void Global_url_history_push_leaves_navigation_to_link()
+        {
+            ConfigureTabsDefaults(o => o.UrlHistory = TabUrlHistory.Push);
+            var cut = RenderLinkedTabs("/page", items: [TabItem("one"), TabItem("two")]);
+            var historyCount = Navigation.History.Count;
+
+            Header(cut, 1).Click();
+
+            Assert.Equal(historyCount, Navigation.History.Count);
+        }
+
+        [Fact]
+        public void Tabs_url_history_overrides_global_url_history()
+        {
+            ConfigureTabsDefaults(o => o.UrlHistory = TabUrlHistory.Push);
+            var cut = RenderLinkedTabs("/page", TabUrlHistory.Replace, items: [TabItem("one"), TabItem("two")]);
+
+            Header(cut, 1).Click();
+
+            Assert.Equal("http://localhost/page?tab=2", Navigation.Uri);
+            Assert.True(Navigation.History.First().Options.ReplaceHistoryEntry);
         }
 
         [Fact]
