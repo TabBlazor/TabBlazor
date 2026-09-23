@@ -1,0 +1,25 @@
+@if (loaded)
+{
+    <h3>@Title</h3>
+    <p class="text-secondary">Loaded in @LoadTime ms.</p>
+}
+else
+{
+    <div class="d-flex align-items-center gap-2">
+        <div class="spinner-border spinner-border-sm" role="status"></div>
+        Loading @Title...
+    </div>
+}
+
+@code {
+    [Parameter] public string Title { get; set; }
+    [Parameter] public int LoadTime { get; set; } = 1500;
+
+    private bool loaded;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(LoadTime);
+        loaded = true;
+    }
+}

@@ -1,0 +1,35 @@
+<Row>
+    <RowCol Md="6">
+        <h4>Without preload</h4>
+        <Tabs>
+            <Tab Title="Overview">
+                <h3>Overview</h3>
+            </Tab>
+            <Tab Title="Orders">
+                <SlowTabContent Title="Orders" />
+            </Tab>
+            <Tab Title="Invoices">
+                <SlowTabContent Title="Invoices" />
+            </Tab>
+        </Tabs>
+    </RowCol>
+    <RowCol Md="6">
+        <h4>Preload on hover</h4>
+        <Tabs Preload="TabPreload.Hover">
+            <Tab Title="Overview">
+                <h3>Overview</h3>
+            </Tab>
+            <Tab Title="Orders" OnActivated="() => activations++">
+                <SlowTabContent Title="Orders" />
+            </Tab>
+            <Tab Title="Invoices" OnActivated="() => activations++">
+                <SlowTabContent Title="Invoices" />
+            </Tab>
+        </Tabs>
+        <p class="text-secondary mt-2">Orders/Invoices activated @activations times</p>
+    </RowCol>
+</Row>
+
+@code {
+    private int activations;
+}

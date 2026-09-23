@@ -1,0 +1,24 @@
+<Row>
+    <RowCol Md="6">
+        <h4>Default</h4>
+        <Tabs Preload="TabPreload.Hover">
+            <Tab Title="Notes">
+                <textarea class="form-control" rows="3" placeholder="Type something, switch tab and come back"></textarea>
+            </Tab>
+            <Tab Title="Orders">
+                <SlowTabContent Title="Orders" />
+            </Tab>
+        </Tabs>
+    </RowCol>
+    <RowCol Md="6">
+        <h4>KeepAlive</h4>
+        <Tabs Preload="TabPreload.Hover" KeepAlive="true">
+            <Tab Title="Notes">
+                <textarea class="form-control" rows="3" placeholder="Type something, switch tab and come back"></textarea>
+            </Tab>
+            <Tab Title="Orders">
+                <SlowTabContent Title="Orders" />
+            </Tab>
+        </Tabs>
+    </RowCol>
+</Row>
