@@ -1,0 +1,18 @@
+<div class="d-flex align-items-center gap-3">
+    <Sparkline Values="values" Fill Spot="SparklineSpot.Last" Size="SparklineSize.Large" Color="TablerColor.Primary" />
+    <Button OnClick="Push">Push value</Button>
+</div>
+
+@code {
+    private readonly List<double> values = new() { 5, 7, 6, 9 };
+    private readonly Random random = new();
+
+    private void Push()
+    {
+        values.Add(random.Next(2, 12));
+        if (values.Count > 12)
+        {
+            values.RemoveAt(0);
+        }
+    }
+}

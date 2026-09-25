@@ -1,0 +1,10 @@
+<div class="d-flex align-items-center gap-3">
+    <Sparkline Values="series" Size="SparklineSize.Small" Color="TablerColor.Primary" />
+    <Sparkline Values="series" Color="TablerColor.Primary" />
+    <Sparkline Values="series" Size="SparklineSize.Large" Color="TablerColor.Primary" />
+    <Sparkline Values="series" Color="TablerColor.Primary" style="--tblr-sparkline-width: 12rem; --tblr-sparkline-height: 2rem" />
+</div>
+
+@code {
+    private readonly double[] series = { 2, 3, 2, 4, 3, 5, 4 };
+}

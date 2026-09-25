@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TabBlazor.Services;
 
@@ -27,6 +29,11 @@ namespace TabBlazor
         [Parameter] public bool Expanded { get; set; }
         /// <summary>When true, a sub-menu can be expanded/collapsed. Defaults to true.</summary>
         [Parameter] public bool Expandable { get; set; } = true;
+        /// <summary>
+        /// When true, a vertical sidebar group expands on load and on navigation whenever one of its
+        /// descendants links to the current URL. Defaults to true.
+        /// </summary>
+        [Parameter] public bool ExpandWhenActive { get; set; } = true;
 
         public bool IsTopMenuItem => ParentMenuItem == null;
 
@@ -37,6 +44,7 @@ namespace TabBlazor
         private IPopperService popperService;
         private IPopperInstance flyoutPopper;
         private bool refreshFlyoutPopper;
+        private readonly List<NavbarMenuItem> childItems = new();
       
         protected bool IsDropdown => SubMenu != null && Expandable;
 
@@ -46,10 +54,45 @@ namespace TabBlazor
         {
             isExpanded = Expanded;
             Navbar?.AddNavbarMenuItem(this);
+            ParentMenuItem?.AddChildItem(this);
             popperService = ServiceProvider.GetService(typeof(IPopperService)) as IPopperService;
 
             NavigationManager.LocationChanged += LocationChanged;
+        }
 
+        private void AddChildItem(NavbarMenuItem item)
+        {
+            if (!childItems.Contains(item))
+            {
+                childItems.Add(item);
+                ExpandAncestorsIfContainsActive();
+            }
+        }
+
+        private void ExpandAncestorsIfContainsActive()
+        {
+            ExpandIfContainsActive();
+            ParentMenuItem?.ExpandAncestorsIfContainsActive();
+        }
+
+        private void RemoveChildItem(NavbarMenuItem item)
+        {
+            childItems.Remove(item);
+        }
+
+        private bool ExpandsInline => Navbar?.Direction == NavbarDirection.Vertical && Navbar.IsFoldedNavbar == false;
+
+        private bool ContainsActive() => childItems.Any(child => child.IsActive() || child.ContainsActive());
+
+        private void ExpandIfContainsActive()
+        {
+            if (!ExpandWhenActive || !IsDropdown || isExpanded || !ExpandsInline || !ContainsActive())
+            {
+                return;
+            }
+
+            isExpanded = true;
+            StateHasChanged();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -98,6 +141,7 @@ namespace TabBlazor
 
         private void LocationChanged(object sender, LocationChangedEventArgs e)
         {
+            ExpandIfContainsActive();
             StateHasChanged();
         }
 
@@ -178,6 +222,7 @@ namespace TabBlazor
         public async ValueTask DisposeAsync()
         {
             Navbar?.RemoveNavbarMenuItem(this);
+            ParentMenuItem?.RemoveChildItem(this);
 
             if (NavigationManager != null)
             {

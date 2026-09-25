@@ -102,6 +102,26 @@ namespace TabBlazor.Services
             await jsRuntime.InvokeVoidAsync("tabBlazor.setPropByElement", element, property, value);
         }
 
+        /// <summary>Pours a confetti shower over the page. Returns the burst id for <see cref="StopConfettiAsync"/>.</summary>
+        public async Task<int> ConfettiAsync(ConfettiOptions options = null, DotNetObjectReference<Confetti> endCallback = null)
+        {
+            options ??= new ConfettiOptions();
+            var jsOptions = new
+            {
+                count = options.Count,
+                duration = options.Duration,
+                speed = options.Speed,
+                colors = options.Colors
+            };
+            return await jsRuntime.InvokeAsync<int>("tabBlazor.confetti.burst", jsOptions, endCallback);
+        }
+
+        /// <summary>Stops a running confetti burst; pieces already in the air keep falling.</summary>
+        public async Task StopConfettiAsync(int burstId)
+        {
+            await jsRuntime.InvokeVoidAsync("tabBlazor.confetti.stop", burstId);
+        }
+
     }
 
 

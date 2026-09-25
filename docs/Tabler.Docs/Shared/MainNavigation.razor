@@ -1,4 +1,4 @@
-﻿<Navbar Background=appService.Settings.NavbarBackground CollapseAt="PageBreakpoint.Md" Direction=appService.Settings.NavbarDirection Fold=appService.Settings.NavbarFold NavLinkMatch="Microsoft.AspNetCore.Components.Routing.NavLinkMatch.All" IsExpanded="false">
+﻿<Navbar Background=appService.Settings.NavbarBackground CollapseAt="PageBreakpoint.Md" Direction=appService.Settings.NavbarDirection Fold=appService.Settings.NavbarFold Floating=appService.Settings.NavbarFloating NavLinkMatch="Microsoft.AspNetCore.Components.Routing.NavLinkMatch.All" IsExpanded="false">
     <Footer>
         @if (appService.Settings.NavbarDirection == NavbarDirection.Vertical)
         {
@@ -34,7 +34,7 @@
             </MenuItemIcon>
         </NavbarMenuItem>
 
-        <NavbarMenuItem Href="dashboard" Text="Dashboard">
+        <NavbarMenuItem Href="/" Text="Dashboard">
             <MenuItemIcon>
                 <Icon class="icon" IconType="@TablerIcons.Dashboard" />
             </MenuItemIcon>
@@ -81,6 +81,7 @@
                         <NavbarMenuItem Text="Button" Href="docs/buttons" />
                         <NavbarMenuItem Text="Card" Href="docs/cards" />
                         <NavbarMenuItem Text="Carousel" Href="docs/Carousel" />
+                        <NavbarMenuItem Text="Confetti" Href="docs/confetti" />
                         <NavbarMenuItem Text="Content Viewer" Href="docs/content-viewer" />
                         <NavbarMenuItem Text="Dashboard" Href="docs/dashboards" />
                         <NavbarMenuItem Text="Data Grid" Href="docs/data-grid" />
@@ -116,6 +117,8 @@
                         <NavbarMenuItem Text="Offcanvas" Href="docs/offcanvas" />
                         <NavbarMenuItem Text="Progress" Href="docs/progress" />
                         <NavbarMenuItem Text="Range slider" Href="docs/range-sliders" />
+                        <NavbarMenuItem Text="Signal" Href="docs/signals" />
+                        <NavbarMenuItem Text="Sparkline" Href="docs/sparklines" />
                         <NavbarMenuItem Text="Status" Href="docs/status" />
                         <NavbarMenuItem Text="Switch Content" Href="docs/switch-content" />
                         <NavbarMenuItem Text="Table" Href="docs/tables" />

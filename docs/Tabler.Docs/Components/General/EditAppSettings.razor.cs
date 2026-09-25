@@ -34,6 +34,12 @@ namespace Tabler.Docs.Components.General
             appService.SettingsUpdated();
         }
 
+        private void SetNavFloating(bool floating)
+        {
+            settings.NavbarFloating = floating;
+            appService.SettingsUpdated();
+        }
+
 
         private async void SetDarkMode(bool value)
         {

@@ -1,0 +1,18 @@
+@inject TablerService tablerService
+
+<Button BackgroundColor="TablerColor.Green" OnClick="PlaceOrder" IsLoading="saving">Place order</Button>
+<span class="ms-2">@message</span>
+
+@code {
+    private bool saving;
+    private string message;
+
+    private async Task PlaceOrder()
+    {
+        saving = true;
+        await Task.Delay(600);
+        saving = false;
+        message = "Order #1042 placed";
+        await tablerService.ConfettiAsync(new ConfettiOptions { Count = 300 });
+    }
+}

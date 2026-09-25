@@ -8,4 +8,5 @@ public class AppSettings
     public NavbarDirection NavbarDirection { get; set; } = NavbarDirection.Vertical;
     public NavbarBackground NavbarBackground { get; set; } = NavbarBackground.Dark;
     public NavbarFold NavbarFold { get; set; } = NavbarFold.None;
+    public bool NavbarFloating { get; set; }
 }

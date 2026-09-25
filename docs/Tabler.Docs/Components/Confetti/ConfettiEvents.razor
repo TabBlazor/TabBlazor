@@ -1,0 +1,12 @@
+<Confetti Count="120" Duration="1500" OnStart="OnStart" OnEnd="OnEnd">
+    <Button>Burst</Button>
+</Confetti>
+<span class="ms-2">@status</span>
+
+@code {
+    private string status;
+
+    private void OnStart() => status = "Pouring...";
+
+    private void OnEnd() => status = "Landed";
+}

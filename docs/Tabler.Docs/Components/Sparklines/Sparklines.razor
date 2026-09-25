@@ -1,0 +1,29 @@
+@page "/docs/sparklines"
+
+<Page>
+    <DocsExample Title="Sparkline" ComponentType="typeof(Sparkline)">
+        <CodeSnippet Component="@typeof(SparklinesBasic)" Title="Basic">
+            <Description>A tiny inline chart drawn as SVG, no chart library needed. Color comes from Color.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(SparklinesFillSpot)" Title="Fill and spot">
+            <Description>Fill shades the area under the line. Spot marks the last, smallest or largest value.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(SparklinesBar)" Title="Bars">
+            <Description>Bars grow from the zero line; negative values use the negative color.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(SparklinesTristate)" Title="Win/loss">
+            <Description>Every value is a full bar up, down or a tick for zero, regardless of its size.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(SparklinesThreshold)" Title="Threshold">
+            <Description>A dashed guide at Threshold. Bars below it use the negative color.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(SparklinesCircle)" Title="Circle">
+            <Description>A single value as a share of Max, default 100. Label "auto" prints the percentage.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(SparklinesSize)" Title="Sizes"/>
+        <CodeSnippet Component="@typeof(SparklinesDisabled)" Title="Disabled"/>
+        <CodeSnippet Component="@typeof(SparklinesLive)" Title="Live values">
+            <Description>Values are plain parameters, so pushing to the list re-renders the chart.</Description>
+        </CodeSnippet>
+    </DocsExample>
+</Page>

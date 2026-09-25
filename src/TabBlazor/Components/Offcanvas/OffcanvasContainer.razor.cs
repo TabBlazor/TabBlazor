@@ -40,6 +40,7 @@ public partial class OffcanvasContainer
         .Add("offcanvas")
         .Add($"offcanvas-{offcanvasModel.Options.Position.ToString().ToLower()}")
         .AddIf("offcanvas-narrow", offcanvasModel.Options.Narrow)
+        .AddIf("offcanvas-floating", offcanvasModel.Options.Floating)
         .Add(offcanvasModel.Options.WrapperCssClass)
         .Add("show")
         .ToString();

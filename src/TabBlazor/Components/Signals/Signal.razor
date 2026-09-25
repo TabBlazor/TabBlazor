@@ -1,0 +1,16 @@
+@inherits TablerBaseComponent
+@namespace TabBlazor
+
+<HtmlElement Tag="span"
+             class="@ClassNames"
+             style="@Style"
+             role="@Role"
+             aria-label="@AriaLabel"
+             aria-hidden="@AriaHidden"
+             @onclick="OnClick"
+             @attributes="@UnmatchedParameters">
+    @for (var index = 1; index <= BarCount; index++)
+    {
+        <span class="@(index <= ActiveCount ? "signal-bar active" : "signal-bar")"></span>
+    }
+</HtmlElement>
