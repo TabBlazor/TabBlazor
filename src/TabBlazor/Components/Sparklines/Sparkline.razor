@@ -1,0 +1,48 @@
+@inherits TablerBaseComponent
+@namespace TabBlazor
+
+<HtmlElement Tag="span"
+             class="@ClassNames"
+             aria-label="@AriaLabel"
+             role="@(AriaLabel == null ? null : "img")"
+             @onclick="OnClick"
+             @attributes="@UnmatchedParameters">
+    @if (HasValues)
+    {
+        <svg class="sparkline-svg" viewBox="@ViewBox" preserveAspectRatio="none" width="@Format(Width)" height="@Format(Height)" aria-hidden="true">
+            @foreach (var line in Hairlines)
+            {
+                <line x1="0" x2="@Format(Width)" y1="@Format(line.Y)" y2="@Format(line.Y)" stroke="@CssVar(line.Color)" stroke-width="1" stroke-dasharray="@(line.Dashed ? "3 2" : null)" vector-effect="non-scaling-stroke" />
+            }
+            @switch (Type)
+            {
+                case SparklineType.Bar:
+                case SparklineType.Tristate:
+                    foreach (var bar in Bars)
+                    {
+                        <rect x="@Format(bar.X)" y="@Format(bar.Y)" width="@Format(bar.Width)" height="@Format(bar.Height)" rx="@Format(BarRadius)" fill="@CssVar(bar.Color)" />
+                    }
+                    break;
+                case SparklineType.Circle:
+                    <circle cx="@Format(CircleCenterX)" cy="@Format(CircleCenterY)" r="@Format(CircleRadius)" fill="none" stroke="@CssVar("track")" stroke-width="@Format(StrokeWidth)" />
+                    <circle cx="@Format(CircleCenterX)" cy="@Format(CircleCenterY)" r="@Format(CircleRadius)" fill="none" stroke="@CssVar("stroke")" stroke-width="@Format(StrokeWidth)" stroke-linecap="round" stroke-dasharray="@Format(CircleCircumference)" stroke-dashoffset="@Format(CircleDashOffset)" transform="@CircleTransform" />
+                    break;
+                default:
+                    if (Fill)
+                    {
+                        <path d="@AreaPath" fill="@CssVar("fill")" stroke="none" />
+                    }
+                    <polyline points="@LinePoints" fill="none" stroke="@CssVar("stroke")" stroke-width="@CssVar("stroke-width")" stroke-linecap="round" stroke-linejoin="round" />
+                    if (SpotPoint is { } spot)
+                    {
+                        <circle cx="@Format(spot.X)" cy="@Format(spot.Y)" r="@Format(SpotSize)" fill="@CssVar("spot")" />
+                    }
+                    break;
+            }
+        </svg>
+        @if (!string.IsNullOrEmpty(LabelText))
+        {
+            <span class="sparkline-label">@LabelText</span>
+        }
+    }
+</HtmlElement>

@@ -1,0 +1,8 @@
+<div class="d-flex align-items-center gap-3">
+    <Sparkline Values="cpu" Fill Threshold="80" Color="TablerColor.Primary" AriaLabel="CPU usage, 80% limit" />
+    <Sparkline Type="SparklineType.Bar" Values="cpu" Threshold="80" Color="TablerColor.Primary" />
+</div>
+
+@code {
+    private readonly double[] cpu = { 62, 71, 68, 84, 79, 88, 92, 75 };
+}

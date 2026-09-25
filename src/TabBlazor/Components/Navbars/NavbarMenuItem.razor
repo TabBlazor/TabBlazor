@@ -28,10 +28,10 @@
         </span>
     </a>
 
-    @if (SubMenu != null && isExpanded && Expandable)
+    @if (SubMenu != null && Expandable)
     {
         <CascadingValue Value="this" Name="Parent">
-            <ul @ref="subMenuElement" data-bs-popper="none" class="dropdown-menu show @(NavbarIsHorizontalAndDark ? "bg-dark" : "")">
+            <ul @ref="subMenuElement" data-bs-popper="none" class="dropdown-menu @(isExpanded ? "show" : "d-none") @(NavbarIsHorizontalAndDark ? "bg-dark" : "")">
                 @SubMenu
             </ul>
         </CascadingValue>

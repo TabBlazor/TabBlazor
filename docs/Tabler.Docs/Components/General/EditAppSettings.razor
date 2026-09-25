@@ -41,6 +41,10 @@
         </div>
 
         <div class=mt-2>
+            <Checkbox Label="Floating" Switch Value=settings.NavbarFloating ValueChanged="@(e=> SetNavFloating(e))" />
+        </div>
+
+        <div class=mt-2>
             <div class="form-label">Fold (vertical only)</div>
             <div class="badge-list">
                 @foreach (var option in EnumHelper.GetList<NavbarFold>())

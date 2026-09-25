@@ -88,6 +88,13 @@ namespace TabBlazor.Tests.Components
         }
 
         [Fact]
+        public void Adds_floating_class_when_floating()
+        {
+            var cut = Render<Navbar>(p => p.Add(n => n.Floating, true));
+            Assert.Contains("navbar-floating", cut.Find("div.navbar").ClassList);
+        }
+
+        [Fact]
         public void Renders_toggler_button()
         {
             var cut = Render<Navbar>(p => p.AddChildContent("x"));

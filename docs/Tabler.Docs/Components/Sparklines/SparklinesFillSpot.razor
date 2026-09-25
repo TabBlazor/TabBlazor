@@ -1,0 +1,9 @@
+<div class="d-flex align-items-center gap-3">
+    <Sparkline Values="series" Color="TablerColor.Green" Fill Spot="SparklineSpot.Last" />
+    <Sparkline Values="series" Color="TablerColor.Red" Spot="SparklineSpot.Min" />
+    <Sparkline Values="series" Color="TablerColor.Blue" Spot="SparklineSpot.Max" />
+</div>
+
+@code {
+    private readonly double[] series = { 12, 14, 9, 18, 16, 22, 20 };
+}
