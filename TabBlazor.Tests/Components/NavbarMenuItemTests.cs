@@ -53,7 +53,7 @@ namespace TabBlazor.Tests.Components
             var cut = RenderNavbar("docs/cards");
 
             Assert.True(GroupIsOpen(cut, "Components"));
-            Assert.Contains("active", cut.Find("li.nav-item:has(> a[href='docs/cards'])").ClassList);
+            Assert.Contains("active", cut.Find("a[href='docs/cards']").ClassList);
         }
 
         [Fact]
@@ -85,6 +85,30 @@ namespace TabBlazor.Tests.Components
             cut.InvokeAsync(() => navigation.NavigateTo("docs/cards"));
 
             cut.WaitForAssertion(() => Assert.DoesNotContain("active", cut.Find("li.nav-item").ClassList));
+        }
+
+        [Fact]
+        public void Marks_active_sub_menu_link_and_its_groups()
+        {
+            var cut = RenderNavbar("docs/cards");
+
+            var link = cut.Find("a[href='docs/cards']");
+            Assert.Contains("active", link.ClassList);
+            Assert.Contains("dropdown-item", link.ClassList);
+            Assert.Equal("page", link.GetAttribute("aria-current"));
+            Assert.Contains("active", cut.Find("li.nav-item:has(> a > span:contains('Components'))").ClassList);
+            Assert.DoesNotContain("active", cut.Find("li.nav-item:has(> a[href='docs/cards'])").ClassList);
+            Assert.DoesNotContain("active", cut.Find("li.nav-item:has(> a > span:contains('Forms'))").ClassList);
+        }
+
+        [Fact]
+        public void Inactive_link_has_no_active_state()
+        {
+            var cut = RenderNavbar("docs/cards");
+
+            var link = cut.Find("a[href='docs/forms/checkboxes']");
+            Assert.DoesNotContain("active", link.ClassList);
+            Assert.False(link.HasAttribute("aria-current"));
         }
 
         [Fact]

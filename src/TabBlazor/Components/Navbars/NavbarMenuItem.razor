@@ -7,7 +7,7 @@
              @attributes="@UnmatchedParameters"
              ElementRefChanged="@(r => itemElement = r)">
 
-    <a class="@(isSubMenu ? "dropdown-item":"nav-link") @(IsDropdown ? "dropdown-toggle": "")" @onclick="ToogleDropdown" href="@Href" @onclick:stopPropagation=IsDropdown>
+    <a class="@LinkClassNames" aria-current="@(IsActive() ? "page" : null)" @onclick="ToogleDropdown" href="@Href" @onclick:stopPropagation=IsDropdown>
 
         @if (MenuItemIcon != null)
         {

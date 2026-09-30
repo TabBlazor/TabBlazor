@@ -183,6 +183,12 @@ namespace TabBlazor
             .Add("cursor-pointer")
             .AddIf("dropdown", IsDropdown && !isDropEnd)
             .AddIf("dropend", IsDropdown && isDropEnd)
+            .AddIf("active", IsTopMenuItem && (IsActive() || ContainsActive()))
+            .ToString();
+
+        protected string LinkClassNames => new ClassBuilder()
+            .Add(isSubMenu ? "dropdown-item" : "nav-link")
+            .AddIf("dropdown-toggle", IsDropdown)
             .AddIf("active", IsActive())
             .ToString();
 
