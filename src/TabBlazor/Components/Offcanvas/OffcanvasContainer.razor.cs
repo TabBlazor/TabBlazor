@@ -1,47 +1,18 @@
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.Extensions.Options;
-using TabBlazor.Components.Offcanvas;
-
 namespace TabBlazor;
 
-public partial class OffcanvasContainer
+public partial class OffcanvasContainer : IDisposable
 {
     [Inject] private IOffcanvasService offcanvasService { get; set; }
 
     protected override void OnInitialized()
     {
-        offcanvasService.OnChanged += StateHasChanged99;
+        offcanvasService.OnChanged += StateHasChanged;
 
         base.OnInitialized();
     }
 
-    private void OnClickOutside(OffcanvasModel model)
+    public void Dispose()
     {
-        if (model.Options.CloseOnClickOutside)
-        {
-            offcanvasService.Close();
-        }
+        offcanvasService.OnChanged -= StateHasChanged;
     }
-    
-    protected void OnKeyDown(KeyboardEventArgs e, OffcanvasModel offcanvasModel)
-    {
-        if (e.Key == "Escape" && offcanvasModel.Options.CloseOnEsc)
-        {
-            offcanvasService.Close();
-        }
-    }
-
-    private void StateHasChanged99()
-    {
-        StateHasChanged();
-    }
-
-    private string GetClasses(OffcanvasModel offcanvasModel) => new ClassBuilder()
-        .Add("offcanvas")
-        .Add($"offcanvas-{offcanvasModel.Options.Position.ToString().ToLower()}")
-        .AddIf("offcanvas-narrow", offcanvasModel.Options.Narrow)
-        .AddIf("offcanvas-floating", offcanvasModel.Options.Floating)
-        .Add(offcanvasModel.Options.WrapperCssClass)
-        .Add("show")
-        .ToString();
 }
