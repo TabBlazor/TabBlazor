@@ -1,0 +1,33 @@
+@inject IModalService ModalService
+
+<Row>
+    <RowCol Sm="12" Md="6" Lg="3">
+        <Checkbox @bind-Value="@offcanvasOptions.CloseOnClickOutside" Label="Close on click outside"/>
+    </RowCol>
+    <RowCol Sm="12" Md="6" Lg="3">
+        <Checkbox @bind-Value="@offcanvasOptions.CloseOnEsc" Label="Close on Esc"/>
+    </RowCol>
+    <RowCol Sm="12" Md="6" Lg="3">
+        <Checkbox @bind-Value="@offcanvasOptions.Backdrop" Label="Backdrop"/>
+    </RowCol>
+</Row>
+<Row class="mt-2">
+    <RowCol>
+        <Button @onclick="ShowModal" BackgroundColor="TablerColor.Primary">Show modal</Button>
+    </RowCol>
+</Row>
+
+@code {
+    private OffcanvasOptions offcanvasOptions = new()
+    {
+        Position = OffcanvasPosition.End,
+        CloseOnClickOutside = true,
+        CloseOnEsc = true
+    };
+
+    private async Task ShowModal()
+    {
+        var component = new RenderComponent<ModalWithOffcanvasContent>().Set(e => e.OffcanvasOptions, offcanvasOptions);
+        await ModalService.ShowAsync("Modal", component, new ModalOptions { CloseOnClickOutside = true, CloseOnEsc = true });
+    }
+}

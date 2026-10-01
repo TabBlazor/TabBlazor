@@ -15,6 +15,7 @@ namespace TabBlazor
 
         [Inject] protected TablerService TablerService { get; set; }
         [Inject] private IModalService ModalService { get; set; }
+        [Inject] private OverlayLayerService OverlayLayers { get; set; }
         /// <summary>The modal title.</summary>
         [Parameter] public string Title { get; set; }
         /// <summary>The modal appearance/behavior options (size, draggable, close triggers, etc.).</summary>
@@ -91,7 +92,7 @@ namespace TabBlazor
 
         protected void OnKeyDown(KeyboardEventArgs e)
         {
-            if (e.Key == "Escape" && Options.CloseOnEsc)
+            if (e.Key == "Escape" && Options.CloseOnEsc && OverlayLayers.IsTopMost(modalViewSettings.ZIndex))
             {
                 Close();
             }
@@ -99,7 +100,7 @@ namespace TabBlazor
 
         protected void OnClickOutside(MouseEventArgs e)
         {
-            if (Options.CloseOnClickOutside)
+            if (Options.CloseOnClickOutside && OverlayLayers.IsTopMost(modalViewSettings.ZIndex))
             {
                 Close();
             }

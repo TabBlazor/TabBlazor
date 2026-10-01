@@ -27,6 +27,7 @@ namespace TabBlazor
             services
                 .AddScoped<ToastService>()
                 .AddScoped<TablerService>()
+                .AddScoped<OverlayLayerService>()
                 .AddScoped<IOffcanvasService, OffcanvasService>()
                 .AddScoped<IModalService, ModalService>()
                 .AddScoped<TableFilterService>()

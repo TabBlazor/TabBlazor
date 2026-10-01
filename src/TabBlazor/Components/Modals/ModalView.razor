@@ -1,7 +1,7 @@
 ﻿@namespace TabBlazor
 @if (Options.Backdrop)
 {
-    <div class="modal-backdrop fade show" />
+    <div class="modal-backdrop fade show" style="z-index: @(modalViewSettings.ZIndex - 1)" />
 }
 
 

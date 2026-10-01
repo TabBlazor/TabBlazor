@@ -12,15 +12,19 @@ namespace TabBlazor.Services
     public class ModalService : IModalService, IDisposable
     {
 
-        public ModalService(NavigationManager navigationManager)
+        public ModalService(NavigationManager navigationManager) : this(navigationManager, new OverlayLayerService())
+        {
+        }
+
+        public ModalService(NavigationManager navigationManager, OverlayLayerService overlayLayers)
         {
             this.navigationManager = navigationManager;
+            this.overlayLayers = overlayLayers;
             this.navigationManager.LocationChanged += LocationChanged;
         }
 
 
-        private int zIndex = 1200;
-        private const int zIndexIncrement = 10;
+        private readonly OverlayLayerService overlayLayers;
         private int topOffset;
         private const int topOffsetIncrement = 20;
 
@@ -113,8 +117,7 @@ namespace TabBlazor.Services
 
         public ModalViewSettings RegisterModalView(ModalView modalView)
         {
-            var settings = new ModalViewSettings { TopOffset = topOffset, ZIndex = zIndex };
-            zIndex += zIndexIncrement;
+            var settings = new ModalViewSettings { TopOffset = topOffset, ZIndex = overlayLayers.Register(modalView) };
             topOffset += topOffsetIncrement;
 
             return settings;
@@ -122,7 +125,7 @@ namespace TabBlazor.Services
 
         public void UnRegisterModalView(ModalView modalView)
         {
-            zIndex -= zIndexIncrement;
+            overlayLayers.Unregister(modalView);
             topOffset -= topOffsetIncrement;
         }
             

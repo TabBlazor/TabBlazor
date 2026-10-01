@@ -1,0 +1,18 @@
+@inject IModalService ModalService
+@inject IOffcanvasService OffcanvasService
+
+<p class="text-secondary">This modal opens an offcanvas on top of itself.</p>
+
+<div class="modal-footer">
+    <Button BackgroundColor="TablerColor.Default" OnClick="@(() => ModalService.Close())">Close</Button>
+    <Button BackgroundColor="TablerColor.Primary" OnClick="OpenOffcanvas">Open offcanvas</Button>
+</div>
+
+@code {
+    [Parameter] public OffcanvasOptions OffcanvasOptions { get; set; }
+
+    private async Task OpenOffcanvas()
+    {
+        await OffcanvasService.ShowAsync("Opened from modal", new RenderComponent<TestOffcanvasContent>(), OffcanvasOptions);
+    }
+}
