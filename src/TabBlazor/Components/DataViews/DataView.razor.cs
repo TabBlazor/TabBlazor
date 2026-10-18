@@ -1,7 +1,9 @@
 #nullable enable
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 
 namespace TabBlazor;
 
@@ -32,6 +34,17 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
     private bool disposed;
 
     [Inject] private IServiceProvider Services { get; set; } = default!;
+
+    private DataViewText AppTexts()
+    {
+        var options = Services.GetService<IOptions<TablerOptions>>()?.Value;
+        var fallback = options?.DataViewText ?? DataViewText.Default;
+        if (options?.DataViewTextResource is { } resource && Services.GetService<IStringLocalizerFactory>() is { } factory)
+        {
+            return DataViewText.FromResource(factory, resource, fallback);
+        }
+        return fallback;
+    }
 
     // Data
 
@@ -218,7 +231,7 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
         new[] { DataViewKind.Table, DataViewKind.List }.Where(v => Views.HasFlag(v)).ToList();
 
     internal DataViewEngine<TItem> Engine => engine;
-    internal DataViewText Texts => Text ?? DataViewText.Default;
+    internal DataViewText Texts => Text ?? AppTexts();
     internal TableDensity CurrentDensity => Density ?? density ?? TableDensity.Normal;
     internal IReadOnlyList<IDataViewColumn<TItem>> VisibleColumns =>
         engine.Columns.Where(c => c.Visible && c.ShowIn != ColumnVisibility.EditOnly).ToList();

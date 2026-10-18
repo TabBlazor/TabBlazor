@@ -1,13 +1,52 @@
 #nullable enable
+using System.Collections.Concurrent;
+using System.Globalization;
+using System.Reflection;
+using Microsoft.Extensions.Localization;
+
 namespace TabBlazor;
 
 /// <summary>
 /// The built-in UI strings of a <c>DataView</c>, with English defaults. Override individual strings per view
-/// with <c>Text="@(new DataViewText { Search = "Sök…" })"</c>.
+/// with <c>Text="@(new DataViewText { Search = "Sök…" })"</c>, for the whole app with
+/// <see cref="TablerOptions.DataViewText"/>, or translate them with a resource through
+/// <see cref="TablerOptions.DataViewTextResource"/> (see <see cref="FromLocalizer"/>).
 /// </summary>
 public sealed record DataViewText
 {
+    private static readonly PropertyInfo[] StringProperties = typeof(DataViewText)
+        .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        .Where(p => p.PropertyType == typeof(string) && p.CanWrite)
+        .ToArray();
+
+    private static readonly ConcurrentDictionary<(Type Resource, string Culture, DataViewText Fallback), DataViewText> Cache = new();
+
     public static DataViewText Default { get; } = new();
+
+    /// <summary>
+    /// Builds the strings from a localizer. The keys are the property names (<c>Search</c>, <c>NoResults</c>,
+    /// <c>ShowingOfTotal</c>, …); a key the resource does not have keeps the <paramref name="fallback"/> string
+    /// (English by default). Formatted strings keep their placeholders, for example <c>"Visar {0}–{1} av {2}"</c>.
+    /// </summary>
+    public static DataViewText FromLocalizer(IStringLocalizer localizer, DataViewText? fallback = null)
+    {
+        ArgumentNullException.ThrowIfNull(localizer);
+        var text = (fallback ?? Default) with { };
+        foreach (var property in StringProperties)
+        {
+            var value = localizer[property.Name];
+            if (!value.ResourceNotFound && !string.IsNullOrEmpty(value.Value))
+            {
+                property.SetValue(text, value.Value);
+            }
+        }
+        return text;
+    }
+
+    /// <summary>The strings of a resource for the current UI culture, cached per culture.</summary>
+    internal static DataViewText FromResource(IStringLocalizerFactory factory, Type resource, DataViewText fallback) =>
+        Cache.GetOrAdd((resource, CultureInfo.CurrentUICulture.Name, fallback),
+            key => FromLocalizer(factory.Create(key.Resource), key.Fallback));
 
     public string Search { get; init; } = "Search…";
     public string Loading { get; init; } = "Loading…";

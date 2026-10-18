@@ -101,5 +101,20 @@
                 <code>DataViewState</code>, to save, restore or drive the view.
             </Description>
         </CodeSnippet>
+        <div class="card mt-4">
+            <div class="card-header"><h3 class="card-title">Translating the built-in text</h3></div>
+            <div class="card-body">
+                <p>
+                    The search box, pager, empty states, filter and edit buttons use <code>DataViewText</code>. Set
+                    <code>Text</code> on one view, <code>TablerOptions.DataViewText</code> for the whole app, or
+                    <code>TablerOptions.DataViewTextResource</code> to read the strings from a resource through
+                    <code>IStringLocalizer</code> (call <code>services.AddLocalization()</code>). The resource keys are the
+                    property names, such as <code>Search</code>, <code>NoResults</code> and <code>ShowingOfTotal</code>
+                    (<code>"Visar {0}–{1} av {2}"</code>); missing keys stay in English.
+                </p>
+                <pre class="mb-0"><code>services.AddLocalization();
+services.AddTabBlazor(o =&gt; o.DataViewTextResource = typeof(DataViewResources));</code></pre>
+            </div>
+        </div>
     </DocsExample>
 </Page>

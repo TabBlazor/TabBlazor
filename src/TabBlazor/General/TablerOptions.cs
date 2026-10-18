@@ -36,4 +36,16 @@ public class TablerOptions
     /// Parameters set on a component take precedence.
     /// </summary>
     public TabsOptions Tabs { get; set; } = new();
+
+    /// <summary>
+    /// App-wide UI strings for <c>DataView</c>. A view's <c>Text</c> parameter takes precedence.
+    /// </summary>
+    public DataViewText DataViewText { get; set; } = DataViewText.Default;
+
+    /// <summary>
+    /// A resource type (for example a marker class next to <c>DataViewText.sv.resx</c>) whose strings translate
+    /// <c>DataView</c> through <c>IStringLocalizerFactory</c> (<c>services.AddLocalization()</c>). The keys are the
+    /// <see cref="TabBlazor.DataViewText"/> property names; missing keys fall back to <see cref="DataViewText"/>.
+    /// </summary>
+    public Type DataViewTextResource { get; set; }
 }
