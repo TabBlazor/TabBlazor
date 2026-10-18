@@ -37,6 +37,27 @@ public interface IDataViewColumn<TItem>
     string? GetHeaderClass();
     string? GetHeaderStyle();
 
+    /// <summary>Where the column shows: in the view, in edit forms, or both.</summary>
+    ColumnVisibility ShowIn { get; }
+
+    /// <summary>True when the column has an editor for this draft (an <c>EditorTemplate</c>, or a writable member that is not read-only).</summary>
+    bool CanEdit(TItem draft);
+
+    /// <summary>Renders the column's editor for a draft.</summary>
+    void RenderEditor(RenderTreeBuilder builder, TItem draft);
+
+    /// <summary>Renders the validation messages of the column's field.</summary>
+    void RenderValidationMessage(RenderTreeBuilder builder, TItem draft);
+
+    /// <summary>The cell content as a fragment, for use in Razor markup.</summary>
+    RenderFragment Cell(TItem item) => builder => RenderCell(builder, item);
+
+    /// <summary>The editor as a fragment, for use in Razor markup.</summary>
+    RenderFragment Editor(TItem draft) => builder => RenderEditor(builder, draft);
+
+    /// <summary>The validation messages as a fragment, for use in Razor markup.</summary>
+    RenderFragment ValidationMessage(TItem draft) => builder => RenderValidationMessage(builder, draft);
+
     /// <summary>Resolves <see cref="Info"/>. <paramref name="position"/> gives a fallback id for columns without a derivable id.</summary>
     DataColumnInfo Resolve(int position);
 }

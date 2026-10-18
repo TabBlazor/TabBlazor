@@ -1,0 +1,80 @@
+@namespace TabBlazor
+@typeparam TItem
+@using Microsoft.AspNetCore.Components.Web
+
+@{
+    var columnCount = View.VisibleColumns.Count + (View.ShowCheckboxes ? 1 : 0) + (View.ShowExpandColumn ? 1 : 0) + (View.ShowActionsColumn ? 1 : 0);
+}
+<CascadingValue Value="Session.EditContext" IsFixed="false">
+    @if (View.ValidatorComponent != null)
+    {
+        <DynamicComponent Type="View.ValidatorComponent" @ref="validator" />
+    }
+    <tr class="dv-edit-row @(Session.IsSaving ? "dv-saving" : null)" @onkeydown="OnKeyDownAsync" aria-busy="@(Session.IsSaving ? "true" : null)">
+        @if (View.ShowCheckboxes)
+        {
+            <td class="w-1"></td>
+        }
+        @if (View.ShowExpandColumn)
+        {
+            <td class="w-1"></td>
+        }
+        @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.Start)
+        {
+            <td class="w-1 text-nowrap"><DataRowActions TItem="TItem" Item="ActionItem" View="View" /></td>
+        }
+        @foreach (var column in View.VisibleColumns)
+        {
+            <td class="@column.GetCellClass(Session.Draft)" data-label="@column.Title">
+                @if (column.CanEdit(Session.Draft))
+                {
+                    @column.Editor(Session.Draft)
+                    @column.ValidationMessage(Session.Draft)
+                }
+                else
+                {
+                    @column.GetDisplayText(Session.Draft)
+                }
+            </td>
+        }
+        @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.End)
+        {
+            <td class="w-1 text-nowrap"><DataRowActions TItem="TItem" Item="ActionItem" View="View" /></td>
+        }
+    </tr>
+    @if (Session.Message != null)
+    {
+        <tr class="dv-edit-message">
+            <td colspan="@columnCount">
+                <div class="alert alert-danger m-0" role="alert">@Session.Message</div>
+            </td>
+        </tr>
+    }
+</CascadingValue>
+
+@code {
+    private DynamicComponent validator;
+
+    [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+    [Parameter, EditorRequired] public DataEditContext<TItem> Session { get; set; } = default!;
+
+    // Row actions show Save and Cancel for the row being edited; a new item uses its draft.
+    private TItem ActionItem => Session.IsNew ? Session.Draft : Session.Original!;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        Session.ValidatorInstance = validator?.Instance;
+    }
+
+    private async Task OnKeyDownAsync(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await View.SaveEditAsync(Session);
+        }
+        else if (e.Key == "Escape")
+        {
+            await View.CancelEditAsync(force: false);
+        }
+    }
+}

@@ -1,0 +1,38 @@
+<div class="btn-group mb-2" role="group">
+    @foreach (var mode in new[] { DataDetailsMode.Inline, DataDetailsMode.Drawer, DataDetailsMode.SidePanel })
+    {
+        var m = mode;
+        <button class="btn @(detailsMode == m ? "active" : null)" @onclick="() => detailsMode = m">@m</button>
+    }
+</div>
+
+<DataView Items="orders" Title="Orders" KeySelector="o => o.Id" PageSize="8"
+          View="@(detailsMode == DataDetailsMode.SidePanel ? DataViewKind.List : DataViewKind.Table)"
+          DetailsMode="detailsMode" LoadDetails="@(o => DataViewDemoData.LoadDetailsAsync(o))">
+    <DataColumn Value="o => o.OrderNo" Sortable Searchable />
+    <DataColumn Value="o => o.Customer.Name" Title="Customer" Searchable />
+    <DataColumn Value="o => o.OrderDate" Format="yyyy-MM-dd" Sortable />
+
+    <DetailsTemplate>
+        <div class="mb-2"><strong>@context.Item.FirstName @context.Item.LastName</strong> · @context.Item.Status</div>
+        @if (context.IsLoading)
+        {
+            <div class="text-secondary"><span class="spinner-border spinner-border-sm me-2"></span>Loading lines…</div>
+        }
+        else if (context.Get<DemoOrderDetails>() is { } details)
+        {
+            <p class="text-secondary">@details.Notes</p>
+            <ul class="mb-0">
+                @foreach (var line in details.Lines)
+                {
+                    <li>@line</li>
+                }
+            </ul>
+        }
+    </DetailsTemplate>
+</DataView>
+
+@code {
+    private readonly List<DemoOrder> orders = DataViewDemoData.Create(30);
+    private DataDetailsMode detailsMode = DataDetailsMode.Inline;
+}

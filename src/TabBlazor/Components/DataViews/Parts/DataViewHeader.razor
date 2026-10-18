@@ -7,6 +7,45 @@
     var sortable = engine.Columns.Where(c => c.Sortable).ToList();
 }
 <div class="card-header dv-header">
+    @if (View.ShowCheckboxes && View.SelectedCount > 0)
+    {
+        var selection = View.GetSelection();
+        <div class="dv-selection-bar" role="region" aria-label="@string.Format(texts.SelectedCount, selection.Count)">
+            <span title="@texts.SelectAll">
+                <CheckboxTriState Value="View.PageSelectionState" ValueChanged="_ => View.TogglePageSelectionAsync()" />
+            </span>
+            <strong class="dv-selected-count">@string.Format(texts.SelectedCount, selection.Count.ToString("N0"))</strong>
+            @if (View.AllMatchingSelected)
+            {
+                <span class="text-secondary dv-all-matching">@string.Format(texts.AllMatchingSelected, engine.TotalCount?.ToString("N0") ?? string.Empty)</span>
+            }
+            else if (engine.TotalCount is { } total && total > engine.Items.Count && View.PageSelectionState == true)
+            {
+                <button type="button" class="btn btn-link p-0 dv-select-all-matching" @onclick="View.SelectAllMatchingAsync">
+                    @string.Format(texts.SelectAllMatching, total.ToString("N0"))
+                </button>
+            }
+            <div class="dv-bulk-actions ms-auto btn-list">
+                @foreach (var action in View.BulkActionsSlot?.Actions.Where(a => a.IsVisible(View)) ?? [])
+                {
+                    var a = action;
+                    <button type="button" class="btn @(a.Danger ? "btn-outline-danger" : null) dv-bulk-action" @onclick="() => View.RunBulkActionAsync(a)">
+                        @if (a.Icon != null)
+                        {
+                            <Icon IconType="@a.Icon" class="icon" />
+                        }
+                        @a.GetTitle(texts)
+                    </button>
+                }
+                <button type="button" class="btn btn-icon btn-ghost-secondary dv-clear-selection" title="@texts.ClearSelection" aria-label="@texts.ClearSelection"
+                        @onclick="View.ClearSelectionAsync">
+                    <Icon IconType="@InternalIcons.X" class="icon" />
+                </button>
+            </div>
+        </div>
+    }
+    else
+    {
     <div class="dv-title">
         @if (View.HeaderTemplate != null)
         {
@@ -83,6 +122,14 @@
             </button>
         }
 
+        @if (View.AddVisible)
+        {
+            <button type="button" class="btn btn-primary dv-add" @onclick="View.AddAsync" disabled="@(View.EditSession?.IsNew == true)">
+                <Icon IconType="@InternalIcons.Plus" class="icon" />
+                @texts.Add
+            </button>
+        }
+
         @if (View.ShowMenu && View.Density == null)
         {
             <Dropdown>
@@ -106,6 +153,7 @@
             </Dropdown>
         }
     </div>
+    }
 </div>
 
 @code {

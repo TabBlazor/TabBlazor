@@ -10,7 +10,11 @@ namespace TabBlazor.Tests.Components.DataViews
     public sealed class Row
     {
         public int Id { get; set; }
+
+        [System.ComponentModel.DataAnnotations.Required]
         public string Name { get; set; } = "";
+
+        public bool Active { get; set; }
         public decimal Total { get; set; }
         public SourceTestStatus Status { get; set; }
         public DateTime Date { get; set; } = new(2026, 1, 1);

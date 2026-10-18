@@ -10,7 +10,12 @@ public enum DataViewSlot
     Empty,
     NoResults,
     Error,
-    ListItem
+    ListItem,
+    RowActions,
+    BulkActions,
+    RowActionsTemplate,
+    EditingActionsTemplate,
+    Details
 }
 
 /// <summary>Implemented by the context a DataView cascades to its content; slots register their templates with it.</summary>
@@ -85,4 +90,22 @@ public sealed class ErrorTemplate : DataViewSlotBase<RenderFragment<Exception>>
 public sealed class ListItemTemplate<TItem> : DataViewSlotBase<RenderFragment<TItem>>
 {
     protected override DataViewSlot Slot => DataViewSlot.ListItem;
+}
+
+/// <summary>Replaces the row actions with your own markup; the context is the row.</summary>
+public sealed class RowActionsTemplate<TItem> : DataViewSlotBase<RenderFragment<DataRowContext<TItem>>>
+{
+    protected override DataViewSlot Slot => DataViewSlot.RowActionsTemplate;
+}
+
+/// <summary>Replaces the Save and Cancel buttons of a row being edited inline; the context is the row.</summary>
+public sealed class EditingActionsTemplate<TItem> : DataViewSlotBase<RenderFragment<DataRowContext<TItem>>>
+{
+    protected override DataViewSlot Slot => DataViewSlot.EditingActionsTemplate;
+}
+
+/// <summary>The details of an item, shown inline, in a drawer or in a side panel (see <c>DetailsMode</c>).</summary>
+public sealed class DetailsTemplate<TItem> : DataViewSlotBase<RenderFragment<DataDetailsContext<TItem>>>
+{
+    protected override DataViewSlot Slot => DataViewSlot.Details;
 }

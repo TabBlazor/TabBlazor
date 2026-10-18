@@ -1,0 +1,64 @@
+@namespace TabBlazor
+@typeparam TItem
+
+<CascadingValue Value="Session.EditContext" IsFixed="false">
+    @if (View.ValidatorComponent != null)
+    {
+        <DynamicComponent Type="View.ValidatorComponent" @ref="validator" />
+    }
+    <form class="dv-edit-form" @onsubmit="SaveAsync" @onsubmit:preventDefault="true" novalidate>
+        @if (Session.Message != null)
+        {
+            <div class="alert alert-danger" role="alert">@Session.Message</div>
+        }
+
+        @foreach (var column in View.FormColumns)
+        {
+            var editable = column.CanEdit(Session.Draft);
+            if (!editable && Session.IsNew)
+            {
+                continue;
+            }
+
+            <div class="mb-3 dv-field">
+                <label class="form-label">@column.Title</label>
+                @if (editable)
+                {
+                    @column.Editor(Session.Draft)
+                    @column.ValidationMessage(Session.Draft)
+                }
+                else
+                {
+                    <div class="form-control-plaintext">@column.GetDisplayText(Session.Draft)</div>
+                }
+            </div>
+        }
+
+        <div class="dv-form-actions">
+            <button type="button" class="btn dv-cancel" disabled="@Session.IsSaving" @onclick="CancelAsync">@View.Texts.Cancel</button>
+            <button type="submit" class="btn btn-primary dv-save" disabled="@Session.IsSaving">
+                @if (Session.IsSaving)
+                {
+                    <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                }
+                @View.Texts.Save
+            </button>
+        </div>
+    </form>
+</CascadingValue>
+
+@code {
+    private DynamicComponent validator;
+
+    [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+    [Parameter, EditorRequired] public DataEditContext<TItem> Session { get; set; } = default!;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        Session.ValidatorInstance = validator?.Instance;
+    }
+
+    private Task SaveAsync() => View.SaveEditAsync(Session);
+
+    private Task CancelAsync() => View.CancelEditAsync(force: false);
+}

@@ -220,22 +220,34 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
     internal DataViewEngine<TItem> Engine => engine;
     internal DataViewText Texts => Text ?? DataViewText.Default;
     internal TableDensity CurrentDensity => Density ?? density ?? TableDensity.Normal;
-    internal IReadOnlyList<IDataViewColumn<TItem>> VisibleColumns => engine.Columns.Where(c => c.Visible).ToList();
+    internal IReadOnlyList<IDataViewColumn<TItem>> VisibleColumns =>
+        engine.Columns.Where(c => c.Visible && c.ShowIn != ColumnVisibility.EditOnly).ToList();
+
+    /// <summary>The columns shown in edit forms.</summary>
+    internal IReadOnlyList<IDataViewColumn<TItem>> FormColumns =>
+        engine.Columns.Where(c => c.ShowIn != ColumnVisibility.ViewOnly).ToList();
+
+    internal ILogger Logger { get; private set; } = NullLogger.Instance;
     internal bool SearchVisible => ShowSearch ?? engine.Columns.Any(c => c.Searchable);
     internal bool RefreshVisible => ShowRefresh ?? Items == null;
 
     protected override void OnInitialized()
     {
         var timeProvider = Services.GetService<TimeProvider>() ?? TimeProvider.System;
-        var logger = (ILogger?)Services.GetService<ILoggerFactory>()?.CreateLogger("TabBlazor.DataView") ?? NullLogger.Instance;
+        Logger = (ILogger?)Services.GetService<ILoggerFactory>()?.CreateLogger("TabBlazor.DataView") ?? NullLogger.Instance;
         engine = new DataViewEngine<TItem>(
             work => InvokeAsync(work),
             () => disposed ? Task.CompletedTask : InvokeAsync(StateHasChanged),
             timeProvider,
-            logger)
+            Logger)
         {
             StateChanged = OnEngineStateChangedAsync,
-            PageLoaded = page => OnPageLoaded.InvokeAsync(page)
+            BeforeUserStateChange = CanChangeStateAsync,
+            PageLoaded = page =>
+            {
+                OnPageLoadedInteraction(page);
+                return OnPageLoaded.InvokeAsync(page);
+            }
         };
         context = new DataViewContext<TItem>(this);
     }
@@ -303,6 +315,8 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
             reload = true;
         }
 
+        OnParametersSetInteraction();
+
         // A parent re-render may have changed templates or styling functions.
         engine.InvalidateRows();
 
@@ -354,6 +368,9 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
 
                 ListItemTemplate = (RenderFragment<TItem>?)template;
                 break;
+            default:
+                SetInteractionSlot(slot, template);
+                break;
         }
     }
 
@@ -392,6 +409,7 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
 
     private async Task OnEngineStateChangedAsync()
     {
+        OnUserStateChangedInteraction();
         lastState = engine.GetState();
         await StateChanged.InvokeAsync(lastState);
     }
@@ -419,18 +437,11 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
         StateHasChanged();
     }
 
-    internal async Task HandleRowClickAsync(TItem item)
-    {
-        if (OnRowClicked.HasDelegate)
-        {
-            await OnRowClicked.InvokeAsync(item);
-        }
-    }
-
     internal object? GetRowKey(TItem item) => engine.KeyGetter != null ? engine.KeyGetter(item) : item;
 
     internal string? GetRowClass(TItem item, bool table = true)
     {
+        var state = GetRowState(item);
         var builder = new ClassBuilder(DataViewStyles.ColorClass(RowColor?.Invoke(item), table));
         builder.Add(RowClass?.Invoke(item));
         if (RowHref != null && table)
@@ -438,10 +449,15 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
             builder.Add("dv-row-link");
         }
 
-        if (OnRowClicked.HasDelegate)
+        if (OnRowClicked.HasDelegate || RowClick is DataRowClick.Details or DataRowClick.Select ||
+            (RowClick == DataRowClick.Auto && (HasDetails || SelectionMode == DataSelectionMode.Single)))
         {
             builder.Add("cursor-pointer");
         }
+
+        builder.AddIf(table ? "table-active" : "active", state.Selected || state.Current)
+            .AddIf("dv-row-saved", state.JustSaved)
+            .AddIf("dv-row-expanded", state.Expanded);
 
         var css = builder.ToString();
         return string.IsNullOrWhiteSpace(css) ? null : css;
@@ -449,7 +465,7 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
 
     internal string GetTableClass() => new ClassBuilder("table card-table table-vcenter dv-table")
         .AddIf("table-striped", Striped)
-        .AddIf("table-hover", Hover || RowHref != null || OnRowClicked.HasDelegate)
+        .AddIf("table-hover", Hover || RowHref != null || OnRowClicked.HasDelegate || HasDetails || SelectionMode == DataSelectionMode.Single)
         .AddIf("table-bordered", Bordered)
         .AddIf("table-sm", CurrentDensity == TableDensity.Compact)
         .AddIf("dv-comfortable", CurrentDensity == TableDensity.Comfortable)

@@ -13,7 +13,7 @@
         case DataViewStatus.Items:
             foreach (var item in engine.Items)
             {
-                <DataListRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns" Version="engine.RenderVersion" />
+                <DataListRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns" Version="engine.RenderVersion" State="View.GetRowState(item)" />
             }
             break;
         case DataViewStatus.FirstLoad when View.LoadingTemplate == null:

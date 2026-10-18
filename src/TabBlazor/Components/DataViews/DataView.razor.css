@@ -133,3 +133,100 @@
 .dataview ::deep .dv-list-item.list-group-item-action {
     cursor: pointer;
 }
+
+.dataview ::deep .dv-list-row {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+}
+
+.dataview ::deep .dv-list-content {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.dataview ::deep .dv-list-select,
+.dataview ::deep .dv-list-actions,
+.dataview ::deep .dv-list-details {
+    position: relative;
+    z-index: 2;
+}
+
+.dataview ::deep .dv-row-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+}
+
+.dataview ::deep .dv-select-cell,
+.dataview ::deep .dv-expand-cell,
+.dataview ::deep .dv-actions-cell {
+    position: relative;
+    z-index: 2;
+}
+
+.dataview ::deep .dv-edit-row > td {
+    vertical-align: top;
+}
+
+.dataview ::deep .dv-edit-row .form-control,
+.dataview ::deep .dv-edit-row .form-select {
+    min-width: 8rem;
+}
+
+.dataview ::deep .dv-saving {
+    opacity: .7;
+}
+
+.dataview ::deep .dv-row-saved > td,
+.dataview ::deep .dv-list-item.dv-row-saved {
+    animation: dv-saved-flash 1.6s ease-out;
+}
+
+@keyframes dv-saved-flash {
+    from {
+        background-color: var(--tblr-green-lt, rgba(47, 179, 68, .15));
+    }
+}
+
+.dataview ::deep .dv-details-row > td {
+    background: var(--tblr-bg-surface-secondary, transparent);
+}
+
+.dataview ::deep .dv-selection-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem 1rem;
+    width: 100%;
+}
+
+.dataview ::deep .dv-split {
+    display: flex;
+    min-height: 20rem;
+}
+
+.dataview ::deep .dv-split-main {
+    flex: 1 1 55%;
+    min-width: 0;
+}
+
+.dataview ::deep .dv-split-panel {
+    flex: 1 1 45%;
+    min-width: 0;
+    border-left: var(--tblr-border-width, 1px) solid var(--tblr-border-color, rgba(0, 0, 0, .1));
+    padding: 1rem;
+}
+
+.dataview ::deep .dv-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: .5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dataview ::deep .dv-row-saved > td,
+    .dataview ::deep .dv-list-item.dv-row-saved {
+        animation: none;
+    }
+}

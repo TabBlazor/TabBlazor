@@ -99,3 +99,48 @@ Running list of places where the implementation differs from, or fills a gap in,
   `.offcanvas-footer`, and now also implements `IAsyncDisposable` (to give focus back).
 - The docs page `Offcanvas.razor` was renamed `OffcanvasDocs.razor` (same route), because a page
   component named `Offcanvas` would hide the new `<Offcanvas>` tag in that folder.
+
+## Phase 3: editing, selection, row actions and details
+
+- **Selection** is turned on with `SelectionMode` (None, Single, Multiple); the doc left the switch
+  unnamed. `GetSelection()` returns a `DataSelection<TItem>` (Items, Keys, AllMatching, Request,
+  TotalCount). The doc's `ClearSelection()` is `ClearSelectionAsync()`. With "select all
+  matching", the selection's `Request` is the current request with `Take` = the total.
+- **Delete handlers** return `Task<EditResult>` (`EditResult.Deleted()` or `Failed(...)`);
+  `DeleteItems` receives the `DataSelection<TItem>`. `EditResult.Deleted()` is an addition.
+- **`EditResult`** is a non-generic factory class whose `Failed`/`Invalid` results convert
+  implicitly to `EditResult<TItem>`, so a save handler can `return EditResult.Failed(...)`.
+- **Custom edit mode** uses an `OnCustomEdit` callback that receives the `DataEditContext`; your
+  UI calls its `SaveAsync()` (normal validation and save flow) or `CancelAsync()`.
+- **Confirmations** (delete, discard changes, action `Confirm`) use `IModalService.ShowDialogAsync`
+  by default; an `OnConfirm` parameter replaces it (used by tests and apps with their own dialog).
+- **Errors** from row actions, bulk actions and failed deletes show in a dismissible notice under
+  the header. Failed saves show on the edit row or form, as in the doc.
+- **Default editors** are Blazor's `InputText`, `InputNumber`, `InputDate`, `InputCheckbox` and
+  `InputSelect` (enums, `bool?`, `Options`), so validation styling and modified state work.
+  Other types (Guid, …) need an `EditorTemplate`. Data annotations are enabled on the draft's
+  `EditContext` directly; a custom `IFormValidator`'s component is rendered inside the edit UI.
+- **Popup and drawer forms** list `ShowIn != ViewOnly` columns (hidden ones too); fields without
+  an editor show as plain text, and are left out when adding. The popup is TabBlazor's
+  `ModalView` rendered by the view (full screen below `md`); the drawer is the new declarative
+  `Offcanvas` (Large). The list view uses the popup when `EditMode` is Inline.
+- **Saving with local `Items`:** when `Items` is a writable `IList`, the saved item replaces the
+  original in the list (or is appended when new), and deletes remove it; arrays and read-only
+  lists are left alone. With a remote source, an edited row is replaced by key without
+  reloading; a new item reloads the page and shows "Saved…" when it is filtered out.
+- **Actions are components that register while alive.** Actions without delegate parameters
+  (`<EditAction />`) are not re-rendered by Blazor, so they register on initialization and keep
+  their place; markup order comes from the latest render pass.
+- **Generic inference:** Razor cannot infer `TItem` for `RowAction`/`BulkAction` from a method
+  group (`OnClick="ArchiveAsync"`), so use a lambda (`OnClick="@(o => ArchiveAsync(o))"`) or set
+  `TItem`. `<EditAction />`, `<DeleteAction />` and lambdas infer it from the view.
+- **`RowClick`** is a `DataRowClick` enum with an extra `Auto` default: navigate when `RowHref` is
+  set, else open details when there is a `DetailsTemplate`, else select in single mode.
+- **`LoadDetails`** is a `Func<TItem, Task>` (any `Task<T>` fits); the template reads the result
+  with `context.Get<TDetails>()`, because `DataView<TItem>` cannot know `TDetails`. A
+  `DetailsTitle` parameter names the drawer and side panel. The side panel works in both views.
+- **`DataRowContext`** methods use the doc's names (`Edit()`, `Save()`, `Cancel()`, `Delete()`,
+  `ToggleDetails()`, plus `ToggleSelected()`) and return tasks.
+- **Not yet:** arrow-key navigation in row action menus and rows (Tab between editors works);
+  the header's select-all checkbox has a tooltip but no `aria-label`, because TabBlazor's
+  `CheckboxTriState` takes no extra attributes.

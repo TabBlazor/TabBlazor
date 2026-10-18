@@ -1,0 +1,43 @@
+<DataView Items="orders" Title="Orders" KeySelector="o => o.Id" PageSize="10"
+          SelectionMode="DataSelectionMode.Multiple" @bind-SelectedItems="selected" DeleteItems="DeleteSelectedAsync">
+    <DataColumn Value="o => o.OrderNo" Sortable Searchable />
+    <DataColumn Value="o => o.Customer.Name" Title="Customer" Sortable Searchable />
+    <DataColumn Value="o => o.Status" Sortable Searchable />
+
+    <BulkActions>
+        <BulkAction Title="Export" Icon="@TablerIcons.File_export" OnClick="@(s => ExportAsync(s))" />
+        <BulkDeleteAction />
+    </BulkActions>
+</DataView>
+
+<p class="mt-3 text-secondary">@message</p>
+
+@code {
+    private readonly List<DemoOrder> orders = DataViewDemoData.Create(60);
+    private IReadOnlyList<DemoOrder> selected = [];
+    private string message = "Tick some rows; the selection survives paging and searching.";
+
+    // With "select all matching", the selection carries the request instead of every row.
+    private Task ExportAsync(DataSelection<DemoOrder> selection)
+    {
+        message = selection.AllMatching
+            ? $"Export all {selection.Count} rows matching \"{selection.Request?.Search?.Text}\"."
+            : $"Export {selection.Count} rows: {string.Join(", ", selection.Items.Select(o => o.OrderNo))}.";
+        return Task.CompletedTask;
+    }
+
+    private Task<EditResult> DeleteSelectedAsync(DataSelection<DemoOrder> selection)
+    {
+        if (selection.AllMatching)
+        {
+            return Task.FromResult(EditResult.Failed("Deleting every matching row is not allowed in this demo."));
+        }
+
+        foreach (var order in selection.Items)
+        {
+            orders.Remove(order);
+        }
+
+        return Task.FromResult(EditResult.Deleted());
+    }
+}

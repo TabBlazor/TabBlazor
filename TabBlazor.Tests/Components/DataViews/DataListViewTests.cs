@@ -45,9 +45,9 @@ namespace TabBlazor.Tests.Components.DataViews
         {
             var cut = RenderList(p => p.Add(x => x.Items, Row.Many(2)).Add(x => x.RowHref, r => $"/rows/{r.Id}"));
 
-            var links = cut.FindAll("a.dv-list-item");
+            var links = cut.FindAll(".dv-list-item a.dv-row-anchor");
             Assert.Equal(["/rows/1", "/rows/2"], links.Select(a => a.GetAttribute("href")));
-            Assert.Contains("list-group-item-action", links[0].ClassList);
+            Assert.Contains("list-group-item-action", cut.Find(".dv-list-item").ClassList);
         }
 
         [Fact]

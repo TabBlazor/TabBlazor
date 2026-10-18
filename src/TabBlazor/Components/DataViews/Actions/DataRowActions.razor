@@ -1,0 +1,115 @@
+@namespace TabBlazor
+@typeparam TItem
+
+@{
+    var texts = View.Texts;
+    var context = View.GetRowContext(Item);
+}
+<div class="dv-row-actions" @onclick:stopPropagation="true">
+    @if (context.IsEditing && !MenuOnly)
+    {
+        if (View.EditingActionsTemplate != null)
+        {
+            @View.EditingActionsTemplate(context)
+        }
+        else
+        {
+            <button type="button" class="btn btn-sm btn-primary dv-save" disabled="@context.IsSaving" @onclick="() => context.Save()">
+                @if (context.IsSaving)
+                {
+                    <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                }
+                @texts.Save
+            </button>
+            <button type="button" class="btn btn-sm dv-cancel" disabled="@context.IsSaving" @onclick="() => context.Cancel()">@texts.Cancel</button>
+        }
+    }
+    else if (View.RowActionsTemplate != null)
+    {
+        @View.RowActionsTemplate(context)
+    }
+    else
+    {
+        var actions = View.RowActionList.Where(a => a.IsVisible(View, Item)).ToList();
+        var inlineCount = MenuOnly ? 0 : actions.Count <= View.MaxVisibleActions ? actions.Count : Math.Max(0, View.MaxVisibleActions - 1);
+        var busy = View.GetBusyAction(Item);
+        @foreach (var action in actions.Take(inlineCount))
+        {
+            var a = action;
+            var title = a.GetTitle(texts);
+            var href = a.GetHref(Item);
+            var disabled = busy != null || a.IsDisabled(View, Item);
+            if (href != null)
+            {
+                <a class="btn btn-icon btn-sm btn-ghost-@(a.Danger ? "danger" : "secondary") dv-action @(disabled ? "disabled" : null)"
+                   href="@href" title="@title" aria-label="@title">
+                    <Icon IconType="@a.GetIcon()" class="icon" />
+                </a>
+            }
+            else
+            {
+                <button type="button" class="btn btn-icon btn-sm btn-ghost-@(a.Danger ? "danger" : "secondary") dv-action"
+                        title="@title" aria-label="@title" disabled="@disabled" @onclick="() => View.RunRowActionAsync(a, Item)">
+                    @if (busy == a.Key)
+                    {
+                        <span class="spinner-border spinner-border-sm" role="status"></span>
+                    }
+                    else
+                    {
+                        <Icon IconType="@a.GetIcon()" class="icon" />
+                    }
+                </button>
+            }
+        }
+
+        @if (actions.Count > inlineCount)
+        {
+            <Dropdown class="dv-action-menu">
+                <ChildContent>
+                    <button type="button" class="btn btn-icon btn-sm btn-ghost-secondary" title="@texts.MoreActions" aria-label="@texts.MoreActions" disabled="@(busy != null)">
+                        @if (busy != null && actions.Skip(inlineCount).Any(a => a.Key == busy))
+                        {
+                            <span class="spinner-border spinner-border-sm" role="status"></span>
+                        }
+                        else
+                        {
+                            <Icon IconType="@InternalIcons.Dots" class="icon" />
+                        }
+                    </button>
+                </ChildContent>
+                <DropdownTemplate>
+                    <DropdownMenu class="dropdown-menu-end">
+                        @foreach (var action in actions.Skip(inlineCount))
+                        {
+                            var a = action;
+                            var href = a.GetHref(Item);
+                            if (href != null)
+                            {
+                                <a class="dropdown-item" href="@href">
+                                    <Icon IconType="@a.GetIcon()" class="icon dropdown-item-icon" />
+                                    @a.GetTitle(texts)
+                                </a>
+                            }
+                            else
+                            {
+                                <DropdownItem Disabled="@a.IsDisabled(View, Item)" class="@(a.Danger ? "text-danger" : null)"
+                                              OnClick="() => View.RunRowActionAsync(a, Item)">
+                                    <Icon IconType="@a.GetIcon()" class="icon dropdown-item-icon" />
+                                    @a.GetTitle(texts)
+                                </DropdownItem>
+                            }
+                        }
+                    </DropdownMenu>
+                </DropdownTemplate>
+            </Dropdown>
+        }
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public TItem Item { get; set; } = default!;
+    [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+
+    /// <summary>Puts every action in the "⋯" menu (views without columns, small screens).</summary>
+    [Parameter] public bool MenuOnly { get; set; }
+}

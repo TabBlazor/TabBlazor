@@ -13,7 +13,7 @@ namespace TabBlazor;
 /// </summary>
 /// <typeparam name="TItem">The row type.</typeparam>
 /// <typeparam name="TValue">The value type.</typeparam>
-public class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<TItem>
+public partial class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<TItem>
 {
     private DataColumnInfo? info;
     private ExpressionKey? infoKey;
@@ -122,6 +122,7 @@ public class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<TItem>
             valueKey = newValueKey;
             getter = Value?.Compile();
             defaultTitle = GetDefaultTitle(Value);
+            setter = CompileSetter(Value);
         }
 
         var newInfoKey = ExpressionKey.Create(Value, SortBy, FilterBy, SearchExpression, Id);
@@ -165,6 +166,8 @@ public class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<TItem>
 
     public void RenderCell(RenderTreeBuilder builder, TItem item)
     {
+        // Called from Razor markup: a region keeps these sequence numbers apart from the caller's.
+        builder.OpenRegion(1002);
         if (Template != null)
         {
             builder.AddContent(0, Template(item));
@@ -173,6 +176,8 @@ public class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<TItem>
         {
             builder.AddContent(1, GetDisplayText(item));
         }
+
+        builder.CloseRegion();
     }
 
     public string? GetDisplayText(TItem item)

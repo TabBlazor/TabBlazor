@@ -43,6 +43,33 @@
                 colored from their data with Tabler colors, which follow the theme. Pair color with text for accessibility.
             </Description>
         </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsEditing)" Title="Editing">
+            <Description>
+                A <code>SaveItem</code> handler turns editing on. Rows are edited on a copy (the draft), so Cancel just throws
+                it away and the real row changes only when the handler returns <code>EditResult.Saved</code>. Return
+                <code>EditResult.Failed(message)</code> or <code>EditResult.Invalid((field, message))</code> to keep the draft
+                and show the problem. Inline, popup and drawer editing share the same flow; Enter saves and Esc cancels.
+            </Description>
+        </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsRowActions)" Title="Row actions">
+            <Description>
+                Declared actions render the same way everywhere: icon buttons for the first few, then a menu. Actions can be
+                links, show a spinner while their handler runs, ask for confirmation and depend on the row.
+            </Description>
+        </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsSelection)" Title="Selection and bulk actions">
+            <Description>
+                Selection is tracked by key, so it survives paging, searching and reloads. With rows selected, the header becomes
+                a selection bar with the bulk actions. "Select all matching" hands the current request to the action instead of
+                every row, so a server can act on all of them.
+            </Description>
+        </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsDetails)" Title="Details">
+            <Description>
+                Details are separate from selection and can show inline, in a drawer or in a side panel beside a list.
+                <code>LoadDetails</code> loads extra data when details open, cached per item.
+            </Description>
+        </CodeSnippet>
         <CodeSnippet SetBackground Component="@typeof(DataViewsState)" Title="State">
             <Description>
                 <code>@@bind-State</code> exposes paging, sort, search and filters as a serializable

@@ -4,12 +4,30 @@
 @{
     var engine = View.Engine;
     var columns = View.VisibleColumns;
-    var columnCount = Math.Max(1, columns.Count);
+    var columnCount = Math.Max(1, columns.Count + (View.ShowCheckboxes ? 1 : 0) + (View.ShowExpandColumn ? 1 : 0) + (View.ShowActionsColumn ? 1 : 0));
+    var inlineEdit = View.EditSession != null && View.EffectiveEditMode == DataEditMode.Inline;
 }
 <div class="table-responsive dv-scroll" style="@(View.Height != null ? $"max-height: {View.Height};" : null)">
     <table class="@View.GetTableClass()" @attributes="View.UnmatchedParameters">
         <thead>
             <tr>
+                @if (View.ShowCheckboxes)
+                {
+                    <th class="w-1 dv-select-column">
+                        <span title="@View.Texts.SelectAll">
+                            <CheckboxTriState Value="View.PageSelectionState" ValueChanged="_ => View.TogglePageSelectionAsync()"
+                                              Disabled="@(View.Status != DataViewStatus.Items)" />
+                        </span>
+                    </th>
+                }
+                @if (View.ShowExpandColumn)
+                {
+                    <th class="w-1 dv-expand-column"><span class="visually-hidden">@View.Texts.Details</span></th>
+                }
+                @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.Start)
+                {
+                    <th class="w-1 dv-actions-column"></th>
+                }
                 @foreach (var column in columns)
                 {
                     var col = column;
@@ -31,22 +49,44 @@
                         }
                     </th>
                 }
+                @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.End)
+                {
+                    <th class="w-1 dv-actions-column"></th>
+                }
             </tr>
         </thead>
         <tbody class="@(engine.IsLoading && engine.HasLoaded ? "dv-loading" : null)" aria-busy="@(engine.IsLoading ? "true" : null)">
+            @if (inlineEdit && View.EditSession!.IsNew)
+            {
+                <DataTableEditRow TItem="TItem" View="View" Session="View.EditSession" />
+            }
             @switch (View.Status)
             {
                 case DataViewStatus.Items:
                     foreach (var item in engine.Items)
                     {
-                        <DataTableRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns" Version="engine.RenderVersion" />
+                        if (inlineEdit && View.IsEditingRow(item))
+                        {
+                            <DataTableEditRow @key="View.GetRowKey(item)" TItem="TItem" View="View" Session="View.EditSession!" />
+                            continue;
+                        }
+
+                        var state = View.GetRowState(item);
+                        <DataTableRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns"
+                                      Version="engine.RenderVersion" State="state" />
+                        if (state.Expanded && View.ShowExpandColumn)
+                        {
+                            <tr @key="(View.GetRowKey(item), 1)" class="dv-details-row">
+                                <td colspan="@columnCount">@View.DetailsTemplate!(View.GetDetailsContext(item))</td>
+                            </tr>
+                        }
                     }
                     break;
                 case DataViewStatus.FirstLoad when View.LoadingTemplate == null:
                     for (var i = 0; i < Math.Min(engine.PageSize, 5); i++)
                     {
                         <tr class="dv-placeholder-row placeholder-glow" aria-hidden="true">
-                            @foreach (var column in columns)
+                            @for (var c = 0; c < columnCount; c++)
                             {
                                 <td><span class="placeholder col-8"></span></td>
                             }

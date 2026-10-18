@@ -74,6 +74,18 @@ internal sealed class DataViewEngine<TItem> : IDisposable
     /// <summary>Raised when the user changes paging, sort, search or filters.</summary>
     public Func<Task>? StateChanged { get; set; }
 
+    /// <summary>Asked before the user changes paging, sort, search or filters; false keeps the current state (for example to keep an unsaved edit).</summary>
+    public Func<Task<bool>>? BeforeUserStateChange { get; set; }
+
+    private async Task<bool> CanChangeStateAsync() => BeforeUserStateChange == null || await BeforeUserStateChange();
+
+    /// <summary>Replaces a loaded row (after it was saved) without reloading.</summary>
+    public void ReplaceItem(Func<TItem, bool> match, TItem item)
+    {
+        Items = Items.Select(i => match(i) ? item : i).ToList();
+        RenderVersion++;
+    }
+
     public PagingMode PagingMode => Source?.PagingMode ?? PagingMode.Offset;
 
     public bool HasSearchOrFilters => !string.IsNullOrWhiteSpace(SearchText) || Filters.Count > 0;
@@ -342,6 +354,13 @@ internal sealed class DataViewEngine<TItem> : IDisposable
             return;
         }
 
+        if (!await CanChangeStateAsync())
+        {
+            SearchInput = SearchText ?? string.Empty;
+            await render();
+            return;
+        }
+
         SearchText = text;
         ResetPaging();
         await OnUserStateChangedAsync();
@@ -350,6 +369,11 @@ internal sealed class DataViewEngine<TItem> : IDisposable
 
     public async Task SetFiltersAsync(IReadOnlyList<FilterSpec> filters)
     {
+        if (!await CanChangeStateAsync())
+        {
+            return;
+        }
+
         Filters = filters ?? [];
         ResetPaging();
         await OnUserStateChangedAsync();
@@ -359,6 +383,11 @@ internal sealed class DataViewEngine<TItem> : IDisposable
     /// <summary>Clears the search and all filters.</summary>
     public async Task ClearSearchAndFiltersAsync()
     {
+        if (!await CanChangeStateAsync())
+        {
+            return;
+        }
+
         searchDelayCts?.Cancel();
         SearchText = null;
         SearchInput = string.Empty;
@@ -379,6 +408,11 @@ internal sealed class DataViewEngine<TItem> : IDisposable
 
     public async Task SetSortAsync(string? columnId, bool descending)
     {
+        if (!await CanChangeStateAsync())
+        {
+            return;
+        }
+
         if (columnId == null)
         {
             Sort = null;
@@ -420,6 +454,11 @@ internal sealed class DataViewEngine<TItem> : IDisposable
             return;
         }
 
+        if (!await CanChangeStateAsync())
+        {
+            return;
+        }
+
         PageIndex = pageIndex;
         await OnUserStateChangedAsync();
         await LoadAsync();
@@ -427,7 +466,7 @@ internal sealed class DataViewEngine<TItem> : IDisposable
 
     public async Task ChangePageSizeAsync(int pageSize)
     {
-        if (pageSize == PageSize)
+        if (pageSize == PageSize || !await CanChangeStateAsync())
         {
             return;
         }

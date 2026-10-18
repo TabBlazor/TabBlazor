@@ -31,6 +31,42 @@ public sealed record DataViewText
     public string SortBy { get; init; } = "Sort by";
     public string TableView { get; init; } = "Table";
     public string ListView { get; init; } = "List";
+    public string Add { get; init; } = "Add";
+    public string Edit { get; init; } = "Edit";
+    public string Delete { get; init; } = "Delete";
+    public string Details { get; init; } = "Details";
+    public string Save { get; init; } = "Save";
+    public string Cancel { get; init; } = "Cancel";
+    public string Close { get; init; } = "Close";
+    public string Back { get; init; } = "Back";
+    public string Ok { get; init; } = "OK";
+    public string MoreActions { get; init; } = "More actions";
+    public string NewItem { get; init; } = "New item";
+    public string DiscardChanges { get; init; } = "Discard changes?";
+    public string DiscardChangesDetails { get; init; } = "Your changes have not been saved.";
+    public string Discard { get; init; } = "Discard";
+    public string ConfirmDelete { get; init; } = "Delete this item?";
+    public string SaveFailed { get; init; } = "Could not save. Please try again.";
+    public string DeleteFailed { get; init; } = "Could not delete. Please try again.";
+    public string ActionFailed { get; init; } = "The action failed.";
+    public string SavedNotShown { get; init; } = "Saved. The item is not shown with the current search and filters.";
+    public string SelectRow { get; init; } = "Select row";
+    public string SelectAll { get; init; } = "Select all on this page";
+    public string ClearSelection { get; init; } = "Clear selection";
+    public string ExpandRow { get; init; } = "Show details";
+    public string SelectAnItem { get; init; } = "Select an item to see its details.";
+
+    /// <summary>"{count} selected". Argument: the number of selected rows.</summary>
+    public string SelectedCount { get; init; } = "{0} selected";
+
+    /// <summary>"Select all {total} matching". Argument: the total number of matching rows.</summary>
+    public string SelectAllMatching { get; init; } = "Select all {0} matching";
+
+    /// <summary>"All {total} matching rows are selected". Argument: the total, or empty when unknown.</summary>
+    public string AllMatchingSelected { get; init; } = "All {0} matching rows are selected";
+
+    /// <summary>"Delete {count} items?". Argument: the number of rows.</summary>
+    public string ConfirmDeleteSelected { get; init; } = "Delete {0} items?";
 
     /// <summary>"Showing {first}–{last} of {total}". Arguments: first, last, total.</summary>
     public string ShowingOfTotal { get; init; } = "Showing {0}–{1} of {2}";
