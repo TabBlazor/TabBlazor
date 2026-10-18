@@ -28,6 +28,7 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
     private int lastPageSize;
     private DataViewState? lastState;
     private TableDensity? density;
+    private DataViewKind? chosenView;
     private bool disposed;
 
     [Inject] private IServiceProvider Services { get; set; } = default!;
@@ -58,6 +59,18 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
     /// <summary>The columns (<c>DataColumn</c>s).</summary>
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
+    // Views
+
+    /// <summary>The view to show. Use <c>@bind-View</c> to follow the user's choice in the view switcher.</summary>
+    [Parameter] public DataViewKind? View { get; set; }
+
+    /// <summary>Raised when the user picks another view in the switcher.</summary>
+    [Parameter] public EventCallback<DataViewKind?> ViewChanged { get; set; }
+
+    /// <summary>The views offered in the toolbar's view switcher. The switcher shows when more than one is set.</summary>
+    [Parameter] public DataViewKind Views { get; set; } = DataViewKind.Table;
+
+
     // Identity and header
 
     /// <summary>
@@ -69,11 +82,7 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
     /// <summary>The title shown on the left of the header.</summary>
     [Parameter] public string? Title { get; set; }
 
-    /// <summary>Custom title markup (replaces <see cref="Title"/>).</summary>
-    [Parameter] public RenderFragment? HeaderTemplate { get; set; }
 
-    /// <summary>Your own buttons, placed first in the toolbar.</summary>
-    [Parameter] public RenderFragment? ToolbarTemplate { get; set; }
 
     [Parameter] public bool ShowHeader { get; set; } = true;
 
@@ -146,19 +155,21 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
     /// <summary>Unknown attributes are passed to the <c>table</c> element.</summary>
     [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object>? UnmatchedParameters { get; set; }
 
+    // Templates are filled by slot components placed among the columns: <HeaderTemplate>, <ToolbarTemplate>,
+    // <LoadingTemplate>, <EmptyTemplate>, <NoResultsTemplate>, <ErrorTemplate> and <ListItemTemplate>.
+    internal RenderFragment? HeaderTemplate { get; private set; }
+    internal RenderFragment? ToolbarTemplate { get; private set; }
+    internal RenderFragment? LoadingTemplate { get; private set; }
+    internal RenderFragment? EmptyTemplate { get; private set; }
+    internal RenderFragment? NoResultsTemplate { get; private set; }
+    internal RenderFragment<Exception>? ErrorTemplate { get; private set; }
+    internal RenderFragment<TItem>? ListItemTemplate { get; private set; }
+
     // States
 
-    /// <summary>Shown on the first load instead of placeholder rows.</summary>
-    [Parameter] public RenderFragment? LoadingTemplate { get; set; }
 
-    /// <summary>Shown when there is no data at all.</summary>
-    [Parameter] public RenderFragment? EmptyTemplate { get; set; }
 
-    /// <summary>Shown when no rows match the search or filters.</summary>
-    [Parameter] public RenderFragment? NoResultsTemplate { get; set; }
 
-    /// <summary>Shown when loading failed.</summary>
-    [Parameter] public RenderFragment<Exception>? ErrorTemplate { get; set; }
 
     /// <summary>Overrides built-in UI strings.</summary>
     [Parameter] public DataViewText? Text { get; set; }
@@ -192,6 +203,19 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
 
     /// <summary>The visible columns.</summary>
     public IReadOnlyList<IDataViewColumn<TItem>> Columns => engine.Columns;
+
+    /// <summary>The view being shown.</summary>
+    public DataViewKind CurrentView => SingleView(View ?? chosenView ?? Views);
+
+    /// <summary>What the current view shows: its items, or a loading, empty, no-results or error state.</summary>
+    public DataViewStatus Status => engine.Error != null ? DataViewStatus.Error
+        : !engine.HasLoaded ? DataViewStatus.FirstLoad
+        : engine.Items.Count > 0 ? DataViewStatus.Items
+        : engine.HasSearchOrFilters ? DataViewStatus.NoResults
+        : DataViewStatus.Empty;
+
+    internal IReadOnlyList<DataViewKind> AvailableViews =>
+        new[] { DataViewKind.Table, DataViewKind.List }.Where(v => Views.HasFlag(v)).ToList();
 
     internal DataViewEngine<TItem> Engine => engine;
     internal DataViewText Texts => Text ?? DataViewText.Default;
@@ -312,6 +336,27 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
         }
     }
 
+    internal void SetSlot(DataViewSlot slot, object? template)
+    {
+        switch (slot)
+        {
+            case DataViewSlot.Header: HeaderTemplate = (RenderFragment?)template; break;
+            case DataViewSlot.Toolbar: ToolbarTemplate = (RenderFragment?)template; break;
+            case DataViewSlot.Loading: LoadingTemplate = (RenderFragment?)template; break;
+            case DataViewSlot.Empty: EmptyTemplate = (RenderFragment?)template; break;
+            case DataViewSlot.NoResults: NoResultsTemplate = (RenderFragment?)template; break;
+            case DataViewSlot.Error: ErrorTemplate = (RenderFragment<Exception>?)template; break;
+            case DataViewSlot.ListItem:
+                if (!ReferenceEquals(ListItemTemplate, template))
+                {
+                    engine.InvalidateRows();
+                }
+
+                ListItemTemplate = (RenderFragment<TItem>?)template;
+                break;
+        }
+    }
+
     internal void FinishCollectingColumns()
     {
         collecting = false;
@@ -351,6 +396,22 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
         await StateChanged.InvokeAsync(lastState);
     }
 
+    private static DataViewKind SingleView(DataViewKind views) =>
+        views.HasFlag(DataViewKind.Table) || views == DataViewKind.None ? DataViewKind.Table : DataViewKind.List;
+
+    internal async Task SwitchViewAsync(DataViewKind view)
+    {
+        if (view == CurrentView)
+        {
+            return;
+        }
+
+        chosenView = view;
+        engine.InvalidateRows();
+        await ViewChanged.InvokeAsync(view);
+        StateHasChanged();
+    }
+
     internal void SetDensity(TableDensity value)
     {
         density = value;
@@ -368,11 +429,11 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
 
     internal object? GetRowKey(TItem item) => engine.KeyGetter != null ? engine.KeyGetter(item) : item;
 
-    internal string? GetRowClass(TItem item)
+    internal string? GetRowClass(TItem item, bool table = true)
     {
-        var builder = new ClassBuilder(DataViewStyles.ColorClass(RowColor?.Invoke(item)));
+        var builder = new ClassBuilder(DataViewStyles.ColorClass(RowColor?.Invoke(item), table));
         builder.Add(RowClass?.Invoke(item));
-        if (RowHref != null)
+        if (RowHref != null && table)
         {
             builder.Add("dv-row-link");
         }
@@ -438,11 +499,13 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
 }
 
 /// <summary>Cascaded (fixed) to columns and views of a DataView.</summary>
-internal sealed class DataViewContext<TItem>(DataView<TItem> view)
+internal sealed class DataViewContext<TItem>(DataView<TItem> view) : IDataViewSlotHost
 {
     public DataView<TItem> View { get; } = view;
 
     public void AddColumn(IDataViewColumn<TItem> column) => View.AddColumn(column);
+
+    public void SetSlot(DataViewSlot slot, object? template) => View.SetSlot(slot, template);
 }
 
 /// <summary>Renders its content after the components before it, so the view renders after its columns registered.</summary>

@@ -1,0 +1,38 @@
+@namespace TabBlazor
+@typeparam TItem
+
+@{
+    var engine = View.Engine;
+    var columns = View.VisibleColumns;
+}
+<div class="list-group list-group-flush dv-list @(engine.IsLoading && engine.HasLoaded ? "dv-loading" : null)"
+     style="@(View.Height != null ? $"max-height: {View.Height}; overflow-y: auto;" : null)"
+     aria-busy="@(engine.IsLoading ? "true" : null)" @attributes="View.UnmatchedParameters">
+    @switch (View.Status)
+    {
+        case DataViewStatus.Items:
+            foreach (var item in engine.Items)
+            {
+                <DataListRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns" Version="engine.RenderVersion" />
+            }
+            break;
+        case DataViewStatus.FirstLoad when View.LoadingTemplate == null:
+            for (var i = 0; i < Math.Min(engine.PageSize, 5); i++)
+            {
+                <div class="list-group-item dv-placeholder-row placeholder-glow" aria-hidden="true">
+                    <div class="placeholder col-5 mb-1"></div>
+                    <div class="placeholder placeholder-xs col-8"></div>
+                </div>
+            }
+            break;
+        default:
+            <div class="list-group-item dv-state @DataViewStyles.StateClass(View.Status)">
+                <DataViewStateContent TItem="TItem" View="View" Status="View.Status" />
+            </div>
+            break;
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+}

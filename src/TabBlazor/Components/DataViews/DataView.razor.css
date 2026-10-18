@@ -114,3 +114,22 @@
 .dataview ::deep .dv-page-size .form-select {
     width: auto;
 }
+
+.dataview ::deep .dv-list-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1rem;
+}
+
+.dataview ::deep .dv-list .dv-state {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.dataview ::deep .dv-list-item {
+    cursor: default;
+}
+
+.dataview ::deep .dv-list-item.list-group-item-action {
+    cursor: pointer;
+}

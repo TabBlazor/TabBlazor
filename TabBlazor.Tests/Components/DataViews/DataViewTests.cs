@@ -68,8 +68,8 @@ namespace TabBlazor.Tests.Components.DataViews
         {
             var cut = RenderView(p => p
                 .Add(x => x.Items, Row.Many(1))
-                .Add(x => x.HeaderTemplate, b => b.AddMarkupContent(0, "<strong id=\"h\">Custom</strong>"))
-                .Add(x => x.ToolbarTemplate, b => b.AddMarkupContent(0, "<button id=\"tb\">Mine</button>")));
+                .AddChildContent<HeaderTemplate>(c => c.Add(x => x.ChildContent, b => b.AddMarkupContent(0, "<strong id=\"h\">Custom</strong>")))
+                .AddChildContent<ToolbarTemplate>(c => c.Add(x => x.ChildContent, b => b.AddMarkupContent(0, "<button id=\"tb\">Mine</button>"))));
 
             Assert.NotNull(cut.Find("#h"));
             Assert.NotNull(cut.Find(".dv-toolbar #tb"));
@@ -188,7 +188,7 @@ namespace TabBlazor.Tests.Components.DataViews
         {
             var cut = RenderView(p => p
                 .Add(x => x.Source, new FakeSource<Row>())
-                .Add(x => x.LoadingTemplate, b => b.AddMarkupContent(0, "<span id=\"wait\">wait</span>")));
+                .AddChildContent<LoadingTemplate>(c => c.Add(x => x.ChildContent, b => b.AddMarkupContent(0, "<span id=\"wait\">wait</span>"))));
 
             Assert.NotNull(cut.Find("#wait"));
         }
@@ -252,7 +252,7 @@ namespace TabBlazor.Tests.Components.DataViews
             var source = new FakeSource<Row> { Respond = _ => throw new InvalidOperationException("boom") };
             var cut = RenderView(p => p
                 .Add(x => x.Source, source)
-                .Add(x => x.ErrorTemplate, ex => b => b.AddMarkupContent(0, $"<span id=\"err\">{ex.Message}</span>")));
+                .AddChildContent<ErrorTemplate>(c => c.Add(x => x.ChildContent, ex => b => b.AddMarkupContent(0, $"<span id=\"err\">{ex.Message}</span>"))));
 
             cut.WaitForAssertion(() => Assert.Equal("boom", cut.Find("#err").TextContent));
         }
@@ -271,7 +271,7 @@ namespace TabBlazor.Tests.Components.DataViews
         {
             var cut = RenderView(p => p
                 .Add(x => x.Items, new List<Row>())
-                .Add(x => x.EmptyTemplate, b => b.AddMarkupContent(0, "<span id=\"none\">none</span>")));
+                .AddChildContent<EmptyTemplate>(c => c.Add(x => x.ChildContent, b => b.AddMarkupContent(0, "<span id=\"none\">none</span>"))));
 
             Assert.NotNull(cut.Find("#none"));
         }

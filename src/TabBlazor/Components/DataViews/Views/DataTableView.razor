@@ -3,7 +3,6 @@
 
 @{
     var engine = View.Engine;
-    var texts = View.Texts;
     var columns = View.VisibleColumns;
     var columnCount = Math.Max(1, columns.Count);
 }
@@ -35,32 +34,15 @@
             </tr>
         </thead>
         <tbody class="@(engine.IsLoading && engine.HasLoaded ? "dv-loading" : null)" aria-busy="@(engine.IsLoading ? "true" : null)">
-            @if (engine.Error != null)
+            @switch (View.Status)
             {
-                <tr class="dv-state-row dv-error">
-                    <td colspan="@columnCount">
-                        @if (View.ErrorTemplate != null)
-                        {
-                            @View.ErrorTemplate(engine.Error)
-                        }
-                        else
-                        {
-                            <div class="text-danger mb-2">@texts.LoadFailed @engine.Error.Message</div>
-                            <button type="button" class="btn btn-sm dv-retry" @onclick="View.ReloadAsync">@texts.Retry</button>
-                        }
-                    </td>
-                </tr>
-            }
-            else if (!engine.HasLoaded)
-            {
-                if (View.LoadingTemplate != null)
-                {
-                    <tr class="dv-state-row dv-loading-row">
-                        <td colspan="@columnCount">@View.LoadingTemplate</td>
-                    </tr>
-                }
-                else
-                {
+                case DataViewStatus.Items:
+                    foreach (var item in engine.Items)
+                    {
+                        <DataTableRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns" Version="engine.RenderVersion" />
+                    }
+                    break;
+                case DataViewStatus.FirstLoad when View.LoadingTemplate == null:
                     for (var i = 0; i < Math.Min(engine.PageSize, 5); i++)
                     {
                         <tr class="dv-placeholder-row placeholder-glow" aria-hidden="true">
@@ -70,48 +52,12 @@
                             }
                         </tr>
                     }
-                }
-            }
-            else if (engine.Items.Count == 0)
-            {
-                if (engine.HasSearchOrFilters)
-                {
-                    <tr class="dv-state-row dv-no-results">
-                        <td colspan="@columnCount">
-                            @if (View.NoResultsTemplate != null)
-                            {
-                                @View.NoResultsTemplate
-                            }
-                            else
-                            {
-                                <div class="text-secondary mb-2">@texts.NoResults</div>
-                                <button type="button" class="btn btn-sm dv-clear-filters" @onclick="View.ClearSearchAndFiltersAsync">@texts.ClearFilters</button>
-                            }
-                        </td>
+                    break;
+                default:
+                    <tr class="dv-state-row @DataViewStyles.StateClass(View.Status)">
+                        <td colspan="@columnCount"><DataViewStateContent TItem="TItem" View="View" Status="View.Status" /></td>
                     </tr>
-                }
-                else
-                {
-                    <tr class="dv-state-row dv-empty">
-                        <td colspan="@columnCount">
-                            @if (View.EmptyTemplate != null)
-                            {
-                                @View.EmptyTemplate
-                            }
-                            else
-                            {
-                                <span class="text-secondary">@texts.NoData</span>
-                            }
-                        </td>
-                    </tr>
-                }
-            }
-            else
-            {
-                foreach (var item in engine.Items)
-                {
-                    <DataTableRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns" Version="engine.RenderVersion" />
-                }
+                    break;
             }
         </tbody>
     </table>

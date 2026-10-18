@@ -4,6 +4,7 @@
 @{
     var engine = View.Engine;
     var texts = View.Texts;
+    var sortable = engine.Columns.Where(c => c.Sortable).ToList();
 }
 <div class="card-header dv-header">
     <div class="dv-title">
@@ -18,6 +19,50 @@
     </div>
     <div class="dv-toolbar">
         @View.ToolbarTemplate
+
+        @if (View.AvailableViews.Count > 1)
+        {
+            <div class="btn-group dv-view-switcher" role="group">
+                @foreach (var option in View.AvailableViews)
+                {
+                    var value = option;
+                    var active = View.CurrentView == value;
+                    <button type="button" class="btn btn-icon @(active ? "active" : null)" aria-pressed="@(active ? "true" : "false")"
+                            title="@ViewText(value)" aria-label="@ViewText(value)" @onclick="() => View.SwitchViewAsync(value)">
+                        <Icon IconType="@(value == DataViewKind.List ? InternalIcons.List : InternalIcons.Table)" />
+                    </button>
+                }
+            </div>
+        }
+
+        @if (View.CurrentView != DataViewKind.Table && sortable.Count > 0)
+        {
+            var current = sortable.FirstOrDefault(c => c.Id == engine.Sort?.Column);
+            <Dropdown class="dv-sort-menu">
+                <ChildContent>
+                    <button type="button" class="btn" aria-label="@texts.SortBy">
+                        <Icon IconType="@(current == null ? InternalIcons.Sortable : engine.Sort!.Descending ? InternalIcons.Sort_Desc : InternalIcons.Sort_Asc)" class="icon" />
+                        @(current == null ? texts.SortBy : current.Title)
+                    </button>
+                </ChildContent>
+                <DropdownTemplate>
+                    <DropdownMenu class="dropdown-menu-end">
+                        @foreach (var column in sortable)
+                        {
+                            var col = column;
+                            var sorted = engine.Sort?.Column == col.Id;
+                            <DropdownItem Active="sorted" OnClick="() => engine.ToggleSortAsync(col)">
+                                <span class="flex-fill">@col.Title</span>
+                                @if (sorted)
+                                {
+                                    <Icon IconType="@(engine.Sort!.Descending ? InternalIcons.Sort_Desc : InternalIcons.Sort_Asc)" class="icon ms-2" />
+                                }
+                            </DropdownItem>
+                        }
+                    </DropdownMenu>
+                </DropdownTemplate>
+            </Dropdown>
+        }
 
         @if (View.SearchVisible)
         {
@@ -67,6 +112,8 @@
     private static readonly TableDensity[] densities = [TableDensity.Compact, TableDensity.Normal, TableDensity.Comfortable];
 
     [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+
+    private string ViewText(DataViewKind value) => value == DataViewKind.List ? View.Texts.ListView : View.Texts.TableView;
 
     private string DensityText(TableDensity value) => value switch
     {

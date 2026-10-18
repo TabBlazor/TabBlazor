@@ -29,6 +29,8 @@ public sealed record DataViewText
     public string LastPage { get; init; } = "Last page";
     public string OpenRow { get; init; } = "Open";
     public string SortBy { get; init; } = "Sort by";
+    public string TableView { get; init; } = "Table";
+    public string ListView { get; init; } = "List";
 
     /// <summary>"Showing {first}–{last} of {total}". Arguments: first, last, total.</summary>
     public string ShowingOfTotal { get; init; } = "Showing {0}–{1} of {2}";

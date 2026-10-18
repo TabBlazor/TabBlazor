@@ -9,6 +9,14 @@
                 where "ada" is in one column and "2026" in another. Quotes keep a phrase together.
             </Description>
         </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsList)" Title="List view">
+            <Description>
+                The same engine can show items as a list. <code>Views</code> adds a view switcher to the toolbar;
+                switching keeps the page, sort and search. Views without column headers get a sort menu.
+                <code>DataListItem</code> gives the common layout: avatar, title, subtitle and meta. Without a
+                <code>ListItemTemplate</code>, the columns build "Label: value" lines.
+            </Description>
+        </CodeSnippet>
         <CodeSnippet SetBackground Component="@typeof(DataViewsRemote)" Title="Remote data with ItemsProvider">
             <Description>
                 <code>ItemsProvider</code> receives a <code>DataRequest</code> (paging, sorts, search terms, filters and

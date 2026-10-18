@@ -1,0 +1,89 @@
+@namespace TabBlazor
+@typeparam TItem
+
+@{
+    var href = View.RowHref?.Invoke(Item);
+    var css = new ClassBuilder("list-group-item dv-list-item")
+        .AddIf("list-group-item-action", href != null || View.OnRowClicked.HasDelegate)
+        .Add(View.GetRowClass(Item, table: false))
+        .ToString();
+}
+@if (href != null)
+{
+    <a class="@css" style="@View.RowStyle?.Invoke(Item)" href="@href" @onclick="OnClickAsync">
+        @Content
+    </a>
+}
+else
+{
+    <div class="@css" style="@View.RowStyle?.Invoke(Item)" @onclick="OnClickAsync">
+        @Content
+    </div>
+}
+
+@code {
+    private TItem renderedItem = default!;
+    private int renderedVersion = -1;
+
+    [Parameter, EditorRequired] public TItem Item { get; set; } = default!;
+    [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+    [Parameter, EditorRequired] public IReadOnlyList<IDataViewColumn<TItem>> Columns { get; set; } = default!;
+
+    /// <summary>Items re-render only when their item or the view's row version changes.</summary>
+    [Parameter] public int Version { get; set; }
+
+    protected override void OnInitialized()
+    {
+        renderedItem = Item;
+        renderedVersion = Version;
+    }
+
+    protected override bool ShouldRender()
+    {
+        if (ReferenceEquals(renderedItem, Item) && renderedVersion == Version)
+        {
+            return false;
+        }
+
+        renderedItem = Item;
+        renderedVersion = Version;
+        return true;
+    }
+
+    private RenderFragment Content => builder =>
+    {
+        if (View.ListItemTemplate != null)
+        {
+            builder.AddContent(0, View.ListItemTemplate(Item));
+        }
+        else
+        {
+            builder.AddContent(1, DefaultContent);
+        }
+    };
+
+    // Without a template: the first column as the title, the others as "Label: value".
+    private RenderFragment DefaultContent => __builder =>
+    {
+        if (Columns.Count == 0)
+        {
+            return;
+        }
+
+        <div class="dv-list-title fw-medium">@{ Columns[0].RenderCell(__builder, Item); }</div>
+        @if (Columns.Count > 1)
+        {
+            <div class="dv-list-fields text-secondary">
+                @foreach (var column in Columns.Skip(1))
+                {
+                    <span class="dv-list-field">
+                        <span class="dv-list-label">@column.Title:</span>
+                        <span class="text-body">@{ column.RenderCell(__builder, Item); }</span>
+                    </span>
+                }
+            </div>
+        }
+    };
+
+    private Task OnClickAsync() => View.HandleRowClickAsync(Item);
+}

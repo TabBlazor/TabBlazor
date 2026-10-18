@@ -51,3 +51,26 @@ Running list of places where the implementation differs from, or fills a gap in,
   while rendering.
 - `Align` (TabBlazor) clashes with `ApexCharts.Align` in apps that import both; the docs examples
   use `@using Align = TabBlazor.Align`, as the Table docs already do.
+
+## Phase 2: list view
+
+- **Templates are slot components, not `RenderFragment` parameters.** Razor does not allow
+  columns and named templates side by side (`<DataColumn …/>` next to `<ListItemTemplate>`)
+  unless the columns are wrapped in `<ChildContent>`. So that the doc's markup works as
+  written, `HeaderTemplate`, `ToolbarTemplate`, `LoadingTemplate`, `EmptyTemplate`,
+  `NoResultsTemplate`, `ErrorTemplate` (context: the exception) and `ListItemTemplate` (context:
+  the item) are small components that register with the view, in any order among the columns.
+  Inside other components with a parameter of the same name (Table's `HeaderTemplate`), the
+  parameter still wins, so existing markup is unaffected. Later templates (`DetailsTemplate`,
+  `RowActions`, …) follow the same pattern.
+- **The view enum is `DataViewKind`, not `DataViews`.** A type named `DataViews` clashes with
+  any namespace ending in `.DataViews` (a common folder name; our own docs and tests hit it).
+  Usage: `View="DataViewKind.List" Views="DataViewKind.Table | DataViewKind.List"`.
+- **`View` is nullable** (`DataViewKind?`, with `ViewChanged` for `@bind-View`); when not set,
+  the first view in `Views` is shown (table when it is included).
+- **`DataListItem`** is an extra helper component for the doc's list layout (avatar, title,
+  subtitle, meta on the right), for use inside `ListItemTemplate`.
+- In the list view, `RowColor` maps every color to Tabler's light backgrounds (`bg-danger-lt`),
+  since the table's contextual classes (`table-danger`) do not apply to list items.
+- The view switcher sits after `ToolbarTemplate`, followed by the sort menu (list view only),
+  then search; the doc did not place it.

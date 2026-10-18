@@ -20,9 +20,16 @@
                 <DataViewHeader TItem="TItem" View="this" />
             }
 
-            <DataTableView TItem="TItem" View="this" />
+            @if (CurrentView == DataViewKind.List)
+            {
+                <DataListView TItem="TItem" View="this" />
+            }
+            else
+            {
+                <DataTableView TItem="TItem" View="this" />
+            }
 
-            @if (ShowFooter && engine.HasLoaded && engine.Error == null && engine.Items.Count > 0)
+            @if (ShowFooter && Status == DataViewStatus.Items)
             {
                 <DataViewFooter TItem="TItem" View="this" />
             }
