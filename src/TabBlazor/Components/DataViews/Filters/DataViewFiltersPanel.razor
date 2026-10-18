@@ -1,0 +1,34 @@
+@namespace TabBlazor
+@typeparam TItem
+
+@{
+    var texts = View.Texts;
+    var columns = View.FilterableColumns
+        .OrderByDescending(c => View.GetFilter(c.Id) != null)
+        .ToList();
+}
+<div class="dv-filters-panel" @onclick:stopPropagation="true">
+    @foreach (var column in columns)
+    {
+        var col = column;
+        var active = View.GetFilter(col.Id) != null;
+        <div class="dv-filters-panel-item mb-3">
+            <div class="d-flex align-items-center mb-1">
+                <label class="form-label mb-0 me-auto">@col.Title</label>
+                @if (active)
+                {
+                    <button type="button" class="btn btn-link btn-sm p-0 dv-filter-clear" @onclick="() => View.SetColumnFilterAsync(col.Id, null)">@texts.ClearFilter</button>
+                }
+            </div>
+            <DataColumnFilter TItem="TItem" View="View" Column="col" />
+        </div>
+    }
+    @if (View.ActiveFilterCount > 0)
+    {
+        <button type="button" class="btn btn-sm w-100 dv-filters-clear-all" @onclick="View.ClearFiltersAsync">@texts.ClearAllFilters</button>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+}

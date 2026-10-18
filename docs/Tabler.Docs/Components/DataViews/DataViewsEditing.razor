@@ -1,0 +1,57 @@
+@using Align = TabBlazor.Align
+
+<div class="btn-group mb-2" role="group">
+    @foreach (var mode in new[] { DataEditMode.Inline, DataEditMode.Popup, DataEditMode.Drawer })
+    {
+        var m = mode;
+        <button class="btn @(editMode == m ? "active" : null)" @onclick="() => editMode = m">@m</button>
+    }
+</div>
+
+<DataView Items="orders" Title="Orders" KeySelector="o => o.Id" PageSize="8" EditMode="editMode"
+          SaveItem="SaveAsync" DeleteItem="DeleteAsync" NewItem="NewOrder">
+    <DataColumn Value="o => o.OrderNo" Sortable Searchable />
+    <DataColumn Value="o => o.FirstName" Sortable Searchable />
+    <DataColumn Value="o => o.LastName" Sortable Searchable />
+    <DataColumn Value="o => o.Status" Sortable />
+    <DataColumn Value="o => o.OrderDate" Format="yyyy-MM-dd" Sortable DefaultSort="SortOrder.Descending" />
+    <DataColumn Value="o => o.Quantity" Align="Align.End" />
+    <DataColumn Value="o => o.Total" Format="N2" Align="Align.End" />
+</DataView>
+
+@code {
+    private readonly List<DemoOrder> orders = DataViewDemoData.Create(40);
+    private DataEditMode editMode = DataEditMode.Inline;
+
+    private DemoOrder NewOrder() => new()
+    {
+        Id = orders.Max(o => o.Id) + 1,
+        OrderNo = $"SO-2026-{orders.Max(o => o.Id) + 1:0000}",
+        OrderDate = DateTime.Today,
+        Quantity = 1,
+        Customer = new DemoCustomer { Name = "Odio Corporation" }
+    };
+
+    // The draft is a copy: the row in the list only changes when this returns Saved.
+    private async Task<EditResult<DemoOrder>> SaveAsync(DataEditContext<DemoOrder> ctx)
+    {
+        await Task.Delay(400); // stands in for a call to the server
+
+        if (orders.Any(o => o.OrderNo == ctx.Draft.OrderNo && o.Id != ctx.Draft.Id))
+        {
+            return EditResult.Invalid(("orderNo", "Order number already exists"));
+        }
+
+        if (ctx.Draft.Status == DemoOrderStatus.Cancelled && ctx.Original?.Status == DemoOrderStatus.Shipped)
+        {
+            return EditResult.Failed("A shipped order cannot be cancelled.");
+        }
+
+        return EditResult.Saved(ctx.Draft);
+    }
+
+    private Task<EditResult> DeleteAsync(DemoOrder order) =>
+        Task.FromResult(order.Status == DemoOrderStatus.Shipped
+            ? EditResult.Failed("Shipped orders cannot be deleted.")
+            : EditResult.Deleted());
+}

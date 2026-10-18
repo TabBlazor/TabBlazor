@@ -1,0 +1,52 @@
+<DataView Items="orders" Title="Orders" KeySelector="o => o.Id" PageSize="8"
+          SaveItem="ctx => Task.FromResult(EditResult.Saved(ctx.Draft))" DeleteItem="DeleteAsync">
+    <DataColumn Value="o => o.OrderNo" Sortable Searchable />
+    <DataColumn Value="o => o.Customer.Name" Title="Customer" Searchable />
+    <DataColumn Value="o => o.Status" Sortable />
+
+    <RowActions>
+        <EditAction />
+        <DeleteAction />
+        <RowAction Title="Open" Icon="@TablerIcons.External_link" Href="@(o => $"docs/data-views?order={o.Id}")" />
+        <RowAction Title="Duplicate" Icon="@TablerIcons.Copy" OnClick="@(o => DuplicateAsync(o))" />
+        <RowAction Title="Archive" Icon="@TablerIcons.Archive" OnClick="@(o => ArchiveAsync(o))"
+                   Visible="@(o => o.Status != DemoOrderStatus.Cancelled)" Confirm="Archive this order?" Danger />
+    </RowActions>
+</DataView>
+
+@code {
+    private readonly List<DemoOrder> orders = DataViewDemoData.Create(30);
+
+    private async Task DuplicateAsync(DemoOrder order)
+    {
+        await Task.Delay(800); // the button shows a spinner meanwhile
+        orders.Add(new DemoOrder
+        {
+            Id = orders.Max(o => o.Id) + 1,
+            OrderNo = order.OrderNo + "-copy",
+            FirstName = order.FirstName,
+            LastName = order.LastName,
+            Customer = order.Customer,
+            OrderDate = DateTime.Today,
+            Quantity = order.Quantity,
+            Price = order.Price
+        });
+    }
+
+    private Task ArchiveAsync(DemoOrder order)
+    {
+        if (order.Status == DemoOrderStatus.Shipped)
+        {
+            throw new InvalidOperationException("Shipped orders are archived automatically.");
+        }
+
+        order.Status = DemoOrderStatus.Cancelled;
+        return Task.CompletedTask;
+    }
+
+    private Task<EditResult> DeleteAsync(DemoOrder order)
+    {
+        orders.Remove(order);
+        return Task.FromResult(EditResult.Deleted());
+    }
+}

@@ -1,0 +1,46 @@
+@namespace TabBlazor
+@typeparam TItem
+
+@switch (Status)
+{
+    case DataViewStatus.Error:
+        if (View.ErrorTemplate != null)
+        {
+            @View.ErrorTemplate(View.Engine.Error!)
+        }
+        else
+        {
+            <div class="text-danger mb-2">@View.Texts.LoadFailed @View.Engine.Error!.Message</div>
+            <button type="button" class="btn btn-sm dv-retry" @onclick="View.ReloadAsync">@View.Texts.Retry</button>
+        }
+        break;
+    case DataViewStatus.NoResults:
+        if (View.NoResultsTemplate != null)
+        {
+            @View.NoResultsTemplate
+        }
+        else
+        {
+            <div class="text-secondary mb-2">@View.Texts.NoResults</div>
+            <button type="button" class="btn btn-sm dv-clear-filters" @onclick="View.ClearSearchAndFiltersAsync">@View.Texts.ClearFilters</button>
+        }
+        break;
+    case DataViewStatus.Empty:
+        if (View.EmptyTemplate != null)
+        {
+            @View.EmptyTemplate
+        }
+        else
+        {
+            <span class="text-secondary">@View.Texts.NoData</span>
+        }
+        break;
+    case DataViewStatus.FirstLoad:
+        @View.LoadingTemplate
+        break;
+}
+
+@code {
+    [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+    [Parameter, EditorRequired] public DataViewStatus Status { get; set; }
+}

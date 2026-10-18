@@ -1,0 +1,71 @@
+@page "/docs/data-views/migration"
+
+<Page>
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <h2 class="page-title mb-3">Moving to DataView</h2>
+            <p>
+                <a href="docs/data-views">DataView</a> replaces <code>Table</code> and <code>QuickTable</code>. Both keep working;
+                they will be marked obsolete one release after DataView covers everything they do. Moving a page is mostly
+                renaming: the column API stays close to Table's.
+            </p>
+
+            <div class="card mb-4">
+                <div class="card-header"><h3 class="card-title">From Table</h3></div>
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter">
+                        <thead><tr><th>Table</th><th>DataView</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>&lt;Table Item="Order" Items="orders"&gt;</code></td><td><code>&lt;DataView Items="orders"&gt;</code> (<code>TItem</code> is inferred)</td></tr>
+                            <tr><td><code>&lt;Column Property="o =&gt; o.Name"&gt;</code></td><td><code>&lt;DataColumn Value="o =&gt; o.Name"&gt;</code>; <code>Value</code> takes any expression</td></tr>
+                            <tr><td><code>Sortable</code>, <code>Searchable</code>, <code>Template</code>, <code>EditorTemplate</code>, <code>HeaderTemplate</code>, <code>Align</code></td><td>Same names</td></tr>
+                            <tr><td><code>SearchExpression</code></td><td>Same; <code>FilterBy</code> is often simpler and also works for remote sources</td></tr>
+                            <tr><td><code>Sort</code> on a column</td><td><code>DefaultSort</code></td></tr>
+                            <tr><td><code>Column.CssClass</code></td><td><code>Class</code>, plus <code>CellClass</code>, <code>CellColor</code>, <code>CellStyle</code> per row</td></tr>
+                            <tr><td><code>ColumnVisibility</code> (ViewOnly/EditOnly)</td><td><code>ShowIn</code> with the same enum</td></tr>
+                            <tr><td><code>OnItemEdited</code>, <code>OnItemAdded</code> (EventCallback)</td><td><code>SaveItem</code>: a <code>Func</code> that gets a <code>DataEditContext</code> (Original, Draft, IsNew) and returns <code>EditResult.Saved(item)</code>, <code>Failed(message)</code> or <code>Invalid((field, message))</code></td></tr>
+                            <tr><td><code>OnItemDeleted</code></td><td><code>DeleteItem</code> returning <code>EditResult.Deleted()</code> or <code>Failed(...)</code>; <code>DeleteItems</code> for bulk delete</td></tr>
+                            <tr><td><code>AddItemFactory</code> / add row button</td><td><code>NewItem</code>; the <b>+ Add</b> button moves into the header</td></tr>
+                            <tr><td><code>EditMode</code> (Inline/Popup/Custom), <code>CancelStrategy</code></td><td><code>EditMode</code> (Inline/Popup/Drawer/Custom). Editing always uses a draft copy, so there is no cancel strategy: cancel throws the draft away</td></tr>
+                            <tr><td><code>OnBeforeEdit</code></td><td><code>OnEditStarting</code> (awaited, can cancel); <code>OnEditCanceled</code>, <code>OnSaved</code></td></tr>
+                            <tr><td><code>RowActionTemplate</code>, <code>RowActionEndTemplate</code>, <code>ActionColumn</code></td><td><code>&lt;RowActions&gt;</code> with <code>&lt;EditAction /&gt;</code>, <code>&lt;DeleteAction /&gt;</code>, <code>&lt;RowAction&gt;</code>, or <code>&lt;RowActionsTemplate&gt;</code> with a row context whose <code>Save()</code> runs the normal save flow</td></tr>
+                            <tr><td><code>DetailsTemplate</code> (tied to the selected row)</td><td><code>&lt;DetailsTemplate&gt;</code> with <code>DetailsMode</code> Inline, Drawer or SidePanel; details are separate from selection</td></tr>
+                            <tr><td><code>Selectable</code>, <code>ShowCheckboxes</code>, <code>MultiSelect</code></td><td><code>SelectionMode</code> (None/Single/Multiple); <code>@@bind-SelectedItems</code> stays. Selection is by <code>KeySelector</code>, so it survives reloads</td></tr>
+                            <tr><td><code>PageSize</code>, <code>ShowFooter</code>, <code>ShowHeader</code>, <code>HeaderTemplate</code>, <code>Hover</code>, <code>OnRowClicked</code></td><td>Same names; <code>Title</code> for a plain title, <code>&lt;ToolbarTemplate&gt;</code> for your own buttons</td></tr>
+                            <tr><td><code>UseNaturalSort</code></td><td><code>NaturalSort</code></td></tr>
+                            <tr><td><code>IDataProvider</code></td><td><code>ItemsProvider</code> or <code>Source</code>: gets a <code>DataRequest</code>, returns a <code>DataPage</code>, with cancellation</td></tr>
+                            <tr><td>Grouping (<code>Groupable</code>, <code>GroupingTemplate</code>)</td><td>Not available (it only grouped the current page)</td></tr>
+                            <tr><td><code>MoveToItem</code>, <code>TempItems</code>, <code>resetPage</code>/<code>addSorting</code> flags</td><td>Removed; use <code>GoToPageAsync</code>, <code>SetSortAsync</code>, <code>@@bind-State</code></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header"><h3 class="card-title">From QuickTable</h3></div>
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter">
+                        <thead><tr><th>QuickTable</th><th>DataView</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>&lt;PropertyColumn Property="..."&gt;</code></td><td><code>&lt;DataColumn Value="..."&gt;</code></td></tr>
+                            <tr><td><code>&lt;TemplateColumn&gt;</code></td><td><code>&lt;DataColumn&gt;</code> with a <code>Template</code> (and an <code>Id</code> when it has no <code>Value</code>)</td></tr>
+                            <tr><td><code>Items</code> (<code>IQueryable</code>)</td><td><code>Items</code> for local lists; for EF Core use <code>ItemsProvider</code> with a context per request (see the EF Core example)</td></tr>
+                            <tr><td><code>ItemsProvider</code> (<code>GridItemsProvider</code>)</td><td><code>ItemsProvider</code>: <code>(DataRequest, CancellationToken) =&gt; DataPage</code>; sorts arrive as column ids</td></tr>
+                            <tr><td><code>Pagination</code> + <code>&lt;Paginator&gt;</code></td><td>Built in: <code>PageSize</code>, <code>PageSizes</code>, offset or cursor pager</td></tr>
+                            <tr><td><code>Virtualize</code>, <code>ItemSize</code></td><td>Same names, plus <code>Height</code> and <code>OverscanCount</code>; works with cursor sources as infinite scroll</td></tr>
+                            <tr><td><code>ResizableColumns</code>, <code>ColumnOptions</code></td><td>Same names</td></tr>
+                            <tr><td><code>ItemKey</code></td><td><code>KeySelector</code></td></tr>
+                            <tr><td><code>IsDefaultSort</code> on a column</td><td><code>DefaultSort="SortOrder.Descending"</code></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <b>Security:</b> in WebAssembly or Auto render mode a <code>DataRequest</code> posted to an API comes from the
+                browser. The server must check every column, path and operator against an allow-list, as DataView itself does for
+                URL state.
+            </div>
+        </div>
+    </div>
+</Page>

@@ -1,0 +1,221 @@
+@namespace TabBlazor
+@typeparam TItem
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+
+@{
+    var engine = View.Engine;
+    var columns = View.VisibleColumns;
+    var columnCount = Math.Max(1, columns.Count + (View.ShowCheckboxes ? 1 : 0) + (View.ShowExpandColumn ? 1 : 0) + (View.ShowActionsColumn ? 1 : 0));
+    var inlineEdit = View.EditSession != null && View.EffectiveEditMode == DataEditMode.Inline;
+}
+<div class="table-responsive dv-scroll" style="@ScrollStyle" @ref="View.ScrollContainer">
+    <table class="@View.GetTableClass()" @ref="View.TableElement" style="@(View.IsVirtualized ? $"--dv-row-height: {View.ItemSize.ToString(System.Globalization.CultureInfo.InvariantCulture)}px" : null)" @attributes="View.UnmatchedParameters">
+        <thead>
+            <tr>
+                @if (View.ShowCheckboxes)
+                {
+                    <th class="w-1 dv-select-column">
+                        <span title="@View.Texts.SelectAll">
+                            <CheckboxTriState Value="View.PageSelectionState" ValueChanged="_ => View.TogglePageSelectionAsync()"
+                                              Disabled="@(View.Status != DataViewStatus.Items)" />
+                        </span>
+                    </th>
+                }
+                @if (View.ShowExpandColumn)
+                {
+                    <th class="w-1 dv-expand-column"><span class="visually-hidden">@View.Texts.Details</span></th>
+                }
+                @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.Start)
+                {
+                    <th class="w-1 dv-actions-column"></th>
+                }
+                @foreach (var column in columns)
+                {
+                    var col = column;
+                    var sorted = engine.Sort?.Column == col.Id;
+                    var headerClass = col == columns[0] ? $"dv-first-col {col.GetHeaderClass()}" : col.GetHeaderClass();
+                    <th scope="col" class="@headerClass" style="@View.GetHeaderStyle(col)" data-column-id="@col.Id"
+                        aria-sort="@(col.Sortable ? sorted ? engine.Sort!.Descending ? "descending" : "ascending" : "none" : null)">
+                        <div class="dv-th">
+                        @if (col.Sortable)
+                        {
+                            <button type="button" class="dv-sort-button" @onclick="() => engine.ToggleSortAsync(col)">
+                                @HeaderContent(col)
+                                <span class="dv-sort-icon @(sorted ? "active" : null)">
+                                    <Icon Size="16" IconType="@(sorted ? engine.Sort!.Descending ? InternalIcons.Sort_Desc : InternalIcons.Sort_Asc : InternalIcons.Sortable)" />
+                                </span>
+                            </button>
+                        }
+                        else
+                        {
+                            @HeaderContent(col)
+                        }
+                        @if (col.Filterable && View.FilterMode == DataFilterMode.Menu)
+                        {
+                            var active = View.GetFilter(col.Id) != null;
+                            <Dropdown CloseOnClick="false" class="dv-filter-menu">
+                                <ChildContent>
+                                    <button type="button" class="btn btn-icon btn-sm btn-ghost-@(active ? "primary" : "secondary") dv-filter-button @(active ? "dv-filter-active" : null)"
+                                            title="@($"{View.Texts.Filter}: {col.Title}")" aria-label="@($"{View.Texts.Filter}: {col.Title}")" aria-pressed="@(active ? "true" : "false")">
+                                        <Icon IconType="@InternalIcons.Filter" Size="16" />
+                                    </button>
+                                </ChildContent>
+                                <DropdownTemplate>
+                                    <DropdownMenu Card="true" class="p-3 dv-filter-menu-card">
+                                        <DataColumnFilter TItem="TItem" View="View" Column="col" />
+                                        @if (active)
+                                        {
+                                            <button type="button" class="btn btn-link btn-sm px-0 mt-2 dv-filter-clear"
+                                                    @onclick="() => View.SetColumnFilterAsync(col.Id, null)">@View.Texts.ClearFilter</button>
+                                        }
+                                    </DropdownMenu>
+                                </DropdownTemplate>
+                            </Dropdown>
+                        }
+                        @if (col.ColumnOptions != null)
+                        {
+                            <Dropdown CloseOnClick="false" class="dv-column-options">
+                                <ChildContent>
+                                    <button type="button" class="btn btn-icon btn-sm btn-ghost-secondary" title="@View.Texts.ColumnOptions" aria-label="@View.Texts.ColumnOptions">
+                                        <Icon IconType="@InternalIcons.Dots_vertical" Size="16" />
+                                    </button>
+                                </ChildContent>
+                                <DropdownTemplate>
+                                    <DropdownMenu Card="true" class="dv-column-options-menu p-3">@col.ColumnOptions</DropdownMenu>
+                                </DropdownTemplate>
+                            </Dropdown>
+                        }
+                        </div>
+                        @if (View.ResizableColumns)
+                        {
+                            <span class="dv-resize-handle" aria-hidden="true"></span>
+                        }
+                    </th>
+                }
+                @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.End)
+                {
+                    <th class="w-1 dv-actions-column"></th>
+                }
+            </tr>
+            @if (View.FilterMode == DataFilterMode.Row && View.FilterableColumns.Count > 0)
+            {
+                <tr class="dv-filter-row">
+                    @if (View.ShowCheckboxes)
+                    {
+                        <th></th>
+                    }
+                    @if (View.ShowExpandColumn)
+                    {
+                        <th></th>
+                    }
+                    @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.Start)
+                    {
+                        <th></th>
+                    }
+                    @foreach (var column in columns)
+                    {
+                        <th class="@column.GetHeaderClass()">
+                            @if (column.Filterable)
+                            {
+                                <DataColumnFilter TItem="TItem" View="View" Column="column" Compact="true" />
+                            }
+                        </th>
+                    }
+                    @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.End)
+                    {
+                        <th></th>
+                    }
+                </tr>
+            }
+        </thead>
+        <tbody class="@(engine.IsLoading && engine.HasLoaded ? "dv-loading" : null)" aria-busy="@(engine.IsLoading ? "true" : null)">
+            @if (inlineEdit && View.EditSession!.IsNew)
+            {
+                <DataTableEditRow TItem="TItem" View="View" Session="View.EditSession" />
+            }
+            @switch (View.Status)
+            {
+                case DataViewStatus.Items when View.IsVirtualized:
+                    <Virtualize @ref="View.VirtualizeComponent" TItem="TItem" ItemsProvider="View.ProvideVirtualItemsAsync"
+                                ItemSize="View.ItemSize" OverscanCount="View.OverscanCount" SpacerElement="tr" Context="item">
+                        <ItemContent>
+                            @if (inlineEdit && View.IsEditingRow(item))
+                            {
+                                <DataTableEditRow @key="View.GetRowKey(item)" TItem="TItem" View="View" Session="View.EditSession!" />
+                            }
+                            else
+                            {
+                                <DataTableRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns"
+                                              Version="engine.RenderVersion" State="View.GetRowState(item)" />
+                            }
+                        </ItemContent>
+                        <Placeholder>
+                            <tr class="dv-placeholder-row placeholder-glow" aria-hidden="true">
+                                @for (var c = 0; c < columnCount; c++)
+                                {
+                                    <td><span class="placeholder col-8"></span></td>
+                                }
+                            </tr>
+                        </Placeholder>
+                    </Virtualize>
+                    break;
+                case DataViewStatus.Items:
+                    foreach (var item in engine.Items)
+                    {
+                        if (inlineEdit && View.IsEditingRow(item))
+                        {
+                            <DataTableEditRow @key="View.GetRowKey(item)" TItem="TItem" View="View" Session="View.EditSession!" />
+                            continue;
+                        }
+
+                        var state = View.GetRowState(item);
+                        <DataTableRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns"
+                                      Version="engine.RenderVersion" State="state" />
+                        if (state.Expanded && View.ShowExpandColumn)
+                        {
+                            <tr @key="(View.GetRowKey(item), 1)" class="dv-details-row">
+                                <td colspan="@columnCount">@View.DetailsTemplate!(View.GetDetailsContext(item))</td>
+                            </tr>
+                        }
+                    }
+                    break;
+                case DataViewStatus.FirstLoad when View.LoadingTemplate == null:
+                    for (var i = 0; i < Math.Min(engine.PageSize, 5); i++)
+                    {
+                        <tr class="dv-placeholder-row placeholder-glow" aria-hidden="true">
+                            @for (var c = 0; c < columnCount; c++)
+                            {
+                                <td><span class="placeholder col-8"></span></td>
+                            }
+                        </tr>
+                    }
+                    break;
+                default:
+                    <tr class="dv-state-row @DataViewStyles.StateClass(View.Status)">
+                        <td colspan="@columnCount"><DataViewStateContent TItem="TItem" View="View" Status="View.Status" /></td>
+                    </tr>
+                    break;
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+
+    private string ScrollStyle => View.Height == null
+        ? null
+        : View.IsVirtualized ? $"height: {View.Height}; overflow-y: auto;" : $"max-height: {View.Height};";
+
+    private static RenderFragment HeaderContent(IDataViewColumn<TItem> column) => builder =>
+    {
+        if (column.HeaderTemplate != null)
+        {
+            builder.AddContent(0, column.HeaderTemplate);
+        }
+        else
+        {
+            builder.AddContent(1, column.Title);
+        }
+    };
+}

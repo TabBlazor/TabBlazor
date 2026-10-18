@@ -1,0 +1,321 @@
+schema {
+  query: Query
+}
+
+type Query {
+  items(
+    "Returns the first _n_ elements from the list."
+    first: Int
+    "Returns the elements in the list that come after the specified cursor."
+    after: String
+    "Returns the last _n_ elements from the list."
+    last: Int
+    "Returns the elements in the list that come before the specified cursor."
+    before: String
+    where: TestItemFilterInput @cost(weight: "10")
+    order: [TestItemSortInput!] @cost(weight: "10")
+  ): ItemsConnection
+    @listSize(
+      assumedSize: 200
+      slicingArguments: ["first", "last"]
+      slicingArgumentDefaultValue: 10
+      sizedFields: ["edges", "nodes"]
+      requireOneSlicingArgument: false
+    )
+    @cost(weight: "10")
+  itemsNoTotalCount(
+    "Returns the first _n_ elements from the list."
+    first: Int
+    "Returns the elements in the list that come after the specified cursor."
+    after: String
+    "Returns the last _n_ elements from the list."
+    last: Int
+    "Returns the elements in the list that come before the specified cursor."
+    before: String
+    where: TestItemFilterInput @cost(weight: "10")
+    order: [TestItemSortInput!] @cost(weight: "10")
+  ): ItemsNoTotalCountConnection
+    @listSize(
+      assumedSize: 200
+      slicingArguments: ["first", "last"]
+      slicingArgumentDefaultValue: 10
+      sizedFields: ["edges", "nodes"]
+      requireOneSlicingArgument: false
+    )
+    @cost(weight: "10")
+  itemsOffset(
+    skip: Int
+    take: Int
+    where: TestItemFilterInput @cost(weight: "10")
+    order: [TestItemSortInput!] @cost(weight: "10")
+  ): ItemsOffsetCollectionSegment
+    @listSize(
+      assumedSize: 200
+      slicingArguments: ["take"]
+      slicingArgumentDefaultValue: 10
+      sizedFields: ["items"]
+      requireOneSlicingArgument: false
+    )
+    @cost(weight: "10")
+}
+
+"Information about the offset pagination."
+type CollectionSegmentInfo {
+  "Indicates whether more items exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more items exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
+}
+
+"A connection to a list of items."
+type ItemsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [ItemsEdge!]
+  "A flattened list of the nodes."
+  nodes: [TestItem!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int! @cost(weight: "10")
+}
+
+"An edge in a connection."
+type ItemsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: TestItem!
+}
+
+"A connection to a list of items."
+type ItemsNoTotalCountConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [ItemsNoTotalCountEdge!]
+  "A flattened list of the nodes."
+  nodes: [TestItem!]
+}
+
+"An edge in a connection."
+type ItemsNoTotalCountEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: TestItem!
+}
+
+"A segment of a collection."
+type ItemsOffsetCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [TestItem!]
+  totalCount: Int! @cost(weight: "10")
+}
+
+"Information about pagination in a connection."
+type PageInfo {
+  "Indicates whether more edges exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more edges exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
+  "When paginating backwards, the cursor to continue."
+  startCursor: String
+  "When paginating forwards, the cursor to continue."
+  endCursor: String
+}
+
+type TestCustomer {
+  name: String!
+}
+
+type TestItem {
+  id: Int!
+  firstName: String!
+  lastName: String!
+  customer: TestCustomer
+  quantity: Int!
+  price: Decimal!
+  date: DateTime!
+  active: Boolean!
+  status: TestStatus!
+  code: UUID!
+  note: String
+}
+
+input BooleanOperationFilterInput {
+  eq: Boolean @cost(weight: "10")
+  neq: Boolean @cost(weight: "10")
+}
+
+input DateTimeOperationFilterInput {
+  eq: DateTime @cost(weight: "10")
+  neq: DateTime @cost(weight: "10")
+  in: [DateTime] @cost(weight: "10")
+  nin: [DateTime] @cost(weight: "10")
+  gt: DateTime @cost(weight: "10")
+  ngt: DateTime @cost(weight: "10")
+  gte: DateTime @cost(weight: "10")
+  ngte: DateTime @cost(weight: "10")
+  lt: DateTime @cost(weight: "10")
+  nlt: DateTime @cost(weight: "10")
+  lte: DateTime @cost(weight: "10")
+  nlte: DateTime @cost(weight: "10")
+}
+
+input DecimalOperationFilterInput {
+  eq: Decimal @cost(weight: "10")
+  neq: Decimal @cost(weight: "10")
+  in: [Decimal] @cost(weight: "10")
+  nin: [Decimal] @cost(weight: "10")
+  gt: Decimal @cost(weight: "10")
+  ngt: Decimal @cost(weight: "10")
+  gte: Decimal @cost(weight: "10")
+  ngte: Decimal @cost(weight: "10")
+  lt: Decimal @cost(weight: "10")
+  nlt: Decimal @cost(weight: "10")
+  lte: Decimal @cost(weight: "10")
+  nlte: Decimal @cost(weight: "10")
+}
+
+input IntOperationFilterInput {
+  eq: Int @cost(weight: "10")
+  neq: Int @cost(weight: "10")
+  in: [Int] @cost(weight: "10")
+  nin: [Int] @cost(weight: "10")
+  gt: Int @cost(weight: "10")
+  ngt: Int @cost(weight: "10")
+  gte: Int @cost(weight: "10")
+  ngte: Int @cost(weight: "10")
+  lt: Int @cost(weight: "10")
+  nlt: Int @cost(weight: "10")
+  lte: Int @cost(weight: "10")
+  nlte: Int @cost(weight: "10")
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String @cost(weight: "10")
+  neq: String @cost(weight: "10")
+  contains: String @cost(weight: "20")
+  ncontains: String @cost(weight: "20")
+  in: [String] @cost(weight: "10")
+  nin: [String] @cost(weight: "10")
+  startsWith: String @cost(weight: "20")
+  nstartsWith: String @cost(weight: "20")
+  endsWith: String @cost(weight: "20")
+  nendsWith: String @cost(weight: "20")
+}
+
+input TestCustomerFilterInput {
+  and: [TestCustomerFilterInput!]
+  or: [TestCustomerFilterInput!]
+  name: StringOperationFilterInput
+}
+
+input TestCustomerSortInput {
+  name: SortEnumType @cost(weight: "10")
+}
+
+input TestItemFilterInput {
+  and: [TestItemFilterInput!]
+  or: [TestItemFilterInput!]
+  id: IntOperationFilterInput
+  firstName: StringOperationFilterInput
+  lastName: StringOperationFilterInput
+  customer: TestCustomerFilterInput
+  quantity: IntOperationFilterInput
+  price: DecimalOperationFilterInput
+  date: DateTimeOperationFilterInput
+  active: BooleanOperationFilterInput
+  status: TestStatusOperationFilterInput
+  code: UuidOperationFilterInput
+  note: StringOperationFilterInput
+}
+
+input TestItemSortInput {
+  id: SortEnumType @cost(weight: "10")
+  firstName: SortEnumType @cost(weight: "10")
+  lastName: SortEnumType @cost(weight: "10")
+  customer: TestCustomerSortInput @cost(weight: "10")
+  quantity: SortEnumType @cost(weight: "10")
+  price: SortEnumType @cost(weight: "10")
+  date: SortEnumType @cost(weight: "10")
+  active: SortEnumType @cost(weight: "10")
+  status: SortEnumType @cost(weight: "10")
+  code: SortEnumType @cost(weight: "10")
+  note: SortEnumType @cost(weight: "10")
+}
+
+input TestStatusOperationFilterInput {
+  eq: TestStatus @cost(weight: "10")
+  neq: TestStatus @cost(weight: "10")
+  in: [TestStatus!] @cost(weight: "10")
+  nin: [TestStatus!] @cost(weight: "10")
+}
+
+input UuidOperationFilterInput {
+  eq: UUID @cost(weight: "10")
+  neq: UUID @cost(weight: "10")
+  in: [UUID] @cost(weight: "10")
+  nin: [UUID] @cost(weight: "10")
+  gt: UUID @cost(weight: "10")
+  ngt: UUID @cost(weight: "10")
+  gte: UUID @cost(weight: "10")
+  ngte: UUID @cost(weight: "10")
+  lt: UUID @cost(weight: "10")
+  nlt: UUID @cost(weight: "10")
+  lte: UUID @cost(weight: "10")
+  nlte: UUID @cost(weight: "10")
+}
+
+enum SortEnumType {
+  ASC
+  DESC
+}
+
+enum TestStatus {
+  OPEN
+  ON_HOLD
+  CLOSED
+}
+
+"The `DateTime` scalar type represents a date and time with time zone offset information."
+scalar DateTime
+  @specifiedBy(url: "https://scalars.graphql.org/chillicream/date-time.html")
+
+"The `Decimal` scalar type represents a decimal floating-point number with high precision."
+scalar Decimal
+  @specifiedBy(url: "https://scalars.graphql.org/chillicream/decimal.html")
+
+"The `UUID` scalar type represents a Universally Unique Identifier (UUID) as defined by RFC 9562."
+scalar UUID
+  @specifiedBy(url: "https://scalars.graphql.org/chillicream/uuid.html")
+
+"The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
+directive @cost(
+  "The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc."
+  weight: String!
+) on
+  | SCALAR
+  | OBJECT
+  | FIELD_DEFINITION
+  | ARGUMENT_DEFINITION
+  | ENUM
+  | INPUT_FIELD_DEFINITION
+
+"The purpose of the `@listSize` directive is to either inform the static analysis about the size of returned lists (if that information is statically available), or to point the analysis to where to find that information."
+directive @listSize(
+  "The `assumedSize` argument can be used to statically define the maximum length of a list returned by a field."
+  assumedSize: Int
+  "The `slicingArguments` argument can be used to define which of the field's arguments with numeric type are slicing arguments, so that their value determines the size of the list returned by that field. It may specify a list of multiple slicing arguments."
+  slicingArguments: [String!]
+  "The `slicingArgumentDefaultValue` argument can be used to define a default value for a slicing argument, which is used if the argument is not present in a query."
+  slicingArgumentDefaultValue: Int
+  "The `sizedFields` argument can be used to define that the value of the `assumedSize` argument or of a slicing argument does not affect the size of a list returned by a field itself, but that of a list returned by one of its sub-fields."
+  sizedFields: [String!]
+  "The `requireOneSlicingArgument` argument can be used to inform the static analysis that it should expect that exactly one of the defined slicing arguments is present in a query. If that is not the case (i.e., if none or multiple slicing arguments are present), the static analysis may throw an error."
+  requireOneSlicingArgument: Boolean = true
+) on FIELD_DEFINITION

@@ -1,0 +1,32 @@
+@using System.Threading
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <DataView Items="manyOrders" Title="10,000 local rows" KeySelector="o => o.Id" Virtualize Height="420px" ItemSize="41">
+            <DataColumn Value="o => o.OrderNo" Sortable Searchable />
+            <DataColumn Value="o => o.Customer.Name" Title="Customer" Searchable />
+            <DataColumn Value="o => o.Status" Sortable />
+        </DataView>
+    </div>
+    <div class="col-lg-6">
+        <DataView TItem="DemoOrder" ItemsProvider="LoadPageAsync" PagingMode="PagingMode.Cursor" Title="Infinite scroll (cursor)"
+                  KeySelector="o => o.Id" Virtualize Height="420px" ItemSize="41" PageSize="50">
+            <DataColumn Value="o => o.OrderNo" Sortable Searchable />
+            <DataColumn Value="o => o.OrderDate" Format="yyyy-MM-dd" Sortable />
+        </DataView>
+    </div>
+</div>
+
+@code {
+    private readonly List<DemoOrder> manyOrders = DataViewDemoData.Create(10_000);
+
+    private readonly InMemorySource<DemoOrder> server = new(DataViewDemoData.Create(2_000),
+        new InMemorySourceOptions { PagingMode = PagingMode.Cursor, IncludeTotalCount = false });
+
+    // A cursor API without a total: the next page loads as the list nears its end.
+    private async Task<DataPage<DemoOrder>> LoadPageAsync(DataRequest request, CancellationToken cancellationToken)
+    {
+        await Task.Delay(300, cancellationToken);
+        return await server.GetPageAsync(request, cancellationToken);
+    }
+}

@@ -97,6 +97,18 @@ namespace TabBlazor.Services
             await jsRuntime.InvokeVoidAsync("tabBlazor.disableDraggable", container, element);
         }
 
+        /// <summary>Remembers the focused element under <paramref name="key"/>.</summary>
+        public async Task SaveFocusAsync(string key)
+        {
+            await jsRuntime.InvokeVoidAsync("tabBlazor.saveFocus", key);
+        }
+
+        /// <summary>Gives focus back to the element remembered under <paramref name="key"/>, if it is still on the page.</summary>
+        public async Task RestoreFocusAsync(string key)
+        {
+            await jsRuntime.InvokeVoidAsync("tabBlazor.restoreFocus", key);
+        }
+
         public async Task SetElementProperty(ElementReference element, string property, object value)
         {
             await jsRuntime.InvokeVoidAsync("tabBlazor.setPropByElement", element, property, value);

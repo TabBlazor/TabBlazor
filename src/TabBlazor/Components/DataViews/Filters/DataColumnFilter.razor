@@ -1,0 +1,179 @@
+@namespace TabBlazor
+@typeparam TItem
+@using System.Globalization
+
+@{
+    var info = Column.Info;
+    var texts = View.Texts;
+    var operators = Column.AllowedFilterOperators;
+    var filter = View.GetFilter(Column.Id);
+    var op = filter?.Operator ?? selectedOperator ?? operators.FirstOrDefault();
+    var size = Compact ? "form-control-sm" : null;
+}
+<div class="dv-column-filter" @onclick:stopPropagation="true">
+    @if (Column.FilterTemplate != null)
+    {
+        @Column.FilterTemplate(View.GetFilterContext(Column))
+    }
+    else
+    {
+        @if (operators.Count > 1)
+        {
+            <select class="form-select @(Compact ? "form-select-sm" : null) mb-2 dv-filter-operator" aria-label="@texts.Filter" @onchange="OnOperatorChanged">
+                @foreach (var option in operators)
+                {
+                    <option value="@option" selected="@(option == op)">@DataFilters.OperatorText(option, texts)</option>
+                }
+            </select>
+        }
+
+        @if (DataFilters.HasNoValue(op))
+        {
+            @* Empty / not empty need no value. *@
+        }
+        else if (info.Kind == DataValueKind.Enum && info.FilterMode == FilterPathMode.Exact && op is FilterOperator.In)
+        {
+            var enumType = Nullable.GetUnderlyingType(info.FilterValueType!) ?? info.FilterValueType!;
+            var selected = DataFilters.AsList(filter?.Value).ToList();
+            <div class="dv-filter-options">
+                @foreach (var value in Enum.GetValues(enumType))
+                {
+                    var v = value;
+                    <label class="form-check mb-1">
+                        <input type="checkbox" class="form-check-input" checked="@selected.Contains(v)"
+                               @onchange="e => ToggleEnumAsync(v, e.Value is true)" />
+                        <span class="form-check-label">@EnumDisplay.GetName((Enum)v)</span>
+                    </label>
+                }
+            </div>
+        }
+        else if (info.Kind == DataValueKind.Boolean && info.FilterMode == FilterPathMode.Exact)
+        {
+            var current = filter?.Value as bool?;
+            <div class="btn-group w-100 dv-filter-bool" role="group">
+                <button type="button" class="btn btn-sm @(current == null ? "active" : null)" @onclick="() => SetAsync(null)">@texts.Any</button>
+                <button type="button" class="btn btn-sm @(current == true ? "active" : null)" @onclick="() => SetValueAsync(op, true)">@texts.Yes</button>
+                <button type="button" class="btn btn-sm @(current == false ? "active" : null)" @onclick="() => SetValueAsync(op, false)">@texts.No</button>
+            </div>
+        }
+        else if (info.FilterMode == FilterPathMode.Exact && info.Kind is DataValueKind.Number or DataValueKind.Date && op == FilterOperator.Between)
+        {
+            var type = InputType(info.Kind);
+            <div class="dv-filter-range">
+                <input type="@type" step="any" class="form-control @size" placeholder="@texts.From" aria-label="@($"{Column.Title} {texts.From}")"
+                       value="@InputValue(filter?.Value)" @onchange="e => SetRangeAsync(e.Value?.ToString(), true)" />
+                <input type="@type" step="any" class="form-control @size" placeholder="@texts.To" aria-label="@($"{Column.Title} {texts.To}")"
+                       value="@InputValue(filter?.Value2)" @onchange="e => SetRangeAsync(e.Value?.ToString(), false)" />
+            </div>
+        }
+        else if (info.FilterMode == FilterPathMode.Exact && info.Kind is DataValueKind.Number or DataValueKind.Date)
+        {
+            <input type="@InputType(info.Kind)" step="any" class="form-control @size" aria-label="@Column.Title"
+                   value="@InputValue(filter?.Value)" @onchange="e => SetValueAsync(op, e.Value?.ToString())" />
+        }
+        else
+        {
+            <input type="search" class="form-control @size" placeholder="@texts.Filter" aria-label="@Column.Title"
+                   value="@(filter == null ? null : DataFilters.FormatValue(filter.Value is System.Collections.IEnumerable list and not string ? string.Join(",", list.Cast<object>()) : filter.Value))"
+                   @oninput="e => SetTextDelayed(op, e.Value?.ToString())" />
+        }
+    }
+</div>
+
+@code {
+    private FilterOperator? selectedOperator;
+
+    [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+    [Parameter, EditorRequired] public IDataViewColumn<TItem> Column { get; set; } = default!;
+
+    /// <summary>Small controls, for the filter row.</summary>
+    [Parameter] public bool Compact { get; set; }
+
+    private static string InputType(DataValueKind kind) => kind == DataValueKind.Date ? "date" : "number";
+
+    private static string InputValue(object value) => value switch
+    {
+        null => null,
+        DateTime d => d.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+        DateTimeOffset d => d.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+        DateOnly d => d.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+        IFormattable f => f.ToString(null, CultureInfo.InvariantCulture),
+        _ => value.ToString()
+    };
+
+    private Task SetAsync(FilterSpec filter) => View.SetColumnFilterAsync(Column.Id, filter);
+
+    private async Task OnOperatorChanged(ChangeEventArgs e)
+    {
+        if (!Enum.TryParse<FilterOperator>(e.Value?.ToString(), out var op))
+        {
+            return;
+        }
+
+        selectedOperator = op;
+        var current = View.GetFilter(Column.Id);
+        if (DataFilters.HasNoValue(op))
+        {
+            await SetAsync(new FilterSpec(Column.Id, op));
+        }
+        else if (current != null && !DataFilters.HasNoValue(current.Operator))
+        {
+            await SetAsync(current with { Operator = op });
+        }
+        else if (current != null)
+        {
+            await SetAsync(null);
+        }
+    }
+
+    private Task SetValueAsync(FilterOperator op, object value) =>
+        value is null or "" ? SetAsync(null) : SetAsync(new FilterSpec(Column.Id, op, value));
+
+    private void SetTextDelayed(FilterOperator op, string text) =>
+        View.SetColumnFilterDelayed(Column.Id, string.IsNullOrWhiteSpace(text) ? null : new FilterSpec(Column.Id, op, text));
+
+    private Task ToggleEnumAsync(object value, bool on)
+    {
+        var values = DataFilters.AsList(View.GetFilter(Column.Id)?.Value).Where(v => !Equals(v, value)).ToList();
+        if (on)
+        {
+            values.Add(value);
+        }
+
+        return values.Count == 0 ? SetAsync(null) : SetAsync(new FilterSpec(Column.Id, FilterOperator.In, values));
+    }
+
+    // One end of a from–to range; an empty end leaves the range open. Dates include the whole "to" day.
+    private Task SetRangeAsync(string text, bool from)
+    {
+        var current = View.GetFilter(Column.Id);
+        object low = current?.Operator == FilterOperator.Between ? current.Value : null;
+        object high = current?.Operator == FilterOperator.Between ? current.Value2 : null;
+        object value = string.IsNullOrWhiteSpace(text) ? null : text;
+        if (value != null && !from && Column.Info.Kind == DataValueKind.Date)
+        {
+            var type = Nullable.GetUnderlyingType(Column.Info.FilterValueType!) ?? Column.Info.FilterValueType!;
+            if (type == typeof(DateTime) && DateTime.TryParse(text, CultureInfo.InvariantCulture, DateTimeStyles.None, out var day))
+            {
+                value = day.Date.AddDays(1).AddTicks(-1);
+            }
+            else if (type == typeof(DateTimeOffset) && DateTimeOffset.TryParse(text, CultureInfo.InvariantCulture, DateTimeStyles.None, out var offsetDay))
+            {
+                value = offsetDay.Date.AddDays(1).AddTicks(-1);
+            }
+        }
+
+        if (from)
+        {
+            low = value;
+        }
+        else
+        {
+            high = value;
+        }
+
+        return low == null && high == null
+            ? SetAsync(null)
+            : SetAsync(new FilterSpec(Column.Id, FilterOperator.Between, low, high));
+    }
+}

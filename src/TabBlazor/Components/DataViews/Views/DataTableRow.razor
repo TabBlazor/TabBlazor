@@ -1,0 +1,85 @@
+@namespace TabBlazor
+@typeparam TItem
+
+@{
+    var href = View.RowHref?.Invoke(Item);
+    var first = true;
+}
+<tr class="@View.GetRowClass(Item)" style="@View.RowStyle?.Invoke(Item)" @onclick="OnClickAsync" aria-selected="@(View.ShowCheckboxes ? State.Selected ? "true" : "false" : null)">
+    @if (View.ShowCheckboxes)
+    {
+        <td class="w-1 dv-select-cell" @onclick:stopPropagation="true">
+            <input type="checkbox" class="form-check-input m-0 align-middle dv-select" checked="@State.Selected"
+                   aria-label="@View.Texts.SelectRow" @onchange="ToggleSelectedAsync" />
+        </td>
+    }
+    @if (View.ShowExpandColumn)
+    {
+        <td class="w-1 dv-expand-cell" @onclick:stopPropagation="true">
+            <button type="button" class="btn btn-icon btn-sm btn-ghost-secondary dv-expand" aria-expanded="@(State.Expanded ? "true" : "false")"
+                    aria-label="@View.Texts.ExpandRow" title="@View.Texts.ExpandRow" @onclick="ToggleDetailsAsync">
+                <Icon IconType="@(State.Expanded ? InternalIcons.Chevron_down : InternalIcons.Chevron_right)" class="icon" />
+            </button>
+        </td>
+    }
+    @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.Start)
+    {
+        <td class="w-1 text-nowrap dv-actions-cell"><DataRowActions TItem="TItem" Item="Item" View="View" MenuOnly="View.IsSmallScreen" /></td>
+    }
+    @foreach (var column in Columns)
+    {
+        <td class="@(first ? $"dv-first-col {column.GetCellClass(Item)}" : column.GetCellClass(Item))" style="@column.GetCellStyle(Item)" title="@column.GetCellTitle(Item)" data-label="@column.Title">
+            @if (first && href != null)
+            {
+                <a class="dv-row-anchor stretched-link" href="@href" aria-label="@View.Texts.OpenRow"></a>
+            }
+            @column.Cell(Item)
+        </td>
+        first = false;
+    }
+    @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.End)
+    {
+        <td class="w-1 text-nowrap dv-actions-cell"><DataRowActions TItem="TItem" Item="Item" View="View" MenuOnly="View.IsSmallScreen" /></td>
+    }
+</tr>
+
+@code {
+    private TItem renderedItem = default!;
+    private int renderedVersion = -1;
+    private DataRowState renderedState;
+
+    [Parameter, EditorRequired] public TItem Item { get; set; } = default!;
+    [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+    [Parameter, EditorRequired] public IReadOnlyList<IDataViewColumn<TItem>> Columns { get; set; } = default!;
+
+    /// <summary>Rows re-render only when their item, their state or the view's row version changes.</summary>
+    [Parameter] public int Version { get; set; }
+
+    [Parameter] public DataRowState State { get; set; }
+
+    protected override void OnInitialized()
+    {
+        renderedItem = Item;
+        renderedVersion = Version;
+        renderedState = State;
+    }
+
+    protected override bool ShouldRender()
+    {
+        if (ReferenceEquals(renderedItem, Item) && renderedVersion == Version && renderedState == State)
+        {
+            return false;
+        }
+
+        renderedItem = Item;
+        renderedVersion = Version;
+        renderedState = State;
+        return true;
+    }
+
+    private Task OnClickAsync() => View.HandleRowClickAsync(Item);
+
+    private Task ToggleSelectedAsync() => View.ToggleSelectedAsync(Item);
+
+    private Task ToggleDetailsAsync() => View.ToggleDetailsAsync(Item);
+}

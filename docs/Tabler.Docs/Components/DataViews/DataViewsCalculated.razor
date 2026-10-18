@@ -1,0 +1,20 @@
+@using Align = TabBlazor.Align
+<DataView Items="DataViewDemoData.Orders" Title="Orders" KeySelector="o => o.Id" PageSize="10">
+    @* The parts (FirstName, LastName) are worked out from Value; the id is "firstName-lastName" *@
+    <DataColumn Title="Name" Value="@(o => $"{o.FirstName} {o.LastName}")" Sortable Searchable />
+
+    @* Sort by last name, then first name; match each search word in either *@
+    <DataColumn Title="Name (by last name)" Id="fullName"
+                Value="@(o => $"{o.FirstName} {o.LastName}")"
+                SortBy="o => new { o.LastName, o.FirstName }"
+                FilterBy="o => new { o.FirstName, o.LastName }"
+                Sortable Searchable />
+
+    @* One property as a stand-in: sorts by date *@
+    <DataColumn Title="Ordered" Id="ordered"
+                Value="@(o => $"{o.OrderDate:d} by {o.Customer.Name}")"
+                SortBy="o => o.OrderDate" Sortable />
+
+    @* Arithmetic works in memory; a remote source needs SortBy or a server field *@
+    <DataColumn Title="Total" Value="o => o.Quantity * o.Price" Format="N2" Align="Align.End" Sortable />
+</DataView>

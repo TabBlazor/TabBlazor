@@ -1,0 +1,57 @@
+@namespace TabBlazor
+@typeparam TItem
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+
+@{
+    var engine = View.Engine;
+    var columns = View.VisibleColumns;
+}
+<div class="list-group list-group-flush dv-list @Class @(engine.IsLoading && engine.HasLoaded ? "dv-loading" : null)"
+     style="@(View.Height != null ? $"{(View.IsVirtualized ? "height" : "max-height")}: {View.Height}; overflow-y: auto;" : null)" @ref="View.ScrollContainer"
+     aria-busy="@(engine.IsLoading ? "true" : null)" @attributes="View.UnmatchedParameters">
+    @switch (View.Status)
+    {
+        case DataViewStatus.Items when View.IsVirtualized:
+            <Virtualize @ref="View.VirtualizeComponent" TItem="TItem" ItemsProvider="View.ProvideVirtualItemsAsync"
+                        ItemSize="View.ItemSize" OverscanCount="View.OverscanCount" Context="item">
+                <ItemContent>
+                    <DataListRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns" Version="engine.RenderVersion" State="View.GetRowState(item)" ItemTemplate="ItemTemplate" />
+                </ItemContent>
+                <Placeholder>
+                    <div class="list-group-item dv-placeholder-row placeholder-glow" aria-hidden="true" style="height: @(View.ItemSize)px">
+                        <div class="placeholder col-5 mb-1"></div>
+                    </div>
+                </Placeholder>
+            </Virtualize>
+            break;
+        case DataViewStatus.Items:
+            foreach (var item in engine.Items)
+            {
+                <DataListRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns" Version="engine.RenderVersion" State="View.GetRowState(item)" ItemTemplate="ItemTemplate" />
+            }
+            break;
+        case DataViewStatus.FirstLoad when View.LoadingTemplate == null:
+            for (var i = 0; i < Math.Min(engine.PageSize, 5); i++)
+            {
+                <div class="list-group-item dv-placeholder-row placeholder-glow" aria-hidden="true">
+                    <div class="placeholder col-5 mb-1"></div>
+                    <div class="placeholder placeholder-xs col-8"></div>
+                </div>
+            }
+            break;
+        default:
+            <div class="list-group-item dv-state @DataViewStyles.StateClass(View.Status)">
+                <DataViewStateContent TItem="TItem" View="View" Status="View.Status" />
+            </div>
+            break;
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+
+    /// <summary>Replaces the view's ListItemTemplate (used for the table's MobileTemplate).</summary>
+    [Parameter] public RenderFragment<TItem> ItemTemplate { get; set; }
+
+    [Parameter] public string Class { get; set; }
+}

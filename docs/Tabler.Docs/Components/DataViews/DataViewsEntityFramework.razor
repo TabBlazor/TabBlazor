@@ -1,0 +1,72 @@
+@using System.Threading
+@using Microsoft.EntityFrameworkCore
+@using Tabler.Docs.Data
+@using Align = TabBlazor.Align
+@using Country = Tabler.Docs.Data.Country
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+
+<DataView TItem="Country" ItemsProvider="LoadCountriesAsync" KeySelector="c => c.Code" Title="Countries (EF Core)" PageSize="10">
+    <DataColumn Value="c => c.Name" Sortable Searchable />
+    <DataColumn Value="c => c.Code" Sortable Searchable />
+    <DataColumn Value="c => c.Medals.Gold" Title="Gold" Align="Align.End" Sortable Filterable />
+    <DataColumn Value="c => c.Medals.Silver" Title="Silver" Align="Align.End" Sortable />
+    <DataColumn Value="c => c.Medals.Bronze" Title="Bronze" Align="Align.End" Sortable />
+</DataView>
+
+@code {
+    // One DbContext per request: DataView never runs two loads at once, but a context per request also keeps
+    // Blazor Server circuits from holding a context open. The token stops the SQL query when the user keeps typing.
+    private async Task<DataPage<Country>> LoadCountriesAsync(DataRequest request, CancellationToken cancellationToken)
+    {
+        await using var db = await DbFactory.CreateDbContextAsync(cancellationToken);
+        IQueryable<Country> query = db.Countries.AsNoTracking();
+
+        // Search: every term must match one searchable column. ToLower keeps it case-insensitive on any database
+        // (SQLite's instr is case-sensitive; a case-insensitive collation lets you drop it).
+        foreach (var term in request.Search?.Terms ?? [])
+        {
+            var lower = term.ToLowerInvariant();
+            query = query.Where(c => c.Name.ToLower().Contains(lower) || c.Code.ToLower().Contains(lower));
+        }
+
+        // Filters: translate only the columns and operators this screen allows (a request can come from a browser).
+        foreach (var filter in request.Filters)
+        {
+            if (filter is { Column: "medals.gold", Operator: FilterOperator.Between })
+            {
+                var from = filter.Value is null ? (int?)null : Convert.ToInt32(filter.Value);
+                var to = filter.Value2 is null ? (int?)null : Convert.ToInt32(filter.Value2);
+                query = query.Where(c => (from == null || c.Medals.Gold >= from) && (to == null || c.Medals.Gold <= to));
+            }
+        }
+
+        var total = await query.CountAsync(cancellationToken);
+
+        // Sorts: DataView sends at least one (the key last), so paging is stable.
+        IOrderedQueryable<Country> ordered = null;
+        foreach (var sort in request.Sorts)
+        {
+            ordered = (sort.Column, sort.Descending) switch
+            {
+                ("name", false) => ordered == null ? query.OrderBy(c => c.Name) : ordered.ThenBy(c => c.Name),
+                ("name", true) => ordered == null ? query.OrderByDescending(c => c.Name) : ordered.ThenByDescending(c => c.Name),
+                ("code", false) => ordered == null ? query.OrderBy(c => c.Code) : ordered.ThenBy(c => c.Code),
+                ("code", true) => ordered == null ? query.OrderByDescending(c => c.Code) : ordered.ThenByDescending(c => c.Code),
+                ("medals.gold", false) => ordered == null ? query.OrderBy(c => c.Medals.Gold) : ordered.ThenBy(c => c.Medals.Gold),
+                ("medals.gold", true) => ordered == null ? query.OrderByDescending(c => c.Medals.Gold) : ordered.ThenByDescending(c => c.Medals.Gold),
+                ("medals.silver", false) => ordered == null ? query.OrderBy(c => c.Medals.Silver) : ordered.ThenBy(c => c.Medals.Silver),
+                ("medals.silver", true) => ordered == null ? query.OrderByDescending(c => c.Medals.Silver) : ordered.ThenByDescending(c => c.Medals.Silver),
+                ("medals.bronze", false) => ordered == null ? query.OrderBy(c => c.Medals.Bronze) : ordered.ThenBy(c => c.Medals.Bronze),
+                ("medals.bronze", true) => ordered == null ? query.OrderByDescending(c => c.Medals.Bronze) : ordered.ThenByDescending(c => c.Medals.Bronze),
+                _ => ordered
+            };
+        }
+
+        var items = await (ordered ?? query)
+            .Skip(request.Page.Skip)
+            .Take(request.Page.Take)
+            .ToListAsync(cancellationToken);
+
+        return new DataPage<Country>(items, total);
+    }
+}

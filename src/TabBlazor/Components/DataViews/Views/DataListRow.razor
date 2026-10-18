@@ -1,0 +1,118 @@
+@namespace TabBlazor
+@typeparam TItem
+
+@{
+    var href = View.RowHref?.Invoke(Item);
+    var clickable = href != null || View.OnRowClicked.HasDelegate || View.HasDetails || View.SelectionMode == DataSelectionMode.Single;
+    var css = new ClassBuilder("list-group-item dv-list-item")
+        .AddIf("list-group-item-action", clickable)
+        .Add(View.GetRowClass(Item, table: false))
+        .ToString();
+    var hasActions = View.HasRowActions;
+}
+<div class="@css" style="@View.RowStyle?.Invoke(Item)" @onclick="OnClickAsync" aria-selected="@(View.ShowCheckboxes ? State.Selected ? "true" : "false" : null)">
+    <div class="dv-list-row">
+        @if (View.ShowCheckboxes)
+        {
+            <div class="dv-list-select" @onclick:stopPropagation="true">
+                <input type="checkbox" class="form-check-input m-0 dv-select" checked="@State.Selected"
+                       aria-label="@View.Texts.SelectRow" @onchange="ToggleSelectedAsync" />
+            </div>
+        }
+        <div class="dv-list-content">
+            @if (href != null)
+            {
+                <a class="dv-row-anchor stretched-link" href="@href" aria-label="@View.Texts.OpenRow"></a>
+            }
+            @Content
+        </div>
+        @if (hasActions)
+        {
+            <div class="dv-list-actions"><DataRowActions TItem="TItem" Item="Item" View="View" MenuOnly="true" /></div>
+        }
+    </div>
+    @if (State.Expanded && View.DetailsTemplate != null)
+    {
+        <div class="dv-list-details mt-2" @onclick:stopPropagation="true">
+            @View.DetailsTemplate(View.GetDetailsContext(Item))
+        </div>
+    }
+</div>
+
+@code {
+    private TItem renderedItem = default!;
+    private int renderedVersion = -1;
+    private DataRowState renderedState;
+
+    [Parameter, EditorRequired] public TItem Item { get; set; } = default!;
+    [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+    [Parameter, EditorRequired] public IReadOnlyList<IDataViewColumn<TItem>> Columns { get; set; } = default!;
+
+    /// <summary>Items re-render only when their item, their state or the view's row version changes.</summary>
+    [Parameter] public int Version { get; set; }
+
+    [Parameter] public DataRowState State { get; set; }
+
+    /// <summary>Replaces the view's ListItemTemplate.</summary>
+    [Parameter] public RenderFragment<TItem> ItemTemplate { get; set; }
+
+    protected override void OnInitialized()
+    {
+        renderedItem = Item;
+        renderedVersion = Version;
+        renderedState = State;
+    }
+
+    protected override bool ShouldRender()
+    {
+        if (ReferenceEquals(renderedItem, Item) && renderedVersion == Version && renderedState == State)
+        {
+            return false;
+        }
+
+        renderedItem = Item;
+        renderedVersion = Version;
+        renderedState = State;
+        return true;
+    }
+
+    private RenderFragment Content => builder =>
+    {
+        var template = ItemTemplate ?? View.ListItemTemplate;
+        if (template != null)
+        {
+            builder.AddContent(0, template(Item));
+        }
+        else
+        {
+            builder.AddContent(1, DefaultContent);
+        }
+    };
+
+    // Without a template: the first column as the title, the others as "Label: value".
+    private RenderFragment DefaultContent => __builder =>
+    {
+        if (Columns.Count == 0)
+        {
+            return;
+        }
+
+        <div class="dv-list-title fw-medium">@{ Columns[0].RenderCell(__builder, Item); }</div>
+        @if (Columns.Count > 1)
+        {
+            <div class="dv-list-fields text-secondary">
+                @foreach (var column in Columns.Skip(1))
+                {
+                    <span class="dv-list-field">
+                        <span class="dv-list-label">@column.Title:</span>
+                        <span class="text-body">@{ column.RenderCell(__builder, Item); }</span>
+                    </span>
+                }
+            </div>
+        }
+    };
+
+    private Task OnClickAsync() => View.HandleRowClickAsync(Item);
+
+    private Task ToggleSelectedAsync() => View.ToggleSelectedAsync(Item);
+}

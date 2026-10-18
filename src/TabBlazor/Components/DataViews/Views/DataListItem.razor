@@ -1,0 +1,44 @@
+@namespace TabBlazor
+
+@*
+    The common list item layout: an avatar or icon, a title, a subtitle and meta on the right.
+    Use it inside a DataView's ListItemTemplate.
+*@
+<div class="row g-3 align-items-center dv-list-item-layout">
+    @if (Avatar != null)
+    {
+        <div class="col-auto">@Avatar</div>
+    }
+    <div class="col text-truncate">
+        @if (Title != null)
+        {
+            <div class="fw-medium text-truncate text-body">@Title</div>
+        }
+        @if (Subtitle != null)
+        {
+            <div class="text-secondary text-truncate">@Subtitle</div>
+        }
+        @ChildContent
+    </div>
+    @if (Meta != null)
+    {
+        <div class="col-auto text-secondary text-end">@Meta</div>
+    }
+</div>
+
+@code {
+    /// <summary>An avatar or icon on the left.</summary>
+    [Parameter] public RenderFragment Avatar { get; set; }
+
+    /// <summary>The main line.</summary>
+    [Parameter] public RenderFragment Title { get; set; }
+
+    /// <summary>The second line, in a muted color.</summary>
+    [Parameter] public RenderFragment Subtitle { get; set; }
+
+    /// <summary>Meta on the right, for example a date or a status badge.</summary>
+    [Parameter] public RenderFragment Meta { get; set; }
+
+    /// <summary>Extra content under the subtitle.</summary>
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}

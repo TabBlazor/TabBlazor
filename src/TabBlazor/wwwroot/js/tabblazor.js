@@ -10,6 +10,76 @@
         return navigator.userAgent;
     },
 
+    // Remembers the focused element under a key, so an overlay can give focus back when it closes.
+    saveFocus: function (key) {
+        window.tabBlazor.savedFocus = window.tabBlazor.savedFocus || {};
+        window.tabBlazor.savedFocus[key] = document.activeElement;
+    },
+
+    // Tells .NET when a media query starts or stops matching. Returns whether it matches now.
+    watchMedia: function (id, query, dotNetRef) {
+        window.tabBlazor.mediaWatchers = window.tabBlazor.mediaWatchers || {};
+        const mql = window.matchMedia(query);
+        const handler = e => dotNetRef.invokeMethodAsync('OnMediaChanged', e.matches);
+        mql.addEventListener('change', handler);
+        window.tabBlazor.mediaWatchers[id] = { mql, handler };
+        return mql.matches;
+    },
+
+    unwatchMedia: function (id) {
+        const watchers = window.tabBlazor.mediaWatchers || {};
+        const watcher = watchers[id];
+        if (watcher) {
+            watcher.mql.removeEventListener('change', watcher.handler);
+            delete watchers[id];
+        }
+    },
+
+    // Drag handles in table headers resize their column; the new width is reported to .NET.
+    attachColumnResize: function (table, dotNetRef) {
+        if (!table || table.dataset.resizeAttached) {
+            return;
+        }
+
+        table.dataset.resizeAttached = 'true';
+        table.addEventListener('pointerdown', e => {
+            const handle = e.target.closest('.dv-resize-handle');
+            if (!handle) {
+                return;
+            }
+
+            e.preventDefault();
+            e.stopPropagation();
+            const th = handle.closest('th');
+            const startX = e.clientX;
+            const startWidth = th.getBoundingClientRect().width;
+            let width = startWidth;
+            handle.setPointerCapture(e.pointerId);
+
+            const move = m => {
+                width = Math.max(40, startWidth + m.clientX - startX);
+                th.style.width = width + 'px';
+                th.style.minWidth = width + 'px';
+            };
+            const up = () => {
+                handle.removeEventListener('pointermove', move);
+                handle.removeEventListener('pointerup', up);
+                dotNetRef.invokeMethodAsync('OnColumnResized', th.dataset.columnId, Math.round(width));
+            };
+            handle.addEventListener('pointermove', move);
+            handle.addEventListener('pointerup', up);
+        });
+    },
+
+    restoreFocus: function (key) {
+        const saved = window.tabBlazor.savedFocus || {};
+        const element = saved[key];
+        delete saved[key];
+        if (element && element.isConnected && typeof element.focus === 'function') {
+            element.focus();
+        }
+    },
+
     openContentWindow(contentType, content, urlSuffix, name, features) {
         const blob = new Blob([content], { type: contentType });
         var url = URL.createObjectURL(blob);

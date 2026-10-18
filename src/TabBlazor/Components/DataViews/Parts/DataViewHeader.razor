@@ -1,0 +1,235 @@
+@namespace TabBlazor
+@typeparam TItem
+
+@{
+    var engine = View.Engine;
+    var texts = View.Texts;
+    var sortable = engine.Columns.Where(c => c.Sortable).ToList();
+}
+<div class="card-header dv-header">
+    @if (View.ShowCheckboxes && View.SelectedCount > 0)
+    {
+        var selection = View.GetSelection();
+        <div class="dv-selection-bar" role="region" aria-label="@string.Format(texts.SelectedCount, selection.Count)">
+            <span title="@texts.SelectAll">
+                <CheckboxTriState Value="View.PageSelectionState" ValueChanged="_ => View.TogglePageSelectionAsync()" />
+            </span>
+            <strong class="dv-selected-count">@string.Format(texts.SelectedCount, selection.Count.ToString("N0"))</strong>
+            @if (View.AllMatchingSelected)
+            {
+                <span class="text-secondary dv-all-matching">@string.Format(texts.AllMatchingSelected, engine.TotalCount?.ToString("N0") ?? string.Empty)</span>
+            }
+            else if (engine.TotalCount is { } total && total > engine.Items.Count && View.PageSelectionState == true)
+            {
+                <button type="button" class="btn btn-link p-0 dv-select-all-matching" @onclick="View.SelectAllMatchingAsync">
+                    @string.Format(texts.SelectAllMatching, total.ToString("N0"))
+                </button>
+            }
+            <div class="dv-bulk-actions ms-auto btn-list">
+                @foreach (var action in View.BulkActionsSlot?.Actions.Where(a => a.IsVisible(View)) ?? [])
+                {
+                    var a = action;
+                    <button type="button" class="btn @(a.Danger ? "btn-outline-danger" : null) dv-bulk-action" @onclick="() => View.RunBulkActionAsync(a)">
+                        @if (a.Icon != null)
+                        {
+                            <Icon IconType="@a.Icon" class="icon" />
+                        }
+                        @a.GetTitle(texts)
+                    </button>
+                }
+                <button type="button" class="btn btn-icon btn-ghost-secondary dv-clear-selection" title="@texts.ClearSelection" aria-label="@texts.ClearSelection"
+                        @onclick="View.ClearSelectionAsync">
+                    <Icon IconType="@InternalIcons.X" class="icon" />
+                </button>
+            </div>
+        </div>
+    }
+    else
+    {
+    <div class="dv-title">
+        @if (View.HeaderTemplate != null)
+        {
+            @View.HeaderTemplate
+        }
+        else if (!string.IsNullOrWhiteSpace(View.Title))
+        {
+            <h3 class="card-title">@View.Title</h3>
+        }
+    </div>
+    <div class="dv-toolbar">
+        @View.ToolbarTemplate
+
+        @if (View.AvailableViews.Count > 1)
+        {
+            <div class="btn-group dv-view-switcher" role="group">
+                @foreach (var option in View.AvailableViews)
+                {
+                    var value = option;
+                    var active = View.CurrentView == value;
+                    <button type="button" class="btn btn-icon @(active ? "active" : null)" aria-pressed="@(active ? "true" : "false")"
+                            title="@ViewText(value)" aria-label="@ViewText(value)" @onclick="() => View.SwitchViewAsync(value)">
+                        <Icon IconType="@(value == DataViewKind.List ? InternalIcons.List : InternalIcons.Table)" />
+                    </button>
+                }
+            </div>
+        }
+
+        @if (View.CurrentView != DataViewKind.Table && sortable.Count > 0)
+        {
+            var current = sortable.FirstOrDefault(c => c.Id == engine.Sort?.Column);
+            <Dropdown class="dv-sort-menu">
+                <ChildContent>
+                    <button type="button" class="btn" aria-label="@texts.SortBy">
+                        <Icon IconType="@(current == null ? InternalIcons.Sortable : engine.Sort!.Descending ? InternalIcons.Sort_Desc : InternalIcons.Sort_Asc)" class="icon" />
+                        @(current == null ? texts.SortBy : current.Title)
+                    </button>
+                </ChildContent>
+                <DropdownTemplate>
+                    <DropdownMenu class="dropdown-menu-end">
+                        @foreach (var column in sortable)
+                        {
+                            var col = column;
+                            var sorted = engine.Sort?.Column == col.Id;
+                            <DropdownItem Active="sorted" OnClick="() => engine.ToggleSortAsync(col)">
+                                <span class="flex-fill">@col.Title</span>
+                                @if (sorted)
+                                {
+                                    <Icon IconType="@(engine.Sort!.Descending ? InternalIcons.Sort_Desc : InternalIcons.Sort_Asc)" class="icon ms-2" />
+                                }
+                            </DropdownItem>
+                        }
+                    </DropdownMenu>
+                </DropdownTemplate>
+            </Dropdown>
+        }
+
+        @if (View.FiltersButtonVisible)
+        {
+            var count = View.ActiveFilterCount;
+            @if (View.IsSmallScreen)
+            {
+                <button type="button" class="btn dv-filters-button" @onclick="() => View.SetFiltersPanelOpen(true)">
+                    <Icon IconType="@InternalIcons.Filter" class="icon" />
+                    @texts.Filters
+                    @if (count > 0)
+                    {
+                        <span class="badge bg-primary text-primary-fg ms-2">@count</span>
+                    }
+                </button>
+            }
+            else
+            {
+                <Dropdown CloseOnClick="false" class="dv-filters-dropdown">
+                    <ChildContent>
+                        <button type="button" class="btn dv-filters-button">
+                            <Icon IconType="@InternalIcons.Filter" class="icon" />
+                            @texts.Filters
+                            @if (count > 0)
+                            {
+                                <span class="badge bg-primary text-primary-fg ms-2">@count</span>
+                            }
+                        </button>
+                    </ChildContent>
+                    <DropdownTemplate>
+                        <DropdownMenu Card="true" class="dropdown-menu-end p-3 dv-filters-menu">
+                            <DataViewFiltersPanel TItem="TItem" View="View" />
+                        </DropdownMenu>
+                    </DropdownTemplate>
+                </Dropdown>
+            }
+        }
+
+        @if (View.SearchVisible)
+        {
+            <div class="input-icon dv-search">
+                <span class="input-icon-addon">
+                    <Icon IconType="@InternalIcons.Search" />
+                </span>
+                <input type="search" class="form-control" placeholder="@texts.Search" aria-label="@texts.Search"
+                       value="@engine.SearchInput" @oninput="e => engine.OnSearchInputAsync(e.Value?.ToString())" />
+            </div>
+        }
+
+        @if (View.RefreshVisible && !View.IsSmallScreen)
+        {
+            <button type="button" class="btn btn-icon dv-refresh" title="@texts.Refresh" aria-label="@texts.Refresh"
+                    @onclick="View.ReloadAsync">
+                <Icon IconType="@InternalIcons.Refresh" />
+            </button>
+        }
+
+        @if (View.AddVisible && !View.IsSmallScreen)
+        {
+            <button type="button" class="btn btn-primary dv-add" @onclick="View.AddAsync" disabled="@(View.EditSession?.IsNew == true)">
+                <Icon IconType="@InternalIcons.Plus" class="icon" />
+                @texts.Add
+            </button>
+        }
+
+        @if (View.ShowMenu && (View.Density == null || View.IsSmallScreen))
+        {
+            <Dropdown>
+                <ChildContent>
+                <button type="button" class="btn btn-icon btn-ghost-secondary dv-menu" title="@texts.MoreOptions" aria-label="@texts.MoreOptions">
+                    <Icon IconType="@InternalIcons.Dots_vertical" />
+                </button>
+                </ChildContent>
+                <DropdownTemplate>
+                    <DropdownMenu class="dropdown-menu-end">
+                        @if (View.IsSmallScreen)
+                        {
+                            @if (View.AddVisible)
+                            {
+                                <DropdownItem class="dv-menu-add" OnClick="View.AddAsync">
+                                    <Icon IconType="@InternalIcons.Plus" class="icon dropdown-item-icon" />@texts.Add
+                                </DropdownItem>
+                            }
+                            @if (View.RefreshVisible)
+                            {
+                                <DropdownItem class="dv-menu-refresh" OnClick="View.ReloadAsync">
+                                    <Icon IconType="@InternalIcons.Refresh" class="icon dropdown-item-icon" />@texts.Refresh
+                                </DropdownItem>
+                            }
+                            @if (View.PageSizes is { Length: > 0 } && !View.IsVirtualized)
+                            {
+                                <h6 class="dropdown-header">@texts.RowsPerPage</h6>
+                                @foreach (var size in View.PageSizes)
+                                {
+                                    var value = size;
+                                    <DropdownItem Active="@(engine.PageSize == value)" class="dv-menu-page-size" OnClick="() => engine.ChangePageSizeAsync(value)">@value</DropdownItem>
+                                }
+                            }
+                        }
+                        @if (View.Density == null)
+                        {
+                            <h6 class="dropdown-header">@texts.Density</h6>
+                            @foreach (var option in densities)
+                            {
+                                var value = option;
+                                <DropdownItem Active="@(View.CurrentDensity == value)" OnClick="() => View.SetDensity(value)">
+                                    @DensityText(value)
+                                </DropdownItem>
+                            }
+                        }
+                    </DropdownMenu>
+                </DropdownTemplate>
+            </Dropdown>
+        }
+    </div>
+    }
+</div>
+
+@code {
+    private static readonly TableDensity[] densities = [TableDensity.Compact, TableDensity.Normal, TableDensity.Comfortable];
+
+    [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+
+    private string ViewText(DataViewKind value) => value == DataViewKind.List ? View.Texts.ListView : View.Texts.TableView;
+
+    private string DensityText(TableDensity value) => value switch
+    {
+        TableDensity.Compact => View.Texts.DensityCompact,
+        TableDensity.Comfortable => View.Texts.DensityComfortable,
+        _ => View.Texts.DensityNormal
+    };
+}

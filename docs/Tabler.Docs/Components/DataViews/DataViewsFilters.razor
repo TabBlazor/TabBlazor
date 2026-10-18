@@ -1,0 +1,35 @@
+@using Align = TabBlazor.Align
+
+<div class="btn-list mb-2">
+    <button class="btn" @onclick="ShowOpenOrders">Preset: open orders over 1,000</button>
+    <button class="btn" @onclick="() => filters = []">No filters</button>
+    <label class="form-check form-switch ms-2 mb-0">
+        <input class="form-check-input" type="checkbox" @bind="filterRow" />
+        <span class="form-check-label">Filter row</span>
+    </label>
+</div>
+
+<DataView Items="DataViewDemoData.Orders" Title="Orders" KeySelector="o => o.Id" PageSize="10" Id="orders" UrlState
+          @bind-Filters="filters" ShowFilterChips FilterMode="@(filterRow ? DataFilterMode.Row : DataFilterMode.Menu)">
+    <DataColumn Value="o => o.OrderNo" Sortable Searchable />
+    <DataColumn Value="o => o.Customer.Name" Title="Customer" Sortable Searchable Filterable
+                FilterOperators="[FilterOperator.Contains, FilterOperator.StartsWith, FilterOperator.Equals]" />
+    <DataColumn Value="o => o.Status" Sortable Filterable />
+    <DataColumn Value="o => o.OrderDate" Format="yyyy-MM-dd" Sortable Filterable />
+    <DataColumn Value="o => o.Total" Format="N2" Align="Align.End" Sortable Filterable />
+
+    @* A calculated column: each filter word must match the first or the last name *@
+    <DataColumn Title="Ordered by" Id="orderedBy" Value="@(o => $"{o.FirstName} {o.LastName}")"
+                FilterBy="o => new { o.FirstName, o.LastName }" Filterable />
+</DataView>
+
+@code {
+    private IReadOnlyList<FilterSpec> filters = [];
+    private bool filterRow;
+
+    private void ShowOpenOrders() => filters =
+    [
+        new FilterSpec("status", FilterOperator.In, new[] { DemoOrderStatus.Open }),
+        new FilterSpec("total", FilterOperator.Between, 1000m, null)
+    ];
+}

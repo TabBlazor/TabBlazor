@@ -1,0 +1,120 @@
+@page "/docs/data-views"
+
+<Page>
+    <DocsExample Title="DataView" ComponentType="typeof(DataView<>)">
+        <p>Coming from <code>Table</code> or <code>QuickTable</code>? See <a href="docs/data-views/migration">Moving to DataView</a>.</p>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsBasic)" Title="Local items">
+            <Description>
+                Bind a list with <code>Items</code> and describe the data with <code>DataColumn</code>s.
+                Search matches word by word across the searchable columns: <code>ada 2026</code> finds rows
+                where "ada" is in one column and "2026" in another. Quotes keep a phrase together.
+            </Description>
+        </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsList)" Title="List view">
+            <Description>
+                The same engine can show items as a list. <code>Views</code> adds a view switcher to the toolbar;
+                switching keeps the page, sort and search. Views without column headers get a sort menu.
+                <code>DataListItem</code> gives the common layout: avatar, title, subtitle and meta. Without a
+                <code>ListItemTemplate</code>, the columns build "Label: value" lines.
+            </Description>
+        </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsRemote)" Title="Remote data with ItemsProvider">
+            <Description>
+                <code>ItemsProvider</code> receives a <code>DataRequest</code> (paging, sorts, search terms, filters and
+                the columns' member paths) and returns a <code>DataPage</code>. The view waits for a typing pause before
+                searching, cancels the previous request and ignores late responses. The request serializes to JSON, so it
+                can be posted to an API; the server must check every column and operator against an allow-list.
+            </Description>
+        </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsFilters)" Title="Column filters">
+            <Description>
+                <code>Filterable</code> picks a control from the value type: text, a from–to range for numbers and dates,
+                checkboxes for enums, Yes/No for bools, and "empty" for nullable values. <code>FilterOperators</code> adds an
+                operator picker. Filters reach sources as <code>FilterSpec</code>s by column id; <code>@@bind-Filters</code>
+                saves or restores them, and <code>ShowFilterChips</code> lists the active ones. With <code>UrlState</code>,
+                paging, sort, search and filters are kept in the query string (<code>orders.f.status=in:Open</code>), so the
+                view can be bookmarked and the back button works.
+            </Description>
+        </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsCursor)" Title="Cursor paging">
+            <Description>
+                A source with <code>PagingMode.Cursor</code> and no total count gets next and previous buttons only.
+                The view remembers the cursor of each visited page.
+            </Description>
+        </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsEntityFramework)" Title="Blazor Server and EF Core">
+            <Description>
+                Create a <code>DbContext</code> per request from an <code>IDbContextFactory</code> and pass the
+                cancellation token on, so a query stops when the user keeps typing. Translate only the columns and
+                operators the screen allows: sorts and filters arrive as column ids.
+            </Description>
+        </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsVirtualize)" Title="Virtualization">
+            <Description>
+                <code>Virtualize</code> shows one scrolling list and renders only the visible rows. Offset sources with a total
+                fetch the visible range; cursor sources (or sources without a total) load the next page as you near the end.
+                Rows need a fixed height (<code>ItemSize</code>) and the view a <code>Height</code>.
+            </Description>
+        </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsCalculated)" Title="Calculated columns">
+            <Description>
+                <code>Value</code> takes any expression. The members it uses are found automatically, so sort and search
+                work on calculated values. <code>SortBy</code> and <code>FilterBy</code> use other properties instead.
+            </Description>
+        </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsStyling)" Title="Row links and styling">
+            <Description>
+                <code>RowHref</code> makes each row a real link (Ctrl-click opens a new tab). Rows and cells can be
+                colored from their data with Tabler colors, which follow the theme. Pair color with text for accessibility.
+            </Description>
+        </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsEditing)" Title="Editing">
+            <Description>
+                A <code>SaveItem</code> handler turns editing on. Rows are edited on a copy (the draft), so Cancel just throws
+                it away and the real row changes only when the handler returns <code>EditResult.Saved</code>. Return
+                <code>EditResult.Failed(message)</code> or <code>EditResult.Invalid((field, message))</code> to keep the draft
+                and show the problem. Inline, popup and drawer editing share the same flow; Enter saves and Esc cancels.
+            </Description>
+        </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsRowActions)" Title="Row actions">
+            <Description>
+                Declared actions render the same way everywhere: icon buttons for the first few, then a menu. Actions can be
+                links, show a spinner while their handler runs, ask for confirmation and depend on the row.
+            </Description>
+        </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsSelection)" Title="Selection and bulk actions">
+            <Description>
+                Selection is tracked by key, so it survives paging, searching and reloads. With rows selected, the header becomes
+                a selection bar with the bulk actions. "Select all matching" hands the current request to the action instead of
+                every row, so a server can act on all of them.
+            </Description>
+        </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsDetails)" Title="Details">
+            <Description>
+                Details are separate from selection and can show inline, in a drawer or in a side panel beside a list.
+                <code>LoadDetails</code> loads extra data when details open, cached per item.
+            </Description>
+        </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsState)" Title="State">
+            <Description>
+                <code>@@bind-State</code> exposes paging, sort, search and filters as a serializable
+                <code>DataViewState</code>, to save, restore or drive the view.
+            </Description>
+        </CodeSnippet>
+        <div class="card mt-4">
+            <div class="card-header"><h3 class="card-title">Translating the built-in text</h3></div>
+            <div class="card-body">
+                <p>
+                    The search box, pager, empty states, filter and edit buttons use <code>DataViewText</code>. Set
+                    <code>Text</code> on one view, <code>TablerOptions.DataViewText</code> for the whole app, or
+                    <code>TablerOptions.DataViewTextResource</code> to read the strings from a resource through
+                    <code>IStringLocalizer</code> (call <code>services.AddLocalization()</code>). The resource keys are the
+                    property names, such as <code>Search</code>, <code>NoResults</code> and <code>ShowingOfTotal</code>
+                    (<code>"Visar {0}–{1} av {2}"</code>); missing keys stay in English.
+                </p>
+                <pre class="mb-0"><code>services.AddLocalization();
+services.AddTabBlazor(o =&gt; o.DataViewTextResource = typeof(DataViewResources));</code></pre>
+            </div>
+        </div>
+    </DocsExample>
+</Page>

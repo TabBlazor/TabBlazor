@@ -1,18 +1,33 @@
 @namespace TabBlazor
 
 <ClickOutside OnClickOutside="OnClickOutside" Active="clickOutsideActive">
-    <div class="@ClassNames" style="z-index: @zIndex" @ref="panel" @onkeydown="OnKeyDown" tabindex="-1" aria-labelledby="@titleId" aria-modal="true" role="dialog">
+    <div class="@ClassNames" style="@Style" id="@id" @ref="panel" @onkeydown="OnKeyDown" tabindex="-1" aria-labelledby="@titleId" aria-modal="@(Options.Backdrop ? "true" : null)" role="dialog">
         <div class="offcanvas-header" @onclick:stopPropagation>
-            <h2 class="offcanvas-title" id="@titleId">@Title</h2>
+            <h2 class="offcanvas-title" id="@titleId">
+                @if (TitleTemplate != null)
+                {
+                    @TitleTemplate
+                }
+                else
+                {
+                    @Title
+                }
+            </h2>
             <button type="button" class="btn-close text-reset" aria-label="Close" @onclick="Close"/>
         </div>
         <div class="offcanvas-body">
             @ChildContent
         </div>
+        @if (FooterTemplate != null)
+        {
+            <div class="offcanvas-footer">
+                @FooterTemplate
+            </div>
+        }
     </div>
 </ClickOutside>
 
 @if (Options.Backdrop)
 {
-    <div class="offcanvas-backdrop fade show" style="z-index: @(zIndex - 1)"/>
+    <div class="offcanvas-backdrop fade show @(Hiding ? "offcanvas-backdrop-hiding" : null)" style="z-index: @(zIndex - 1)"/>
 }

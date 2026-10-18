@@ -68,6 +68,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<InternalsVisibleTo Include="TabBlazor.Tests" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="LinqKit.Core" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" />
 		<PackageReference Include="Microsoft.Extensions.Localization.Abstractions" />

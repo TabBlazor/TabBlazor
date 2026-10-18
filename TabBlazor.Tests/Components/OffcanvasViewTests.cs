@@ -178,5 +178,98 @@ namespace TabBlazor.Tests.Components
             Assert.Empty(cut.FindAll("div.offcanvas"));
             Assert.Equal(1200, OverlayLayers.Register(new object()));
         }
+
+        [Theory]
+        [InlineData(OffcanvasPosition.End, OffcanvasSize.Large, "--tblr-offcanvas-width: min(50rem, 100vw)")]
+        [InlineData(OffcanvasPosition.Bottom, OffcanvasSize.Small, "--tblr-offcanvas-height: 25vh")]
+        [InlineData(OffcanvasPosition.Start, OffcanvasSize.Full, "--tblr-offcanvas-width: 100vw")]
+        public void Size_sets_the_panel_width_or_height(OffcanvasPosition position, OffcanvasSize size, string expected)
+        {
+            var cut = RenderOffcanvas(new OffcanvasOptions { Position = position, Size = size });
+
+            var panel = cut.Find("div.offcanvas");
+            Assert.Contains(expected, panel.GetAttribute("style"));
+            Assert.Contains($"offcanvas-size-{size.ToString().ToLower()}", panel.ClassList);
+        }
+
+        [Fact]
+        public void On_closing_can_keep_the_panel_open()
+        {
+            var closed = false;
+            var cut = Render<OffcanvasView>(p => p
+                .Add(o => o.Options, new OffcanvasOptions { CloseOnEsc = true })
+                .Add(o => o.OnClosing, args => args.Cancel = true)
+                .Add(o => o.OnClosed, () => closed = true));
+
+            cut.Find("button.btn-close").Click();
+            cut.Find("div.offcanvas").KeyDown(new KeyboardEventArgs { Key = "Escape" });
+
+            Assert.False(closed);
+        }
+
+        [Fact]
+        public void Options_on_closing_can_keep_the_panel_open()
+        {
+            var asked = 0;
+            var closed = false;
+            var cut = RenderOffcanvas(new OffcanvasOptions
+            {
+                OnClosing = args =>
+                {
+                    asked++;
+                    args.Cancel = asked == 1;
+                    return Task.CompletedTask;
+                }
+            }, () => closed = true);
+
+            cut.Find("button.btn-close").Click();
+            Assert.False(closed);
+
+            cut.Find("button.btn-close").Click();
+            Assert.True(closed);
+        }
+
+        [Fact]
+        public void Renders_title_template_and_footer()
+        {
+            var cut = Render<OffcanvasView>(p => p
+                .Add(o => o.Options, new OffcanvasOptions())
+                .Add(o => o.TitleTemplate, b => b.AddMarkupContent(0, "<em>Order 7</em>"))
+                .Add(o => o.FooterTemplate, b => b.AddMarkupContent(0, "<button class=\"save\">Save</button>")));
+
+            Assert.Equal("Order 7", cut.Find(".offcanvas-title em").TextContent);
+            Assert.NotNull(cut.Find(".offcanvas-footer button.save"));
+        }
+
+        [Fact]
+        public void Hiding_plays_the_closing_animation()
+        {
+            var cut = Render<OffcanvasView>(p => p
+                .Add(o => o.Options, new OffcanvasOptions { Backdrop = true })
+                .Add(o => o.Hiding, true));
+
+            Assert.Contains("offcanvas-hiding", cut.Find("div.offcanvas").ClassList);
+            Assert.Contains("offcanvas-backdrop-hiding", cut.Find("div.offcanvas-backdrop").ClassList);
+        }
+
+        [Fact]
+        public void Is_modal_only_with_a_backdrop()
+        {
+            Assert.Equal("true", RenderOffcanvas(new OffcanvasOptions { Backdrop = true }).Find("div.offcanvas").GetAttribute("aria-modal"));
+            Assert.Null(RenderOffcanvas(new OffcanvasOptions { Backdrop = false }).Find("div.offcanvas").GetAttribute("aria-modal"));
+        }
+
+        [Fact]
+        public async Task Gives_focus_back_when_closed()
+        {
+            var cut = RenderOffcanvas(new OffcanvasOptions());
+            var panelId = cut.Find("div.offcanvas").Id;
+
+            Assert.Equal(panelId, JSInterop.VerifyInvoke("tabBlazor.saveFocus").Arguments[0]);
+
+            await DisposeComponentsAsync();
+
+            Assert.Equal(panelId, JSInterop.VerifyInvoke("tabBlazor.restoreFocus").Arguments[0]);
+        }
     }
 }

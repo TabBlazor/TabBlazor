@@ -1,0 +1,53 @@
+<div class="btn-list">
+    @foreach (var name in names)
+    {
+        <button class="btn" @onclick="() => Show(name)">@name</button>
+    }
+</div>
+
+<Offcanvas @bind-Open="open" Title="@current" Size="OffcanvasSize.Medium" Backdrop="false" OnClosing="OnClosing">
+    <ChildContent>
+        <p>The panel stays open while you pick another name: its content follows the page.</p>
+        <label class="form-check">
+            <input class="form-check-input" type="checkbox" @bind="unsaved" />
+            <span class="form-check-label">Pretend there are unsaved changes</span>
+        </label>
+        @if (askedToDiscard)
+        {
+            <div class="alert alert-warning mt-3">Unsaved changes. Untick the box, or use Discard.</div>
+        }
+    </ChildContent>
+
+    <FooterTemplate>
+        <button class="btn" @onclick="Discard">Discard</button>
+        <button class="btn btn-primary" @onclick="() => open = false">Done</button>
+    </FooterTemplate>
+</Offcanvas>
+
+@code {
+    private readonly string[] names = ["Ada Lovelace", "Grace Hopper", "Alan Turing"];
+    private bool open;
+    private string current;
+    private bool unsaved;
+    private bool askedToDiscard;
+
+    private void Show(string name)
+    {
+        current = name;
+        open = true;
+    }
+
+    // Esc and the close button ask first; set Cancel to keep the panel open.
+    private void OnClosing(OffcanvasClosingEventArgs args)
+    {
+        args.Cancel = unsaved;
+        askedToDiscard = unsaved;
+    }
+
+    private void Discard()
+    {
+        unsaved = false;
+        askedToDiscard = false;
+        open = false;
+    }
+}

@@ -1,0 +1,167 @@
+@namespace TabBlazor
+@typeparam TItem
+@using Microsoft.AspNetCore.Components.Routing
+
+<CascadingValue Value="context" IsFixed="true">
+    @{ StartCollectingColumns(); }
+    @ChildContent
+    <DataViewDefer>
+        @{ FinishCollectingColumns(); }
+        <DataViewColumnsCollected OnCollected="OnColumnsCollectedAsync" />
+        <div class="@GetCardClass()" id="@Id">
+            @if (engine.IsLoading && engine.HasLoaded)
+            {
+                <div class="progress progress-sm dv-progress" role="progressbar" aria-label="@Texts.Loading">
+                    <div class="progress-bar progress-bar-indeterminate"></div>
+                </div>
+            }
+
+            @if (ShowHeader)
+            {
+                <DataViewHeader TItem="TItem" View="this" />
+            }
+
+            @if (ShowFilterChips && engine.Filters.Count > 0)
+            {
+                <div class="dv-filter-chips">
+                    @foreach (var filter in engine.Filters)
+                    {
+                        var f = filter;
+                        var column = engine.Columns.FirstOrDefault(c => c.Id == f.Column);
+                        <span class="badge bg-azure-lt dv-filter-chip">
+                            @column?.Title: @DataFilters.Describe(f, Texts)
+                            <button type="button" class="btn-close ms-1" aria-label="@($"{Texts.ClearFilter} {column?.Title}")"
+                                    @onclick="() => SetColumnFilterAsync(f.Column, null)"></button>
+                        </span>
+                    }
+                    <button type="button" class="btn btn-link btn-sm p-0 dv-filters-clear-all" @onclick="ClearFiltersAsync">@Texts.ClearAllFilters</button>
+                </div>
+            }
+
+            @if (Notice != null)
+            {
+                <div class="alert @Notice.Color.GetColorClass("alert") alert-dismissible m-3 mb-0 dv-notice" role="alert">
+                    @Notice.Message
+                    <button type="button" class="btn-close" aria-label="@Texts.Close" @onclick="DismissNotice"></button>
+                </div>
+            }
+
+            @if (HasDetails && EffectiveDetailsMode == DataDetailsMode.SidePanel)
+            {
+                <div class="dv-split">
+                    <div class="dv-split-main">@RenderView</div>
+                    <div class="dv-split-panel dv-side-panel">
+                        @if (CurrentDetailsItem is { } current)
+                        {
+                            <div class="d-flex align-items-center mb-3">
+                                <h3 class="card-title mb-0 me-auto">@GetDetailsTitle(current)</h3>
+                                <button type="button" class="btn-close" aria-label="@Texts.Close" @onclick="CloseCurrentDetailsAsync"></button>
+                            </div>
+                            @DetailsTemplate!(GetDetailsContext(current))
+                        }
+                        else
+                        {
+                            <div class="text-secondary text-center py-5">@Texts.SelectAnItem</div>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                @RenderView
+            }
+
+            @if (ShowFooter && Status == DataViewStatus.Items)
+            {
+                <DataViewFooter TItem="TItem" View="this" />
+            }
+        </div>
+
+        @if (EditSession != null && EffectiveEditMode == DataEditMode.Popup)
+        {
+            <ModalView Title="@(EditSession.IsNew ? Texts.NewItem : Texts.Edit)" Options="@(IsSmallScreen ? fullScreenPopupOptions : popupOptions)" OnClosed="() => CancelEditAsync(false)">
+                <DataViewEditForm TItem="TItem" View="this" Session="EditSession" />
+            </ModalView>
+        }
+
+        @if (EffectiveEditMode == DataEditMode.Drawer && (EditSession != null || drawerWasOpen))
+        {
+            <Offcanvas Open="EditSession != null" Title="@(EditSession?.IsNew == true ? Texts.NewItem : Texts.Edit)"
+                       Size="DrawerSize(OffcanvasSize.Large)" OnClosing="OnEditDrawerClosingAsync" OnClosed="() => drawerWasOpen = false">
+                <ChildContent>
+                    @if (EditSession != null)
+                    {
+                        <DataViewEditForm TItem="TItem" View="this" Session="EditSession" />
+                    }
+                </ChildContent>
+            </Offcanvas>
+        }
+
+        @if (HasDetails && EffectiveDetailsMode == DataDetailsMode.Drawer)
+        {
+            <Offcanvas Open="HasCurrentDetails" Title="@(CurrentDetailsItem is { } item ? GetDetailsTitle(item) : null)"
+                       Backdrop="false" Size="DrawerSize(OffcanvasSize.Medium)" OpenChanged="OnDetailsDrawerOpenChanged" Class="dv-details-drawer">
+                @if (CurrentDetailsItem is { } current)
+                {
+                    @DetailsTemplate!(GetDetailsContext(current))
+                }
+            </Offcanvas>
+        }
+
+        @if (IsSmallScreen && FiltersButtonVisible)
+        {
+            <Offcanvas Open="FiltersPanelOpen" OpenChanged="SetFiltersPanelOpen" Title="@Texts.Filters"
+                       Position="OffcanvasPosition.Bottom" Size="OffcanvasSize.Large" Class="dv-filters-sheet">
+                <DataViewFiltersPanel TItem="TItem" View="this" />
+            </Offcanvas>
+        }
+
+        @if (EditSession != null)
+        {
+            <NavigationLock ConfirmExternalNavigation="EditingIsDirty" OnBeforeInternalNavigation="OnBeforeInternalNavigationAsync" />
+        }
+    </DataViewDefer>
+</CascadingValue>
+
+@code {
+    private static readonly ModalOptions popupOptions = new()
+    {
+        CloseOnEsc = true,
+        Size = ModalSize.Large,
+        Fullscreen = ModalFullscreen.BelowMedium
+    };
+
+    private static readonly ModalOptions fullScreenPopupOptions = new()
+    {
+        CloseOnEsc = true,
+        Size = ModalSize.Large,
+        Fullscreen = ModalFullscreen.Allways
+    };
+
+    private bool drawerWasOpen;
+
+    private RenderFragment RenderView => __builder =>
+    {
+        if (CurrentView == DataViewKind.List)
+        {
+            <DataListView TItem="TItem" View="this" />
+        }
+        else if (EffectiveMobileLayout == DataMobileLayout.Template)
+        {
+            <div class="d-none d-@(Breakpoint)-block"><DataTableView TItem="TItem" View="this" /></div>
+            <DataListView TItem="TItem" View="this" ItemTemplate="MobileTemplate" Class="@($"d-{Breakpoint}-none dv-mobile-list")" />
+        }
+        else
+        {
+            <DataTableView TItem="TItem" View="this" />
+        }
+    };
+
+    private async Task OnEditDrawerClosingAsync(OffcanvasClosingEventArgs args)
+    {
+        drawerWasOpen = true;
+        args.Cancel = !await CancelEditAsync(force: false);
+    }
+
+    private Task OnDetailsDrawerOpenChanged(bool open) => open ? Task.CompletedTask : CloseCurrentDetailsAsync();
+}

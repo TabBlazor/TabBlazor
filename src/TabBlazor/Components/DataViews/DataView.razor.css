@@ -1,0 +1,826 @@
+.dataview {
+    position: relative;
+}
+
+.dataview .dv-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    z-index: 5;
+    border-radius: 0;
+}
+
+.dataview ::deep .dv-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+}
+
+.dataview ::deep .dv-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+    margin-left: auto;
+}
+
+.dataview ::deep .dv-search {
+    width: 16rem;
+    max-width: 100%;
+}
+
+.dataview ::deep .dv-table {
+    margin-bottom: 0;
+}
+
+.dataview ::deep .dv-sort-button {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+}
+
+.dataview ::deep .dv-sort-icon {
+    opacity: .35;
+}
+
+.dataview ::deep .dv-sort-icon.active {
+    opacity: 1;
+}
+
+.dataview ::deep tbody.dv-loading {
+    opacity: .55;
+    transition: opacity .15s ease-in-out;
+}
+
+.dataview ::deep .dv-state-row > td {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.dataview ::deep .dv-comfortable > :not(caption) > * > * {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.dataview ::deep .dv-sticky-header > thead > tr > th {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background: var(--tblr-bg-surface-secondary, var(--tblr-bg-surface, #fff));
+}
+
+/* Row links: a stretched link in the first cell covers the row; interactive content stays above it. */
+.dataview ::deep tr.dv-row-link {
+    position: relative;
+    cursor: pointer;
+}
+
+.dataview ::deep tr.dv-row-link td a:not(.dv-row-anchor),
+.dataview ::deep tr.dv-row-link td button,
+.dataview ::deep tr.dv-row-link td input,
+.dataview ::deep tr.dv-row-link td select,
+.dataview ::deep tr.dv-row-link td textarea,
+.dataview ::deep tr.dv-row-link td label,
+.dataview ::deep tr.dv-row-link td .dv-interactive {
+    position: relative;
+    z-index: 2;
+}
+
+.dataview ::deep .dv-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem 1rem;
+}
+
+.dataview ::deep .dv-page-size {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    margin: 0;
+}
+
+.dataview ::deep .dv-page-size .form-select {
+    width: auto;
+}
+
+.dataview ::deep .dv-list-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1rem;
+}
+
+.dataview ::deep .dv-list .dv-state {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.dataview ::deep .dv-list-item {
+    cursor: default;
+}
+
+.dataview ::deep .dv-list-item.list-group-item-action {
+    cursor: pointer;
+}
+
+.dataview ::deep .dv-list-row {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+}
+
+.dataview ::deep .dv-list-content {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.dataview ::deep .dv-list-select,
+.dataview ::deep .dv-list-actions,
+.dataview ::deep .dv-list-details {
+    position: relative;
+    z-index: 2;
+}
+
+.dataview ::deep .dv-row-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+}
+
+.dataview ::deep .dv-select-cell,
+.dataview ::deep .dv-expand-cell,
+.dataview ::deep .dv-actions-cell {
+    position: relative;
+    z-index: 2;
+}
+
+.dataview ::deep .dv-edit-row > td {
+    vertical-align: top;
+}
+
+.dataview ::deep .dv-edit-row .form-control,
+.dataview ::deep .dv-edit-row .form-select {
+    min-width: 8rem;
+}
+
+.dataview ::deep .dv-saving {
+    opacity: .7;
+}
+
+.dataview ::deep .dv-row-saved > td,
+.dataview ::deep .dv-list-item.dv-row-saved {
+    animation: dv-saved-flash 1.6s ease-out;
+}
+
+@keyframes dv-saved-flash {
+    from {
+        background-color: var(--tblr-green-lt, rgba(47, 179, 68, .15));
+    }
+}
+
+.dataview ::deep .dv-details-row > td {
+    background: var(--tblr-bg-surface-secondary, transparent);
+}
+
+.dataview ::deep .dv-selection-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem 1rem;
+    width: 100%;
+}
+
+.dataview ::deep .dv-split {
+    display: flex;
+    min-height: 20rem;
+}
+
+.dataview ::deep .dv-split-main {
+    flex: 1 1 55%;
+    min-width: 0;
+}
+
+.dataview ::deep .dv-split-panel {
+    flex: 1 1 45%;
+    min-width: 0;
+    border-left: var(--tblr-border-width, 1px) solid var(--tblr-border-color, rgba(0, 0, 0, .1));
+    padding: 1rem;
+}
+
+.dataview ::deep .dv-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: .5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dataview ::deep .dv-row-saved > td,
+    .dataview ::deep .dv-list-item.dv-row-saved {
+        animation: none;
+    }
+}
+
+.dataview ::deep .dv-virtual > tbody > tr:not(.dv-state-row):not(.dv-edit-row):not(.dv-edit-message) {
+    height: var(--dv-row-height, 44px);
+}
+
+.dataview ::deep .dv-th {
+    display: flex;
+    align-items: center;
+    gap: .25rem;
+}
+
+.dataview ::deep th.text-end .dv-th {
+    justify-content: flex-end;
+}
+
+.dataview ::deep .dv-table > thead > tr > th {
+    position: relative;
+}
+
+.dataview ::deep .dv-resize-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: .5rem;
+    cursor: col-resize;
+    touch-action: none;
+    user-select: none;
+}
+
+.dataview ::deep .dv-resize-handle:hover {
+    border-right: 2px solid var(--tblr-primary, #066fd1);
+}
+
+.dataview ::deep .dv-filter-menu-card,
+.dataview ::deep .dv-filters-menu {
+    min-width: 16rem;
+}
+
+.dataview ::deep thead .dv-filter-menu-card,
+.dataview ::deep thead .dv-column-options-menu,
+.dataview ::deep .dv-filter-row .dv-column-filter {
+    font-size: .875rem;
+    font-weight: normal;
+    letter-spacing: normal;
+    text-transform: none;
+    color: var(--tblr-body-color, inherit);
+}
+
+.dataview ::deep .dv-filters-menu {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.dataview ::deep .dv-filter-range {
+    display: flex;
+    gap: .5rem;
+}
+
+.dataview ::deep .dv-filter-row > th {
+    padding-top: .25rem;
+    padding-bottom: .5rem;
+    font-weight: normal;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.dataview ::deep .dv-filter-row .dv-filter-options {
+    max-height: 8rem;
+    overflow-y: auto;
+}
+
+.dataview .dv-filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+    padding: .75rem 1rem 0;
+}
+
+.dataview .dv-filter-chip {
+    display: inline-flex;
+    align-items: center;
+    font-weight: normal;
+}
+
+.dataview .dv-filter-chip .btn-close {
+    width: .5rem;
+    height: .5rem;
+}
+
+/* Virtualized rows must be exactly ItemSize tall: one line, padding folded into the height. */
+.dataview ::deep .dv-virtual > tbody > tr > td {
+    height: var(--dv-row-height, 44px);
+    padding-top: 0;
+    padding-bottom: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+}
+
+/* Small screens (generated per breakpoint) */
+
+@media (max-width: 575.98px) {
+    .dataview.dv-stacked-sm ::deep .dv-table > thead {
+        display: none;
+    }
+
+    .dataview.dv-stacked-sm ::deep .dv-table,
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody,
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr,
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr > td {
+        display: block;
+        width: 100%;
+    }
+
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr {
+        position: relative;
+        padding: .5rem 0;
+        border-bottom: var(--tblr-border-width, 1px) solid var(--tblr-border-color, rgba(0, 0, 0, .1));
+    }
+
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr > td {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: .25rem 1rem;
+        border: 0;
+        text-align: right;
+    }
+
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr > td[data-label]::before {
+        content: attr(data-label);
+        flex: 0 0 auto;
+        font-weight: var(--tblr-font-weight-medium, 500);
+        color: var(--tblr-secondary, #6c7a91);
+        text-align: left;
+    }
+
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr > td.dv-select-cell,
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr > td.dv-expand-cell,
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr > td.dv-actions-cell {
+        position: absolute;
+        top: .5rem;
+        width: auto !important;
+        padding: 0 .75rem;
+    }
+
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr > td.dv-select-cell,
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr > td.dv-expand-cell {
+        left: 0;
+    }
+
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr > td.dv-actions-cell {
+        right: 0;
+    }
+
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr:has(> td.dv-select-cell) > td:not(.dv-select-cell):not(.dv-actions-cell),
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr:has(> td.dv-expand-cell) > td:not(.dv-expand-cell):not(.dv-actions-cell) {
+        padding-left: 2.75rem;
+    }
+
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr > td.dv-first-col {
+        font-weight: var(--tblr-font-weight-medium, 500);
+        padding-right: 3.5rem;
+    }
+
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr.dv-state-row > td,
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr.dv-details-row > td,
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr.dv-placeholder-row > td {
+        display: block;
+        text-align: center;
+    }
+
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr.dv-state-row > td::before,
+    .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr.dv-details-row > td::before {
+        content: none;
+    }
+
+    .dataview.dv-scroll-sm ::deep .dv-table .dv-first-col,
+    .dataview.dv-scroll-sm ::deep .dv-table .dv-actions-cell,
+    .dataview.dv-scroll-sm ::deep .dv-table .dv-actions-column {
+        position: sticky;
+        z-index: 2;
+        background: var(--tblr-bg-surface, #fff);
+    }
+
+    .dataview.dv-scroll-sm ::deep .dv-table .dv-first-col {
+        left: 0;
+    }
+
+    .dataview.dv-scroll-sm ::deep .dv-table .dv-actions-cell,
+    .dataview.dv-scroll-sm ::deep .dv-table .dv-actions-column {
+        right: 0;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .dataview.dv-stacked-md ::deep .dv-table > thead {
+        display: none;
+    }
+
+    .dataview.dv-stacked-md ::deep .dv-table,
+    .dataview.dv-stacked-md ::deep .dv-table > tbody,
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr,
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr > td {
+        display: block;
+        width: 100%;
+    }
+
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr {
+        position: relative;
+        padding: .5rem 0;
+        border-bottom: var(--tblr-border-width, 1px) solid var(--tblr-border-color, rgba(0, 0, 0, .1));
+    }
+
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr > td {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: .25rem 1rem;
+        border: 0;
+        text-align: right;
+    }
+
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr > td[data-label]::before {
+        content: attr(data-label);
+        flex: 0 0 auto;
+        font-weight: var(--tblr-font-weight-medium, 500);
+        color: var(--tblr-secondary, #6c7a91);
+        text-align: left;
+    }
+
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr > td.dv-select-cell,
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr > td.dv-expand-cell,
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr > td.dv-actions-cell {
+        position: absolute;
+        top: .5rem;
+        width: auto !important;
+        padding: 0 .75rem;
+    }
+
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr > td.dv-select-cell,
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr > td.dv-expand-cell {
+        left: 0;
+    }
+
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr > td.dv-actions-cell {
+        right: 0;
+    }
+
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr:has(> td.dv-select-cell) > td:not(.dv-select-cell):not(.dv-actions-cell),
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr:has(> td.dv-expand-cell) > td:not(.dv-expand-cell):not(.dv-actions-cell) {
+        padding-left: 2.75rem;
+    }
+
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr > td.dv-first-col {
+        font-weight: var(--tblr-font-weight-medium, 500);
+        padding-right: 3.5rem;
+    }
+
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr.dv-state-row > td,
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr.dv-details-row > td,
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr.dv-placeholder-row > td {
+        display: block;
+        text-align: center;
+    }
+
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr.dv-state-row > td::before,
+    .dataview.dv-stacked-md ::deep .dv-table > tbody > tr.dv-details-row > td::before {
+        content: none;
+    }
+
+    .dataview.dv-scroll-md ::deep .dv-table .dv-first-col,
+    .dataview.dv-scroll-md ::deep .dv-table .dv-actions-cell,
+    .dataview.dv-scroll-md ::deep .dv-table .dv-actions-column {
+        position: sticky;
+        z-index: 2;
+        background: var(--tblr-bg-surface, #fff);
+    }
+
+    .dataview.dv-scroll-md ::deep .dv-table .dv-first-col {
+        left: 0;
+    }
+
+    .dataview.dv-scroll-md ::deep .dv-table .dv-actions-cell,
+    .dataview.dv-scroll-md ::deep .dv-table .dv-actions-column {
+        right: 0;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .dataview.dv-stacked-lg ::deep .dv-table > thead {
+        display: none;
+    }
+
+    .dataview.dv-stacked-lg ::deep .dv-table,
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody,
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr,
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr > td {
+        display: block;
+        width: 100%;
+    }
+
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr {
+        position: relative;
+        padding: .5rem 0;
+        border-bottom: var(--tblr-border-width, 1px) solid var(--tblr-border-color, rgba(0, 0, 0, .1));
+    }
+
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr > td {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: .25rem 1rem;
+        border: 0;
+        text-align: right;
+    }
+
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr > td[data-label]::before {
+        content: attr(data-label);
+        flex: 0 0 auto;
+        font-weight: var(--tblr-font-weight-medium, 500);
+        color: var(--tblr-secondary, #6c7a91);
+        text-align: left;
+    }
+
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr > td.dv-select-cell,
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr > td.dv-expand-cell,
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr > td.dv-actions-cell {
+        position: absolute;
+        top: .5rem;
+        width: auto !important;
+        padding: 0 .75rem;
+    }
+
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr > td.dv-select-cell,
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr > td.dv-expand-cell {
+        left: 0;
+    }
+
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr > td.dv-actions-cell {
+        right: 0;
+    }
+
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr:has(> td.dv-select-cell) > td:not(.dv-select-cell):not(.dv-actions-cell),
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr:has(> td.dv-expand-cell) > td:not(.dv-expand-cell):not(.dv-actions-cell) {
+        padding-left: 2.75rem;
+    }
+
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr > td.dv-first-col {
+        font-weight: var(--tblr-font-weight-medium, 500);
+        padding-right: 3.5rem;
+    }
+
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr.dv-state-row > td,
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr.dv-details-row > td,
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr.dv-placeholder-row > td {
+        display: block;
+        text-align: center;
+    }
+
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr.dv-state-row > td::before,
+    .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr.dv-details-row > td::before {
+        content: none;
+    }
+
+    .dataview.dv-scroll-lg ::deep .dv-table .dv-first-col,
+    .dataview.dv-scroll-lg ::deep .dv-table .dv-actions-cell,
+    .dataview.dv-scroll-lg ::deep .dv-table .dv-actions-column {
+        position: sticky;
+        z-index: 2;
+        background: var(--tblr-bg-surface, #fff);
+    }
+
+    .dataview.dv-scroll-lg ::deep .dv-table .dv-first-col {
+        left: 0;
+    }
+
+    .dataview.dv-scroll-lg ::deep .dv-table .dv-actions-cell,
+    .dataview.dv-scroll-lg ::deep .dv-table .dv-actions-column {
+        right: 0;
+    }
+}
+
+@media (max-width: 1199.98px) {
+    .dataview.dv-stacked-xl ::deep .dv-table > thead {
+        display: none;
+    }
+
+    .dataview.dv-stacked-xl ::deep .dv-table,
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody,
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr,
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr > td {
+        display: block;
+        width: 100%;
+    }
+
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr {
+        position: relative;
+        padding: .5rem 0;
+        border-bottom: var(--tblr-border-width, 1px) solid var(--tblr-border-color, rgba(0, 0, 0, .1));
+    }
+
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr > td {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: .25rem 1rem;
+        border: 0;
+        text-align: right;
+    }
+
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr > td[data-label]::before {
+        content: attr(data-label);
+        flex: 0 0 auto;
+        font-weight: var(--tblr-font-weight-medium, 500);
+        color: var(--tblr-secondary, #6c7a91);
+        text-align: left;
+    }
+
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr > td.dv-select-cell,
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr > td.dv-expand-cell,
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr > td.dv-actions-cell {
+        position: absolute;
+        top: .5rem;
+        width: auto !important;
+        padding: 0 .75rem;
+    }
+
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr > td.dv-select-cell,
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr > td.dv-expand-cell {
+        left: 0;
+    }
+
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr > td.dv-actions-cell {
+        right: 0;
+    }
+
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr:has(> td.dv-select-cell) > td:not(.dv-select-cell):not(.dv-actions-cell),
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr:has(> td.dv-expand-cell) > td:not(.dv-expand-cell):not(.dv-actions-cell) {
+        padding-left: 2.75rem;
+    }
+
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr > td.dv-first-col {
+        font-weight: var(--tblr-font-weight-medium, 500);
+        padding-right: 3.5rem;
+    }
+
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr.dv-state-row > td,
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr.dv-details-row > td,
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr.dv-placeholder-row > td {
+        display: block;
+        text-align: center;
+    }
+
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr.dv-state-row > td::before,
+    .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr.dv-details-row > td::before {
+        content: none;
+    }
+
+    .dataview.dv-scroll-xl ::deep .dv-table .dv-first-col,
+    .dataview.dv-scroll-xl ::deep .dv-table .dv-actions-cell,
+    .dataview.dv-scroll-xl ::deep .dv-table .dv-actions-column {
+        position: sticky;
+        z-index: 2;
+        background: var(--tblr-bg-surface, #fff);
+    }
+
+    .dataview.dv-scroll-xl ::deep .dv-table .dv-first-col {
+        left: 0;
+    }
+
+    .dataview.dv-scroll-xl ::deep .dv-table .dv-actions-cell,
+    .dataview.dv-scroll-xl ::deep .dv-table .dv-actions-column {
+        right: 0;
+    }
+}
+
+@media (max-width: 1399.98px) {
+    .dataview.dv-stacked-xxl ::deep .dv-table > thead {
+        display: none;
+    }
+
+    .dataview.dv-stacked-xxl ::deep .dv-table,
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody,
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr,
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr > td {
+        display: block;
+        width: 100%;
+    }
+
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr {
+        position: relative;
+        padding: .5rem 0;
+        border-bottom: var(--tblr-border-width, 1px) solid var(--tblr-border-color, rgba(0, 0, 0, .1));
+    }
+
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr > td {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: .25rem 1rem;
+        border: 0;
+        text-align: right;
+    }
+
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr > td[data-label]::before {
+        content: attr(data-label);
+        flex: 0 0 auto;
+        font-weight: var(--tblr-font-weight-medium, 500);
+        color: var(--tblr-secondary, #6c7a91);
+        text-align: left;
+    }
+
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr > td.dv-select-cell,
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr > td.dv-expand-cell,
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr > td.dv-actions-cell {
+        position: absolute;
+        top: .5rem;
+        width: auto !important;
+        padding: 0 .75rem;
+    }
+
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr > td.dv-select-cell,
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr > td.dv-expand-cell {
+        left: 0;
+    }
+
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr > td.dv-actions-cell {
+        right: 0;
+    }
+
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr:has(> td.dv-select-cell) > td:not(.dv-select-cell):not(.dv-actions-cell),
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr:has(> td.dv-expand-cell) > td:not(.dv-expand-cell):not(.dv-actions-cell) {
+        padding-left: 2.75rem;
+    }
+
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr > td.dv-first-col {
+        font-weight: var(--tblr-font-weight-medium, 500);
+        padding-right: 3.5rem;
+    }
+
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr.dv-state-row > td,
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr.dv-details-row > td,
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr.dv-placeholder-row > td {
+        display: block;
+        text-align: center;
+    }
+
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr.dv-state-row > td::before,
+    .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr.dv-details-row > td::before {
+        content: none;
+    }
+
+    .dataview.dv-scroll-xxl ::deep .dv-table .dv-first-col,
+    .dataview.dv-scroll-xxl ::deep .dv-table .dv-actions-cell,
+    .dataview.dv-scroll-xxl ::deep .dv-table .dv-actions-column {
+        position: sticky;
+        z-index: 2;
+        background: var(--tblr-bg-surface, #fff);
+    }
+
+    .dataview.dv-scroll-xxl ::deep .dv-table .dv-first-col {
+        left: 0;
+    }
+
+    .dataview.dv-scroll-xxl ::deep .dv-table .dv-actions-cell,
+    .dataview.dv-scroll-xxl ::deep .dv-table .dv-actions-column {
+        right: 0;
+    }
+}
+
+.dataview.dv-small ::deep .dv-search {
+    order: 99;
+    flex: 1 1 100%;
+    width: 100%;
+}
+
+.dataview.dv-small ::deep .dv-toolbar {
+    flex: 1 1 auto;
+    justify-content: flex-end;
+}
+
+.dataview.dv-small ::deep .dv-select {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.dataview.dv-small ::deep .dv-row-actions .btn {
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+}
