@@ -4,7 +4,7 @@ This file = guidance for Claude Code (claude.ai/code) working in this repo.
 
 ## Project Overview
 
-TabBlazor = Blazor component library on [Tabler](https://preview.tabler.io/) CSS framework (Bootstrap-based admin dashboard UI). 90+ Razor components, minimal JS interop. NuGet packages: `TabBlazor` and `TabBlazor.QuickTable.EntityFramework`.
+TabBlazor = Blazor component library on [Tabler](https://preview.tabler.io/) CSS framework (Bootstrap-based admin dashboard UI). 90+ Razor components, minimal JS interop. NuGet packages: `TabBlazor`, `TabBlazor.QuickTable.EntityFramework` and `TabBlazor.Linq2GraphQL`.
 
 ## Build & Development Commands
 
@@ -25,6 +25,7 @@ cd docs/Tabler.Docs.Wasm && dotnet run
 # Pack NuGet packages
 dotnet pack src/TabBlazor/TabBlazor.csproj -c Release
 dotnet pack src/TabBlazor.QuickTable.EntityFramework/TabBlazor.QuickTable.EntityFramework.csproj -c Release
+dotnet pack src/TabBlazor.Linq2GraphQL/TabBlazor.Linq2GraphQL.csproj -c Release
 ```
 
 **SDK**: .NET 10.0 (pinned in `global.json`, rollForward: latestMinor)
@@ -52,6 +53,7 @@ Registers: `TablerService` (JS interop), `IModalService`, `IOffcanvasService`, `
 
 ### Key Component Categories
 
+- **DataView** (`Components/DataViews/`): the data component for new screens (replaces Table and QuickTable, which stay unchanged). Engine (`Engine/DataViewEngine.cs`) is separate from the views (`Views/`: table, list). Sources implement `IDataViewSource<T>` (`DataRequest` in, `DataPage<T>` out; `InMemorySource` for local lists); columns get path-based ids. Template slots (`ToolbarTemplate`, `DetailsTemplate`, …) are child components. Editing, selection, row actions, details, filters, virtualization and URL state live in `DataView.*.cs` partials. UI strings: `DataViewText` (localizable via `TablerOptions`).
 - **QuickTable** (`Components/QuickTables/`): Virtual scrolling table with `GridItemsProvider<T>`, `PropertyColumn`, `TemplateColumn`, sort/filter/group. EF Core integration in separate package.
 - **Table** (`Components/Tables/`): Standard table with editable rows, detail rows, grouping, column config.
 - **Forms** (`Components/Forms/`): `TablerForm` with EditContext, built-in inputs (TextInput, Select, Autocomplete, Typeahead, Datepicker, etc.), pluggable validation via `IFormValidator`.
@@ -70,9 +72,11 @@ Tabler CSS framework. Custom styles in `src/TabBlazor/wwwroot/css/tabblazor.scss
 
 - `src/TabBlazor/` — Main component library (NuGet package)
 - `src/TabBlazor.QuickTable.EntityFramework/` — EF Core integration for QuickTable
+- `src/TabBlazor.Linq2GraphQL/` — Linq2GraphQL (HotChocolate) source for DataView
 - `docs/Tabler.Docs/` — Shared demo page components (Razor class library)
 - `docs/Tabler.Docs.Wasm/` — WebAssembly demo site (deployed to GitHub Pages)
 - `TabBlazor.Tests/` — xUnit tests
+- `TabBlazor.Linq2GraphQL.Tests/` — adapter tests against an in-process HotChocolate server (see its README to regenerate the client)
 - `Icons/IconGenerator/` — Tool to generate icon components
 
 ## Testing
@@ -83,6 +87,7 @@ xUnit + [bUnit](https://bunit.dev/) (Blazor component rendering) in `TabBlazor.T
 - **Component render tests**: inherit `TabBlazorTestContext` (base `BunitContext` that calls `AddTabBlazor()` and sets loose JS interop). Live under `Components/`, mirroring `src/TabBlazor/Components/` layout.
 - **`Render<T>(...)`, not `RenderComponent<T>`** — TabBlazor has its own `RenderComponent<T>` type that clashes with bUnit's method name.
 - **Naming**: `Method_does_x_when_y` (e.g. `Adds_disabled_class_when_disabled`). One test file per component/class.
+- **DataView sources**: `DataViewSourceTests<TSource, TItem>` is a shared contract kit (paging, sort, search, filters); a new source derives from it. The Linq2GraphQL tests link the same file.
 - Coverage collected in CI via `coverlet.collector` (informational artifact, not a gate).
 
 **When adding or editing a component, add or update its tests** in the same change: cover the rendered element, CSS classes from parameters, `ChildContent`, and any `EventCallback`. Components requiring JS interop (inject `IJSRuntime`/`TablerService`/`IPopperService`) or an impractical cascading/generic parent may be left untested — note this in the PR.

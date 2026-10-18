@@ -236,3 +236,13 @@ Running list of places where the implementation differs from, or fills a gap in,
 - **Finding for Linq2GraphQL:** generated code refers to `Linq2GraphQL.Client…` without `global::`, so a client
   generated into a namespace under one that contains a `Linq2GraphQL` namespace (like `TabBlazor.*` with this
   adapter) does not compile. Emitting `global::` in the templates would fix it.
+
+## Phase 7: docs and migration
+
+- **Localizable strings** go through `TablerOptions` rather than a separate provider: `DataViewText` sets
+  app-wide strings and `DataViewTextResource` names a resource type read through `IStringLocalizerFactory`
+  (keys are the `DataViewText` property names, missing keys stay English, cached per UI culture). A view's
+  `Text` parameter still wins. `DataViewText.FromLocalizer` is public for apps with their own localizer.
+- **Migration guides** are one docs page (`/docs/data-views/migration`) with a parameter map for Table and one
+  for QuickTable, plus notes on the Table and QuickTable pages. No `[Obsolete]` yet, as the doc says.
+- The repo has no `AGENTS.md`; only `CLAUDE.md` was updated.
