@@ -17,6 +17,9 @@ public interface IDataViewColumn<TItem>
     string Title { get; }
 
     RenderFragment? HeaderTemplate { get; }
+
+    /// <summary>Content of the column's header menu, or null.</summary>
+    RenderFragment? ColumnOptions => null;
     bool Sortable { get; }
     bool Searchable { get; }
     SortOrder? DefaultSort { get; }

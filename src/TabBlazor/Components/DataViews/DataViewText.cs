@@ -41,6 +41,7 @@ public sealed record DataViewText
     public string Back { get; init; } = "Back";
     public string Ok { get; init; } = "OK";
     public string MoreActions { get; init; } = "More actions";
+    public string ColumnOptions { get; init; } = "Column options";
     public string NewItem { get; init; } = "New item";
     public string DiscardChanges { get; init; } = "Discard changes?";
     public string DiscardChangesDetails { get; init; } = "Your changes have not been saved.";

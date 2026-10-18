@@ -144,3 +144,30 @@ Running list of places where the implementation differs from, or fills a gap in,
 - **Not yet:** arrow-key navigation in row action menus and rows (Tab between editors works);
   the header's select-all checkbox has a tooltip but no `aria-label`, because TabBlazor's
   `CheckboxTriState` takes no extra attributes.
+
+## Phase 4: virtualization, QuickTable parity and small screens
+
+- **Small screens:** `MobileLayout` is a `DataMobileLayout` enum (Stacked, Scroll, Template);
+  a `<MobileTemplate>` slot switches to Template. `MobileBreakpoint` and a column's `HideBelow`
+  take Bootstrap breakpoint names as strings ("sm" … "xxl"), as in the doc's markup. Layouts are
+  CSS (the Template layout renders the table and the card list and shows one of them), so they
+  work in prerendering. What CSS cannot change follows a `matchMedia` watcher
+  (`tabBlazor.watchMedia`, exposed as `IsSmallScreen`): inline editing becomes a full-screen
+  popup, drawers and the side panel go full screen, row actions collapse into the menu, add,
+  refresh and page size move into the toolbar menu, and the pager becomes "‹ 3 / 13 ›".
+  Not done: showing hidden (`HideBelow`) columns in the stacked card's details.
+- **`EditMode` is nullable:** when not set, editing is inline in the table and a popup in other
+  views, on small screens and while virtualized (the doc's "popup is the default when
+  virtualized"); an explicit `Inline` stays inline while virtualized.
+- **Virtualization** loads the first page through the normal request lifecycle (`PageSize` is the
+  fetch size), then Blazor's `Virtualize` reads from an index cache, fetching missing ranges one
+  at a time. Sources without a total are treated like cursor sources (infinite scroll). While
+  virtualized: the header is always sticky, the footer shows "N rows" instead of a pager, the
+  header checkbox selects all matching rows, inline details move to the drawer, and rows are
+  forced to exactly `ItemSize` (one line, vertical padding folded into the height).
+- **QuickTable's `ResizableColumns` had no behaviour** (a drag-handle element without script).
+  DataView's `ResizableColumns` uses a small pointer-drag script (`tabBlazor.attachColumnResize`)
+  and keeps widths per column id in `ColumnWidths` for the life of the component (remembering
+  them per user is a later feature, as the doc says).
+- **Column options:** a column's `ColumnOptions` fragment opens from a small menu button in its
+  header (QuickTable's equivalent); phase 5's filter controls use the same place.

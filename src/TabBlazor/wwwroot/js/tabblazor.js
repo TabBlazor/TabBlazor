@@ -35,6 +35,42 @@
         }
     },
 
+    // Drag handles in table headers resize their column; the new width is reported to .NET.
+    attachColumnResize: function (table, dotNetRef) {
+        if (!table || table.dataset.resizeAttached) {
+            return;
+        }
+
+        table.dataset.resizeAttached = 'true';
+        table.addEventListener('pointerdown', e => {
+            const handle = e.target.closest('.dv-resize-handle');
+            if (!handle) {
+                return;
+            }
+
+            e.preventDefault();
+            e.stopPropagation();
+            const th = handle.closest('th');
+            const startX = e.clientX;
+            const startWidth = th.getBoundingClientRect().width;
+            let width = startWidth;
+            handle.setPointerCapture(e.pointerId);
+
+            const move = m => {
+                width = Math.max(40, startWidth + m.clientX - startX);
+                th.style.width = width + 'px';
+                th.style.minWidth = width + 'px';
+            };
+            const up = () => {
+                handle.removeEventListener('pointermove', move);
+                handle.removeEventListener('pointerup', up);
+                dotNetRef.invokeMethodAsync('OnColumnResized', th.dataset.columnId, Math.round(width));
+            };
+            handle.addEventListener('pointermove', move);
+            handle.addEventListener('pointerup', up);
+        });
+    },
+
     restoreFocus: function (key) {
         const saved = window.tabBlazor.savedFocus || {};
         const element = saved[key];

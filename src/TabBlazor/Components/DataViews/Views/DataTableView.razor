@@ -9,7 +9,7 @@
     var inlineEdit = View.EditSession != null && View.EffectiveEditMode == DataEditMode.Inline;
 }
 <div class="table-responsive dv-scroll" style="@ScrollStyle" @ref="View.ScrollContainer">
-    <table class="@View.GetTableClass()" style="@(View.IsVirtualized ? $"--dv-row-height: {View.ItemSize.ToString(System.Globalization.CultureInfo.InvariantCulture)}px" : null)" @attributes="View.UnmatchedParameters">
+    <table class="@View.GetTableClass()" @ref="View.TableElement" style="@(View.IsVirtualized ? $"--dv-row-height: {View.ItemSize.ToString(System.Globalization.CultureInfo.InvariantCulture)}px" : null)" @attributes="View.UnmatchedParameters">
         <thead>
             <tr>
                 @if (View.ShowCheckboxes)
@@ -34,8 +34,9 @@
                     var col = column;
                     var sorted = engine.Sort?.Column == col.Id;
                     var headerClass = col == columns[0] ? $"dv-first-col {col.GetHeaderClass()}" : col.GetHeaderClass();
-                    <th scope="col" class="@headerClass" style="@col.GetHeaderStyle()"
+                    <th scope="col" class="@headerClass" style="@View.GetHeaderStyle(col)" data-column-id="@col.Id"
                         aria-sort="@(col.Sortable ? sorted ? engine.Sort!.Descending ? "descending" : "ascending" : "none" : null)">
+                        <div class="dv-th">
                         @if (col.Sortable)
                         {
                             <button type="button" class="dv-sort-button" @onclick="() => engine.ToggleSortAsync(col)">
@@ -48,6 +49,24 @@
                         else
                         {
                             @HeaderContent(col)
+                        }
+                        @if (col.ColumnOptions != null)
+                        {
+                            <Dropdown CloseOnClick="false" class="dv-column-options">
+                                <ChildContent>
+                                    <button type="button" class="btn btn-icon btn-sm btn-ghost-secondary" title="@View.Texts.ColumnOptions" aria-label="@View.Texts.ColumnOptions">
+                                        <Icon IconType="@InternalIcons.Dots_vertical" Size="16" />
+                                    </button>
+                                </ChildContent>
+                                <DropdownTemplate>
+                                    <DropdownMenu Card="true" class="dv-column-options-menu p-3">@col.ColumnOptions</DropdownMenu>
+                                </DropdownTemplate>
+                            </Dropdown>
+                        }
+                        </div>
+                        @if (View.ResizableColumns)
+                        {
+                            <span class="dv-resize-handle" aria-hidden="true"></span>
                         }
                     </th>
                 }

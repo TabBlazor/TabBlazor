@@ -38,6 +38,9 @@ public partial class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<
     /// <summary>Custom header content.</summary>
     [Parameter] public RenderFragment? HeaderTemplate { get; set; }
 
+    /// <summary>Content of a small menu in the column header, for example extra controls for this column.</summary>
+    [Parameter] public RenderFragment? ColumnOptions { get; set; }
+
     /// <summary>The column can be sorted.</summary>
     [Parameter] public bool Sortable { get; set; }
 
@@ -108,6 +111,8 @@ public partial class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<
         "The column has not been resolved yet; its DataView resolves it when collecting columns.");
 
     string IDataViewColumn<TItem>.Id => Info.Id;
+
+    RenderFragment? IDataViewColumn<TItem>.ColumnOptions => ColumnOptions;
 
     string IDataViewColumn<TItem>.Title => Title ?? defaultTitle ?? info?.Id ?? string.Empty;
 

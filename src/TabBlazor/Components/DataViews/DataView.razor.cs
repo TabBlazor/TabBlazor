@@ -331,6 +331,7 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
     {
         await WatchScreenSizeAsync();
         await ApplyVirtualResetAsync();
+        await AttachColumnResizeAsync();
 
         if (firstRender && columnsInitialized && !initialLoadStarted)
         {
@@ -429,6 +430,7 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
         }
 
         chosenView = view;
+        resizeAttached = false;
         engine.InvalidateRows();
         await ViewChanged.InvokeAsync(view);
         StateHasChanged();
