@@ -114,7 +114,7 @@
             </div>
         }
 
-        @if (View.RefreshVisible)
+        @if (View.RefreshVisible && !View.IsSmallScreen)
         {
             <button type="button" class="btn btn-icon dv-refresh" title="@texts.Refresh" aria-label="@texts.Refresh"
                     @onclick="View.ReloadAsync">
@@ -122,7 +122,7 @@
             </button>
         }
 
-        @if (View.AddVisible)
+        @if (View.AddVisible && !View.IsSmallScreen)
         {
             <button type="button" class="btn btn-primary dv-add" @onclick="View.AddAsync" disabled="@(View.EditSession?.IsNew == true)">
                 <Icon IconType="@InternalIcons.Plus" class="icon" />
@@ -130,7 +130,7 @@
             </button>
         }
 
-        @if (View.ShowMenu && View.Density == null)
+        @if (View.ShowMenu && (View.Density == null || View.IsSmallScreen))
         {
             <Dropdown>
                 <ChildContent>
@@ -140,13 +140,40 @@
                 </ChildContent>
                 <DropdownTemplate>
                     <DropdownMenu class="dropdown-menu-end">
-                        <h6 class="dropdown-header">@texts.Density</h6>
-                        @foreach (var option in densities)
+                        @if (View.IsSmallScreen)
                         {
-                            var value = option;
-                            <DropdownItem Active="@(View.CurrentDensity == value)" OnClick="() => View.SetDensity(value)">
-                                @DensityText(value)
-                            </DropdownItem>
+                            @if (View.AddVisible)
+                            {
+                                <DropdownItem class="dv-menu-add" OnClick="View.AddAsync">
+                                    <Icon IconType="@InternalIcons.Plus" class="icon dropdown-item-icon" />@texts.Add
+                                </DropdownItem>
+                            }
+                            @if (View.RefreshVisible)
+                            {
+                                <DropdownItem class="dv-menu-refresh" OnClick="View.ReloadAsync">
+                                    <Icon IconType="@InternalIcons.Refresh" class="icon dropdown-item-icon" />@texts.Refresh
+                                </DropdownItem>
+                            }
+                            @if (View.PageSizes is { Length: > 0 } && !View.IsVirtualized)
+                            {
+                                <h6 class="dropdown-header">@texts.RowsPerPage</h6>
+                                @foreach (var size in View.PageSizes)
+                                {
+                                    var value = size;
+                                    <DropdownItem Active="@(engine.PageSize == value)" class="dv-menu-page-size" OnClick="() => engine.ChangePageSizeAsync(value)">@value</DropdownItem>
+                                }
+                            }
+                        }
+                        @if (View.Density == null)
+                        {
+                            <h6 class="dropdown-header">@texts.Density</h6>
+                            @foreach (var option in densities)
+                            {
+                                var value = option;
+                                <DropdownItem Active="@(View.CurrentDensity == value)" OnClick="() => View.SetDensity(value)">
+                                    @DensityText(value)
+                                </DropdownItem>
+                            }
                         }
                     </DropdownMenu>
                 </DropdownTemplate>

@@ -16,6 +16,25 @@
         window.tabBlazor.savedFocus[key] = document.activeElement;
     },
 
+    // Tells .NET when a media query starts or stops matching. Returns whether it matches now.
+    watchMedia: function (id, query, dotNetRef) {
+        window.tabBlazor.mediaWatchers = window.tabBlazor.mediaWatchers || {};
+        const mql = window.matchMedia(query);
+        const handler = e => dotNetRef.invokeMethodAsync('OnMediaChanged', e.matches);
+        mql.addEventListener('change', handler);
+        window.tabBlazor.mediaWatchers[id] = { mql, handler };
+        return mql.matches;
+    },
+
+    unwatchMedia: function (id) {
+        const watchers = window.tabBlazor.mediaWatchers || {};
+        const watcher = watchers[id];
+        if (watcher) {
+            watcher.mql.removeEventListener('change', watcher.handler);
+            delete watchers[id];
+        }
+    },
+
     restoreFocus: function (key) {
         const saved = window.tabBlazor.savedFocus || {};
         const element = saved[key];

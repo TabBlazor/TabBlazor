@@ -9,7 +9,7 @@
     var last = first + engine.Items.Count - 1;
 }
 <div class="card-footer dv-footer">
-    <p class="m-0 text-secondary dv-showing">
+    <p class="m-0 text-secondary dv-showing @(View.IsSmallScreen ? "d-none" : null)">
         @if (engine.TotalCount is { } total)
         {
             @string.Format(CultureInfo.CurrentCulture, texts.ShowingOfTotal, first.ToString("N0"), last.ToString("N0"), total.ToString("N0"))
@@ -20,7 +20,7 @@
         }
     </p>
 
-    @if (View.PageSizes is { Length: > 0 })
+    @if (View.PageSizes is { Length: > 0 } && !View.IsSmallScreen)
     {
         <label class="dv-page-size text-secondary">
             <span>@texts.RowsPerPage</span>
@@ -43,7 +43,13 @@
                 </button>
             </li>
 
-            @if (engine.PagingMode == PagingMode.Offset && engine.PageCount is { } pageCount)
+            @if (View.IsSmallScreen)
+            {
+                <li class="page-item disabled dv-page-compact">
+                    <span class="page-link">@(engine.PageIndex + 1)@(engine.PageCount is { } count ? $" / {count}" : null)</span>
+                </li>
+            }
+            else if (engine.PagingMode == PagingMode.Offset && engine.PageCount is { } pageCount)
             {
                 foreach (var page in PageWindow(engine.PageIndex, pageCount))
                 {

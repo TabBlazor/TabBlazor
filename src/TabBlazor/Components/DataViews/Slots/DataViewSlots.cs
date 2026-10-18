@@ -15,7 +15,8 @@ public enum DataViewSlot
     BulkActions,
     RowActionsTemplate,
     EditingActionsTemplate,
-    Details
+    Details,
+    MobileTemplate
 }
 
 /// <summary>Implemented by the context a DataView cascades to its content; slots register their templates with it.</summary>
@@ -102,6 +103,12 @@ public sealed class RowActionsTemplate<TItem> : DataViewSlotBase<RenderFragment<
 public sealed class EditingActionsTemplate<TItem> : DataViewSlotBase<RenderFragment<DataRowContext<TItem>>>
 {
     protected override DataViewSlot Slot => DataViewSlot.EditingActionsTemplate;
+}
+
+/// <summary>Your own card markup per row below the mobile breakpoint; the context is the item.</summary>
+public sealed class MobileTemplate<TItem> : DataViewSlotBase<RenderFragment<TItem>>
+{
+    protected override DataViewSlot Slot => DataViewSlot.MobileTemplate;
 }
 
 /// <summary>The details of an item, shown inline, in a drawer or in a side panel (see <c>DetailsMode</c>).</summary>

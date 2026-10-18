@@ -581,7 +581,7 @@ namespace TabBlazor.Tests.Components.DataViews
             Assert.Contains("text-end", th.ClassList);
 
             var cells = cut.FindAll("tbody td");
-            Assert.Equal(["static", "text-end", "bg-red-lt", "fw-bold"], cells[0].ClassList);
+            Assert.Equal(["dv-first-col", "static", "text-end", "bg-red-lt", "fw-bold"], cells[0].ClassList);
             Assert.Equal("color: red", cells[0].GetAttribute("style"));
             Assert.Contains("text-truncate", cells[1].ClassList);
             Assert.Contains("text-nowrap", cells[1].ClassList);

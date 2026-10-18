@@ -32,7 +32,8 @@
                 {
                     var col = column;
                     var sorted = engine.Sort?.Column == col.Id;
-                    <th scope="col" class="@col.GetHeaderClass()" style="@col.GetHeaderStyle()"
+                    var headerClass = col == columns[0] ? $"dv-first-col {col.GetHeaderClass()}" : col.GetHeaderClass();
+                    <th scope="col" class="@headerClass" style="@col.GetHeaderStyle()"
                         aria-sort="@(col.Sortable ? sorted ? engine.Sort!.Descending ? "descending" : "ascending" : "none" : null)">
                         @if (col.Sortable)
                         {

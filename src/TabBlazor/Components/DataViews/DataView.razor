@@ -7,7 +7,7 @@
     <DataViewDefer>
         @{ FinishCollectingColumns(); }
         <DataViewColumnsCollected OnCollected="OnColumnsCollectedAsync" />
-        <div class="@(new ClassBuilder("card dataview").Add(Class))" id="@Id">
+        <div class="@GetCardClass()" id="@Id">
             @if (engine.IsLoading && engine.HasLoaded)
             {
                 <div class="progress progress-sm dv-progress" role="progressbar" aria-label="@Texts.Loading">
@@ -28,7 +28,7 @@
                 </div>
             }
 
-            @if (HasDetails && DetailsMode == DataDetailsMode.SidePanel)
+            @if (HasDetails && EffectiveDetailsMode == DataDetailsMode.SidePanel)
             {
                 <div class="dv-split">
                     <div class="dv-split-main">@RenderView</div>
@@ -61,7 +61,7 @@
 
         @if (EditSession != null && EffectiveEditMode == DataEditMode.Popup)
         {
-            <ModalView Title="@(EditSession.IsNew ? Texts.NewItem : Texts.Edit)" Options="popupOptions" OnClosed="() => CancelEditAsync(false)">
+            <ModalView Title="@(EditSession.IsNew ? Texts.NewItem : Texts.Edit)" Options="@(IsSmallScreen ? fullScreenPopupOptions : popupOptions)" OnClosed="() => CancelEditAsync(false)">
                 <DataViewEditForm TItem="TItem" View="this" Session="EditSession" />
             </ModalView>
         }
@@ -69,7 +69,7 @@
         @if (EffectiveEditMode == DataEditMode.Drawer && (EditSession != null || drawerWasOpen))
         {
             <Offcanvas Open="EditSession != null" Title="@(EditSession?.IsNew == true ? Texts.NewItem : Texts.Edit)"
-                       Size="OffcanvasSize.Large" OnClosing="OnEditDrawerClosingAsync" OnClosed="() => drawerWasOpen = false">
+                       Size="DrawerSize(OffcanvasSize.Large)" OnClosing="OnEditDrawerClosingAsync" OnClosed="() => drawerWasOpen = false">
                 <ChildContent>
                     @if (EditSession != null)
                     {
@@ -79,10 +79,10 @@
             </Offcanvas>
         }
 
-        @if (HasDetails && DetailsMode == DataDetailsMode.Drawer)
+        @if (HasDetails && EffectiveDetailsMode == DataDetailsMode.Drawer)
         {
             <Offcanvas Open="HasCurrentDetails" Title="@(CurrentDetailsItem is { } item ? GetDetailsTitle(item) : null)"
-                       Backdrop="false" Size="OffcanvasSize.Medium" OpenChanged="OnDetailsDrawerOpenChanged" Class="dv-details-drawer">
+                       Backdrop="false" Size="DrawerSize(OffcanvasSize.Medium)" OpenChanged="OnDetailsDrawerOpenChanged" Class="dv-details-drawer">
                 @if (CurrentDetailsItem is { } current)
                 {
                     @DetailsTemplate!(GetDetailsContext(current))
@@ -105,6 +105,13 @@
         Fullscreen = ModalFullscreen.BelowMedium
     };
 
+    private static readonly ModalOptions fullScreenPopupOptions = new()
+    {
+        CloseOnEsc = true,
+        Size = ModalSize.Large,
+        Fullscreen = ModalFullscreen.Allways
+    };
+
     private bool drawerWasOpen;
 
     private RenderFragment RenderView => __builder =>
@@ -112,6 +119,11 @@
         if (CurrentView == DataViewKind.List)
         {
             <DataListView TItem="TItem" View="this" />
+        }
+        else if (EffectiveMobileLayout == DataMobileLayout.Template)
+        {
+            <div class="d-none d-@(Breakpoint)-block"><DataTableView TItem="TItem" View="this" /></div>
+            <DataListView TItem="TItem" View="this" ItemTemplate="MobileTemplate" Class="@($"d-{Breakpoint}-none dv-mobile-list")" />
         }
         else
         {

@@ -13,7 +13,7 @@ namespace TabBlazor;
 /// </summary>
 /// <typeparam name="TItem">The row type.</typeparam>
 [CascadingTypeParameter(nameof(TItem))]
-public partial class DataView<TItem> : ComponentBase, IDisposable
+public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
 {
     private readonly List<IDataViewColumn<TItem>> collectingColumns = [];
     private DataViewContext<TItem> context = default!;
@@ -328,6 +328,8 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        await WatchScreenSizeAsync();
+
         if (firstRender && columnsInitialized && !initialLoadStarted)
         {
             // Remote sources load after the first interactive render, so prerendering does not query twice.
@@ -463,6 +465,12 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
         return string.IsNullOrWhiteSpace(css) ? null : css;
     }
 
+    internal string GetCardClass() => new ClassBuilder("card dataview")
+        .AddIf("dv-small", IsSmallScreen)
+        .Add(CurrentView == DataViewKind.Table ? $"dv-{EffectiveMobileLayout.ToString().ToLowerInvariant()}-{Breakpoint}" : null)
+        .Add(Class)
+        .ToString();
+
     internal string GetTableClass() => new ClassBuilder("table card-table table-vcenter dv-table")
         .AddIf("table-striped", Striped)
         .AddIf("table-hover", Hover || RowHref != null || OnRowClicked.HasDelegate || HasDetails || SelectionMode == DataSelectionMode.Single)
@@ -507,10 +515,11 @@ public partial class DataView<TItem> : ComponentBase, IDisposable
 
     internal Task ClearSearchAndFiltersAsync() => engine.ClearSearchAndFiltersAsync();
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
         disposed = true;
         engine?.Dispose();
+        await DisposeResponsiveAsync();
     }
 }
 

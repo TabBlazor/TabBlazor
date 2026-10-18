@@ -53,6 +53,9 @@
 
     [Parameter] public DataRowState State { get; set; }
 
+    /// <summary>Replaces the view's ListItemTemplate.</summary>
+    [Parameter] public RenderFragment<TItem> ItemTemplate { get; set; }
+
     protected override void OnInitialized()
     {
         renderedItem = Item;
@@ -75,9 +78,10 @@
 
     private RenderFragment Content => builder =>
     {
-        if (View.ListItemTemplate != null)
+        var template = ItemTemplate ?? View.ListItemTemplate;
+        if (template != null)
         {
-            builder.AddContent(0, View.ListItemTemplate(Item));
+            builder.AddContent(0, template(Item));
         }
         else
         {

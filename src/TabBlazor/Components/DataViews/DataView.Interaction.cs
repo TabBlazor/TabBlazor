@@ -64,8 +64,11 @@ public partial class DataView<TItem>
     /// <summary>Copies a row into a draft. Defaults to a shallow copy; use it for records (<c>with</c>), DTOs or deep copies.</summary>
     [Parameter] public Func<TItem, TItem>? EditModelFactory { get; set; }
 
-    /// <summary>How rows are edited. Defaults to inline (popup in views without columns).</summary>
-    [Parameter] public DataEditMode EditMode { get; set; } = DataEditMode.Inline;
+    /// <summary>
+    /// How rows are edited. When not set: inline in the table, a popup in other views, on small screens and while
+    /// virtualized. An explicit Inline still falls back to the popup in views without columns and on small screens.
+    /// </summary>
+    [Parameter] public DataEditMode? EditMode { get; set; }
 
     /// <summary>Allows editing per row.</summary>
     [Parameter] public Func<TItem, bool>? AllowEdit { get; set; }
@@ -124,12 +127,15 @@ public partial class DataView<TItem>
     internal bool CanAdd => SaveItem != null && NewItem != null;
     internal bool AddVisible => ShowAdd ?? CanAdd;
     internal bool ShowCheckboxes => SelectionMode == DataSelectionMode.Multiple;
-    internal bool ShowExpandColumn => HasDetails && DetailsMode == DataDetailsMode.Inline && CurrentView == DataViewKind.Table;
+    internal bool ShowExpandColumn => HasDetails && EffectiveDetailsMode == DataDetailsMode.Inline && CurrentView == DataViewKind.Table;
     internal bool EditingIsDirty => EditSession?.IsModified == true;
 
     /// <summary>The edit mode in use: views without columns edit in a popup.</summary>
     internal DataEditMode EffectiveEditMode =>
-        EditMode == DataEditMode.Inline && CurrentView != DataViewKind.Table ? DataEditMode.Popup : EditMode;
+        (EditMode ?? DataEditMode.Inline) == DataEditMode.Inline &&
+        (CurrentView != DataViewKind.Table || IsSmallScreen || (IsVirtualized && EditMode == null))
+            ? DataEditMode.Popup
+            : EditMode ?? DataEditMode.Inline;
 
     internal IReadOnlyList<DataRowActionBase<TItem>> RowActionList
     {
@@ -181,6 +187,7 @@ public partial class DataView<TItem>
             case DataViewSlot.RowActionsTemplate: RowActionsTemplate = (RenderFragment<DataRowContext<TItem>>?)template; break;
             case DataViewSlot.EditingActionsTemplate: EditingActionsTemplate = (RenderFragment<DataRowContext<TItem>>?)template; break;
             case DataViewSlot.Details: DetailsTemplate = (RenderFragment<DataDetailsContext<TItem>>?)template; break;
+            default: SetResponsiveSlot(slot, template); break;
         }
     }
 
@@ -823,7 +830,7 @@ public partial class DataView<TItem>
         }
 
         var key = KeyOf(item);
-        if (DetailsMode == DataDetailsMode.Inline)
+        if (EffectiveDetailsMode == DataDetailsMode.Inline)
         {
             if (!expanded.Remove(key))
             {
@@ -837,7 +844,7 @@ public partial class DataView<TItem>
                 await EnsureDetailsLoadedAsync(item);
             }
         }
-        else if (Equals(currentKey, key) && DetailsMode == DataDetailsMode.Drawer)
+        else if (Equals(currentKey, key) && EffectiveDetailsMode == DataDetailsMode.Drawer)
         {
             currentKey = null;
             currentItem = default;

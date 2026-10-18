@@ -5,7 +5,7 @@
     var engine = View.Engine;
     var columns = View.VisibleColumns;
 }
-<div class="list-group list-group-flush dv-list @(engine.IsLoading && engine.HasLoaded ? "dv-loading" : null)"
+<div class="list-group list-group-flush dv-list @Class @(engine.IsLoading && engine.HasLoaded ? "dv-loading" : null)"
      style="@(View.Height != null ? $"max-height: {View.Height}; overflow-y: auto;" : null)"
      aria-busy="@(engine.IsLoading ? "true" : null)" @attributes="View.UnmatchedParameters">
     @switch (View.Status)
@@ -13,7 +13,7 @@
         case DataViewStatus.Items:
             foreach (var item in engine.Items)
             {
-                <DataListRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns" Version="engine.RenderVersion" State="View.GetRowState(item)" />
+                <DataListRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns" Version="engine.RenderVersion" State="View.GetRowState(item)" ItemTemplate="ItemTemplate" />
             }
             break;
         case DataViewStatus.FirstLoad when View.LoadingTemplate == null:
@@ -35,4 +35,9 @@
 
 @code {
     [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+
+    /// <summary>Replaces the view's ListItemTemplate (used for the table's MobileTemplate).</summary>
+    [Parameter] public RenderFragment<TItem> ItemTemplate { get; set; }
+
+    [Parameter] public string Class { get; set; }
 }

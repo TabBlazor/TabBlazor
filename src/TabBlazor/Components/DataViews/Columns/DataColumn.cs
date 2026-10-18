@@ -77,6 +77,9 @@ public partial class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<
     /// <summary>The minimum column width.</summary>
     [Parameter] public string? MinWidth { get; set; }
 
+    /// <summary>Hides the column below a Bootstrap breakpoint (sm, md, lg, xl, xxl), so narrow screens show the important columns.</summary>
+    [Parameter] public string? HideBelow { get; set; }
+
     /// <summary>Keeps cells on one line.</summary>
     [Parameter] public bool NoWrap { get; set; }
 
@@ -228,6 +231,7 @@ public partial class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<
     public string? GetCellClass(TItem item)
     {
         var builder = new ClassBuilder(Class)
+            .Add(HideBelowClass)
             .AddIf("text-end", Align == Align.End)
             .AddIf("text-nowrap", NoWrap)
             .AddIf("text-truncate", Truncate);
@@ -258,7 +262,11 @@ public partial class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<
     public string? GetCellTitle(TItem item) => Truncate && Template == null ? GetDisplayText(item) : null;
 
     public string? GetHeaderClass() =>
-        NullIfEmpty(new ClassBuilder(HeaderClass).AddIf("text-end", Align == Align.End).AddIf("text-nowrap", NoWrap).ToString());
+        NullIfEmpty(new ClassBuilder(HeaderClass).Add(HideBelowClass).AddIf("text-end", Align == Align.End).AddIf("text-nowrap", NoWrap).ToString());
+
+    private string? HideBelowClass => string.IsNullOrWhiteSpace(HideBelow)
+        ? null
+        : $"d-none d-{DataView<TItem>.NormalizeBreakpoint(HideBelow)}-table-cell";
 
     public string? GetHeaderStyle()
     {

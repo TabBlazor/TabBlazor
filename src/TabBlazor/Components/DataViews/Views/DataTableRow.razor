@@ -24,11 +24,11 @@
     }
     @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.Start)
     {
-        <td class="w-1 text-nowrap dv-actions-cell"><DataRowActions TItem="TItem" Item="Item" View="View" /></td>
+        <td class="w-1 text-nowrap dv-actions-cell"><DataRowActions TItem="TItem" Item="Item" View="View" MenuOnly="View.IsSmallScreen" /></td>
     }
     @foreach (var column in Columns)
     {
-        <td class="@column.GetCellClass(Item)" style="@column.GetCellStyle(Item)" title="@column.GetCellTitle(Item)" data-label="@column.Title">
+        <td class="@(first ? $"dv-first-col {column.GetCellClass(Item)}" : column.GetCellClass(Item))" style="@column.GetCellStyle(Item)" title="@column.GetCellTitle(Item)" data-label="@column.Title">
             @if (first && href != null)
             {
                 <a class="dv-row-anchor stretched-link" href="@href" aria-label="@View.Texts.OpenRow"></a>
@@ -39,7 +39,7 @@
     }
     @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.End)
     {
-        <td class="w-1 text-nowrap dv-actions-cell"><DataRowActions TItem="TItem" Item="Item" View="View" /></td>
+        <td class="w-1 text-nowrap dv-actions-cell"><DataRowActions TItem="TItem" Item="Item" View="View" MenuOnly="View.IsSmallScreen" /></td>
     }
 </tr>
 
