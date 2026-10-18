@@ -113,6 +113,7 @@ internal sealed class DataViewEngine<TItem> : IDisposable
 
         Columns = columns;
         BuildRequestColumns();
+        Filters = SanitizeFilters(Filters);
 
         if (Sort != null && !columns.Any(c => c.Sortable && c.Id == Sort.Column) && Sort.Column != KeyInfo?.Id)
         {
@@ -368,14 +369,69 @@ internal sealed class DataViewEngine<TItem> : IDisposable
         await LoadAsync();
     }
 
+    /// <summary>
+    /// Keeps only filters on filterable columns with an allowed operator and values that convert to the column's
+    /// type (one per column), so state from a URL or a client cannot reach a source with arbitrary fields.
+    /// </summary>
+    public IReadOnlyList<FilterSpec> SanitizeFilters(IEnumerable<FilterSpec>? filters)
+    {
+        if (filters == null)
+        {
+            return [];
+        }
+
+        if (Columns.Count == 0)
+        {
+            // Not collected yet: SetColumns checks them again.
+            return filters.ToList();
+        }
+
+        var result = new List<FilterSpec>();
+        foreach (var filter in filters)
+        {
+            var column = Columns.FirstOrDefault(c => c.Id == filter.Column);
+            if (column == null || !column.AllowedFilterOperators.Contains(filter.Operator) || result.Any(f => f.Column == filter.Column))
+            {
+                logger.LogWarning("DataView ignored a filter on '{Column}' with operator {Operator}.", filter.Column, filter.Operator);
+                continue;
+            }
+
+            var normalized = DataFilters.Normalize(filter, column.Info);
+            if (normalized != null)
+            {
+                result.Add(normalized);
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>Sets one column's filter (null clears it) and reloads.</summary>
+    public Task SetFilterAsync(string columnId, FilterSpec? filter)
+    {
+        var filters = Filters.Where(f => f.Column != columnId).ToList();
+        if (filter != null)
+        {
+            filters.Add(filter with { Column = columnId });
+        }
+
+        return SetFiltersAsync(filters);
+    }
+
     public async Task SetFiltersAsync(IReadOnlyList<FilterSpec> filters)
     {
+        var sanitized = SanitizeFilters(filters);
+        if (sanitized.SequenceEqual(Filters, FilterComparer.Instance))
+        {
+            return;
+        }
+
         if (!await CanChangeStateAsync())
         {
             return;
         }
 
-        Filters = filters ?? [];
+        Filters = sanitized;
         ResetPaging();
         await OnUserStateChangedAsync();
         await LoadAsync();
@@ -515,12 +571,22 @@ internal sealed class DataViewEngine<TItem> : IDisposable
 
         SearchText = string.IsNullOrWhiteSpace(state.Search) ? null : state.Search;
         SearchInput = SearchText ?? string.Empty;
-        Filters = state.Filters;
+        Filters = SanitizeFilters(state.Filters);
         ResetPaging();
         if (PagingMode == PagingMode.Offset)
         {
             PageIndex = Math.Max(0, state.Page - 1);
         }
+    }
+
+    private sealed class FilterComparer : IEqualityComparer<FilterSpec>
+    {
+        public static FilterComparer Instance { get; } = new();
+
+        public bool Equals(FilterSpec? x, FilterSpec? y) =>
+            new DataViewState { Filters = x == null ? [] : [x] }.Equals(new DataViewState { Filters = y == null ? [] : [y] });
+
+        public int GetHashCode(FilterSpec obj) => HashCode.Combine(obj.Column, obj.Operator);
     }
 
     public void Dispose()

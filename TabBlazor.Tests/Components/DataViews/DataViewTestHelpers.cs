@@ -18,9 +18,19 @@ namespace TabBlazor.Tests.Components.DataViews
         public decimal Total { get; set; }
         public SourceTestStatus Status { get; set; }
         public DateTime Date { get; set; } = new(2026, 1, 1);
+        public int? Score { get; set; }
 
         public static List<Row> Many(int count) =>
-            Enumerable.Range(1, count).Select(i => new Row { Id = i, Name = $"Row {i:00}", Total = i * 10.5m }).ToList();
+            Enumerable.Range(1, count).Select(i => new Row
+            {
+                Id = i,
+                Name = $"Row {i:00}",
+                Total = i * 10.5m,
+                Status = (SourceTestStatus)(i % 3),
+                Active = i % 2 == 0,
+                Date = new DateTime(2026, 1, 1).AddDays(i),
+                Score = i % 3 == 0 ? null : i
+            }).ToList();
     }
 
     /// <summary>A source whose responses the test completes by hand.</summary>

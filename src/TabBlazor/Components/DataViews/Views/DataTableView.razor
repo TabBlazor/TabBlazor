@@ -50,6 +50,28 @@
                         {
                             @HeaderContent(col)
                         }
+                        @if (col.Filterable && View.FilterMode == DataFilterMode.Menu)
+                        {
+                            var active = View.GetFilter(col.Id) != null;
+                            <Dropdown CloseOnClick="false" class="dv-filter-menu">
+                                <ChildContent>
+                                    <button type="button" class="btn btn-icon btn-sm btn-ghost-@(active ? "primary" : "secondary") dv-filter-button @(active ? "dv-filter-active" : null)"
+                                            title="@($"{View.Texts.Filter}: {col.Title}")" aria-label="@($"{View.Texts.Filter}: {col.Title}")" aria-pressed="@(active ? "true" : "false")">
+                                        <Icon IconType="@InternalIcons.Filter" Size="16" />
+                                    </button>
+                                </ChildContent>
+                                <DropdownTemplate>
+                                    <DropdownMenu Card="true" class="p-3 dv-filter-menu-card">
+                                        <DataColumnFilter TItem="TItem" View="View" Column="col" />
+                                        @if (active)
+                                        {
+                                            <button type="button" class="btn btn-link btn-sm px-0 mt-2 dv-filter-clear"
+                                                    @onclick="() => View.SetColumnFilterAsync(col.Id, null)">@View.Texts.ClearFilter</button>
+                                        }
+                                    </DropdownMenu>
+                                </DropdownTemplate>
+                            </Dropdown>
+                        }
                         @if (col.ColumnOptions != null)
                         {
                             <Dropdown CloseOnClick="false" class="dv-column-options">
@@ -75,6 +97,36 @@
                     <th class="w-1 dv-actions-column"></th>
                 }
             </tr>
+            @if (View.FilterMode == DataFilterMode.Row && View.FilterableColumns.Count > 0)
+            {
+                <tr class="dv-filter-row">
+                    @if (View.ShowCheckboxes)
+                    {
+                        <th></th>
+                    }
+                    @if (View.ShowExpandColumn)
+                    {
+                        <th></th>
+                    }
+                    @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.Start)
+                    {
+                        <th></th>
+                    }
+                    @foreach (var column in columns)
+                    {
+                        <th class="@column.GetHeaderClass()">
+                            @if (column.Filterable)
+                            {
+                                <DataColumnFilter TItem="TItem" View="View" Column="column" Compact="true" />
+                            }
+                        </th>
+                    }
+                    @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.End)
+                    {
+                        <th></th>
+                    }
+                </tr>
+            }
         </thead>
         <tbody class="@(engine.IsLoading && engine.HasLoaded ? "dv-loading" : null)" aria-busy="@(engine.IsLoading ? "true" : null)">
             @if (inlineEdit && View.EditSession!.IsNew)

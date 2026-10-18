@@ -20,6 +20,23 @@
                 <DataViewHeader TItem="TItem" View="this" />
             }
 
+            @if (ShowFilterChips && engine.Filters.Count > 0)
+            {
+                <div class="dv-filter-chips">
+                    @foreach (var filter in engine.Filters)
+                    {
+                        var f = filter;
+                        var column = engine.Columns.FirstOrDefault(c => c.Id == f.Column);
+                        <span class="badge bg-azure-lt dv-filter-chip">
+                            @column?.Title: @DataFilters.Describe(f, Texts)
+                            <button type="button" class="btn-close ms-1" aria-label="@($"{Texts.ClearFilter} {column?.Title}")"
+                                    @onclick="() => SetColumnFilterAsync(f.Column, null)"></button>
+                        </span>
+                    }
+                    <button type="button" class="btn btn-link btn-sm p-0 dv-filters-clear-all" @onclick="ClearFiltersAsync">@Texts.ClearAllFilters</button>
+                </div>
+            }
+
             @if (Notice != null)
             {
                 <div class="alert @Notice.Color.GetColorClass("alert") alert-dismissible m-3 mb-0 dv-notice" role="alert">
@@ -87,6 +104,14 @@
                 {
                     @DetailsTemplate!(GetDetailsContext(current))
                 }
+            </Offcanvas>
+        }
+
+        @if (IsSmallScreen && FiltersButtonVisible)
+        {
+            <Offcanvas Open="FiltersPanelOpen" OpenChanged="SetFiltersPanelOpen" Title="@Texts.Filters"
+                       Position="OffcanvasPosition.Bottom" Size="OffcanvasSize.Large" Class="dv-filters-sheet">
+                <DataViewFiltersPanel TItem="TItem" View="this" />
             </Offcanvas>
         }
 

@@ -103,6 +103,42 @@
             </Dropdown>
         }
 
+        @if (View.FiltersButtonVisible)
+        {
+            var count = View.ActiveFilterCount;
+            @if (View.IsSmallScreen)
+            {
+                <button type="button" class="btn dv-filters-button" @onclick="() => View.SetFiltersPanelOpen(true)">
+                    <Icon IconType="@InternalIcons.Filter" class="icon" />
+                    @texts.Filters
+                    @if (count > 0)
+                    {
+                        <span class="badge bg-primary text-primary-fg ms-2">@count</span>
+                    }
+                </button>
+            }
+            else
+            {
+                <Dropdown CloseOnClick="false" class="dv-filters-dropdown">
+                    <ChildContent>
+                        <button type="button" class="btn dv-filters-button">
+                            <Icon IconType="@InternalIcons.Filter" class="icon" />
+                            @texts.Filters
+                            @if (count > 0)
+                            {
+                                <span class="badge bg-primary text-primary-fg ms-2">@count</span>
+                            }
+                        </button>
+                    </ChildContent>
+                    <DropdownTemplate>
+                        <DropdownMenu Card="true" class="dropdown-menu-end p-3 dv-filters-menu">
+                            <DataViewFiltersPanel TItem="TItem" View="View" />
+                        </DropdownMenu>
+                    </DropdownTemplate>
+                </Dropdown>
+            }
+        }
+
         @if (View.SearchVisible)
         {
             <div class="input-icon dv-search">

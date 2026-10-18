@@ -171,3 +171,22 @@ Running list of places where the implementation differs from, or fills a gap in,
   them per user is a later feature, as the doc says).
 - **Column options:** a column's `ColumnOptions` fragment opens from a small menu button in its
   header (QuickTable's equivalent); phase 5's filter controls use the same place.
+
+## Phase 5: column filters
+
+- **One filter per column.** Filters given through `Filters`, `State`, `SetFiltersAsync` or (next
+  step) the URL are sanitized: only filterable columns, allowed operators, values converted to
+  the column's type (unconvertible ones dropped), at most one per column.
+- **Operators:** each kind has one default (text Contains, number and date Between, bool Equals,
+  enum In, Guid Equals; Parts columns Contains). `FilterOperators` lists the allowed ones but
+  is intersected with what makes sense for the kind (Greater-than on text is dropped). "Empty"
+  and "not empty" are added automatically only for `Nullable<T>` values (string nullability is
+  not inspected); list them in `FilterOperators` for strings.
+- **Ranges are open-ended:** a from–to range with one end empty filters ≥ or ≤. A date range's
+  "to" includes the whole day (23:59:59.9999999) for `DateTime`/`DateTimeOffset` columns.
+- **`FilterMode`** on the view is a `DataFilterMode` (Menu, Row) enum; `GetFilter(columnId)` and
+  `SetColumnFilterAsync(columnId, filter)` were added to the API; a column's `FilterTemplate`
+  gets a `DataFilterContext<TItem>` (Column, Filter, SetAsync).
+- **The Filters popup** is a dropdown card on wide screens and a bottom-sheet `Offcanvas` on
+  small screens. Text filters wait for the same pause as the search box (`SearchDelay`).
+- `In` on text or Guid columns takes comma-separated values in the text box.

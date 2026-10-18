@@ -264,6 +264,63 @@
     border-right: 2px solid var(--tblr-primary, #066fd1);
 }
 
+.dataview ::deep .dv-filter-menu-card,
+.dataview ::deep .dv-filters-menu {
+    min-width: 16rem;
+}
+
+.dataview ::deep thead .dv-filter-menu-card,
+.dataview ::deep thead .dv-column-options-menu,
+.dataview ::deep .dv-filter-row .dv-column-filter {
+    font-size: .875rem;
+    font-weight: normal;
+    letter-spacing: normal;
+    text-transform: none;
+    color: var(--tblr-body-color, inherit);
+}
+
+.dataview ::deep .dv-filters-menu {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.dataview ::deep .dv-filter-range {
+    display: flex;
+    gap: .5rem;
+}
+
+.dataview ::deep .dv-filter-row > th {
+    padding-top: .25rem;
+    padding-bottom: .5rem;
+    font-weight: normal;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.dataview ::deep .dv-filter-row .dv-filter-options {
+    max-height: 8rem;
+    overflow-y: auto;
+}
+
+.dataview .dv-filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+    padding: .75rem 1rem 0;
+}
+
+.dataview .dv-filter-chip {
+    display: inline-flex;
+    align-items: center;
+    font-weight: normal;
+}
+
+.dataview .dv-filter-chip .btn-close {
+    width: .5rem;
+    height: .5rem;
+}
+
 /* Virtualized rows must be exactly ItemSize tall: one line, padding folded into the height. */
 .dataview ::deep .dv-virtual > tbody > tr > td {
     height: var(--dv-row-height, 44px);

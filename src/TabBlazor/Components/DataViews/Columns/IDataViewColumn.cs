@@ -22,6 +22,13 @@ public interface IDataViewColumn<TItem>
     RenderFragment? ColumnOptions => null;
     bool Sortable { get; }
     bool Searchable { get; }
+    bool Filterable { get; }
+
+    /// <summary>The filter operators the column allows (empty when it is not filterable).</summary>
+    IReadOnlyList<FilterOperator> AllowedFilterOperators { get; }
+
+    /// <summary>A custom filter control, or null.</summary>
+    RenderFragment<DataFilterContext<TItem>>? FilterTemplate { get; }
     SortOrder? DefaultSort { get; }
     bool Visible { get; }
 

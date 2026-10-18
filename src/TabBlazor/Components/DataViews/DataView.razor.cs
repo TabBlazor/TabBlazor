@@ -309,6 +309,11 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
             reload = true;
         }
 
+        if (OnParametersSetFilters())
+        {
+            reload = true;
+        }
+
         if (State != null && !State.Equals(lastState))
         {
             lastState = State;
@@ -417,6 +422,7 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
         OnUserStateChangedInteraction();
         lastState = engine.GetState();
         await StateChanged.InvokeAsync(lastState);
+        await NotifyFiltersChangedAsync(lastFiltersParameter ?? []);
     }
 
     private static DataViewKind SingleView(DataViewKind views) =>

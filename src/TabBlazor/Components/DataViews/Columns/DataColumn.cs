@@ -47,6 +47,15 @@ public partial class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<
     /// <summary>The column takes part in the global search.</summary>
     [Parameter] public bool Searchable { get; set; }
 
+    /// <summary>The column can be filtered: a control picked from the value type (or <c>FilterBy</c>) appears in the header and the Filters popup.</summary>
+    [Parameter] public bool Filterable { get; set; }
+
+    /// <summary>Limits or extends the filter operators; an operator picker appears when more than one is allowed.</summary>
+    [Parameter] public FilterOperator[]? FilterOperators { get; set; }
+
+    /// <summary>Your own filter control; the context can read and set the column's filter.</summary>
+    [Parameter] public RenderFragment<DataFilterContext<TItem>>? FilterTemplate { get; set; }
+
     /// <summary>Sorts by this column when the view loads.</summary>
     [Parameter] public SortOrder? DefaultSort { get; set; }
 
@@ -113,6 +122,9 @@ public partial class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<
     string IDataViewColumn<TItem>.Id => Info.Id;
 
     RenderFragment? IDataViewColumn<TItem>.ColumnOptions => ColumnOptions;
+
+    public IReadOnlyList<FilterOperator> AllowedFilterOperators =>
+        Filterable ? DataFilters.AllowedOperators(Info, FilterOperators) : [];
 
     string IDataViewColumn<TItem>.Title => Title ?? defaultTitle ?? info?.Id ?? string.Empty;
 
