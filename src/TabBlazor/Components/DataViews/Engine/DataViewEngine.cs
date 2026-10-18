@@ -185,7 +185,8 @@ internal sealed class DataViewEngine<TItem> : IDisposable
         cursors.Add(null);
     }
 
-    public DataRequest BuildRequest()
+    /// <summary>Builds the request for the current state, or for another page of it.</summary>
+    public DataRequest BuildRequest(PageRequest? pageOverride = null)
     {
         var sorts = new List<SortSpec>();
         if (Sort != null)
@@ -205,7 +206,7 @@ internal sealed class DataViewEngine<TItem> : IDisposable
             ? PageRequest.Cursor(cursors[Math.Min(PageIndex, cursors.Count - 1)], PageSize)
             : PageRequest.Offset(PageIndex * PageSize, PageSize);
 
-        return new DataRequest(page, sorts, search, Filters, requestColumns);
+        return new DataRequest(pageOverride ?? page, sorts, search, Filters, requestColumns);
     }
 
     /// <summary>

@@ -246,6 +246,7 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
             PageLoaded = page =>
             {
                 OnPageLoadedInteraction(page);
+                ResetVirtualCache(page);
                 return OnPageLoaded.InvokeAsync(page);
             }
         };
@@ -329,6 +330,7 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await WatchScreenSizeAsync();
+        await ApplyVirtualResetAsync();
 
         if (firstRender && columnsInitialized && !initialLoadStarted)
         {
@@ -477,7 +479,8 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
         .AddIf("table-bordered", Bordered)
         .AddIf("table-sm", CurrentDensity == TableDensity.Compact)
         .AddIf("dv-comfortable", CurrentDensity == TableDensity.Comfortable)
-        .AddIf("dv-sticky-header", StickyHeader)
+        .AddIf("dv-sticky-header", StickyHeader || IsVirtualized)
+        .AddIf("dv-virtual", IsVirtualized)
         .Add(TableClass)
         .ToString();
 

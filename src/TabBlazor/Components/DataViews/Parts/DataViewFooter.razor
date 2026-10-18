@@ -9,6 +9,12 @@
     var last = first + engine.Items.Count - 1;
 }
 <div class="card-footer dv-footer">
+    @if (View.IsVirtualized)
+    {
+        <p class="m-0 text-secondary dv-row-count">@string.Format(System.Globalization.CultureInfo.CurrentCulture, texts.RowCount, View.VirtualRowCount.ToString("N0"))</p>
+    }
+    else
+    {
     <p class="m-0 text-secondary dv-showing @(View.IsSmallScreen ? "d-none" : null)">
         @if (engine.TotalCount is { } total)
         {
@@ -75,6 +81,7 @@
                 </button>
             </li>
         </ul>
+    }
     }
 </div>
 

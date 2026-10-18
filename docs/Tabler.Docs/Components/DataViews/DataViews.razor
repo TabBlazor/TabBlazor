@@ -31,6 +31,13 @@
                 The view remembers the cursor of each visited page.
             </Description>
         </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsVirtualize)" Title="Virtualization">
+            <Description>
+                <code>Virtualize</code> shows one scrolling list and renders only the visible rows. Offset sources with a total
+                fetch the visible range; cursor sources (or sources without a total) load the next page as you near the end.
+                Rows need a fixed height (<code>ItemSize</code>) and the view a <code>Height</code>.
+            </Description>
+        </CodeSnippet>
         <CodeSnippet SetBackground Component="@typeof(DataViewsCalculated)" Title="Calculated columns">
             <Description>
                 <code>Value</code> takes any expression. The members it uses are found automatically, so sort and search

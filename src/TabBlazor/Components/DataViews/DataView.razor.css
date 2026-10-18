@@ -231,6 +231,21 @@
     }
 }
 
+.dataview ::deep .dv-virtual > tbody > tr:not(.dv-state-row):not(.dv-edit-row):not(.dv-edit-message) {
+    height: var(--dv-row-height, 44px);
+}
+
+/* Virtualized rows must be exactly ItemSize tall: one line, padding folded into the height. */
+.dataview ::deep .dv-virtual > tbody > tr > td {
+    height: var(--dv-row-height, 44px);
+    padding-top: 0;
+    padding-bottom: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+}
+
 /* Small screens (generated per breakpoint) */
 
 @media (max-width: 575.98px) {

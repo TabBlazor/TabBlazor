@@ -1,5 +1,6 @@
 @namespace TabBlazor
 @typeparam TItem
+@using Microsoft.AspNetCore.Components.Web.Virtualization
 
 @{
     var engine = View.Engine;
@@ -7,8 +8,8 @@
     var columnCount = Math.Max(1, columns.Count + (View.ShowCheckboxes ? 1 : 0) + (View.ShowExpandColumn ? 1 : 0) + (View.ShowActionsColumn ? 1 : 0));
     var inlineEdit = View.EditSession != null && View.EffectiveEditMode == DataEditMode.Inline;
 }
-<div class="table-responsive dv-scroll" style="@(View.Height != null ? $"max-height: {View.Height};" : null)">
-    <table class="@View.GetTableClass()" @attributes="View.UnmatchedParameters">
+<div class="table-responsive dv-scroll" style="@ScrollStyle" @ref="View.ScrollContainer">
+    <table class="@View.GetTableClass()" style="@(View.IsVirtualized ? $"--dv-row-height: {View.ItemSize.ToString(System.Globalization.CultureInfo.InvariantCulture)}px" : null)" @attributes="View.UnmatchedParameters">
         <thead>
             <tr>
                 @if (View.ShowCheckboxes)
@@ -63,6 +64,30 @@
             }
             @switch (View.Status)
             {
+                case DataViewStatus.Items when View.IsVirtualized:
+                    <Virtualize @ref="View.VirtualizeComponent" TItem="TItem" ItemsProvider="View.ProvideVirtualItemsAsync"
+                                ItemSize="View.ItemSize" OverscanCount="View.OverscanCount" SpacerElement="tr" Context="item">
+                        <ItemContent>
+                            @if (inlineEdit && View.IsEditingRow(item))
+                            {
+                                <DataTableEditRow @key="View.GetRowKey(item)" TItem="TItem" View="View" Session="View.EditSession!" />
+                            }
+                            else
+                            {
+                                <DataTableRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns"
+                                              Version="engine.RenderVersion" State="View.GetRowState(item)" />
+                            }
+                        </ItemContent>
+                        <Placeholder>
+                            <tr class="dv-placeholder-row placeholder-glow" aria-hidden="true">
+                                @for (var c = 0; c < columnCount; c++)
+                                {
+                                    <td><span class="placeholder col-8"></span></td>
+                                }
+                            </tr>
+                        </Placeholder>
+                    </Virtualize>
+                    break;
                 case DataViewStatus.Items:
                     foreach (var item in engine.Items)
                     {
@@ -106,6 +131,10 @@
 
 @code {
     [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+
+    private string ScrollStyle => View.Height == null
+        ? null
+        : View.IsVirtualized ? $"height: {View.Height}; overflow-y: auto;" : $"max-height: {View.Height};";
 
     private static RenderFragment HeaderContent(IDataViewColumn<TItem> column) => builder =>
     {

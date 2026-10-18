@@ -333,6 +333,11 @@ public partial class DataView<TItem>
                 return true;
             }
 
+            if (IsVirtualized)
+            {
+                return selected.Count == 0 ? false : null;
+            }
+
             var count = engine.Items.Count(i => selected.ContainsKey(KeyOf(i)));
             return count == 0 ? false : count == engine.Items.Count ? true : null;
         }
@@ -340,6 +345,20 @@ public partial class DataView<TItem>
 
     internal async Task TogglePageSelectionAsync()
     {
+        if (IsVirtualized)
+        {
+            if (allMatchingSelected || selected.Count > 0)
+            {
+                await ClearSelectionAsync();
+            }
+            else
+            {
+                await SelectAllMatchingAsync();
+            }
+
+            return;
+        }
+
         var selectAll = PageSelectionState != true;
         allMatchingSelected = false;
         foreach (var item in engine.Items)
@@ -678,6 +697,7 @@ public partial class DataView<TItem>
         else
         {
             engine.ReplaceItem(i => Equals(KeyOf(i), KeyOf(session.Original!)), saved);
+            ReplaceCachedItem(i => Equals(KeyOf(i), KeyOf(session.Original!)), saved);
         }
 
         StateHasChanged();

@@ -71,6 +71,9 @@ public sealed record DataViewText
     /// <summary>"Showing {first}–{last} of {total}". Arguments: first, last, total.</summary>
     public string ShowingOfTotal { get; init; } = "Showing {0}–{1} of {2}";
 
+    /// <summary>"{count} rows" while virtualized. Argument: the number of rows.</summary>
+    public string RowCount { get; init; } = "{0} rows";
+
     /// <summary>"Showing {first}–{last}" when the total is unknown. Arguments: first, last.</summary>
     public string Showing { get; init; } = "Showing {0}–{1}";
 }
