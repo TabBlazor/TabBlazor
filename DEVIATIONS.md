@@ -210,3 +210,29 @@ Running list of places where the implementation differs from, or fills a gap in,
   `AddTabBlazor`), like Tabs' `TabsUrlParameterRegistry`; an id that is not URL-safe is an error.
 - **Validation:** sorts must be on sortable columns, filters go through the same sanitizer as
   every other filter, page sizes above 1000 and unparsable pages fall back to the defaults.
+
+## Phase 6: Linq2GraphQL adapter (before the spike on a real screen)
+
+- **Package:** `TabBlazor.Linq2GraphQL` depends on the published `Linq2GraphQL.Client` 1.0.67-prerelease and
+  references TabBlazor as a normal dependency (the EF package embeds TabBlazor; this one does not).
+- **The page function returns `object`** (`Func<int?, string?, TFilter?, List<TSort>?, object>`), so the doc's
+  three type arguments are enough; the connection type is read from the returned query. A wrong return type is a
+  clear error on first load.
+- **The adapter includes** the connection's nodes (or items), total count and page info itself; nested objects
+  the columns show must be included by the page function (the doc's "fetch what the columns show" stays a later idea).
+- **Combining filters:** every condition is its own filter object, combined with `and` (the doc's "conditions on one
+  field share an object" is not needed for correctness). A Between filter sets `gte` and `lte` on one object.
+- **A search word that no column can match** (letters on number columns) returns an empty page without calling
+  the server (`HotChocolateConvention.MatchesNothing`).
+- **"Empty" filters** use `eq: null`/`neq: null`, which HotChocolate rejects on non-nullable fields; they work on
+  nullable fields only. In memory "empty" now also means null (an empty string is a value).
+- **Path checks** run on first use per set of columns: sortable, filterable and searchable columns (new flags on
+  `DataColumnInfo`) and any column a request sorts or filters by. Safe-mode checks against the live schema
+  (`GetSchemaForSafeModeAsync`) are not built yet.
+- **Tests** run the shared source kit (now generic over the row type) three times, against cursor, cursor
+  without total and offset queries on an in-process HotChocolate server with the kit's seed. The server is a
+  small copy shaped like Linq2GraphQL's test server rather than a reference to that repository, so TabBlazor's CI
+  does not need a sibling checkout; its client is generated with the official generator.
+- **Finding for Linq2GraphQL:** generated code refers to `Linq2GraphQL.Client…` without `global::`, so a client
+  generated into a namespace under one that contains a `Linq2GraphQL` namespace (like `TabBlazor.*` with this
+  adapter) does not compile. Emitting `global::` in the templates would fix it.

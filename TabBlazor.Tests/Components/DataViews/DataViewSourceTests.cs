@@ -402,7 +402,9 @@ namespace TabBlazor.Tests.Components.DataViews
         [Fact]
         public async Task Filters_null_and_not_null()
         {
-            Assert.Equal([5], await AllIds(filters: [new FilterSpec("customer.name", FilterOperator.IsNull)]));
+            // A null value on a nullable field (servers reject "is null" on non-nullable fields).
+            Assert.Equal(Seed.Where(x => x.Note == null).Select(x => x.Id),
+                await AllIds(filters: [new FilterSpec("note", FilterOperator.IsNull)]));
             Assert.Equal(Seed.Where(x => x.Note != null).Select(x => x.Id),
                 await AllIds(filters: [new FilterSpec("note", FilterOperator.IsNotNull)]));
         }

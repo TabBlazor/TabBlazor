@@ -20,8 +20,10 @@
     <Project Path="Icons/IconGenerator/IconGenerator.csproj" />
   </Folder>
   <Folder Name="/Tests/">
+    <Project Path="TabBlazor.Linq2GraphQL.Tests/TabBlazor.Linq2GraphQL.Tests.csproj" />
     <Project Path="TabBlazor.Tests/TabBlazor.Tests.csproj" />
   </Folder>
+  <Project Path="src/TabBlazor.Linq2GraphQL/TabBlazor.Linq2GraphQL.csproj" />
   <Project Path="src/TabBlazor.QuickTable.EntityFramework/TabBlazor.QuickTable.EntityFramework.csproj" />
   <Project Path="src/TabBlazor/TabBlazor.csproj" />
 </Solution>
