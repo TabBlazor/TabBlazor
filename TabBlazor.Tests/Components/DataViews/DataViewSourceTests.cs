@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -67,53 +68,81 @@ namespace TabBlazor.Tests.Components.DataViews
         }
     }
 
-    /// <summary>The columns the shared source tests use, built the same way DataColumn builds them.</summary>
-    public static class SourceTestColumns
+    /// <summary>
+    /// The columns the shared source tests use, built from member names on <typeparamref name="TItem"/> the same way
+    /// DataColumn builds them, so a source over another row type with the same members (a generated GraphQL type)
+    /// gets the same columns.
+    /// </summary>
+    public sealed class SourceTestColumns<TItem>
     {
-        public static readonly DataColumnInfo Id = DataColumnInfoBuilder.Create<SourceTestItem, int>(x => x.Id);
-        public static readonly DataColumnInfo FirstName = DataColumnInfoBuilder.Create<SourceTestItem, string>(x => x.FirstName);
-        public static readonly DataColumnInfo LastName = DataColumnInfoBuilder.Create<SourceTestItem, string>(x => x.LastName);
-        public static readonly DataColumnInfo CustomerName = DataColumnInfoBuilder.Create<SourceTestItem, string>(x => x.Customer!.Name);
-        public static readonly DataColumnInfo Quantity = DataColumnInfoBuilder.Create<SourceTestItem, int>(x => x.Quantity);
-        public static readonly DataColumnInfo Price = DataColumnInfoBuilder.Create<SourceTestItem, decimal>(x => x.Price);
-        public static readonly DataColumnInfo Date = DataColumnInfoBuilder.Create<SourceTestItem, DateTime>(x => x.Date);
-        public static readonly DataColumnInfo Active = DataColumnInfoBuilder.Create<SourceTestItem, bool>(x => x.Active);
-        public static readonly DataColumnInfo Status = DataColumnInfoBuilder.Create<SourceTestItem, SourceTestStatus>(x => x.Status);
-        public static readonly DataColumnInfo Code = DataColumnInfoBuilder.Create<SourceTestItem, Guid>(x => x.Code);
-        public static readonly DataColumnInfo Note = DataColumnInfoBuilder.Create<SourceTestItem, string?>(x => x.Note);
+        private static readonly ParameterExpression Item = Expression.Parameter(typeof(TItem), "x");
 
-        /// <summary>A calculated text column with inferred parts.</summary>
-        public static readonly DataColumnInfo FullName = DataColumnInfoBuilder.Create<SourceTestItem, string>(
-            x => x.FirstName + " " + x.LastName, id: "fullName");
+        public DataColumnInfo Id { get; } = Member("Id");
+        public DataColumnInfo FirstName { get; } = Member("FirstName");
+        public DataColumnInfo LastName { get; } = Member("LastName");
+        public DataColumnInfo CustomerName { get; } = Member("Customer.Name");
+        public DataColumnInfo Quantity { get; } = Member("Quantity");
+        public DataColumnInfo Price { get; } = Member("Price");
+        public DataColumnInfo Date { get; } = Member("Date");
+        public DataColumnInfo Active { get; } = Member("Active");
+        public DataColumnInfo Status { get; } = Member("Status");
+        public DataColumnInfo Code { get; } = Member("Code");
+        public DataColumnInfo Note { get; } = Member("Note");
 
-        /// <summary>A calculated text column with SortBy and FilterBy overrides.</summary>
-        public static readonly DataColumnInfo FullNameBy = DataColumnInfoBuilder.Create<SourceTestItem, string>(
-            x => x.FirstName + " " + x.LastName, id: "fullNameBy",
-            sortBy: x => new { x.LastName, x.FirstName },
-            filterBy: x => new { x.FirstName, x.LastName });
+        /// <summary>A calculated text column with inferred parts: <c>x.FirstName + " " + x.LastName</c>.</summary>
+        public DataColumnInfo FullName { get; } = DataColumnInfoBuilder.Create(typeof(string),
+            Expression.Lambda(Concat(Path("FirstName"), Expression.Constant(" "), Path("LastName")), Item), "fullName");
 
-        /// <summary>A calculated text column that sorts and filters on one stand-in property.</summary>
-        public static readonly DataColumnInfo Ordered = DataColumnInfoBuilder.Create<SourceTestItem, string>(
-            x => x.Date.ToString("d") + " " + x.LastName, id: "ordered",
-            sortBy: x => x.Date, filterBy: x => x.Date);
+        /// <summary>A calculated text column with SortBy (last, first) and FilterBy (first, last) overrides.</summary>
+        public DataColumnInfo FullNameBy { get; } = DataColumnInfoBuilder.Create(typeof(string),
+            Expression.Lambda(Concat(Path("FirstName"), Expression.Constant(" "), Path("LastName")), Item), "fullNameBy",
+            sortBy: Parts("LastName", "FirstName"),
+            filterBy: Parts("FirstName", "LastName"));
 
-        public static IReadOnlyList<DataColumnInfo> All { get; } =
+        /// <summary>A calculated text column that sorts and filters on one stand-in property (the date).</summary>
+        public DataColumnInfo Ordered { get; } = DataColumnInfoBuilder.Create(typeof(string),
+            Expression.Lambda(Concat(Expression.Call(Path("Date"), "ToString", null, Expression.Constant("d")), Expression.Constant(" "), Path("LastName")), Item),
+            "ordered",
+            sortBy: Expression.Lambda(Path("Date"), Item),
+            filterBy: Expression.Lambda(Path("Date"), Item));
+
+        public IReadOnlyList<DataColumnInfo> All =>
         [
             Id, FirstName, LastName, CustomerName, Quantity, Price, Date, Active, Status, Code, Note, FullName,
             FullNameBy, Ordered
         ];
+
+        private static Expression Path(string path) =>
+            path.Split('.').Aggregate((Expression)Item, Expression.PropertyOrField);
+
+        private static DataColumnInfo Member(string path)
+        {
+            var body = Path(path);
+            return DataColumnInfoBuilder.Create(body.Type, Expression.Lambda(body, Item));
+        }
+
+        private static Expression Concat(params Expression[] parts) =>
+            Expression.Call(typeof(string).GetMethod(nameof(string.Concat), [typeof(string), typeof(string), typeof(string)])!, parts);
+
+        private static LambdaExpression Parts(params string[] paths) =>
+            Expression.Lambda(Expression.NewArrayInit(typeof(object), paths.Select(p => Expression.Convert(Path(p), typeof(object)))), Item);
     }
 
     /// <summary>
     /// Shared tests every <see cref="IDataViewSource{TItem}"/> must pass, so in-memory, EF, GraphQL and custom
-    /// sources behave alike. Inherit, implement <see cref="CreateSource"/> over the seed, and run.
+    /// sources behave alike. Inherit, implement <see cref="CreateSource"/> over the seed (and <see cref="IdOf"/>), and run.
     /// </summary>
-    public abstract class DataViewSourceTests<TSource> where TSource : IDataViewSource<SourceTestItem>
+    public abstract class DataViewSourceTests<TSource, TItem> where TSource : IDataViewSource<TItem>
     {
         protected IReadOnlyList<SourceTestItem> Seed { get; } = SourceTestItem.Seed();
 
+        protected SourceTestColumns<TItem> Columns { get; } = new();
+
         /// <summary>Creates the source under test over <paramref name="items"/>.</summary>
         protected abstract TSource CreateSource(IReadOnlyList<SourceTestItem> items);
+
+        /// <summary>The seed id of a row.</summary>
+        protected abstract int IdOf(TItem item);
 
         /// <summary>True when text search ignores case (in memory always; remote sources follow their collation).</summary>
         protected virtual bool SearchIsCaseInsensitive => true;
@@ -125,9 +154,9 @@ namespace TabBlazor.Tests.Components.DataViews
         protected PageRequest FirstPage(int size = 100) =>
             Source.PagingMode == PagingMode.Cursor ? PageRequest.Cursor(null, size) : PageRequest.Offset(0, size);
 
-        protected static DataRequest Request(PageRequest page, IReadOnlyList<SortSpec>? sorts = null,
+        protected DataRequest Request(PageRequest page, IReadOnlyList<SortSpec>? sorts = null,
             SearchSpec? search = null, IReadOnlyList<FilterSpec>? filters = null) =>
-            new(page, sorts ?? [new SortSpec("id")], search, filters ?? [], SourceTestColumns.All);
+            new(page, sorts ?? [new SortSpec("id")], search, filters ?? [], Columns.All);
 
         protected static SearchSpec? Search(string text, params DataColumnInfo[] columns) =>
             SearchSpec.Parse(text, SearchMode.Words, columns.Select(c => c.Id).ToList());
@@ -135,7 +164,7 @@ namespace TabBlazor.Tests.Components.DataViews
         protected async Task<List<int>> Ids(DataRequest request)
         {
             var page = await Source.GetPageAsync(request, CancellationToken.None);
-            return page.Items.Select(i => i.Id).ToList();
+            return page.Items.Select(IdOf).ToList();
         }
 
         protected async Task<List<int>> AllIds(IReadOnlyList<SortSpec>? sorts = null, SearchSpec? search = null,
@@ -183,7 +212,7 @@ namespace TabBlazor.Tests.Components.DataViews
             for (var i = 0; i < 10; i++)
             {
                 var page = await Source.GetPageAsync(Request(PageRequest.Cursor(cursor, 7)), CancellationToken.None);
-                ids.AddRange(page.Items.Select(x => x.Id));
+                ids.AddRange(page.Items.Select(IdOf));
                 cursor = page.NextCursor;
                 if (cursor == null)
                 {
@@ -199,7 +228,7 @@ namespace TabBlazor.Tests.Components.DataViews
         {
             var all = await Source.GetPageAsync(Request(FirstPage(5)), CancellationToken.None);
             var searched = await Source.GetPageAsync(
-                Request(FirstPage(5), search: Search("Ada", SourceTestColumns.FirstName)), CancellationToken.None);
+                Request(FirstPage(5), search: Search("Ada", Columns.FirstName)), CancellationToken.None);
 
             Assert.Equal(5, all.Items.Count);
             Assert.True(all.TotalCount is null or 30);
@@ -269,7 +298,7 @@ namespace TabBlazor.Tests.Components.DataViews
         [Fact]
         public async Task Search_matches_every_word_in_any_searchable_column()
         {
-            var ids = await AllIds(search: Search("odi 2026", SourceTestColumns.CustomerName, SourceTestColumns.Quantity));
+            var ids = await AllIds(search: Search("Odi 2026", Columns.CustomerName, Columns.Quantity));
 
             Assert.Equal([1], ids);
         }
@@ -282,22 +311,22 @@ namespace TabBlazor.Tests.Components.DataViews
                 return;
             }
 
-            Assert.Equal([1, 4], await AllIds(search: Search("aDA", SourceTestColumns.FirstName)));
+            Assert.Equal([1, 4], await AllIds(search: Search("aDA", Columns.FirstName)));
         }
 
         [Fact]
         public async Task Search_keeps_quoted_phrases_together()
         {
-            var search = Search("\"Ada Lovelace\"", SourceTestColumns.FullName);
+            var search = Search("\"Odin AB\"", Columns.CustomerName);
 
-            Assert.Equal(["Ada Lovelace"], search!.Terms);
+            Assert.Equal(["Odin AB"], search!.Terms);
             Assert.Equal([1], await AllIds(search: search));
         }
 
         [Fact]
         public async Task Search_matches_numbers_by_value_not_by_text()
         {
-            Assert.Equal([3], await AllIds(search: Search("12", SourceTestColumns.Quantity)));
+            Assert.Equal([3], await AllIds(search: Search("12", Columns.Quantity)));
         }
 
         [Fact]
@@ -305,32 +334,32 @@ namespace TabBlazor.Tests.Components.DataViews
         {
             var expected = Seed.Where(x => x.Status == SourceTestStatus.OnHold).Select(x => x.Id);
 
-            Assert.Equal(expected, await AllIds(search: Search("hold", SourceTestColumns.Status)));
+            Assert.Equal(expected, await AllIds(search: Search("hold", Columns.Status)));
         }
 
         [Fact]
         public async Task Search_matches_guids_exactly()
         {
-            Assert.Equal([2], await AllIds(search: Search("22222222-2222-2222-2222-222222222222", SourceTestColumns.Code)));
+            Assert.Equal([2], await AllIds(search: Search("22222222-2222-2222-2222-222222222222", Columns.Code)));
         }
 
         [Fact]
         public async Task Search_does_not_match_dates_or_bools()
         {
-            Assert.Empty(await AllIds(search: Search("2026", SourceTestColumns.Date, SourceTestColumns.Active)));
+            Assert.Empty(await AllIds(search: Search("2026", Columns.Date, Columns.Active)));
         }
 
         [Fact]
         public async Task Search_matches_words_across_parts_of_a_calculated_column()
         {
-            Assert.Equal([1], await AllIds(search: Search("Ada Love", SourceTestColumns.FullName)));
-            Assert.Equal([1], await AllIds(search: Search("Love Ada", SourceTestColumns.FullNameBy)));
+            Assert.Equal([1], await AllIds(search: Search("Ada Love", Columns.FullName)));
+            Assert.Equal([1], await AllIds(search: Search("Love Ada", Columns.FullNameBy)));
         }
 
         [Fact]
         public async Task Search_handles_null_values()
         {
-            var ids = await AllIds(search: Search("kernel", SourceTestColumns.CustomerName, SourceTestColumns.Note));
+            var ids = await AllIds(search: Search("kernel", Columns.CustomerName, Columns.Note));
 
             Assert.Equal([5], ids);
         }
@@ -348,7 +377,7 @@ namespace TabBlazor.Tests.Components.DataViews
         [Fact]
         public async Task Filters_text_contains_and_equals()
         {
-            Assert.Equal([1, 3], await AllIds(filters: [new FilterSpec("customer.name", FilterOperator.Contains, "odin")]));
+            Assert.Equal([1, 3], await AllIds(filters: [new FilterSpec("customer.name", FilterOperator.Contains, "din")]));
             Assert.Equal([2, 4], await AllIds(filters: [new FilterSpec("customer.name", FilterOperator.Equals, "Acme")]));
         }
 
@@ -367,14 +396,14 @@ namespace TabBlazor.Tests.Components.DataViews
             var expected = Seed.Where(x => x.Status is SourceTestStatus.OnHold or SourceTestStatus.Closed).Select(x => x.Id);
 
             Assert.Equal(expected, await AllIds(filters:
-                [new FilterSpec("status", FilterOperator.In, new[] { SourceTestStatus.OnHold, SourceTestStatus.Closed })]));
+                [new FilterSpec("status", FilterOperator.In, new[] { "OnHold", "Closed" })]));
         }
 
         [Fact]
         public async Task Filters_null_and_not_null()
         {
             Assert.Equal([5], await AllIds(filters: [new FilterSpec("customer.name", FilterOperator.IsNull)]));
-            Assert.Equal(Seed.Where(x => !string.IsNullOrEmpty(x.Note)).Select(x => x.Id),
+            Assert.Equal(Seed.Where(x => x.Note != null).Select(x => x.Id),
                 await AllIds(filters: [new FilterSpec("note", FilterOperator.IsNotNull)]));
         }
 
@@ -390,14 +419,14 @@ namespace TabBlazor.Tests.Components.DataViews
         [Fact]
         public async Task Filters_on_parts_match_each_word_in_one_part()
         {
-            Assert.Equal([1], await AllIds(filters: [new FilterSpec("fullNameBy", FilterOperator.Contains, "love ada")]));
+            Assert.Equal([1], await AllIds(filters: [new FilterSpec("fullNameBy", FilterOperator.Contains, "Love Ada")]));
         }
 
         [Fact]
         public async Task Filters_and_search_are_combined()
         {
             var ids = await AllIds(
-                search: Search("Ada", SourceTestColumns.FirstName),
+                search: Search("Ada", Columns.FirstName),
                 filters: [new FilterSpec("customer.name", FilterOperator.Equals, "Acme")]);
 
             Assert.Equal([4], ids);
@@ -414,5 +443,12 @@ namespace TabBlazor.Tests.Components.DataViews
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
                 Source.GetPageAsync(Request(FirstPage()), cts.Token));
         }
+    }
+
+    /// <summary>The shared source tests over <see cref="SourceTestItem"/> rows.</summary>
+    public abstract class DataViewSourceTests<TSource> : DataViewSourceTests<TSource, SourceTestItem>
+        where TSource : IDataViewSource<SourceTestItem>
+    {
+        protected override int IdOf(SourceTestItem item) => item.Id;
     }
 }

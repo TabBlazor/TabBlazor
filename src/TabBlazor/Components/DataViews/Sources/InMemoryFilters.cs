@@ -149,7 +149,7 @@ internal static class InMemoryFilters
         }
     }
 
-    private static bool IsEmpty(object? value) => value == null || value is string { Length: 0 };
+    private static bool IsEmpty(object? value) => value == null;
 
     private static bool AreEqual(object? value, object? target, bool isText)
     {

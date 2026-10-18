@@ -153,8 +153,8 @@ public static class DataColumnInfoBuilder
     }
 
     /// <summary>
-    /// Splits <c>x =&gt; new { x.A, x.B }</c> into one lambda per member; any other expression is returned as is
-    /// (without a boxing conversion).
+    /// Splits <c>x =&gt; new { x.A, x.B }</c> (or <c>x =&gt; new object[] { x.A, x.B }</c>) into one lambda per member;
+    /// any other expression is returned as is (without a boxing conversion).
     /// </summary>
     public static IReadOnlyList<LambdaExpression> SplitParts(LambdaExpression expression)
     {
@@ -163,6 +163,11 @@ public static class DataColumnInfoBuilder
         if (body is NewExpression { Arguments.Count: > 0 } newExpression && IsAnonymous(newExpression.Type))
         {
             return newExpression.Arguments.Select(a => Expression.Lambda(a, parameter)).ToList();
+        }
+
+        if (body is NewArrayExpression { NodeType: ExpressionType.NewArrayInit, Expressions.Count: > 0 } array)
+        {
+            return array.Expressions.Select(e => Expression.Lambda(StripConvert(e), parameter)).ToList();
         }
 
         return [Expression.Lambda(body, parameter)];

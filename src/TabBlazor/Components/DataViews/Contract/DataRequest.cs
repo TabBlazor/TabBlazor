@@ -192,6 +192,15 @@ public sealed record DataColumnInfo(
     /// <summary>The kind of value the column filters and searches on (from <c>FilterBy</c> when set, else from <c>Value</c>).</summary>
     public DataValueKind Kind { get; init; } = DataValueKind.Other;
 
+    /// <summary>True when the view lets users sort by this column (a source can check its paths before the first sort).</summary>
+    public bool Sortable { get; init; }
+
+    /// <summary>True when the view lets users filter this column.</summary>
+    public bool Filterable { get; init; }
+
+    /// <summary>True when the column takes part in the global search.</summary>
+    public bool Searchable { get; init; }
+
     /// <summary>The CLR type the column filters and searches on. Not serialized.</summary>
     [JsonIgnore] public Type? FilterValueType { get; init; }
 

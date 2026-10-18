@@ -150,7 +150,9 @@ internal sealed class DataViewEngine<TItem> : IDisposable
 
     private void BuildRequestColumns()
     {
-        var infos = Columns.Select(c => c.Info).ToList();
+        var infos = Columns
+            .Select(c => c.Info with { Sortable = c.Sortable, Filterable = c.Filterable, Searchable = c.Searchable })
+            .ToList();
         if (KeyInfo != null)
         {
             var existing = infos.FirstOrDefault(i => i.Id == KeyInfo.Id);

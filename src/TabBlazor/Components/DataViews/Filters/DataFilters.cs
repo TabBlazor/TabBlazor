@@ -117,6 +117,12 @@ public static class DataFilters
         };
     }
 
+    /// <summary>
+    /// Converts a filter value (typed, a string from a URL, or a <c>JsonElement</c>) to <paramref name="type"/>, using
+    /// the invariant culture and ISO 8601 dates. For sources that build their own queries.
+    /// </summary>
+    public static object? ConvertValue(object? value, Type type) => InMemoryFilters.ConvertValue(value, type);
+
     /// <summary>True when the operator needs no value.</summary>
     public static bool HasNoValue(FilterOperator op) => op is FilterOperator.IsNull or FilterOperator.IsNotNull;
 
