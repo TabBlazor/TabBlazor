@@ -227,6 +227,7 @@ public partial class DataView<TItem>
     // Keeps selected, current and saved rows pointing at the latest loaded instances.
     private void OnPageLoadedInteraction(DataPage<TItem> page)
     {
+        ApplyPendingCurrent(page.Items);
         foreach (var item in page.Items)
         {
             var key = KeyOf(item);
@@ -873,10 +874,12 @@ public partial class DataView<TItem>
         {
             currentKey = key;
             currentItem = item;
+            WriteUrlState();
             StateHasChanged();
             await EnsureDetailsLoadedAsync(item);
         }
 
+        WriteUrlState();
         StateHasChanged();
     }
 
@@ -888,6 +891,7 @@ public partial class DataView<TItem>
         {
             currentKey = null;
             currentItem = default;
+            WriteUrlState();
         }
 
         StateHasChanged();
@@ -898,6 +902,7 @@ public partial class DataView<TItem>
     {
         currentKey = null;
         currentItem = default;
+        WriteUrlState();
         StateHasChanged();
         return Task.CompletedTask;
     }

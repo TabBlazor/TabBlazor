@@ -9,7 +9,7 @@
     </label>
 </div>
 
-<DataView Items="DataViewDemoData.Orders" Title="Orders" KeySelector="o => o.Id" PageSize="10"
+<DataView Items="DataViewDemoData.Orders" Title="Orders" KeySelector="o => o.Id" PageSize="10" Id="orders" UrlState
           @bind-Filters="filters" ShowFilterChips FilterMode="@(filterRow ? DataFilterMode.Row : DataFilterMode.Menu)">
     <DataColumn Value="o => o.OrderNo" Sortable Searchable />
     <DataColumn Value="o => o.Customer.Name" Title="Customer" Sortable Searchable Filterable

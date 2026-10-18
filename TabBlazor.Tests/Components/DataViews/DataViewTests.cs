@@ -215,7 +215,7 @@ namespace TabBlazor.Tests.Components.DataViews
             var cut = RenderView(p => p.Add(x => x.Source, source));
             var first = source.Last;
 
-            cut.InvokeAsync(() => cut.Instance.ReloadAsync());
+            _ = cut.InvokeAsync(() => cut.Instance.ReloadAsync());
 
             Assert.True(first.Token.IsCancellationRequested);
             Assert.Single(source.Calls);

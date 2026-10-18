@@ -251,6 +251,7 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
             }
         };
         context = new DataViewContext<TItem>(this);
+        OnInitializedUrlState();
     }
 
     protected override async Task OnParametersSetAsync()
@@ -337,6 +338,7 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
         await WatchScreenSizeAsync();
         await ApplyVirtualResetAsync();
         await AttachColumnResizeAsync();
+        await NotifyUrlStateAsync();
 
         if (firstRender && columnsInitialized && !initialLoadStarted)
         {
@@ -403,6 +405,8 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
             {
                 engine.ApplyDefaultSort();
             }
+
+            ApplyUrlStateOnFirstCollect();
         }
     }
 
@@ -423,6 +427,7 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
         lastState = engine.GetState();
         await StateChanged.InvokeAsync(lastState);
         await NotifyFiltersChangedAsync(lastFiltersParameter ?? []);
+        WriteUrlState();
     }
 
     private static DataViewKind SingleView(DataViewKind views) =>
@@ -438,6 +443,7 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
         chosenView = view;
         resizeAttached = false;
         engine.InvalidateRows();
+        WriteUrlState();
         await ViewChanged.InvokeAsync(view);
         StateHasChanged();
     }
@@ -531,6 +537,7 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
         disposed = true;
         engine?.Dispose();
         await DisposeResponsiveAsync();
+        DisposeUrlState();
     }
 }
 

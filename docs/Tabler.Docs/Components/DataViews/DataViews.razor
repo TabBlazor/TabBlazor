@@ -30,7 +30,9 @@
                 <code>Filterable</code> picks a control from the value type: text, a from–to range for numbers and dates,
                 checkboxes for enums, Yes/No for bools, and "empty" for nullable values. <code>FilterOperators</code> adds an
                 operator picker. Filters reach sources as <code>FilterSpec</code>s by column id; <code>@@bind-Filters</code>
-                saves or restores them, and <code>ShowFilterChips</code> lists the active ones.
+                saves or restores them, and <code>ShowFilterChips</code> lists the active ones. With <code>UrlState</code>,
+                paging, sort, search and filters are kept in the query string (<code>orders.f.status=in:Open</code>), so the
+                view can be bookmarked and the back button works.
             </Description>
         </CodeSnippet>
         <CodeSnippet SetBackground Component="@typeof(DataViewsCursor)" Title="Cursor paging">

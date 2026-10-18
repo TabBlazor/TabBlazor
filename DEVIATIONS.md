@@ -190,3 +190,23 @@ Running list of places where the implementation differs from, or fills a gap in,
 - **The Filters popup** is a dropdown card on wide screens and a bottom-sheet `Offcanvas` on
   small screens. Text filters wait for the same pause as the search box (`SearchDelay`).
 - `In` on text or Guid columns takes comma-separated values in the text box.
+
+## Phase 5: URL state
+
+- **Keys:** `{Id}.q`, `.sort` (`-orderDate`; `none` when a default sort was cleared), `.page`
+  (1-based), `.size`, `.f.{columnId}` (`op:value`, `between:from,to` with either end empty,
+  `in:a,b`, `isNull`), `.view` (`list`/`table`) and `.current` (the key of the item open in the
+  drawer or side panel). Without an `Id` the keys have no prefix.
+- **Operators in the URL** use HotChocolate-style tokens (`eq`, `neq`, `contains`, `startsWith`,
+  `endsWith`, `gt`, `gte`, `lt`, `lte`, `between`, `in`, `isNull`, `isNotNull`).
+- **Reading** happens when the columns are known, before the first load (so prerendering loads
+  the right page). The URL wins over `State`/`Filters` parameters; bound `State` and `Filters`
+  are told after the first interactive render. Back/forward is handled through
+  `NavigationManager.LocationChanged`; the view's own writes are ignored there.
+- **Writing** happens on user changes only (not when parameters change). With
+  `UrlHistory="Push"`, page, sort and filter changes add a history entry; search changes always
+  replace it.
+- **Duplicate ids** are detected with a scoped `DataViewUrlRegistry` (registered by
+  `AddTabBlazor`), like Tabs' `TabsUrlParameterRegistry`; an id that is not URL-safe is an error.
+- **Validation:** sorts must be on sortable columns, filters go through the same sanitizer as
+  every other filter, page sizes above 1000 and unparsable pages fall back to the defaults.
