@@ -572,6 +572,15 @@ public partial class DataView<TItem>
             session.EditContext.EnableDataAnnotationsValidation(Services);
         }
 
+        // The navigation lock follows whether the draft has changes.
+        session.EditContext.OnFieldChanged += (_, _) =>
+        {
+            if (ReferenceEquals(EditSession, session))
+            {
+                _ = InvokeAsync(StateHasChanged);
+            }
+        };
+
         EditSession = session;
         editKey = key;
         StateHasChanged();

@@ -215,6 +215,19 @@ namespace TabBlazor.Tests.Components.DataViews
         }
 
         [Fact]
+        public void Editing_locks_navigation_while_the_draft_has_changes()
+        {
+            var cut = RenderEditable(Row.Many(1));
+            Assert.Empty(cut.FindComponents<Microsoft.AspNetCore.Components.Routing.NavigationLock>());
+
+            StartEditing(cut);
+            cut.Find("tr.dv-edit-row input.form-control").Change("Changed");
+
+            var navigationLock = cut.FindComponent<Microsoft.AspNetCore.Components.Routing.NavigationLock>();
+            Assert.True(navigationLock.Instance.ConfirmExternalNavigation);
+        }
+
+        [Fact]
         public void Edit_starting_can_cancel_the_edit()
         {
             var cut = RenderEditable(Row.Many(1), p => p.Add(x => x.OnEditStarting, args => args.Cancel = args.Item!.Id == 1));

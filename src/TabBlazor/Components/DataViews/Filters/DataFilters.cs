@@ -157,7 +157,8 @@ public static class DataFilters
         }
     }
 
-    internal static IEnumerable<object?> AsList(object? value) => value switch
+    /// <summary>The values of an <c>In</c> filter: a list, or comma-separated text.</summary>
+    public static IEnumerable<object?> AsList(object? value) => value switch
     {
         null => [],
         string s => s.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
