@@ -2,6 +2,7 @@
 
 <Page>
     <DocsExample Title="DataView" ComponentType="typeof(DataView<>)">
+        <p>Coming from <code>Table</code> or <code>QuickTable</code>? See <a href="docs/data-views/migration">Moving to DataView</a>.</p>
         <CodeSnippet SetBackground Component="@typeof(DataViewsBasic)" Title="Local items">
             <Description>
                 Bind a list with <code>Items</code> and describe the data with <code>DataColumn</code>s.
@@ -39,6 +40,13 @@
             <Description>
                 A source with <code>PagingMode.Cursor</code> and no total count gets next and previous buttons only.
                 The view remembers the cursor of each visited page.
+            </Description>
+        </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsEntityFramework)" Title="Blazor Server and EF Core">
+            <Description>
+                Create a <code>DbContext</code> per request from an <code>IDbContextFactory</code> and pass the
+                cancellation token on, so a query stops when the user keeps typing. Translate only the columns and
+                operators the screen allows: sorts and filters arrive as column ids.
             </Description>
         </CodeSnippet>
         <CodeSnippet SetBackground Component="@typeof(DataViewsVirtualize)" Title="Virtualization">
