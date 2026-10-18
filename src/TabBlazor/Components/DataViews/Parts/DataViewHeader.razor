@@ -1,0 +1,77 @@
+@namespace TabBlazor
+@typeparam TItem
+
+@{
+    var engine = View.Engine;
+    var texts = View.Texts;
+}
+<div class="card-header dv-header">
+    <div class="dv-title">
+        @if (View.HeaderTemplate != null)
+        {
+            @View.HeaderTemplate
+        }
+        else if (!string.IsNullOrWhiteSpace(View.Title))
+        {
+            <h3 class="card-title">@View.Title</h3>
+        }
+    </div>
+    <div class="dv-toolbar">
+        @View.ToolbarTemplate
+
+        @if (View.SearchVisible)
+        {
+            <div class="input-icon dv-search">
+                <span class="input-icon-addon">
+                    <Icon IconType="@InternalIcons.Search" />
+                </span>
+                <input type="search" class="form-control" placeholder="@texts.Search" aria-label="@texts.Search"
+                       value="@engine.SearchInput" @oninput="e => engine.OnSearchInputAsync(e.Value?.ToString())" />
+            </div>
+        }
+
+        @if (View.RefreshVisible)
+        {
+            <button type="button" class="btn btn-icon dv-refresh" title="@texts.Refresh" aria-label="@texts.Refresh"
+                    @onclick="View.ReloadAsync">
+                <Icon IconType="@InternalIcons.Refresh" />
+            </button>
+        }
+
+        @if (View.ShowMenu && View.Density == null)
+        {
+            <Dropdown>
+                <ChildContent>
+                <button type="button" class="btn btn-icon btn-ghost-secondary dv-menu" title="@texts.MoreOptions" aria-label="@texts.MoreOptions">
+                    <Icon IconType="@InternalIcons.Dots_vertical" />
+                </button>
+                </ChildContent>
+                <DropdownTemplate>
+                    <DropdownMenu class="dropdown-menu-end">
+                        <h6 class="dropdown-header">@texts.Density</h6>
+                        @foreach (var option in densities)
+                        {
+                            var value = option;
+                            <DropdownItem Active="@(View.CurrentDensity == value)" OnClick="() => View.SetDensity(value)">
+                                @DensityText(value)
+                            </DropdownItem>
+                        }
+                    </DropdownMenu>
+                </DropdownTemplate>
+            </Dropdown>
+        }
+    </div>
+</div>
+
+@code {
+    private static readonly TableDensity[] densities = [TableDensity.Compact, TableDensity.Normal, TableDensity.Comfortable];
+
+    [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+
+    private string DensityText(TableDensity value) => value switch
+    {
+        TableDensity.Compact => View.Texts.DensityCompact,
+        TableDensity.Comfortable => View.Texts.DensityComfortable,
+        _ => View.Texts.DensityNormal
+    };
+}

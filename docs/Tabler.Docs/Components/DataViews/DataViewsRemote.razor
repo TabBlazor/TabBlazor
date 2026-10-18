@@ -1,0 +1,46 @@
+@using Align = TabBlazor.Align
+@using System.Threading
+@using System.Text.Json
+
+<div class="mb-2">
+    <label class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" @bind="failNextLoad" />
+        <span class="form-check-label">Fail the next load</span>
+    </label>
+</div>
+
+<DataView TItem="DemoOrder" ItemsProvider="LoadOrdersAsync" KeySelector="o => o.Id" Title="Orders (remote)" PageSize="10">
+    <DataColumn Value="o => o.OrderNo" Title="Order" Sortable Searchable />
+    <DataColumn Value="o => o.Customer.Name" Title="Customer" Sortable Searchable />
+    <DataColumn Value="o => o.Status" Sortable Searchable />
+    <DataColumn Value="o => o.Total" Format="N2" Align="Align.End" Sortable />
+</DataView>
+
+@if (lastRequest != null)
+{
+    <details class="mt-3">
+        <summary>Last request</summary>
+        <pre class="mt-2">@lastRequest</pre>
+    </details>
+}
+
+@code {
+    private readonly InMemorySource<DemoOrder> server = new(DataViewDemoData.Orders);
+    private bool failNextLoad;
+    private string lastRequest;
+
+    // Stands in for an API call or an EF Core query. Pass the token to every async call.
+    private async Task<DataPage<DemoOrder>> LoadOrdersAsync(DataRequest request, CancellationToken cancellationToken)
+    {
+        lastRequest = JsonSerializer.Serialize(request, new JsonSerializerOptions { WriteIndented = true });
+        await Task.Delay(600, cancellationToken);
+
+        if (failNextLoad)
+        {
+            failNextLoad = false;
+            throw new InvalidOperationException("The server did not answer.");
+        }
+
+        return await server.GetPageAsync(request, cancellationToken);
+    }
+}

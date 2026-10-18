@@ -1,0 +1,52 @@
+@namespace TabBlazor
+@typeparam TItem
+
+@{
+    var href = View.RowHref?.Invoke(Item);
+    var first = true;
+}
+<tr class="@View.GetRowClass(Item)" style="@View.RowStyle?.Invoke(Item)" @onclick="OnClickAsync">
+    @foreach (var column in Columns)
+    {
+        <td class="@column.GetCellClass(Item)" style="@column.GetCellStyle(Item)" title="@column.GetCellTitle(Item)" data-label="@column.Title">
+            @if (first && href != null)
+            {
+                <a class="dv-row-anchor stretched-link" href="@href" aria-label="@View.Texts.OpenRow"></a>
+            }
+            @{ column.RenderCell(__builder, Item); }
+        </td>
+        first = false;
+    }
+</tr>
+
+@code {
+    private TItem renderedItem = default!;
+    private int renderedVersion = -1;
+
+    [Parameter, EditorRequired] public TItem Item { get; set; } = default!;
+    [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+    [Parameter, EditorRequired] public IReadOnlyList<IDataViewColumn<TItem>> Columns { get; set; } = default!;
+
+    /// <summary>Rows re-render only when their item or the view's row version changes.</summary>
+    [Parameter] public int Version { get; set; }
+
+    protected override void OnInitialized()
+    {
+        renderedItem = Item;
+        renderedVersion = Version;
+    }
+
+    protected override bool ShouldRender()
+    {
+        if (ReferenceEquals(renderedItem, Item) && renderedVersion == Version)
+        {
+            return false;
+        }
+
+        renderedItem = Item;
+        renderedVersion = Version;
+        return true;
+    }
+
+    private Task OnClickAsync() => View.HandleRowClickAsync(Item);
+}

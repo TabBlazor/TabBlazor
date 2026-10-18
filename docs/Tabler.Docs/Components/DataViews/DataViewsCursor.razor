@@ -1,0 +1,11 @@
+<DataView Source="source" KeySelector="o => o.Id" Title="Orders (cursor paging)" PageSize="10">
+    <DataColumn Value="o => o.OrderNo" Title="Order" Sortable Searchable />
+    <DataColumn Value="o => o.Customer.Name" Title="Customer" Searchable />
+    <DataColumn Value="o => o.OrderDate" Title="Date" Format="d" Sortable />
+</DataView>
+
+@code {
+    private readonly IDataViewSource<DemoOrder> source = new InMemorySource<DemoOrder>(
+        DataViewDemoData.Orders,
+        new InMemorySourceOptions { PagingMode = PagingMode.Cursor, IncludeTotalCount = false });
+}

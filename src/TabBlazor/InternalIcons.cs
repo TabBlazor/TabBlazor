@@ -26,6 +26,15 @@ namespace TabBlazor
         public static IIconType Chevron_down => new MDIcon(@"<path d='M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z' />");
         public static IIconType Chevron_up => new MDIcon(@"<path d='M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z' />");
 
+        public static IIconType Refresh => new TablerIcon(@"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><path d='M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4' /><path d='M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4' />");
+        public static IIconType Dots_vertical => new TablerIcon(@"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><path d='M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0' /><path d='M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0' /><path d='M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0' />");
+        public static IIconType Dots => new TablerIcon(@"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><path d='M5 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0' /><path d='M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0' /><path d='M19 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0' />");
+        public static IIconType Filter => new TablerIcon(@"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><path d='M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227z' />");
+        public static IIconType Check => new TablerIcon(@"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><path d='M5 12l5 5l10 -10' />");
+        public static IIconType Plus => new TablerIcon(@"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><line x1='12' y1='5' x2='12' y2='19' /><line x1='5' y1='12' x2='19' y2='12' />");
+        public static IIconType List => new TablerIcon(@"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><path d='M9 6l11 0' /><path d='M9 12l11 0' /><path d='M9 18l11 0' /><path d='M5 6l0 .01' /><path d='M5 12l0 .01' /><path d='M5 18l0 .01' />");
+        public static IIconType Table => new TablerIcon(@"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><path d='M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14z' /><path d='M3 10h18' /><path d='M10 3v18' />");
+
        
 
 

@@ -1,0 +1,120 @@
+@namespace TabBlazor
+@typeparam TItem
+@using System.Globalization
+
+@{
+    var engine = View.Engine;
+    var texts = View.Texts;
+    var first = engine.PageIndex * engine.PageSize + 1;
+    var last = first + engine.Items.Count - 1;
+}
+<div class="card-footer dv-footer">
+    <p class="m-0 text-secondary dv-showing">
+        @if (engine.TotalCount is { } total)
+        {
+            @string.Format(CultureInfo.CurrentCulture, texts.ShowingOfTotal, first.ToString("N0"), last.ToString("N0"), total.ToString("N0"))
+        }
+        else
+        {
+            @string.Format(CultureInfo.CurrentCulture, texts.Showing, first.ToString("N0"), last.ToString("N0"))
+        }
+    </p>
+
+    @if (View.PageSizes is { Length: > 0 })
+    {
+        <label class="dv-page-size text-secondary">
+            <span>@texts.RowsPerPage</span>
+            <select class="form-select form-select-sm" @onchange="OnPageSizeChanged">
+                @foreach (var size in PageSizeOptions(engine.PageSize))
+                {
+                    <option value="@size" selected="@(size == engine.PageSize)">@size</option>
+                }
+            </select>
+        </label>
+    }
+
+    @if (engine.HasPreviousPage || engine.HasNextPage)
+    {
+        <ul class="pagination m-0 ms-auto dv-pager">
+            <li class="page-item @(engine.HasPreviousPage ? null : "disabled")">
+                <button type="button" class="page-link" disabled="@(!engine.HasPreviousPage)" aria-label="@texts.PreviousPage" title="@texts.PreviousPage"
+                        @onclick="() => engine.GoToPageAsync(engine.PageIndex - 1)">
+                    <Icon IconType="@InternalIcons.Chevron_left" />
+                </button>
+            </li>
+
+            @if (engine.PagingMode == PagingMode.Offset && engine.PageCount is { } pageCount)
+            {
+                foreach (var page in PageWindow(engine.PageIndex, pageCount))
+                {
+                    if (page == null)
+                    {
+                        <li class="page-item disabled"><span class="page-link">…</span></li>
+                    }
+                    else
+                    {
+                        var index = page.Value;
+                        <li class="page-item @(index == engine.PageIndex ? "active" : null)">
+                            <button type="button" class="page-link" aria-current="@(index == engine.PageIndex ? "page" : null)"
+                                    @onclick="() => engine.GoToPageAsync(index)">@(index + 1)</button>
+                        </li>
+                    }
+                }
+            }
+
+            <li class="page-item @(engine.HasNextPage ? null : "disabled")">
+                <button type="button" class="page-link" disabled="@(!engine.HasNextPage)" aria-label="@texts.NextPage" title="@texts.NextPage"
+                        @onclick="() => engine.GoToPageAsync(engine.PageIndex + 1)">
+                    <Icon IconType="@InternalIcons.Chevron_right" />
+                </button>
+            </li>
+        </ul>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+
+    private IEnumerable<int> PageSizeOptions(int current) =>
+        View.PageSizes.Contains(current) ? View.PageSizes : View.PageSizes.Append(current).OrderBy(s => s);
+
+    private Task OnPageSizeChanged(ChangeEventArgs e) =>
+        int.TryParse(e.Value?.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var size)
+            ? View.Engine.ChangePageSizeAsync(size)
+            : Task.CompletedTask;
+
+    /// <summary>Page indexes to show: the first, the last and the current with its neighbours; null is a gap.</summary>
+    internal static List<int?> PageWindow(int current, int count)
+    {
+        var pages = new SortedSet<int> { 0, count - 1 };
+        for (var i = current - 1; i <= current + 1; i++)
+        {
+            if (i >= 0 && i < count)
+            {
+                pages.Add(i);
+            }
+        }
+
+        var result = new List<int?>();
+        int? previous = null;
+        foreach (var page in pages)
+        {
+            if (previous != null && page - previous > 1)
+            {
+                if (page - previous == 2)
+                {
+                    result.Add(previous + 1);
+                }
+                else
+                {
+                    result.Add(null);
+                }
+            }
+
+            result.Add(page);
+            previous = page;
+        }
+
+        return result;
+    }
+}

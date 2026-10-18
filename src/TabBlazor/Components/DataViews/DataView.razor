@@ -1,0 +1,31 @@
+@namespace TabBlazor
+@typeparam TItem
+
+<CascadingValue Value="context" IsFixed="true">
+    @{ StartCollectingColumns(); }
+    @ChildContent
+    <DataViewDefer>
+        @{ FinishCollectingColumns(); }
+        <DataViewColumnsCollected OnCollected="OnColumnsCollectedAsync" />
+        <div class="@(new ClassBuilder("card dataview").Add(Class))" id="@Id">
+            @if (engine.IsLoading && engine.HasLoaded)
+            {
+                <div class="progress progress-sm dv-progress" role="progressbar" aria-label="@Texts.Loading">
+                    <div class="progress-bar progress-bar-indeterminate"></div>
+                </div>
+            }
+
+            @if (ShowHeader)
+            {
+                <DataViewHeader TItem="TItem" View="this" />
+            }
+
+            <DataTableView TItem="TItem" View="this" />
+
+            @if (ShowFooter && engine.HasLoaded && engine.Error == null && engine.Items.Count > 0)
+            {
+                <DataViewFooter TItem="TItem" View="this" />
+            }
+        </div>
+    </DataViewDefer>
+</CascadingValue>

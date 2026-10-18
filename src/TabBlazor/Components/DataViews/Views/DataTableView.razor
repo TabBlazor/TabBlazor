@@ -1,0 +1,134 @@
+@namespace TabBlazor
+@typeparam TItem
+
+@{
+    var engine = View.Engine;
+    var texts = View.Texts;
+    var columns = View.VisibleColumns;
+    var columnCount = Math.Max(1, columns.Count);
+}
+<div class="table-responsive dv-scroll" style="@(View.Height != null ? $"max-height: {View.Height};" : null)">
+    <table class="@View.GetTableClass()" @attributes="View.UnmatchedParameters">
+        <thead>
+            <tr>
+                @foreach (var column in columns)
+                {
+                    var col = column;
+                    var sorted = engine.Sort?.Column == col.Id;
+                    <th scope="col" class="@col.GetHeaderClass()" style="@col.GetHeaderStyle()"
+                        aria-sort="@(col.Sortable ? sorted ? engine.Sort!.Descending ? "descending" : "ascending" : "none" : null)">
+                        @if (col.Sortable)
+                        {
+                            <button type="button" class="dv-sort-button" @onclick="() => engine.ToggleSortAsync(col)">
+                                @HeaderContent(col)
+                                <span class="dv-sort-icon @(sorted ? "active" : null)">
+                                    <Icon Size="16" IconType="@(sorted ? engine.Sort!.Descending ? InternalIcons.Sort_Desc : InternalIcons.Sort_Asc : InternalIcons.Sortable)" />
+                                </span>
+                            </button>
+                        }
+                        else
+                        {
+                            @HeaderContent(col)
+                        }
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody class="@(engine.IsLoading && engine.HasLoaded ? "dv-loading" : null)" aria-busy="@(engine.IsLoading ? "true" : null)">
+            @if (engine.Error != null)
+            {
+                <tr class="dv-state-row dv-error">
+                    <td colspan="@columnCount">
+                        @if (View.ErrorTemplate != null)
+                        {
+                            @View.ErrorTemplate(engine.Error)
+                        }
+                        else
+                        {
+                            <div class="text-danger mb-2">@texts.LoadFailed @engine.Error.Message</div>
+                            <button type="button" class="btn btn-sm dv-retry" @onclick="View.ReloadAsync">@texts.Retry</button>
+                        }
+                    </td>
+                </tr>
+            }
+            else if (!engine.HasLoaded)
+            {
+                if (View.LoadingTemplate != null)
+                {
+                    <tr class="dv-state-row dv-loading-row">
+                        <td colspan="@columnCount">@View.LoadingTemplate</td>
+                    </tr>
+                }
+                else
+                {
+                    for (var i = 0; i < Math.Min(engine.PageSize, 5); i++)
+                    {
+                        <tr class="dv-placeholder-row placeholder-glow" aria-hidden="true">
+                            @foreach (var column in columns)
+                            {
+                                <td><span class="placeholder col-8"></span></td>
+                            }
+                        </tr>
+                    }
+                }
+            }
+            else if (engine.Items.Count == 0)
+            {
+                if (engine.HasSearchOrFilters)
+                {
+                    <tr class="dv-state-row dv-no-results">
+                        <td colspan="@columnCount">
+                            @if (View.NoResultsTemplate != null)
+                            {
+                                @View.NoResultsTemplate
+                            }
+                            else
+                            {
+                                <div class="text-secondary mb-2">@texts.NoResults</div>
+                                <button type="button" class="btn btn-sm dv-clear-filters" @onclick="View.ClearSearchAndFiltersAsync">@texts.ClearFilters</button>
+                            }
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr class="dv-state-row dv-empty">
+                        <td colspan="@columnCount">
+                            @if (View.EmptyTemplate != null)
+                            {
+                                @View.EmptyTemplate
+                            }
+                            else
+                            {
+                                <span class="text-secondary">@texts.NoData</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                foreach (var item in engine.Items)
+                {
+                    <DataTableRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns" Version="engine.RenderVersion" />
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+
+    private static RenderFragment HeaderContent(IDataViewColumn<TItem> column) => builder =>
+    {
+        if (column.HeaderTemplate != null)
+        {
+            builder.AddContent(0, column.HeaderTemplate);
+        }
+        else
+        {
+            builder.AddContent(1, column.Title);
+        }
+    };
+}

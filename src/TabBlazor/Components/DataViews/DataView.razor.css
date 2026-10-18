@@ -1,0 +1,116 @@
+.dataview {
+    position: relative;
+}
+
+.dataview .dv-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    z-index: 5;
+    border-radius: 0;
+}
+
+.dataview ::deep .dv-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+}
+
+.dataview ::deep .dv-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+    margin-left: auto;
+}
+
+.dataview ::deep .dv-search {
+    width: 16rem;
+    max-width: 100%;
+}
+
+.dataview ::deep .dv-table {
+    margin-bottom: 0;
+}
+
+.dataview ::deep .dv-sort-button {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+}
+
+.dataview ::deep .dv-sort-icon {
+    opacity: .35;
+}
+
+.dataview ::deep .dv-sort-icon.active {
+    opacity: 1;
+}
+
+.dataview ::deep tbody.dv-loading {
+    opacity: .55;
+    transition: opacity .15s ease-in-out;
+}
+
+.dataview ::deep .dv-state-row > td {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.dataview ::deep .dv-comfortable > :not(caption) > * > * {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.dataview ::deep .dv-sticky-header > thead > tr > th {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background: var(--tblr-bg-surface-secondary, var(--tblr-bg-surface, #fff));
+}
+
+/* Row links: a stretched link in the first cell covers the row; interactive content stays above it. */
+.dataview ::deep tr.dv-row-link {
+    position: relative;
+    cursor: pointer;
+}
+
+.dataview ::deep tr.dv-row-link td a:not(.dv-row-anchor),
+.dataview ::deep tr.dv-row-link td button,
+.dataview ::deep tr.dv-row-link td input,
+.dataview ::deep tr.dv-row-link td select,
+.dataview ::deep tr.dv-row-link td textarea,
+.dataview ::deep tr.dv-row-link td label,
+.dataview ::deep tr.dv-row-link td .dv-interactive {
+    position: relative;
+    z-index: 2;
+}
+
+.dataview ::deep .dv-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem 1rem;
+}
+
+.dataview ::deep .dv-page-size {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    margin: 0;
+}
+
+.dataview ::deep .dv-page-size .form-select {
+    width: auto;
+}

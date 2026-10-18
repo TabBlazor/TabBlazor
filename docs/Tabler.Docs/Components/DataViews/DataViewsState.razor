@@ -1,0 +1,27 @@
+@using System.Text.Json
+
+<div class="btn-list mb-2">
+    <button class="btn" @onclick="ShowAdasOrders">Ada's orders, newest first</button>
+    <button class="btn" @onclick="Reset">Reset</button>
+</div>
+
+<DataView Items="DataViewDemoData.Orders" KeySelector="o => o.Id" PageSize="10" @bind-State="state">
+    <DataColumn Value="o => o.OrderNo" Title="Order" Sortable Searchable />
+    <DataColumn Title="Name" Id="name" Value="@(o => $"{o.FirstName} {o.LastName}")" Sortable Searchable />
+    <DataColumn Value="o => o.OrderDate" Title="Date" Format="yyyy-MM-dd" Sortable />
+</DataView>
+
+<pre class="mt-3">@JsonSerializer.Serialize(state)</pre>
+
+@code {
+    private DataViewState state;
+
+    private void ShowAdasOrders() => state = new DataViewState
+    {
+        PageSize = 10,
+        Search = "Ada",
+        Sorts = [new SortSpec("orderDate", Descending: true)]
+    };
+
+    private void Reset() => state = new DataViewState { PageSize = 10 };
+}
