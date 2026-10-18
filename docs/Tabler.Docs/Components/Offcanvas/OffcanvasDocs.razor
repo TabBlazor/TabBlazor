@@ -1,0 +1,15 @@
+﻿@page "/docs/offcanvas"
+
+<Page>
+    <DocsExample Title="Offcanvas" >
+        <CodeSnippet Component="@typeof(Basic)" Title="Basic"/>
+        <CodeSnippet Component="@typeof(OffcanvasOptionsExamples)" Title="Custom"/>
+        <CodeSnippet Component="@typeof(OffcanvasDeclarative)" Title="Declarative">
+            <Description>
+                <code>&lt;Offcanvas @@bind-Open&gt;</code> declares the panel in markup. Its content re-renders with the page,
+                so it can follow the current item. <code>OnClosing</code> can keep it open, and <code>Size</code> sets its width.
+            </Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(OffcanvasFromModal)" Title="Opened from a modal"/>
+    </DocsExample>
+</Page>

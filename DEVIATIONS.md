@@ -74,3 +74,28 @@ Running list of places where the implementation differs from, or fills a gap in,
   since the table's contextual classes (`table-danger`) do not apply to list items.
 - The view switcher sits after `ToolbarTemplate`, followed by the sort menu (list view only),
   then search; the doc did not place it.
+
+## Phase 3: Offcanvas additions
+
+- **Already on master:** unique title ids, moving focus into the panel, and unsubscribing
+  `OffcanvasContainer` from `OnChanged` (the leak) were done before this work. Added here: focus
+  goes back to the element that had it when the panel closes (`tabBlazor.saveFocus` /
+  `restoreFocus`, exposed as `TablerService.SaveFocusAsync` / `RestoreFocusAsync`).
+- **`OnClosing`** is an `EventCallback<OffcanvasClosingEventArgs>` (set `Cancel = true` to stay
+  open) on `OffcanvasView` and the declarative `Offcanvas`, plus an `OffcanvasOptions.OnClosing`
+  delegate for panels opened through `IOffcanvasService`.
+- **`Size`** is `OffcanvasSize` (Default, Small, Medium, Large, Full), applied as Tabler's
+  `--tblr-offcanvas-width`/`-height` variables, on `OffcanvasOptions` and the declarative component.
+- **Animation:** opening is a CSS keyframe animation (the panel still renders with `show` at once,
+  so nothing changes for the service or for prerendering). Closing animates only for the
+  declarative component (it keeps the panel 250 ms with `offcanvas-hiding`); panels opened by the
+  service are still removed at once. Both honour `prefers-reduced-motion`.
+- **Declarative `Offcanvas`:** `@bind-Open`, `Title`/`TitleTemplate`, `FooterTemplate`,
+  `Position` (default End), `Size`, `Backdrop`, `CloseOnEsc` (default true here), 
+  `CloseOnClickOutside`, `Floating`, `Class`, `OnClosing`, `OnClosed`, and `CloseAsync()`. As a
+  general-purpose component it uses ordinary parameters, so body content goes in `<ChildContent>`
+  when `<FooterTemplate>` is used.
+- `OffcanvasView` sets `aria-modal` only when it has a backdrop, renders an optional
+  `.offcanvas-footer`, and now also implements `IAsyncDisposable` (to give focus back).
+- The docs page `Offcanvas.razor` was renamed `OffcanvasDocs.razor` (same route), because a page
+  component named `Offcanvas` would hide the new `<Offcanvas>` tag in that folder.

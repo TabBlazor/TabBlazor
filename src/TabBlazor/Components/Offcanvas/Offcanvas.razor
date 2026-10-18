@@ -1,0 +1,9 @@
+@namespace TabBlazor
+
+@if (visible)
+{
+    <OffcanvasView Title="@Title" TitleTemplate="TitleTemplate" Options="options" Hiding="hiding"
+                   OnClosing="OnClosing" OnClosed="OnViewClosedAsync" FooterTemplate="FooterTemplate">
+        @ChildContent
+    </OffcanvasView>
+}

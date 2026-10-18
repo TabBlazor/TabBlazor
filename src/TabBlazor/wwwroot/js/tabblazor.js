@@ -10,6 +10,21 @@
         return navigator.userAgent;
     },
 
+    // Remembers the focused element under a key, so an overlay can give focus back when it closes.
+    saveFocus: function (key) {
+        window.tabBlazor.savedFocus = window.tabBlazor.savedFocus || {};
+        window.tabBlazor.savedFocus[key] = document.activeElement;
+    },
+
+    restoreFocus: function (key) {
+        const saved = window.tabBlazor.savedFocus || {};
+        const element = saved[key];
+        delete saved[key];
+        if (element && element.isConnected && typeof element.focus === 'function') {
+            element.focus();
+        }
+    },
+
     openContentWindow(contentType, content, urlSuffix, name, features) {
         const blob = new Blob([content], { type: contentType });
         var url = URL.createObjectURL(blob);

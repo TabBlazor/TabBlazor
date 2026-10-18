@@ -1,0 +1,86 @@
+/* Open and close animations. The panel is rendered with "show" at once, so the slide-in is a keyframe animation. */
+.offcanvas.show {
+    animation: offcanvas-in .25s ease-out;
+}
+
+.offcanvas-end.show {
+    --offcanvas-from: translateX(100%);
+}
+
+.offcanvas-start.show {
+    --offcanvas-from: translateX(-100%);
+}
+
+.offcanvas-top.show {
+    --offcanvas-from: translateY(-100%);
+}
+
+.offcanvas-bottom.show {
+    --offcanvas-from: translateY(100%);
+}
+
+.offcanvas.show.offcanvas-hiding {
+    animation: offcanvas-out .25s ease-in forwards;
+}
+
+.offcanvas-backdrop.show {
+    animation: offcanvas-fade-in .25s ease-out;
+}
+
+.offcanvas-backdrop.offcanvas-backdrop-hiding {
+    animation: offcanvas-fade-out .25s ease-in forwards;
+}
+
+.offcanvas-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: .5rem;
+    padding: 1rem;
+    border-top: var(--tblr-border-width, 1px) solid var(--tblr-border-color, rgba(0, 0, 0, .1));
+}
+
+.offcanvas-size-full {
+    border: 0;
+}
+
+@keyframes offcanvas-in {
+    from {
+        transform: var(--offcanvas-from);
+    }
+
+    to {
+        transform: none;
+    }
+}
+
+@keyframes offcanvas-out {
+    from {
+        transform: none;
+    }
+
+    to {
+        transform: var(--offcanvas-from);
+    }
+}
+
+@keyframes offcanvas-fade-in {
+    from {
+        opacity: 0;
+    }
+}
+
+@keyframes offcanvas-fade-out {
+    to {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .offcanvas.show,
+    .offcanvas.show.offcanvas-hiding,
+    .offcanvas-backdrop.show,
+    .offcanvas-backdrop.offcanvas-backdrop-hiding {
+        animation: none;
+    }
+}
