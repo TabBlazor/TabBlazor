@@ -22,7 +22,7 @@ public partial class DataView<TItem>
 
     [Inject] private IJSRuntime JS { get; set; } = default!;
 
-    /// <summary>How the table looks below <see cref="MobileBreakpoint"/>. Defaults to stacked cards (a <c>MobileTemplate</c> switches to your own markup).</summary>
+    /// <summary>How the table looks below <see cref="MobileBreakpoint"/>. Defaults to stacked cards (a <c>MobileTemplate</c> switches to your own markup; a virtualized table scrolls instead of stacking).</summary>
     [Parameter] public DataMobileLayout MobileLayout { get; set; } = DataMobileLayout.Stacked;
 
     /// <summary>The Bootstrap breakpoint below which the small-screen layout applies: sm, md (default), lg, xl or xxl.</summary>
@@ -33,7 +33,10 @@ public partial class DataView<TItem>
     /// <summary>True when the viewport is below <see cref="MobileBreakpoint"/> (known after the first interactive render).</summary>
     public bool IsSmallScreen { get; private set; }
 
-    internal DataMobileLayout EffectiveMobileLayout => MobileTemplate != null ? DataMobileLayout.Template : MobileLayout;
+    // Stacked cards are taller than ItemSize, so virtualized tables keep their rows and scroll sideways.
+    internal DataMobileLayout EffectiveMobileLayout => MobileTemplate != null ? DataMobileLayout.Template
+        : MobileLayout == DataMobileLayout.Stacked && IsVirtualized ? DataMobileLayout.Scroll
+        : MobileLayout;
 
     internal string Breakpoint => NormalizeBreakpoint(MobileBreakpoint);
 

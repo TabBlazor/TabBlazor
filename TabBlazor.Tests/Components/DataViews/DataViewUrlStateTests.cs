@@ -233,7 +233,8 @@ namespace TabBlazor.Tests.Components.DataViews
 
             Assert.Equal(DataViewKind.List, cut.Instance.CurrentView);
 
-            cut.FindAll(".dv-view-switcher button")[0].Click();
+            cut.Find(".dv-view-switcher button").Click();
+            cut.FindAll(".dv-view-switcher .dropdown-item")[0].Click();
             Assert.DoesNotContain("orders.view", Navigation.Uri);
         }
 

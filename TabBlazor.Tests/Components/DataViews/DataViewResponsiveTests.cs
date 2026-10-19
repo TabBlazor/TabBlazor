@@ -43,6 +43,17 @@ namespace TabBlazor.Tests.Components.DataViews
         }
 
         [Fact]
+        public void Virtualized_table_scrolls_instead_of_stacking()
+        {
+            var classes = RenderView(p => p
+                .Add(x => x.Virtualize, true)
+                .Add(x => x.Height, "400px")).Find(".dataview").ClassList;
+
+            Assert.Contains("dv-scroll-md", classes);
+            Assert.DoesNotContain("dv-stacked-md", classes);
+        }
+
+        [Fact]
         public void Hide_below_hides_the_column_on_narrow_screens()
         {
             var cut = RenderView();

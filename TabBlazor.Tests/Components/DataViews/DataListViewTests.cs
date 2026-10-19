@@ -124,14 +124,16 @@ namespace TabBlazor.Tests.Components.DataViews
                 .AddChildContent<DataColumn<Row, string>>(c => c.Add(x => x.Value, r => r.Name)));
             cut.Find(".dv-pager li:last-child button").Click();
 
-            var buttons = cut.FindAll(".dv-view-switcher button");
-            Assert.Equal("true", buttons[0].GetAttribute("aria-pressed"));
-            buttons[1].Click();
+            Assert.Equal("Table", cut.Find(".dv-view-switcher button").GetAttribute("aria-label"));
+            cut.Find(".dv-view-switcher button").Click();
+            var items = cut.FindAll(".dv-view-switcher .dropdown-item");
+            Assert.Contains("active", items[0].ClassList);
+            items[1].Click();
 
             Assert.Equal(DataViewKind.List, changed);
             Assert.Equal(DataViewKind.List, cut.Instance.CurrentView);
             Assert.Equal("Row 11", cut.Find(".dv-list-title").TextContent.Trim());
-            Assert.Equal("true", cut.FindAll(".dv-view-switcher button")[1].GetAttribute("aria-pressed"));
+            Assert.Equal("List", cut.Find(".dv-view-switcher button").GetAttribute("aria-label"));
         }
 
         [Fact]
