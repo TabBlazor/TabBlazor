@@ -1,0 +1,65 @@
+@using Align = TabBlazor.Align
+@using Microsoft.AspNetCore.Components.Routing
+@implements IDisposable
+@inject NavigationManager Navigation
+
+<DataView Items="DataViewDemoData.Orders" Title="Shipments" KeySelector="o => o.Id" PageSize="8" PageSizes="[8, 25, 50]"
+          Id="shipments" UrlState UrlHistory="UrlHistoryMode.Push" ShowFilterChips
+          Views="DataViewKind.Table | DataViewKind.List" DetailsMode="DataDetailsMode.Drawer"
+          DetailsTitle="@(o => o.OrderNo)">
+    <DataColumn Value="o => o.OrderNo" Sortable Searchable />
+    <DataColumn Value="o => o.Customer.Name" Title="Customer" Sortable Searchable />
+    <DataColumn Value="o => o.Status" Sortable Filterable />
+    <DataColumn Value="o => o.Total" Format="N2" Align="Align.End" Sortable Filterable />
+
+    <DetailsTemplate>
+        <div class="mb-2"><strong>@context.Item.FirstName @context.Item.LastName</strong></div>
+        <div class="text-secondary">@context.Item.Status · @context.Item.Total.ToString("N2")</div>
+    </DetailsTemplate>
+</DataView>
+
+<div class="card card-sm mt-3">
+    <div class="card-body">
+        <div class="text-secondary mb-1">Query string for this view</div>
+        @if (ownParameters.Count == 0)
+        {
+            <code>(defaults: nothing in the URL)</code>
+        }
+        else
+        {
+            <code class="text-wrap">@string.Join("&", ownParameters)</code>
+        }
+        <div class="mt-2">
+            <a href="@Navigation.Uri" target="_blank" rel="noopener">Open this state in a new tab</a>
+            <span class="text-secondary ms-2">or use the browser's back button to step through your changes.</span>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<string> ownParameters = [];
+
+    protected override void OnInitialized()
+    {
+        ReadQuery();
+        Navigation.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        ReadQuery();
+        InvokeAsync(StateHasChanged);
+    }
+
+    // Only the keys with this view's prefix; other views on the page keep their own.
+    private void ReadQuery()
+    {
+        var query = new Uri(Navigation.Uri).Query.TrimStart('?');
+        ownParameters = query.Split('&', StringSplitOptions.RemoveEmptyEntries)
+            .Select(Uri.UnescapeDataString)
+            .Where(p => p.StartsWith("shipments.", StringComparison.Ordinal))
+            .ToList();
+    }
+
+    public void Dispose() => Navigation.LocationChanged -= OnLocationChanged;
+}
