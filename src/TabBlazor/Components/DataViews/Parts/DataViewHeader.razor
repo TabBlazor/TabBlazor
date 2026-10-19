@@ -61,17 +61,24 @@
 
         @if (View.AvailableViews.Count > 1)
         {
-            <div class="btn-group dv-view-switcher" role="group">
-                @foreach (var option in View.AvailableViews)
-                {
-                    var value = option;
-                    var active = View.CurrentView == value;
-                    <button type="button" class="btn btn-icon @(active ? "active" : null)" aria-pressed="@(active ? "true" : "false")"
-                            title="@ViewText(value)" aria-label="@ViewText(value)" @onclick="() => View.SwitchViewAsync(value)">
-                        <Icon IconType="@(value == DataViewKind.List ? InternalIcons.List : InternalIcons.Table)" />
+            <Dropdown class="dv-view-switcher">
+                <ChildContent>
+                    <button type="button" class="btn btn-icon" title="@ViewText(View.CurrentView)" aria-label="@ViewText(View.CurrentView)">
+                        <Icon IconType="@ViewIcon(View.CurrentView)" />
                     </button>
-                }
-            </div>
+                </ChildContent>
+                <DropdownTemplate>
+                    <DropdownMenu class="dropdown-menu-end">
+                        @foreach (var option in View.AvailableViews)
+                        {
+                            var value = option;
+                            <DropdownItem Active="@(View.CurrentView == value)" OnClick="() => View.SwitchViewAsync(value)">
+                                <Icon IconType="@ViewIcon(value)" class="icon dropdown-item-icon" />@ViewText(value)
+                            </DropdownItem>
+                        }
+                    </DropdownMenu>
+                </DropdownTemplate>
+            </Dropdown>
         }
 
         @if (View.CurrentView != DataViewKind.Table && sortable.Count > 0)
@@ -226,6 +233,8 @@
     [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
 
     private string ViewText(DataViewKind value) => value == DataViewKind.List ? View.Texts.ListView : View.Texts.TableView;
+
+    private static IIconType ViewIcon(DataViewKind value) => value == DataViewKind.List ? InternalIcons.List : InternalIcons.Table;
 
     private string DensityText(TableDensity value) => value switch
     {
