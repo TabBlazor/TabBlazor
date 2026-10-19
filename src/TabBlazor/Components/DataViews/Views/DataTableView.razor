@@ -62,6 +62,7 @@
                                 </ChildContent>
                                 <DropdownTemplate>
                                     <DropdownMenu Card="true" class="p-3 dv-filter-menu-card">
+                                        <DataViewPopupHeader Title="@col.Title" CloseLabel="@View.Texts.Close" />
                                         <DataColumnFilter TItem="TItem" View="View" Column="col" />
                                         @if (active)
                                         {

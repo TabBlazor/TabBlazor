@@ -191,6 +191,33 @@ namespace TabBlazor.Tests.Components.DataViews
         }
 
         [Fact]
+        public void Column_filter_menu_has_a_title_and_closes_with_the_x()
+        {
+            var cut = RenderFilterable();
+            OpenFilter(cut, "name");
+
+            Assert.Equal("Name", cut.Find(".dv-filter-menu-card .dv-popup-header").TextContent.Trim());
+            Assert.Equal("Close", cut.Find(".dv-filter-menu-card .dv-popup-close").GetAttribute("aria-label"));
+
+            cut.Find(".dv-filter-menu-card .dv-popup-close").Click();
+
+            Assert.Empty(cut.FindAll(".dv-filter-menu-card"));
+        }
+
+        [Fact]
+        public void Filters_menu_closes_with_the_x()
+        {
+            var cut = RenderFilterable();
+            cut.Find(".dv-filters-button").Click();
+
+            Assert.Equal("Filters", cut.Find(".dv-filters-menu .dv-popup-header").TextContent.Trim());
+
+            cut.Find(".dv-filters-menu .dv-popup-close").Click();
+
+            Assert.Empty(cut.FindAll(".dv-filters-panel"));
+        }
+
+        [Fact]
         public async Task Chips_show_active_filters_and_remove_them()
         {
             var cut = RenderFilterable(p => p.Add(x => x.ShowFilterChips, true));
