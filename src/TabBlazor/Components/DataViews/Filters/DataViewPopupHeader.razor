@@ -1,0 +1,16 @@
+@namespace TabBlazor
+
+@* Title row of a filter popup, with an "x" that closes the dropdown it sits in. *@
+<div class="d-flex align-items-center mb-2 dv-popup-header">
+    <div class="fw-medium me-auto text-truncate">@Title</div>
+    <button type="button" class="btn-close ms-2 dv-popup-close" aria-label="@CloseLabel" title="@CloseLabel"
+            @onclick="() => Dropdown?.Close()"></button>
+</div>
+
+@code {
+    [CascadingParameter(Name = "Dropdown")] public Dropdown Dropdown { get; set; }
+
+    [Parameter] public string Title { get; set; }
+
+    [Parameter] public string CloseLabel { get; set; }
+}
