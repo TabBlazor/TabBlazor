@@ -1,0 +1,84 @@
+<Tabs MobilePlacement="TabsMobilePlacement.Bottom" UrlParameter="tab">
+    <Tab Id="overview" Title="Overview" Icon="@TablerIcons.Layout_dashboard">
+        <DataGrid>
+            <DataGridItem Title="Status">In progress</DataGridItem>
+            <DataGridItem Title="Customer">Acme Facilities</DataGridItem>
+            <DataGridItem Title="Site">Building B, floor 3</DataGridItem>
+            <DataGridItem Title="Scheduled">24 Oct, 08:00</DataGridItem>
+            <DataGridItem Title="Technician">Not assigned</DataGridItem>
+            <DataGridItem Title="Priority">Normal</DataGridItem>
+        </DataGrid>
+    </Tab>
+    <Tab Id="equipment" Title="Equipment" Icon="@TablerIcons.Tool" Badge="3">
+        @ItemList(equipment)
+    </Tab>
+    <Tab Id="orders" Title="Orders" Icon="@TablerIcons.Shopping_cart" Badge="12" BadgeColor="TablerColor.Primary">
+        @ItemList(orders)
+    </Tab>
+    <Tab Id="invoices" Title="Invoices" Icon="@TablerIcons.Receipt">
+        @ItemList(invoices)
+    </Tab>
+    <Tab Id="contacts" Title="Contacts" Icon="@TablerIcons.Users">
+        @ItemList(contacts)
+    </Tab>
+    <Tab Id="documents" Title="Documents" Icon="@TablerIcons.File_text" Badge="5">
+        @ItemList(documents)
+    </Tab>
+    <Tab Id="notes" Title="Notes" Icon="@TablerIcons.Notes">
+        <label class="form-label" for="work-order-note">Note</label>
+        <textarea id="work-order-note" class="form-control" rows="4" placeholder="Add a note"></textarea>
+        <div class="form-hint">On a phone the tab bar hides while you type.</div>
+        <label class="form-check form-switch mt-3">
+            <input class="form-check-input" type="checkbox" />
+            <span class="form-check-label">Notify customer</span>
+        </label>
+    </Tab>
+</Tabs>
+
+@code {
+    private readonly (string Name, string Detail)[] equipment =
+    [
+        ("AHU-01", "Air handling unit"),
+        ("FCU-14", "Fan coil unit"),
+        ("DMP-03", "Fire damper")
+    ];
+
+    private readonly (string Name, string Detail)[] orders =
+    [
+        ("SO-55120", "Open · 2 items"),
+        ("SO-55098", "Delivered · 5 items"),
+        ("SO-54871", "Delivered · 1 item")
+    ];
+
+    private readonly (string Name, string Detail)[] invoices =
+    [
+        ("INV-2210", "Paid"),
+        ("INV-2187", "Due 30 Oct")
+    ];
+
+    private readonly (string Name, string Detail)[] contacts =
+    [
+        ("Site contact", "Facility manager"),
+        ("Billing", "Accounts payable")
+    ];
+
+    private readonly (string Name, string Detail)[] documents =
+    [
+        ("Service report.pdf", "2 days ago"),
+        ("Checklist.pdf", "2 days ago"),
+        ("Floor plan.png", "1 week ago")
+    ];
+
+    private static RenderFragment ItemList((string Name, string Detail)[] items) => __builder =>
+    {
+        <div class="list-group">
+            @foreach (var item in items)
+            {
+                <div class="list-group-item d-flex justify-content-between">
+                    <span>@item.Name</span>
+                    <span class="text-secondary">@item.Detail</span>
+                </div>
+            }
+        </div>
+    };
+}

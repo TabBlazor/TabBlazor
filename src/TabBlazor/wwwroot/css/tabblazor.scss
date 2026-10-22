@@ -297,3 +297,11 @@ Dimmer
     border: 0;
     box-shadow: none;
 }
+
+@media (max-width: 767.98px) {
+    body:has(.tabs-mobile-bottom)::after {
+        content: "";
+        display: block;
+        height: calc(5rem + env(safe-area-inset-bottom));
+    }
+}

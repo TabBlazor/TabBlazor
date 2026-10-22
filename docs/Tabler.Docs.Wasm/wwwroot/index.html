@@ -80,7 +80,7 @@
         loadBootResource: function (type, name, defaultUri, integrity) {
             // For framework resources, use the precompressed .br files for faster downloads
             // This is needed only because GitHub pages doesn't natively support Brotli (or even gzip for .dll files)
-            if (type !== 'dotnetjs' && location.hostname !== 'localhost') {
+            if (type !== 'dotnetjs' && location.hostname === 'tabblazor.com') {
                 return (async function () {
                     const response = await fetch(defaultUri + '.br', {cache: 'no-cache'});
                     if (!response.ok) {

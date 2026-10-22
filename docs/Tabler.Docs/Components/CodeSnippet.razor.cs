@@ -18,6 +18,7 @@ namespace Tabler.Docs.Components
         public string ClassName { get; set; }
         [Parameter] public Type Component { get; set; }
         [Parameter] public RenderFragment Description { get; set; }
+        [Parameter] public bool ShowExample { get; set; } = true;
 
         protected string Code;
 

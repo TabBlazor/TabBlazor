@@ -22,6 +22,16 @@ namespace TabBlazor
         [Parameter] public string UrlParameter { get; set; }
         /// <summary>How selecting a tab updates browser history when <see cref="UrlParameter"/> is set. Defaults to <see cref="TabsOptions.UrlHistory"/>.</summary>
         [Parameter] public TabUrlHistory? UrlHistory { get; set; }
+        /// <summary>
+        /// Where the tab headers go on small screens. Defaults to <see cref="TabsMobilePlacement.Top"/>, a row that scrolls sideways.
+        /// <see cref="TabsMobilePlacement.Bottom"/> pins them to the bottom of the screen; use it for one page-level Tabs only.
+        /// </summary>
+        [Parameter] public TabsMobilePlacement MobilePlacement { get; set; }
+        /// <summary>
+        /// Whether the active tab's title is shown above the content on small screens when <see cref="MobilePlacement"/> is
+        /// <see cref="TabsMobilePlacement.Bottom"/>. Defaults to true. A tab can override it with <see cref="Tab.ShowMobileTitle"/>.
+        /// </summary>
+        [Parameter] public bool ShowMobileTitle { get; set; } = true;
 
         public ITab ActiveTab { get; private set; }
 
@@ -41,6 +51,13 @@ namespace TabBlazor
         internal int EffectivePreloadDelay => PreloadDelay ?? TabsDefaults.PreloadDelay;
         private bool UrlSyncEnabled => !string.IsNullOrEmpty(UrlParameter);
         private ITab DefaultTab => activeMarkedTab ?? tabs.FirstOrDefault();
+        internal bool IsBottomBar => MobilePlacement == TabsMobilePlacement.Bottom;
+        internal object MobileTitleSection { get; } = new();
+
+        protected override string ClassNames => ClassBuilder
+            .Add("card")
+            .AddIf("tabs-mobile-bottom", IsBottomBar)
+            .ToString();
 
         protected override void OnInitialized()
         {

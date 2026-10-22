@@ -33,7 +33,7 @@ namespace TabBlazor.Tests.Components
         }
 
         private RenderFragment TabItem(string name, TabPreload? preload = null, bool active = false,
-            Action? onPreload = null, Action? onActivated = null, string? id = null) => builder =>
+            Action? onPreload = null, Action? onActivated = null, string? id = null, string? badge = null) => builder =>
         {
             builder.OpenComponent<Tab>(0);
             builder.SetKey(name);
@@ -42,6 +42,10 @@ namespace TabBlazor.Tests.Components
             if (id != null)
             {
                 builder.AddAttribute(7, nameof(Tab.Id), id);
+            }
+            if (badge != null)
+            {
+                builder.AddAttribute(8, nameof(Tab.Badge), badge);
             }
             if (preload != null)
             {
@@ -67,6 +71,7 @@ namespace TabBlazor.Tests.Components
 
         private IRenderedComponent<Tabs> RenderTabs(TabPreload? preload = null, bool? keepAlive = null,
             int? preloadDelay = null, string? urlParameter = null, TabUrlHistory? urlHistory = null,
+            TabsMobilePlacement mobilePlacement = TabsMobilePlacement.Top,
             params RenderFragment[] items) =>
             Render<Tabs>(p => p
                 .Add(t => t.Preload, preload)
@@ -74,6 +79,7 @@ namespace TabBlazor.Tests.Components
                 .Add(t => t.PreloadDelay, preloadDelay)
                 .Add(t => t.UrlParameter, urlParameter)
                 .Add(t => t.UrlHistory, urlHistory)
+                .Add(t => t.MobilePlacement, mobilePlacement)
                 .AddChildContent(b =>
                 {
                     foreach (var item in items)
@@ -794,6 +800,170 @@ namespace TabBlazor.Tests.Components
 
             Assert.Null(cut.Instance.ActiveTab);
             Assert.Empty(cut.FindAll("div.tab-pane"));
+        }
+
+        [Fact]
+        public void Does_not_add_bottom_placement_class_by_default()
+        {
+            var cut = RenderTabs(items: [TabItem("one")]);
+
+            Assert.DoesNotContain("tabs-mobile-bottom", cut.Find("div.card").ClassList);
+        }
+
+        [Fact]
+        public void Adds_bottom_placement_class_when_mobile_placement_is_bottom()
+        {
+            var cut = RenderTabs(mobilePlacement: TabsMobilePlacement.Bottom, items: [TabItem("one")]);
+
+            Assert.Contains("tabs-mobile-bottom", cut.Find("div.card").ClassList);
+        }
+
+        [Fact]
+        public void Does_not_render_mobile_title_by_default()
+        {
+            var cut = RenderTabs(items: [TabItem("one"), TabItem("two")]);
+
+            Assert.Empty(cut.FindAll(".tabs-mobile-title"));
+        }
+
+        [Fact]
+        public void Mirrors_active_tab_title_above_content_when_mobile_placement_is_bottom()
+        {
+            var cut = RenderTabs(mobilePlacement: TabsMobilePlacement.Bottom, items: [TabItem("one"), TabItem("two")]);
+
+            Assert.Equal("one", cut.Find(".tabs-mobile-title .card-title").TextContent.Trim());
+
+            Header(cut, 1).Click();
+
+            Assert.Equal("two", cut.Find(".tabs-mobile-title .card-title").TextContent.Trim());
+        }
+
+        [Fact]
+        public void Updates_mobile_title_when_active_tab_title_changes()
+        {
+            var cut = Render<Tabs>(p => p
+                .Add(t => t.MobilePlacement, TabsMobilePlacement.Bottom)
+                .AddChildContent<Tab>(t => t.Add(x => x.Title, "Orders (2)")));
+
+            cut.Render(p => p.AddChildContent<Tab>(t => t.Add(x => x.Title, "Orders (3)")));
+
+            Assert.Equal("Orders (3)", cut.Find(".tabs-mobile-title .card-title").TextContent.Trim());
+        }
+
+        [Fact]
+        public void Renders_icon_before_title_when_icon_is_set()
+        {
+            var cut = Render<Tabs>(p => p.AddChildContent<Tab>(t => t
+                .Add(x => x.Title, "Orders")
+                .Add(x => x.Icon, InternalIcons.Calendar)));
+
+            var link = Header(cut, 0);
+            Assert.Equal("svg", link.Children[0].LocalName);
+            Assert.Contains("nav-link-icon", link.Children[0].ClassList);
+            Assert.Equal("Orders", link.QuerySelector("span.nav-link-title")!.TextContent);
+        }
+
+        [Fact]
+        public void Renders_header_inside_title_when_icon_is_set()
+        {
+            var cut = Render<Tabs>(p => p.AddChildContent<Tab>(t => t
+                .Add(x => x.Icon, InternalIcons.Calendar)
+                .Add(x => x.Header, "<b class=\"custom\">Orders</b>")));
+
+            Assert.NotNull(Header(cut, 0).QuerySelector("span.nav-link-title > b.custom"));
+        }
+
+        [Fact]
+        public void Renders_title_without_icon_when_icon_is_not_set()
+        {
+            var cut = RenderTabs(items: [TabItem("one")]);
+
+            var link = Header(cut, 0);
+            Assert.Null(link.QuerySelector("svg"));
+            Assert.Equal("one", link.QuerySelector("span.nav-link-title")!.TextContent);
+        }
+
+        [Fact]
+        public void Renders_badge_after_title_when_badge_is_set()
+        {
+            var cut = RenderTabs(items: [TabItem("orders", badge: "12")]);
+
+            var link = Header(cut, 0);
+            var badge = link.QuerySelector("span.badge.nav-link-badge")!;
+            Assert.Equal("12", badge.TextContent);
+            Assert.Equal("nav-link-title", badge.PreviousElementSibling!.ClassName);
+        }
+
+        [Fact]
+        public void Does_not_render_badge_when_badge_is_empty()
+        {
+            var cut = RenderTabs(items: [TabItem("orders", badge: "")]);
+
+            Assert.Null(Header(cut, 0).QuerySelector(".badge"));
+        }
+
+        [Fact]
+        public void Applies_badge_color()
+        {
+            var cut = Render<Tabs>(p => p.AddChildContent<Tab>(t => t
+                .Add(x => x.Title, "Orders")
+                .Add(x => x.Badge, "12")
+                .Add(x => x.BadgeColor, TablerColor.Primary)));
+
+            Assert.Contains("bg-primary", Header(cut, 0).QuerySelector(".badge")!.ClassList);
+        }
+
+        [Fact]
+        public void Does_not_render_mobile_title_when_show_mobile_title_is_false()
+        {
+            var cut = Render<Tabs>(p => p
+                .Add(t => t.MobilePlacement, TabsMobilePlacement.Bottom)
+                .Add(t => t.ShowMobileTitle, false)
+                .AddChildContent(TabItem("one")));
+
+            Assert.Empty(cut.FindAll(".tabs-mobile-title"));
+        }
+
+        [Fact]
+        public void Tab_show_mobile_title_overrides_tabs_setting()
+        {
+            var cut = Render<Tabs>(p => p
+                .Add(t => t.MobilePlacement, TabsMobilePlacement.Bottom)
+                .Add(t => t.ShowMobileTitle, false)
+                .AddChildContent<Tab>(t => t
+                    .Add(x => x.Title, "Notes")
+                    .Add(x => x.ShowMobileTitle, true)));
+
+            Assert.Equal("Notes", cut.Find(".tabs-mobile-title .card-title").TextContent.Trim());
+        }
+
+        [Fact]
+        public void Hides_mobile_title_for_tab_that_turns_it_off()
+        {
+            var cut = Render<Tabs>(p => p
+                .Add(t => t.MobilePlacement, TabsMobilePlacement.Bottom)
+                .AddChildContent<Tab>(t => t
+                    .Add(x => x.Title, "Orders")
+                    .Add(x => x.ShowMobileTitle, false)));
+
+            Assert.Empty(cut.FindAll(".tabs-mobile-title"));
+        }
+
+        [Fact]
+        public void Does_not_show_badge_in_mobile_title()
+        {
+            var cut = RenderTabs(mobilePlacement: TabsMobilePlacement.Bottom, items: [TabItem("orders", badge: "12")]);
+
+            Assert.Equal("orders", cut.Find(".tabs-mobile-title .card-title").TextContent.Trim());
+            Assert.Empty(cut.FindAll(".tabs-mobile-title .badge"));
+        }
+
+        [Fact]
+        public void Merges_provided_class_into_card()
+        {
+            var cut = Render<Tabs>(p => p.AddUnmatched("class", "custom"));
+
+            Assert.Contains("custom", cut.Find("div.card").ClassList);
         }
     }
 }

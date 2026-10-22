@@ -6,12 +6,15 @@
     <CardBody>
         @Description
 
-        <div class="p-3 @ExampleBackground()">
-            @if (Component != null)
-            {
-                <DynamicComponent Type="Component"/>
-            }
-        </div>
+        @if (ShowExample)
+        {
+            <div class="p-3 @ExampleBackground()">
+                @if (Component != null)
+                {
+                    <DynamicComponent Type="Component"/>
+                }
+            </div>
+        }
 
         <div class="card-code">
             <figure class="highlight markdown">

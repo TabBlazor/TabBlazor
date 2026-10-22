@@ -11,6 +11,23 @@ namespace TabBlazor
         [Parameter] public string Title { get; set; }
         /// <summary>Optional custom header content, overriding <see cref="Title"/>.</summary>
         [Parameter] public RenderFragment Header { get; set; }
+        /// <summary>
+        /// Optional icon shown before the title. With <see cref="TabsMobilePlacement.Bottom"/> it is shown above the title in the
+        /// bottom bar on small screens, so set it on every tab there.
+        /// </summary>
+        [Parameter] public IIconType Icon { get; set; }
+        /// <summary>
+        /// Optional badge text, such as a count, shown after the title. With <see cref="TabsMobilePlacement.Bottom"/> it sits on the
+        /// icon in the bottom bar on small screens. Nothing is shown when empty.
+        /// </summary>
+        [Parameter] public string Badge { get; set; }
+        /// <summary>The color of <see cref="Badge"/>. Defaults to <see cref="TablerColor.Default"/>.</summary>
+        [Parameter] public TablerColor BadgeColor { get; set; }
+        /// <summary>
+        /// Whether this tab's title is shown above its content on small screens with <see cref="TabsMobilePlacement.Bottom"/>.
+        /// Overrides <see cref="Tabs.ShowMobileTitle"/>; set it to false when the content starts with its own heading.
+        /// </summary>
+        [Parameter] public bool? ShowMobileTitle { get; set; }
         /// <summary>Whether this tab is selected initially. Defaults to false. A tab selected by the URL takes precedence.</summary>
         [Parameter] public bool Active { get; set; }
         /// <summary>
@@ -28,6 +45,12 @@ namespace TabBlazor
         private CancellationTokenSource hoverIntent;
 
         string TitleCssClass => ContainerTabSet.ActiveTab == this ? "active" : null;
+
+        RenderFragment TitleContent => Header ?? (builder => builder.AddContent(0, Title));
+
+        bool ShowsMobileTitle => ContainerTabSet.IsBottomBar
+            && ContainerTabSet.ActiveTab == this
+            && (ShowMobileTitle ?? ContainerTabSet.ShowMobileTitle);
 
         string Href => ContainerTabSet.GetTabUrl(this);
 
