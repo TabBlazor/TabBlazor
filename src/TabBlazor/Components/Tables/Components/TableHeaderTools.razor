@@ -3,7 +3,7 @@
 
 @if (Table.ShowSearch)
 {
-    <div class="ms-auto text-secondary">
+    <div class="ms-auto text-secondary col-12 col-md-auto">
                 <div class="input-group input-group-flat">
                     <input type="text" class="form-control form-control-sm" placeholder="search..." value="@Table.SearchText" @oninput="@(x => Table.Search(x.Value.ToString()))">
                     <span class="input-group-text">
