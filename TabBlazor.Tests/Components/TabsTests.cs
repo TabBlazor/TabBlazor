@@ -914,11 +914,12 @@ namespace TabBlazor.Tests.Components
         }
 
         [Fact]
-        public void Mirrors_active_tab_badge_in_mobile_title()
+        public void Does_not_show_badge_in_mobile_title()
         {
             var cut = RenderTabs(mobilePlacement: TabsMobilePlacement.Bottom, items: [TabItem("orders", badge: "12")]);
 
-            Assert.Equal("12", cut.Find(".tabs-mobile-title .card-title .badge").TextContent);
+            Assert.Equal("orders", cut.Find(".tabs-mobile-title .card-title").TextContent.Trim());
+            Assert.Empty(cut.FindAll(".tabs-mobile-title .badge"));
         }
 
         [Fact]

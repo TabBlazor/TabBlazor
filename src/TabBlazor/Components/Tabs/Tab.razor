@@ -18,11 +18,5 @@
 
 @if (ContainerTabSet.IsBottomBar && ContainerTabSet.ActiveTab == this)
 {
-    <SectionContent SectionId="ContainerTabSet.MobileTitleSection">
-        @TitleContent
-        @if (!string.IsNullOrEmpty(Badge))
-        {
-            <Badge BackgroundColor="BadgeColor" class="ms-2">@Badge</Badge>
-        }
-    </SectionContent>
+    <SectionContent SectionId="ContainerTabSet.MobileTitleSection">@TitleContent</SectionContent>
 }
