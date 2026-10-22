@@ -27,6 +27,11 @@ namespace TabBlazor
         /// <see cref="TabsMobilePlacement.Bottom"/> pins them to the bottom of the screen; use it for one page-level Tabs only.
         /// </summary>
         [Parameter] public TabsMobilePlacement MobilePlacement { get; set; }
+        /// <summary>
+        /// Whether the active tab's title is shown above the content on small screens when <see cref="MobilePlacement"/> is
+        /// <see cref="TabsMobilePlacement.Bottom"/>. Defaults to true. A tab can override it with <see cref="Tab.ShowMobileTitle"/>.
+        /// </summary>
+        [Parameter] public bool ShowMobileTitle { get; set; } = true;
 
         public ITab ActiveTab { get; private set; }
 

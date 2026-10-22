@@ -16,7 +16,11 @@
     </a>
 </li>
 
-@if (ContainerTabSet.IsBottomBar && ContainerTabSet.ActiveTab == this)
+@if (ShowsMobileTitle)
 {
-    <SectionContent SectionId="ContainerTabSet.MobileTitleSection">@TitleContent</SectionContent>
+    <SectionContent SectionId="ContainerTabSet.MobileTitleSection">
+        <div class="tabs-mobile-title">
+            <h3 class="card-title">@TitleContent</h3>
+        </div>
+    </SectionContent>
 }

@@ -914,6 +914,42 @@ namespace TabBlazor.Tests.Components
         }
 
         [Fact]
+        public void Does_not_render_mobile_title_when_show_mobile_title_is_false()
+        {
+            var cut = Render<Tabs>(p => p
+                .Add(t => t.MobilePlacement, TabsMobilePlacement.Bottom)
+                .Add(t => t.ShowMobileTitle, false)
+                .AddChildContent(TabItem("one")));
+
+            Assert.Empty(cut.FindAll(".tabs-mobile-title"));
+        }
+
+        [Fact]
+        public void Tab_show_mobile_title_overrides_tabs_setting()
+        {
+            var cut = Render<Tabs>(p => p
+                .Add(t => t.MobilePlacement, TabsMobilePlacement.Bottom)
+                .Add(t => t.ShowMobileTitle, false)
+                .AddChildContent<Tab>(t => t
+                    .Add(x => x.Title, "Notes")
+                    .Add(x => x.ShowMobileTitle, true)));
+
+            Assert.Equal("Notes", cut.Find(".tabs-mobile-title .card-title").TextContent.Trim());
+        }
+
+        [Fact]
+        public void Hides_mobile_title_for_tab_that_turns_it_off()
+        {
+            var cut = Render<Tabs>(p => p
+                .Add(t => t.MobilePlacement, TabsMobilePlacement.Bottom)
+                .AddChildContent<Tab>(t => t
+                    .Add(x => x.Title, "Orders")
+                    .Add(x => x.ShowMobileTitle, false)));
+
+            Assert.Empty(cut.FindAll(".tabs-mobile-title"));
+        }
+
+        [Fact]
         public void Does_not_show_badge_in_mobile_title()
         {
             var cut = RenderTabs(mobilePlacement: TabsMobilePlacement.Bottom, items: [TabItem("orders", badge: "12")]);

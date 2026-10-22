@@ -1,4 +1,4 @@
-.tabs-mobile-title {
+.card ::deep > .tabs-mobile-title {
     display: none;
 }
 
@@ -56,14 +56,14 @@
         display: none;
     }
 
-    .tabs-mobile-title {
+    .tabs-mobile-bottom ::deep > .tabs-mobile-title {
         display: flex;
         align-items: center;
         padding: var(--tblr-card-cap-padding-y) var(--tblr-card-cap-padding-x);
         border-bottom: var(--tblr-card-border-width) solid var(--tblr-card-border-color);
     }
 
-    .tabs-mobile-title > .card-title {
+    .tabs-mobile-bottom ::deep > .tabs-mobile-title > .card-title {
         margin: 0;
     }
 
