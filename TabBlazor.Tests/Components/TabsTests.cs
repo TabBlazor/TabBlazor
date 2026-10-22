@@ -795,5 +795,83 @@ namespace TabBlazor.Tests.Components
             Assert.Null(cut.Instance.ActiveTab);
             Assert.Empty(cut.FindAll("div.tab-pane"));
         }
+
+        [Fact]
+        public void Does_not_add_bottom_placement_class_by_default()
+        {
+            var cut = RenderTabs(items: [TabItem("one")]);
+
+            Assert.DoesNotContain("tabs-mobile-bottom", cut.Find("div.card").ClassList);
+        }
+
+        [Fact]
+        public void Adds_bottom_placement_class_when_mobile_placement_is_bottom()
+        {
+            var cut = Render<Tabs>(p => p
+                .Add(t => t.MobilePlacement, TabsMobilePlacement.Bottom)
+                .AddChildContent(TabItem("one")));
+
+            Assert.Contains("tabs-mobile-bottom", cut.Find("div.card").ClassList);
+        }
+
+        [Fact]
+        public void Does_not_render_mobile_title_by_default()
+        {
+            var cut = RenderTabs(items: [TabItem("one"), TabItem("two")]);
+
+            Assert.Empty(cut.FindAll(".tabs-mobile-title"));
+        }
+
+        [Fact]
+        public void Mirrors_active_tab_title_above_content_when_mobile_placement_is_bottom()
+        {
+            var cut = Render<Tabs>(p => p
+                .Add(t => t.MobilePlacement, TabsMobilePlacement.Bottom)
+                .AddChildContent(b =>
+                {
+                    TabItem("one")(b);
+                    TabItem("two")(b);
+                }));
+
+            Assert.Equal("one", cut.Find(".tabs-mobile-title .card-title").TextContent.Trim());
+
+            Header(cut, 1).Click();
+
+            Assert.Equal("two", cut.Find(".tabs-mobile-title .card-title").TextContent.Trim());
+        }
+
+        [Fact]
+        public void Renders_icon_before_title_when_icon_is_set()
+        {
+            var cut = Render<Tabs>(p => p.AddChildContent<Tab>(t => t
+                .Add(x => x.Title, "Orders")
+                .Add(x => x.Icon, InternalIcons.Calendar)));
+
+            var link = Header(cut, 0);
+            Assert.Equal("svg", link.Children[0].LocalName);
+            Assert.Contains("nav-link-icon", link.Children[0].ClassList);
+            Assert.Equal("Orders", link.QuerySelector("span.nav-link-title")!.TextContent);
+        }
+
+        [Fact]
+        public void Renders_header_inside_title_when_icon_is_set()
+        {
+            var cut = Render<Tabs>(p => p.AddChildContent<Tab>(t => t
+                .Add(x => x.Icon, InternalIcons.Calendar)
+                .Add(x => x.Header, "<b class=\"custom\">Orders</b>")));
+
+            Assert.NotNull(Header(cut, 0).QuerySelector("span.nav-link-title > b.custom"));
+        }
+
+        [Fact]
+        public void Renders_title_without_icon_markup_when_icon_is_not_set()
+        {
+            var cut = RenderTabs(items: [TabItem("one")]);
+
+            var link = Header(cut, 0);
+            Assert.Null(link.QuerySelector("svg"));
+            Assert.Null(link.QuerySelector(".nav-link-title"));
+            Assert.Equal("one", link.TextContent.Trim());
+        }
     }
 }

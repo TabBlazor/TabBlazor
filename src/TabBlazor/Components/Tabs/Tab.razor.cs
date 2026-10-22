@@ -11,6 +11,11 @@ namespace TabBlazor
         [Parameter] public string Title { get; set; }
         /// <summary>Optional custom header content, overriding <see cref="Title"/>.</summary>
         [Parameter] public RenderFragment Header { get; set; }
+        /// <summary>
+        /// Optional icon shown before the title. With <see cref="TabsMobilePlacement.Bottom"/> it is shown above the title in the
+        /// bottom bar on small screens, so set it on every tab there.
+        /// </summary>
+        [Parameter] public IIconType Icon { get; set; }
         /// <summary>Whether this tab is selected initially. Defaults to false. A tab selected by the URL takes precedence.</summary>
         [Parameter] public bool Active { get; set; }
         /// <summary>
@@ -28,6 +33,8 @@ namespace TabBlazor
         private CancellationTokenSource hoverIntent;
 
         string TitleCssClass => ContainerTabSet.ActiveTab == this ? "active" : null;
+
+        internal RenderFragment TitleContent => Header ?? (builder => builder.AddContent(0, Title));
 
         string Href => ContainerTabSet.GetTabUrl(this);
 

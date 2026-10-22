@@ -14,6 +14,22 @@
                 </Description>
             </CodeSnippet>
 
+            <CodeSnippet Component="@typeof(TabsIcons)" Title="Icons">
+                <Description>
+                    Set <code>Icon</code> on a tab to show an icon before its title.
+                    On small screens the tab headers stay on one row that scrolls sideways instead of wrapping.
+                </Description>
+            </CodeSnippet>
+
+            <CodeSnippet Component="@typeof(TabsBottomBar)" Title="Bottom bar on mobile" ShowExample="false">
+                <Description>
+                    Set <code>MobilePlacement="TabsMobilePlacement.Bottom"</code> to pin the tab headers to the bottom of the screen on small screens, within thumb reach.
+                    Each tab shows its <code>Icon</code> above its title, the bar scrolls sideways when the tabs don't fit, and it hides while an input inside the tabs has focus.
+                    Use it for one Tabs that fills the page, not for several Tabs on one page.
+                    <a href="docs/tabs/bottom-bar">Open the demo page</a> on a phone or in a narrow window.
+                </Description>
+            </CodeSnippet>
+
             <CodeSnippet Component="@typeof(TabsPreload)" Title="Preload on hover">
                 <Description>
                     Set <code>Preload="TabPreload.Hover"</code> to start rendering a tab's content hidden as soon as its header is hovered, focused or pressed, so it is ready when clicked.

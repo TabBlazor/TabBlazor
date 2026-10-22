@@ -4,7 +4,7 @@
 @using Microsoft.AspNetCore.Components
 
 
-<div class="card">
+<div class="@CardCssClass">
     <CascadingValue Value="@this">
         <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs" data-toggle="tabs">
@@ -12,6 +12,13 @@
         </ul>
 </div>
     </CascadingValue>
+
+    @if (MobilePlacement == TabsMobilePlacement.Bottom && ActiveTab is Tab activeTab)
+    {
+        <div class="tabs-mobile-title">
+            <h3 class="card-title">@activeTab.TitleContent</h3>
+        </div>
+    }
 
     <div class="card-body">
         <div class="tab-content">

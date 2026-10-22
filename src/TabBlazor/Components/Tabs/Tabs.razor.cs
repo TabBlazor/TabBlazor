@@ -22,6 +22,11 @@ namespace TabBlazor
         [Parameter] public string UrlParameter { get; set; }
         /// <summary>How selecting a tab updates browser history when <see cref="UrlParameter"/> is set. Defaults to <see cref="TabsOptions.UrlHistory"/>.</summary>
         [Parameter] public TabUrlHistory? UrlHistory { get; set; }
+        /// <summary>
+        /// Where the tab headers go on small screens. Defaults to <see cref="TabsMobilePlacement.Top"/>, a row that scrolls sideways.
+        /// <see cref="TabsMobilePlacement.Bottom"/> pins them to the bottom of the screen; use it for one page-level Tabs only.
+        /// </summary>
+        [Parameter] public TabsMobilePlacement MobilePlacement { get; set; }
 
         public ITab ActiveTab { get; private set; }
 
@@ -41,6 +46,7 @@ namespace TabBlazor
         internal int EffectivePreloadDelay => PreloadDelay ?? TabsDefaults.PreloadDelay;
         private bool UrlSyncEnabled => !string.IsNullOrEmpty(UrlParameter);
         private ITab DefaultTab => activeMarkedTab ?? tabs.FirstOrDefault();
+        private string CardCssClass => MobilePlacement == TabsMobilePlacement.Bottom ? "card tabs-mobile-bottom" : "card";
 
         protected override void OnInitialized()
         {

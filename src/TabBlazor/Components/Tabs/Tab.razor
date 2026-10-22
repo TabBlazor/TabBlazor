@@ -4,13 +4,14 @@
 
 <li class="nav-item">
     <a href="@Href" @onclick=Activate @onclick:preventDefault="PreventClickNavigation" @onkeydown=ActivateOnEnter tabindex="@TabIndex" class="nav-link cursor-pointer @TitleCssClass" data-toggle="tab" @attributes="PreloadHandlers">
-        @if (Header != null)
+        @if (Icon != null)
         {
-            @Header
+            <Icon IconType="Icon" class="icon nav-link-icon" />
+            <span class="nav-link-title">@TitleContent</span>
         }
         else
         {
-            @Title
+            @TitleContent
         }
     </a>
 </li>
