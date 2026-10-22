@@ -9,10 +9,10 @@
             <DataGridItem Title="Priority">Normal</DataGridItem>
         </DataGrid>
     </Tab>
-    <Tab Id="equipment" Title="Equipment" Icon="@TablerIcons.Tool">
+    <Tab Id="equipment" Title="Equipment" Icon="@TablerIcons.Tool" Badge="3">
         @ItemList(equipment)
     </Tab>
-    <Tab Id="orders" Title="Orders" Icon="@TablerIcons.Shopping_cart">
+    <Tab Id="orders" Title="Orders" Icon="@TablerIcons.Shopping_cart" Badge="12" BadgeColor="TablerColor.Primary">
         @ItemList(orders)
     </Tab>
     <Tab Id="invoices" Title="Invoices" Icon="@TablerIcons.Receipt">
@@ -21,13 +21,17 @@
     <Tab Id="contacts" Title="Contacts" Icon="@TablerIcons.Users">
         @ItemList(contacts)
     </Tab>
-    <Tab Id="documents" Title="Documents" Icon="@TablerIcons.File_text">
+    <Tab Id="documents" Title="Documents" Icon="@TablerIcons.File_text" Badge="5">
         @ItemList(documents)
     </Tab>
     <Tab Id="notes" Title="Notes" Icon="@TablerIcons.Notes">
         <label class="form-label" for="work-order-note">Note</label>
         <textarea id="work-order-note" class="form-control" rows="4" placeholder="Add a note"></textarea>
         <div class="form-hint">On a phone the tab bar hides while you type.</div>
+        <label class="form-check form-switch mt-3">
+            <input class="form-check-input" type="checkbox" />
+            <span class="form-check-label">Notify customer</span>
+        </label>
     </Tab>
 </Tabs>
 

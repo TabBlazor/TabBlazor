@@ -2,9 +2,10 @@
 @inherits TablerBaseComponent
 
 @using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Sections
 
 
-<div class="@CardCssClass">
+<div class="@ClassNames">
     <CascadingValue Value="@this">
         <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs" data-toggle="tabs">
@@ -13,10 +14,10 @@
 </div>
     </CascadingValue>
 
-    @if (MobilePlacement == TabsMobilePlacement.Bottom && ActiveTab is Tab activeTab)
+    @if (IsBottomBar)
     {
         <div class="tabs-mobile-title">
-            <h3 class="card-title">@activeTab.TitleContent</h3>
+            <h3 class="card-title"><SectionOutlet SectionId="MobileTitleSection" /></h3>
         </div>
     }
 

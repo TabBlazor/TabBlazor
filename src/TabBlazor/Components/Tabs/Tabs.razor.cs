@@ -46,7 +46,13 @@ namespace TabBlazor
         internal int EffectivePreloadDelay => PreloadDelay ?? TabsDefaults.PreloadDelay;
         private bool UrlSyncEnabled => !string.IsNullOrEmpty(UrlParameter);
         private ITab DefaultTab => activeMarkedTab ?? tabs.FirstOrDefault();
-        private string CardCssClass => MobilePlacement == TabsMobilePlacement.Bottom ? "card tabs-mobile-bottom" : "card";
+        internal bool IsBottomBar => MobilePlacement == TabsMobilePlacement.Bottom;
+        internal object MobileTitleSection { get; } = new();
+
+        protected override string ClassNames => ClassBuilder
+            .Add("card")
+            .AddIf("tabs-mobile-bottom", IsBottomBar)
+            .ToString();
 
         protected override void OnInitialized()
         {

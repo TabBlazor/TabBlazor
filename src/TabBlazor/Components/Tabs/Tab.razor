@@ -1,17 +1,28 @@
 ﻿@namespace TabBlazor
 @inherits TablerBaseComponent
-
+@using Microsoft.AspNetCore.Components.Sections
 
 <li class="nav-item">
     <a href="@Href" @onclick=Activate @onclick:preventDefault="PreventClickNavigation" @onkeydown=ActivateOnEnter tabindex="@TabIndex" class="nav-link cursor-pointer @TitleCssClass" data-toggle="tab" @attributes="PreloadHandlers">
         @if (Icon != null)
         {
             <Icon IconType="Icon" class="icon nav-link-icon" />
-            <span class="nav-link-title">@TitleContent</span>
         }
-        else
+        <span class="nav-link-title">@TitleContent</span>
+        @if (!string.IsNullOrEmpty(Badge))
         {
-            @TitleContent
+            <Badge BackgroundColor="BadgeColor" class="nav-link-badge">@Badge</Badge>
         }
     </a>
 </li>
+
+@if (ContainerTabSet.IsBottomBar && ContainerTabSet.ActiveTab == this)
+{
+    <SectionContent SectionId="ContainerTabSet.MobileTitleSection">
+        @TitleContent
+        @if (!string.IsNullOrEmpty(Badge))
+        {
+            <Badge BackgroundColor="BadgeColor" class="ms-2">@Badge</Badge>
+        }
+    </SectionContent>
+}

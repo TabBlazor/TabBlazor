@@ -2,12 +2,16 @@
     display: none;
 }
 
+.card-header-tabs ::deep > .nav-item > .nav-link > .nav-link-badge {
+    margin-inline-start: .5rem;
+}
+
 @media (max-width: 767.98px) {
-    .card > .card-header {
+    .card-header {
         border-bottom: 0;
     }
 
-    .card > .card-header > .card-header-tabs {
+    .card-header-tabs {
         flex-wrap: nowrap;
         overflow-x: auto;
         overflow-y: hidden;
@@ -15,32 +19,32 @@
         box-shadow: inset 0 calc(-1 * var(--tblr-card-border-width)) 0 var(--tblr-card-border-color);
     }
 
-    .card > .card-header > .card-header-tabs::-webkit-scrollbar {
+    .card-header-tabs::-webkit-scrollbar {
         display: none;
     }
 
-    .card > .card-header > .card-header-tabs ::deep > .nav-item {
+    .card-header-tabs ::deep > .nav-item {
         flex-shrink: 0;
     }
 
-    .card > .card-header > .card-header-tabs ::deep > .nav-item:has(> .nav-link.active) {
+    .card-header-tabs ::deep > .nav-item:has(> .nav-link.active) {
         scroll-initial-target: nearest;
     }
 
-    .card > .card-header > .card-header-tabs ::deep > .nav-item > .nav-link {
+    .card-header-tabs ::deep > .nav-item > .nav-link {
         margin-bottom: 0;
         white-space: nowrap;
     }
 
-    .tabs-mobile-bottom {
-        margin-bottom: calc(5rem + env(safe-area-inset-bottom));
+    .card-header-tabs ::deep > .nav-item > .nav-link:focus-visible {
+        outline-offset: calc(-1 * var(--tblr-focus-ring-width, 2px));
     }
 
     .tabs-mobile-bottom > .card-header {
         position: fixed;
         inset-inline: 0;
         bottom: 0;
-        z-index: 1030;
+        z-index: calc(var(--tblr-dropdown-zindex, 1000) - 1);
         padding: 0 0 env(safe-area-inset-bottom);
         background: var(--tblr-bg-surface);
         border-top: var(--tblr-border-width) solid var(--tblr-border-color);
@@ -48,18 +52,18 @@
         box-shadow: 0 -2px 12px rgba(var(--tblr-body-color-rgb), .06);
     }
 
-    .tabs-mobile-bottom:has(input:focus, textarea:focus, select:focus, [contenteditable="true"]:focus) > .card-header {
+    .tabs-mobile-bottom:has(input:not([type=checkbox], [type=radio], [type=range], [type=button], [type=submit], [type=reset], [type=file], [type=color], [type=image]):focus, textarea:focus, [contenteditable="true"]:focus) > .card-header {
         display: none;
     }
 
-    .tabs-mobile-bottom > .tabs-mobile-title {
+    .tabs-mobile-title {
         display: flex;
         align-items: center;
         padding: var(--tblr-card-cap-padding-y) var(--tblr-card-cap-padding-x);
         border-bottom: var(--tblr-card-border-width) solid var(--tblr-card-border-color);
     }
 
-    .tabs-mobile-bottom > .tabs-mobile-title > .card-title {
+    .tabs-mobile-title > .card-title {
         margin: 0;
     }
 
@@ -79,6 +83,7 @@
     }
 
     .tabs-mobile-bottom > .card-header > .card-header-tabs ::deep > .nav-item > .nav-link {
+        position: relative;
         flex-direction: column;
         justify-content: center;
         gap: .25rem;
@@ -113,5 +118,22 @@
         max-width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+
+    .tabs-mobile-bottom > .card-header > .card-header-tabs ::deep > .nav-item > .nav-link > .nav-link-badge {
+        margin: 0;
+    }
+
+    .tabs-mobile-bottom > .card-header > .card-header-tabs ::deep > .nav-item > .nav-link > .nav-link-icon ~ .nav-link-badge {
+        position: absolute;
+        top: .125rem;
+        left: calc(50% + .5rem);
+        box-shadow: 0 0 0 2px var(--tblr-bg-surface);
+    }
+}
+
+@media (max-width: 767.98px) and (hover: hover) and (pointer: fine) {
+    .card-header-tabs {
+        scrollbar-width: thin;
     }
 }
