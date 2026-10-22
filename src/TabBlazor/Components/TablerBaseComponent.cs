@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Options;
@@ -57,6 +58,48 @@ namespace TabBlazor
 
                 return providedCssClasses;
             }
+        }
+
+        private string providedStyle;
+        private bool providedStyleIsCurrent;
+
+        /// <summary>
+        /// The <c>style</c> attribute passed to the component, read once per parameter set so it
+        /// survives the component re-rendering itself and clears when the parent removes it.
+        /// </summary>
+        protected string ProvidedStyle
+        {
+            get
+            {
+                if (!providedStyleIsCurrent)
+                {
+                    providedStyle = GetUnmatchedParameter("style")?.ToString();
+                    providedStyleIsCurrent = true;
+                }
+
+                return providedStyle;
+            }
+        }
+
+        /// <summary>
+        /// The provided <c>style</c> attribute with the CSS custom property <paramref name="name"/> appended,
+        /// or the provided style alone when <paramref name="value"/> is empty.
+        /// </summary>
+        protected string AppendCssVariable(string name, string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return ProvidedStyle;
+            }
+
+            var style = ProvidedStyle?.Trim().TrimEnd(';');
+            return string.IsNullOrEmpty(style) ? $"{name}: {value};" : $"{style}; {name}: {value};";
+        }
+
+        public override Task SetParametersAsync(ParameterView parameters)
+        {
+            providedStyleIsCurrent = false;
+            return base.SetParametersAsync(parameters);
         }
 
         protected virtual string ClassNames => ClassBuilder.ToString();

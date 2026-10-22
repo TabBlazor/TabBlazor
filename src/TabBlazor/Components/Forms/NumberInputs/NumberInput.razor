@@ -1,0 +1,38 @@
+@namespace TabBlazor
+@inherits TablerBaseComponent
+@typeparam TValue
+
+@if (!string.IsNullOrWhiteSpace(Label))
+{
+    <label class="form-label" for="@InputId">@Label</label>
+}
+<div class="@ClassNames" style="@Style">
+    @StepButton(Decrement, "decrement", DecrementLabel)
+    <input @attributes="UnmatchedParameters"
+           type="text"
+           id="@InputId"
+           class="@InputClassNames"
+           role="spinbutton"
+           inputmode="@InputMode"
+           aria-valuemin="@AriaValueMin"
+           aria-valuemax="@AriaValueMax"
+           aria-valuenow="@AriaValueNow"
+           disabled="@Disabled"
+           readonly="@ReadOnly"
+           value="@Text"
+           @oninput="OnInput"
+           @onchange="OnChangeAsync"
+           @onkeydown="OnKeyDownAsync" />
+    @StepButton(Increment, "increment", IncrementLabel)
+</div>
+
+@code {
+    private RenderFragment StepButton(int direction, string action, string label) =>
+        @<button type="button" class="btn btn-icon" data-bs-number-input-action="@action" aria-label="@label"
+                 disabled="@IsStepDisabled(direction)"
+                 @onclick="args => OnButtonClickAsync(args, direction)"
+                 @onpointerdown="() => StartRepeat(direction)"
+                 @onpointerup="StopRepeat"
+                 @onpointercancel="StopRepeat"
+                 @onpointerleave="StopRepeat"></button>;
+}

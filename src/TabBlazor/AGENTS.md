@@ -37,7 +37,7 @@ decompile needed. Schema: `tabblazor-component-api/v1`.
 
 3. Reference styles + script in `App.razor` (Server) or `index.html` (WebAssembly):
    ```html
-   <link rel="stylesheet" href="https://unpkg.com/@tabler/core@1.4.0/dist/css/tabler.min.css" />
+   <link rel="stylesheet" href="https://unpkg.com/@tabler/core@1.7.0/dist/css/tabler.min.css" />
    <link rel="stylesheet" href="_content/TabBlazor/css/tabblazor.min.css" />
    <script src="_content/TabBlazor/js/tabblazor.js"></script>
    ```

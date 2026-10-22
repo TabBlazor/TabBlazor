@@ -1,0 +1,20 @@
+@page "/docs/forms/number-inputs"
+
+<Page>
+    <DocsExample Title="NumberInput" ComponentType="typeof(NumberInput<>)">
+        <CodeSnippet Component="@typeof(NumberInputBasic)" Title="Basic">
+            <Description>A number field between a decrease and an increase button. The buttons, the arrow keys and Home and End keep the value between Min and Max. Hold a button to keep stepping. Requires Tabler 1.7.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(NumberInputDecimals)" Title="Decimals">
+            <Description>The decimals of Step set the precision, so a step of 0.25 always shows two decimals. Set InputWidth for longer values.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(NumberInputNullable)" Title="Empty value">
+            <Description>Bind a nullable type to allow an empty field. An empty field steps from Min when that is positive, otherwise from zero.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(NumberInputSizes)" Title="Sizes"/>
+        <CodeSnippet Component="@typeof(NumberInputDisabled)" Title="Disabled and read-only"/>
+        <CodeSnippet Component="@typeof(NumberInputValidation)" Title="Validation">
+            <Description>Inside a TablerForm only the border shows the state; the field is too narrow for the validation icon.</Description>
+        </CodeSnippet>
+    </DocsExample>
+</Page>

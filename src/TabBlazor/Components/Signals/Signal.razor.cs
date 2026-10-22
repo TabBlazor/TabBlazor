@@ -34,19 +34,7 @@ public partial class Signal : TablerBaseComponent
     protected string AriaHidden => IsDecorative ? "true" : null;
     protected string AriaLabel => IsDecorative ? null : Label ?? $"Level {ActiveCount} of {BarCount}";
 
-    protected string Style
-    {
-        get
-        {
-            var providedStyle = GetUnmatchedParameter("style")?.ToString();
-            if (string.IsNullOrWhiteSpace(Size))
-            {
-                return providedStyle;
-            }
-
-            return $"{providedStyle} --tblr-signal-size: {Size};".Trim();
-        }
-    }
+    protected string Style => AppendCssVariable("--tblr-signal-size", Size);
 
     protected override string ClassNames => ClassBuilder
         .Add("signal")

@@ -1,9 +1,15 @@
 ﻿@page "/docs/data-grid"
 
 <Page>
-    <DocsExample Title="Data Grid" ComponentType="typeof(Basic)">
+    <DocsExample Title="Data Grid" ComponentType="typeof(DataGrid)">
 
         <CodeSnippet  Component="@typeof(Basic)" Title="Basic"/>
+        <CodeSnippet Component="@typeof(Horizontal)" Title="Horizontal">
+            <Description>Puts each title beside its value, one pair per row. Requires Tabler 1.7.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(Columns)" Title="Fixed columns">
+            <Description>Columns keeps 1 to 4 columns at any width. Combine it with Horizontal for several pairs in a row, and set TitleWidth to change the title column. Requires Tabler 1.7.</Description>
+        </CodeSnippet>
 
     </DocsExample>
 </Page>

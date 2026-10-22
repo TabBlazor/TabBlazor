@@ -1,0 +1,9 @@
+<div class="d-flex flex-wrap align-items-center gap-3">
+    <NumberInput @bind-Value="value" Size="NumberInputSize.Small" aria-label="Small" />
+    <NumberInput @bind-Value="value" aria-label="Default" />
+    <NumberInput @bind-Value="value" Size="NumberInputSize.Large" aria-label="Large" />
+</div>
+
+@code {
+    int value = 1;
+}
