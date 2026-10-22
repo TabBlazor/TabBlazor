@@ -1,0 +1,6 @@
+<NumberInput @bind-Value="seats" Label="Seats" Min="2" Max="12" />
+<div class="mt-2 text-secondary">Value: @(seats?.ToString() ?? "empty")</div>
+
+@code {
+    int? seats;
+}

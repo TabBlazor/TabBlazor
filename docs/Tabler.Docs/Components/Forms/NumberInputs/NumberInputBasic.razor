@@ -1,0 +1,6 @@
+<NumberInput @bind-Value="quantity" Label="Quantity" Min="1" Max="99" />
+<div class="mt-2 text-secondary">Value: @quantity</div>
+
+@code {
+    int quantity = 1;
+}

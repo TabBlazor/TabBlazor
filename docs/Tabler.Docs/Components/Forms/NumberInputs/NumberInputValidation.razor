@@ -1,0 +1,18 @@
+@using System.ComponentModel.DataAnnotations
+<TablerForm Model="Model">
+    <div class="mb-3">
+        <NumberInput @bind-Value="Model.Tickets" Label="Tickets" Min="0" Max="10" />
+        <TabValidationMessage For="() => Model.Tickets" />
+    </div>
+    <Button BackgroundColor="TablerColor.Primary" Type="ButtonType.Submit" Text="Book" />
+</TablerForm>
+
+@code {
+    private BookingModel Model { get; set; } = new();
+
+    public class BookingModel
+    {
+        [Range(1, 4, ErrorMessage = "Book between 1 and 4 tickets")]
+        public int Tickets { get; set; } = 5;
+    }
+}

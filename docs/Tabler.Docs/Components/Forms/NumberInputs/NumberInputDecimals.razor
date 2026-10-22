@@ -1,0 +1,15 @@
+<div class="d-flex flex-wrap gap-4">
+    <div>
+        <NumberInput @bind-Value="hours" Label="Hours" Min="0" Max="10" Step="0.25" />
+        <div class="mt-2 text-secondary">Value: @hours</div>
+    </div>
+    <div>
+        <NumberInput @bind-Value="amount" Label="Amount" Min="0" Step="100" InputWidth="6rem" />
+        <div class="mt-2 text-secondary">Value: @amount</div>
+    </div>
+</div>
+
+@code {
+    decimal hours = 1.5m;
+    int amount = 1000;
+}
