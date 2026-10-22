@@ -84,7 +84,8 @@
                 return (async function () {
                     const response = await fetch(defaultUri + '.br', {cache: 'no-cache'});
                     if (!response.ok) {
-                        throw new Error(response.statusText);
+                        // Debug builds served on a LAN host (e.g. fedora.local) have no .br files
+                        return fetch(defaultUri, {cache: 'no-cache', integrity: integrity});
                     }
                     const originalResponseBuffer = await response.arrayBuffer();
                     const originalResponseArray = new Int8Array(originalResponseBuffer);
