@@ -67,6 +67,11 @@ namespace TabBlazor.Services
             await jsRuntime.InvokeVoidAsync("tabBlazor.navigateTable", tableCell, key);
         }
 
+        public async Task<bool> CenterActiveNavItem(ElementReference list)
+        {
+            return await jsRuntime.InvokeAsync<bool>("tabBlazor.centerActiveNavItem", list);
+        }
+
         public async Task ScrollToFragment(string fragmentId)
         {
             await jsRuntime.InvokeVoidAsync("tabBlazor.scrollToFragment", fragmentId);
