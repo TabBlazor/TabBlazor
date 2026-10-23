@@ -27,10 +27,6 @@
         flex-shrink: 0;
     }
 
-    .card-header-tabs ::deep > .nav-item:has(> .nav-link.active) {
-        scroll-initial-target: nearest;
-    }
-
     .card-header-tabs ::deep > .nav-item > .nav-link {
         margin-bottom: 0;
         white-space: nowrap;

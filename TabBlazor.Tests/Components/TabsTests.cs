@@ -950,6 +950,17 @@ namespace TabBlazor.Tests.Components
         }
 
         [Fact]
+        public void Centers_active_tab_in_its_row_when_it_changes()
+        {
+            var center = JSInterop.Setup<bool>("tabBlazor.centerActiveNavItem", _ => true).SetResult(true);
+            var cut = RenderTabs(items: [TabItem("one"), TabItem("two")]);
+
+            Header(cut, 1).Click();
+
+            Assert.Equal(2, center.Invocations.Count);
+        }
+
+        [Fact]
         public void Does_not_show_badge_in_mobile_title()
         {
             var cut = RenderTabs(mobilePlacement: TabsMobilePlacement.Bottom, items: [TabItem("orders", badge: "12")]);

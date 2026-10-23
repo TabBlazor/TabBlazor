@@ -10,6 +10,20 @@
         return navigator.userAgent;
     },
 
+    // Scrolls a sideways-scrolling nav row so its active item is centred, without scrolling the page.
+    centerActiveNavItem: function (list) {
+        const link = list && list.querySelector(':scope > .nav-item > .nav-link.active');
+        if (!link) {
+            return false;
+        }
+        if (list.scrollWidth > list.clientWidth) {
+            const listRect = list.getBoundingClientRect();
+            const linkRect = link.getBoundingClientRect();
+            list.scrollLeft += (linkRect.left + linkRect.width / 2) - (listRect.left + listRect.width / 2);
+        }
+        return true;
+    },
+
     // Remembers the focused element under a key, so an overlay can give focus back when it closes.
     saveFocus: function (key) {
         window.tabBlazor.savedFocus = window.tabBlazor.savedFocus || {};

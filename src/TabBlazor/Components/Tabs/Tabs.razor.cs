@@ -1,6 +1,7 @@
 using System.Web;
 using Microsoft.AspNetCore.Components.Routing;
 using TabBlazor.Components;
+using TabBlazor.Services;
 
 namespace TabBlazor
 {
@@ -8,6 +9,7 @@ namespace TabBlazor
     {
         [Inject] private NavigationManager NavigationManager { get; set; }
         [Inject] private TabsUrlParameterRegistry UrlParameterRegistry { get; set; }
+        [Inject] private TablerService TablerService { get; set; }
 
         /// <summary>Preload mode for all tabs. A tab can override it with <see cref="Tab.Preload"/>. Defaults to <see cref="TabsOptions.Preload"/>.</summary>
         [Parameter] public TabPreload? Preload { get; set; }
@@ -44,6 +46,8 @@ namespace TabBlazor
         private string requestedUrlValue;
         private UrlMatch urlMatch;
         private string registeredUrlParameter;
+        private ElementReference tabList;
+        private ITab centeredTab;
 
         private TabsOptions TabsDefaults => Options.CurrentValue.Tabs;
         private bool EffectiveKeepAlive => KeepAlive ?? TabsDefaults.KeepAlive;
@@ -207,6 +211,11 @@ namespace TabBlazor
             {
                 pendingActivation = null;
                 await activatedTab.OnActivated.InvokeAsync();
+            }
+
+            if (ActiveTab != null && ActiveTab != centeredTab && await TablerService.CenterActiveNavItem(tabList))
+            {
+                centeredTab = ActiveTab;
             }
         }
 
