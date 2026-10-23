@@ -47,4 +47,5 @@ jobs:
           tag_name: ${{ steps.nbgv.outputs.SemVer2 }}
           name: Release ${{ steps.nbgv.outputs.SemVer2 }}
           prerelease: ${{ !startsWith(github.ref_name, 'release/') }}
+          generate_release_notes: true
           files: artifacts/*.nupkg
