@@ -139,5 +139,34 @@ namespace TabBlazor.Tests.Components.DataViews
             Assert.Contains("height: 400px", cut.Find(".dv-list").GetAttribute("style"));
             Assert.NotNull(cut.FindComponent<Virtualize<Row>>());
         }
+
+        [Fact]
+        public async Task A_new_load_waits_for_a_scroll_fetch_and_drops_its_rows()
+        {
+            var rows = Row.Many(100);
+            var source = new FakeSource<Row>();
+            var cut = RenderVirtual(p => p.Add(x => x.Source, source));
+            await source.WaitForCallsAsync(1);
+            await cut.InvokeAsync(() => source.Calls[0].Response.SetResult(new DataPage<Row>(rows.Take(25).ToList(), null)));
+            cut.WaitForAssertion(() => Assert.Equal(25, cut.Instance.VirtualRowCount));
+
+            var provide = Provide(cut, 0, 40);
+            await source.WaitForCallsAsync(2);
+            var fetch = source.Calls[1];
+            Assert.Equal(PageRequest.Offset(25, 25), fetch.Request.Page);
+            var sort = cut.InvokeAsync(() => cut.Instance.SetSortAsync("name", descending: true));
+
+            cut.WaitForAssertion(() => Assert.True(fetch.Token.IsCancellationRequested));
+            Assert.Equal(2, source.Calls.Count);
+
+            fetch.Response.SetResult(new DataPage<Row>(rows.Skip(25).Take(25).ToList(), null));
+            await source.WaitForCallsAsync(3);
+            Assert.Equal(25, cut.Instance.VirtualRowCount);
+
+            source.Respond = r => new DataPage<Row>(rows.Skip(r.Page.Skip).Take(r.Page.Take).ToList(), null);
+            source.Calls[2].Response.SetResult(new DataPage<Row>(rows.Take(25).ToList(), null));
+            await sort;
+            await provide;
+        }
     }
 }

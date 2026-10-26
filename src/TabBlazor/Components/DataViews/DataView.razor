@@ -71,7 +71,7 @@
                 @RenderView
             }
 
-            @if (ShowFooter && Status == DataViewStatus.Items)
+            @if (ShowFooter && (Status == DataViewStatus.Items || (Status != DataViewStatus.Error && engine.HasLoaded && engine.PageIndex > 0)))
             {
                 <DataViewFooter TItem="TItem" View="this" />
             }

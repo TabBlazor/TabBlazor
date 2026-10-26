@@ -16,7 +16,7 @@ public enum DataMobileLayout
 
 public partial class DataView<TItem>
 {
-    private readonly string mediaWatchId = $"dataview-{Guid.NewGuid():N}";
+    private readonly string mediaWatchId = $"dataview-{Guid.CreateVersion7():N}";
     private DotNetObjectReference<DataView<TItem>>? selfReference;
     private string? watchedQuery;
 
@@ -127,6 +127,9 @@ public partial class DataView<TItem>
                 await JS.InvokeVoidAsync("tabBlazor.unwatchMedia", mediaWatchId);
             }
             catch (JSDisconnectedException)
+            {
+            }
+            catch (JSException)
             {
             }
             catch (TaskCanceledException)

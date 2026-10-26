@@ -10,7 +10,7 @@
     {
         <DynamicComponent Type="View.ValidatorComponent" @ref="validator" />
     }
-    <tr class="dv-edit-row @(Session.IsSaving ? "dv-saving" : null)" @onkeydown="OnKeyDownAsync" aria-busy="@(Session.IsSaving ? "true" : null)">
+    <tr class="dv-edit-row @(Session.IsSaving ? "dv-saving" : null)" @onkeydown="OnKeyDownAsync" @onkeyup="OnKeyUpAsync" aria-busy="@(Session.IsSaving ? "true" : null)">
         @if (View.ShowCheckboxes)
         {
             <td class="w-1"></td>
@@ -54,6 +54,7 @@
 
 @code {
     private DynamicComponent validator;
+    private bool enterPressed;
 
     [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
     [Parameter, EditorRequired] public DataEditContext<TItem> Session { get; set; } = default!;
@@ -66,15 +67,26 @@
         Session.ValidatorInstance = validator?.Instance;
     }
 
+    // Enter saves on keyup: the focused input's change event (sent after keydown) has updated the draft by then.
+    // Only a keyup that follows a keydown in this row counts, not the end of the Enter that started the edit.
     private async Task OnKeyDownAsync(KeyboardEventArgs e)
     {
         if (e.Key == "Enter")
         {
-            await View.SaveEditAsync(Session);
+            enterPressed = true;
         }
         else if (e.Key == "Escape")
         {
             await View.CancelEditAsync(force: false);
+        }
+    }
+
+    private async Task OnKeyUpAsync(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && enterPressed)
+        {
+            enterPressed = false;
+            await View.SaveEditAsync(Session);
         }
     }
 }

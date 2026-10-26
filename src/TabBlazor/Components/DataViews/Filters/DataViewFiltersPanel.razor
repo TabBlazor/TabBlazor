@@ -3,16 +3,14 @@
 
 @{
     var texts = View.Texts;
-    var columns = View.FilterableColumns
-        .OrderByDescending(c => View.GetFilter(c.Id) != null)
-        .ToList();
+    var columns = OrderedColumns();
 }
 <div class="dv-filters-panel" @onclick:stopPropagation="true">
     @foreach (var column in columns)
     {
         var col = column;
         var active = View.GetFilter(col.Id) != null;
-        <div class="dv-filters-panel-item mb-3">
+        <div @key="col.Id" class="dv-filters-panel-item mb-3">
             <div class="d-flex align-items-center mb-1">
                 <label class="form-label mb-0 me-auto">@col.Title</label>
                 @if (active)
@@ -30,5 +28,20 @@
 </div>
 
 @code {
+    private List<string> order;
+
     [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+
+    // Active filters come first when the panel opens; the order then stays put, so a field being typed in
+    // does not move away when its filter applies.
+    private List<IDataViewColumn<TItem>> OrderedColumns()
+    {
+        var columns = View.FilterableColumns;
+        if (order == null || order.Count != columns.Count || columns.Any(c => !order.Contains(c.Id)))
+        {
+            order = columns.OrderByDescending(c => View.GetFilter(c.Id) != null).Select(c => c.Id).ToList();
+        }
+
+        return columns.OrderBy(c => order.IndexOf(c.Id)).ToList();
+    }
 }

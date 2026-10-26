@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
@@ -251,6 +252,122 @@ namespace TabBlazor.Tests.Components.DataViews
 
             cut.FindAll("tbody tr")[2].Click();
             Assert.Contains("orders.current=3", Navigation.Uri);
+        }
+
+        [Fact]
+        public void Without_a_key_the_current_item_stays_out_of_the_url()
+        {
+            Navigation.NavigateTo("/orders");
+            var cut = RenderUrlView(FakeSource<Row>.Answering(Row.Many(3)), p => p
+                .Add(x => x.DetailsMode, DataDetailsMode.Drawer)
+                .AddChildContent<DetailsTemplate<Row>>(t => t.Add(x => x.ChildContent, ctx => b => b.AddContent(0, $"details {ctx.Item.Id}"))));
+
+            cut.FindAll("tbody tr")[1].Click();
+
+            Assert.Contains("details 2", cut.Find(".offcanvas").TextContent);
+            Assert.DoesNotContain("orders.current", Navigation.Uri);
+        }
+
+        [Fact]
+        public void A_cleared_default_search_and_filter_are_written_and_read_back()
+        {
+            var defaults = new DataViewState
+            {
+                Search = "row",
+                Filters = [new FilterSpec("total", FilterOperator.GreaterThanOrEqual, 10m)]
+            };
+
+            var query = DataViewUrlState.ToQuery("orders.", new DataViewState { Page = 2 }, defaults, ["total"]);
+            Assert.Equal("", query["orders.q"]);
+            Assert.Equal("none", query["orders.f"]);
+            Assert.Null(query["orders.f.total"]);
+
+            var values = DataViewUrlState.FromUri("orders.", "https://x/?orders.q=&orders.f=none&orders.page=2", defaults)!;
+            Assert.True(string.IsNullOrEmpty(values.State.Search));
+            Assert.Empty(values.State.Filters);
+        }
+
+        [Fact]
+        public async Task Clearing_a_default_search_survives_a_reload()
+        {
+            Navigation.NavigateTo("/orders");
+            var first = RenderUrlView(FakeSource<Row>.Answering(Row.Many(30)), p => p.Add(x => x.State, new DataViewState { Search = "Row 1" }));
+
+            await first.InvokeAsync(() => first.Instance.SetSearchAsync(null));
+            Assert.Contains("orders.q=", Navigation.Uri);
+            await first.InvokeAsync(() => first.Instance.DisposeAsync().AsTask());
+
+            var source = FakeSource<Row>.Answering(Row.Many(30));
+            RenderUrlView(source, p => p.Add(x => x.State, new DataViewState { Search = "Row 1" }));
+            Assert.Null(source.Calls[0].Request.Search);
+        }
+
+        [Fact]
+        public void Missing_search_and_filter_keys_keep_the_defaults()
+        {
+            var defaults = new DataViewState
+            {
+                Search = "row",
+                Filters = [new FilterSpec("total", FilterOperator.GreaterThanOrEqual, 10m)]
+            };
+
+            Assert.All(DataViewUrlState.ToQuery("orders.", defaults, defaults, ["total"]).Values, v => Assert.Null(v));
+
+            var values = DataViewUrlState.FromUri("orders.", "https://x/?orders.page=2", defaults)!;
+            Assert.Equal("row", values.State.Search);
+            Assert.Equal("total", values.State.Filters.Single().Column);
+        }
+
+        [Fact]
+        public async Task Back_and_forward_report_the_filters()
+        {
+            Navigation.NavigateTo("/orders");
+            IReadOnlyList<FilterSpec>? filters = null;
+            var cut = RenderUrlView(FakeSource<Row>.Answering(Row.Many(30)), p => p.Add(x => x.FiltersChanged, f => filters = f));
+
+            await cut.InvokeAsync(() => Navigation.NavigateTo("/orders?orders.f.total=between:100,"));
+
+            cut.WaitForAssertion(() => Assert.Equal("total", filters?.Single().Column));
+        }
+
+        [Fact]
+        public void Opening_details_while_editing_does_not_ask_to_discard()
+        {
+            Navigation.NavigateTo("/orders");
+            var confirmations = new List<string>();
+            var cut = RenderUrlView(FakeSource<Row>.Answering(Row.Many(3)), p => p
+                .Add(x => x.KeySelector, r => r.Id)
+                .Add(x => x.DetailsMode, DataDetailsMode.Drawer)
+                .Add(x => x.EditMode, DataEditMode.Inline)
+                .Add(x => x.SaveItem, ctx => Task.FromResult(EditResult.Saved(ctx.Draft)))
+                .Add(x => x.OnConfirm, text =>
+                {
+                    confirmations.Add(text);
+                    return Task.FromResult(false);
+                })
+                .AddChildContent<DetailsTemplate<Row>>(t => t.Add(x => x.ChildContent, ctx => b => b.AddContent(0, $"details {ctx.Item.Id}"))));
+            cut.Find("tbody tr button.dv-action").Click();
+            cut.Find("tr.dv-edit-row input.form-control").Change("Changed");
+
+            cut.FindAll("tbody tr")[1].Click();
+
+            Assert.Contains("orders.current=2", Navigation.Uri);
+            Assert.Empty(confirmations);
+        }
+
+        [Fact]
+        public async Task A_view_being_disposed_frees_its_url_prefix_before_its_js_cleanup_ends()
+        {
+            JSInterop.Setup<bool>("tabBlazor.watchMedia", _ => true).SetResult(false);
+            var unwatch = JSInterop.SetupVoid("tabBlazor.unwatchMedia");
+            var first = RenderUrlView(FakeSource<Row>.Answering(Row.Many(1)));
+
+            var disposing = first.InvokeAsync(() => first.Instance.DisposeAsync().AsTask());
+            var second = RenderUrlView(FakeSource<Row>.Answering(Row.Many(1)));
+            unwatch.SetVoidResult();
+            await disposing;
+
+            Assert.NotNull(second.Instance);
         }
     }
 }

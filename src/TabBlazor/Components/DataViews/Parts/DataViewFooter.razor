@@ -16,11 +16,11 @@
     else
     {
     <p class="m-0 text-secondary dv-showing @(View.IsSmallScreen ? "d-none" : null)">
-        @if (engine.TotalCount is { } total)
+        @if (engine.Items.Count > 0 && engine.TotalCount is { } total)
         {
             @string.Format(CultureInfo.CurrentCulture, texts.ShowingOfTotal, first.ToString("N0"), last.ToString("N0"), total.ToString("N0"))
         }
-        else
+        else if (engine.Items.Count > 0)
         {
             @string.Format(CultureInfo.CurrentCulture, texts.Showing, first.ToString("N0"), last.ToString("N0"))
         }

@@ -6,12 +6,13 @@ namespace TabBlazor;
 /// disposal); their order comes from the latest render pass, which a marker rendered after them commits. Actions
 /// whose parameters did not change are not rendered again, so they keep their previous place.
 /// </summary>
-public abstract class DataActionContainer<TAction> : ComponentBase where TAction : class
+public abstract class DataActionContainer<TAction> : ComponentBase, IDisposable where TAction : class
 {
     private readonly List<TAction> alive = [];
     private readonly List<TAction> collecting = [];
     private bool isCollecting;
     private bool registered;
+    private bool disposed;
 
     [CascadingParameter] private IDataViewSlotHost? Host { get; set; }
 
@@ -43,7 +44,7 @@ public abstract class DataActionContainer<TAction> : ComponentBase where TAction
     {
         alive.Remove(action);
         collecting.Remove(action);
-        if (Actions.Contains(action))
+        if (!disposed && Actions.Contains(action))
         {
             Actions = Actions.Where(a => a != action).ToList();
             Host?.SetSlot(Slot, this);
@@ -115,6 +116,16 @@ public abstract class DataActionContainer<TAction> : ComponentBase where TAction
         Actions = order;
         Host?.SetSlot(Slot, this);
     }
+
+    // Removed from the markup: the view goes back to its built-in actions.
+    public void Dispose()
+    {
+        disposed = true;
+        if (registered)
+        {
+            Host?.SetSlot(Slot, null);
+        }
+    }
 }
 
 /// <summary>Marks the end of an action container's children.</summary>
@@ -164,7 +175,7 @@ public abstract class DataRowActionBase<TItem> : ComponentBase, IDisposable
     /// <summary>Styles the action as dangerous.</summary>
     [Parameter] public bool Danger { get; set; }
 
-    internal string Key { get; } = Guid.NewGuid().ToString("N");
+    internal string Key { get; } = Guid.CreateVersion7().ToString("N");
 
     internal abstract string GetTitle(DataViewText texts);
 

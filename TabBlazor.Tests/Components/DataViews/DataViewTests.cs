@@ -637,5 +637,122 @@ namespace TabBlazor.Tests.Components.DataViews
 
             Assert.Equal(before, renders);
         }
+
+        // Source changes
+
+        private sealed class OrdersPage(FakeSource<Row> source)
+        {
+            public Task<DataPage<Row>> LoadAsync(DataRequest request, System.Threading.CancellationToken token) =>
+                source.GetPageAsync(request, token);
+        }
+
+        [Fact]
+        public void A_new_delegate_for_the_same_provider_keeps_the_page()
+        {
+            var source = FakeSource<Row>.Answering(Row.Many(30));
+            var page = new OrdersPage(source);
+            var cut = RenderView(p => p.Add(x => x.ItemsProvider, page.LoadAsync).Add(x => x.PageSize, 10));
+            cut.WaitForAssertion(() => Assert.Single(source.Calls));
+            cut.Find(".dv-pager li:last-child button").Click();
+            var calls = source.Calls.Count;
+
+            cut.Render(p => p.Add(x => x.ItemsProvider, page.LoadAsync));
+
+            Assert.Equal(calls, source.Calls.Count);
+            Assert.Equal(2, cut.Instance.CurrentState.Page);
+        }
+
+        [Fact]
+        public void The_same_rows_from_a_new_sequence_keep_the_page_and_other_rows_start_over()
+        {
+            var rows = Row.Many(30);
+            var cut = RenderView(p => p.Add(x => x.Items, rows.Where(r => r.Id > 0)).Add(x => x.PageSize, 10));
+            cut.Find(".dv-pager li:last-child button").Click();
+
+            cut.Render(p => p.Add(x => x.Items, rows.Where(r => r.Id > 0)));
+            Assert.Equal(2, cut.Instance.CurrentState.Page);
+
+            cut.Render(p => p.Add(x => x.Items, rows.Where(r => r.Id > 5)));
+            Assert.Equal(1, cut.Instance.CurrentState.Page);
+            Assert.Equal("6", CellTexts(cut, 0)[0]);
+        }
+
+        [Fact]
+        public void A_page_past_the_end_without_a_total_goes_back_and_ends_the_paging()
+        {
+            var source = FakeSource<Row>.Answering(Row.Many(20), includeTotal: false);
+            var cut = RenderView(p => p.Add(x => x.Source, source).Add(x => x.PageSize, 10));
+            cut.WaitForAssertion(() => Assert.Single(source.Calls));
+
+            cut.Find(".dv-pager li:last-child button").Click();
+            cut.WaitForAssertion(() => Assert.Equal(2, cut.Instance.CurrentState.Page));
+            cut.Find(".dv-pager li:last-child button").Click();
+
+            cut.WaitForAssertion(() => Assert.Equal(4, source.Calls.Count));
+            Assert.Equal(2, cut.Instance.CurrentState.Page);
+            Assert.Equal(10, cut.FindAll("tbody tr").Count);
+            Assert.True(cut.Find(".dv-pager li:last-child button").HasAttribute("disabled"));
+        }
+
+        [Fact]
+        public async Task A_total_that_overstates_the_rows_does_not_reload_forever()
+        {
+            var rows = Row.Many(20);
+            var source = new FakeSource<Row>
+            {
+                Respond = r => new DataPage<Row>(rows.Skip(r.Page.Skip).Take(r.Page.Take).ToList(), 100)
+            };
+            var cut = RenderView(p => p.Add(x => x.Source, source).Add(x => x.PageSize, 10));
+            cut.WaitForAssertion(() => Assert.Single(source.Calls));
+
+            await cut.InvokeAsync(() => cut.Instance.GoToPageAsync(10));
+            await Task.Delay(50);
+
+            Assert.Equal(2, source.Calls.Count);
+            Assert.NotNull(cut.Find(".dv-pager"));
+        }
+
+        [Fact]
+        public void Equal_records_without_a_key_stay_two_rows()
+        {
+            var cut = Render<DataView<Tag>>(p => p
+                .Add(x => x.Items, new List<Tag> { new("a"), new("a") })
+                .Add(x => x.SelectionMode, DataSelectionMode.Multiple)
+                .AddChildContent<DataColumn<Tag, string>>(c => c.Add(x => x.Value, t => t.Name)));
+
+            cut.FindAll("tbody tr")[0].QuerySelector("input.dv-select")!.Change(true);
+
+            Assert.Equal(2, cut.FindAll("tbody tr").Count);
+            Assert.Single(cut.Instance.GetSelection().Items);
+        }
+
+        [Fact]
+        public void Duplicate_strings_without_a_key_render()
+        {
+            var cut = Render<DataView<string>>(p => p
+                .Add(x => x.Items, new List<string> { "a", "a", "b" })
+                .AddChildContent<DataColumn<string, string>>(c => c.Add(x => x.Value, s => s)));
+
+            Assert.Equal(3, cut.FindAll("tbody tr").Count);
+        }
+
+        [Fact]
+        public async Task A_missing_object_in_a_column_path_shows_an_empty_cell_and_sorts_first()
+        {
+            var cut = Render<DataView<Shipment>>(p => p
+                .Add(x => x.Items, new List<Shipment>
+                {
+                    new() { Id = 1, To = new Address { City = "Oslo" } },
+                    new() { Id = 2 }
+                })
+                .AddChildContent<DataColumn<Shipment, string>>(c => c.Add(x => x.Value, s => s.To!.City).Add(x => x.Sortable, true)));
+
+            Assert.Equal("", cut.FindAll("tbody tr")[1].QuerySelector("td")!.TextContent.Trim());
+
+            await cut.InvokeAsync(() => cut.Instance.SetSortAsync("to.city"));
+
+            Assert.Null(cut.Instance.Error);
+            Assert.Equal(2, cut.Instance.CurrentItems[0].Id);
+        }
     }
 }

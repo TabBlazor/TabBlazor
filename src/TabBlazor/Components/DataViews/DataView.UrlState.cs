@@ -73,6 +73,7 @@ public partial class DataView<TItem>
 
     private void ApplyUrlValues(DataViewUrlValues values)
     {
+        CancelFilterDelays();
         engine.ApplyState(values.State);
         if (values.View is "list" && Views.HasFlag(DataViewKind.List))
         {
@@ -87,8 +88,8 @@ public partial class DataView<TItem>
             chosenView = null;
         }
 
-        pendingCurrentKey = values.Current;
-        if (values.Current == null)
+        pendingCurrentKey = engine.KeyGetter == null ? null : values.Current;
+        if (pendingCurrentKey == null)
         {
             currentKey = null;
             currentItem = default;
@@ -104,8 +105,10 @@ public partial class DataView<TItem>
         }
     }
 
+    // Only a real key goes into the URL: without a KeySelector the row itself would (its ToString, or every field of a record).
     private string? CurrentForUrl =>
-        currentKey != null && EffectiveDetailsMode is DataDetailsMode.Drawer or DataDetailsMode.SidePanel
+        currentKey != null && engine.KeyGetter != null &&
+        EffectiveDetailsMode is DataDetailsMode.Drawer or DataDetailsMode.SidePanel
             ? DataFilters.FormatValue(currentKey)
             : null;
 
@@ -155,6 +158,7 @@ public partial class DataView<TItem>
             {
                 lastState = lastUrlState;
                 await StateChanged.InvokeAsync(lastState);
+                await NotifyFiltersChangedAsync(before.Filters);
                 await engine.LoadAsync();
             }
             else if (viewBefore != CurrentView || pendingCurrentKey != null)
@@ -193,6 +197,7 @@ public partial class DataView<TItem>
             return;
         }
 
+        urlRegistered = false;
         Navigation.LocationChanged -= OnLocationChanged;
         Services.GetService<DataViewUrlRegistry>()?.Unregister(urlPrefix);
     }

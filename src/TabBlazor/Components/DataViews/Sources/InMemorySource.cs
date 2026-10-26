@@ -201,7 +201,10 @@ public sealed class InMemorySource<TItem> : IDataViewSource<TItem>
     {
         var body = Expression.Convert(expression.Body, typeof(object));
         var compiled = Expression.Lambda<Func<TItem, object?>>(body, expression.Parameters).Compile();
-        return item => SafeInvoke(() => compiled(item));
+        var hasValue = NullGuard.ForMemberChain<TItem>(expression);
+        return hasValue != null
+            ? item => hasValue(item) ? compiled(item) : null
+            : item => SafeInvoke(() => compiled(item));
     }
 
     // A null somewhere in a member chain (o.Customer.Name with no customer) yields null instead of throwing.

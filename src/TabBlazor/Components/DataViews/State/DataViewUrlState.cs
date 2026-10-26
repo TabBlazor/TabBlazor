@@ -50,14 +50,18 @@ public static partial class DataViewUrlState
     public static Dictionary<string, object?> ToQuery(string prefix, DataViewState state, DataViewState defaults,
         IEnumerable<string> filterColumns, string? view = null, string? current = null)
     {
+        var search = NormalizeSearch(state.Search);
+        var filtersAreDefault = new DataViewState { Filters = state.Filters }.Equals(new DataViewState { Filters = defaults.Filters });
         var query = new Dictionary<string, object?>
         {
-            [prefix + "q"] = string.IsNullOrWhiteSpace(state.Search) ? null : state.Search,
+            // An empty q clears a default search; without q the default applies.
+            [prefix + "q"] = search == NormalizeSearch(defaults.Search) ? null : search ?? string.Empty,
             [prefix + "sort"] = state.Sorts.SequenceEqual(defaults.Sorts) ? null : FormatSorts(state.Sorts),
             [prefix + "page"] = state.Page <= 1 ? null : state.Page.ToString(CultureInfo.InvariantCulture),
             [prefix + "size"] = state.PageSize == defaults.PageSize ? null : state.PageSize.ToString(CultureInfo.InvariantCulture),
             [prefix + "view"] = view,
-            [prefix + "current"] = current
+            [prefix + "current"] = current,
+            [prefix + "f"] = !filtersAreDefault && state.Filters.Count == 0 ? "none" : null
         };
 
         foreach (var column in filterColumns)
@@ -65,13 +69,18 @@ public static partial class DataViewUrlState
             query[prefix + "f." + column] = null;
         }
 
-        foreach (var filter in state.Filters)
+        if (!filtersAreDefault)
         {
-            query[prefix + "f." + filter.Column] = FormatFilter(filter);
+            foreach (var filter in state.Filters)
+            {
+                query[prefix + "f." + filter.Column] = FormatFilter(filter);
+            }
         }
 
         return query;
     }
+
+    private static string? NormalizeSearch(string? search) => string.IsNullOrWhiteSpace(search) ? null : search;
 
     // An explicit empty sort ("none") is written when the default sort was cleared.
     private static string FormatSorts(IReadOnlyList<SortSpec> sorts) =>
@@ -115,14 +124,26 @@ public static partial class DataViewUrlState
                     .ToList();
         }
 
-        var filters = new List<FilterSpec>();
+        // Without filter keys the default filters apply; "f=none" clears them.
+        IReadOnlyList<FilterSpec> filters = defaults.Filters;
         var filterPrefix = prefix + "f.";
-        foreach (var (key, value) in query.Where(q => q.Key.StartsWith(filterPrefix, StringComparison.Ordinal)))
+        var filterKeys = query.Where(q => q.Key.StartsWith(filterPrefix, StringComparison.Ordinal)).ToList();
+        if (Get("f") == "none")
         {
-            if (ParseFilter(key[filterPrefix.Length..], value) is { } filter)
+            filters = [];
+        }
+        else if (filterKeys.Count > 0)
+        {
+            var parsed = new List<FilterSpec>();
+            foreach (var (key, value) in filterKeys)
             {
-                filters.Add(filter);
+                if (ParseFilter(key[filterPrefix.Length..], value) is { } filter)
+                {
+                    parsed.Add(filter);
+                }
             }
+
+            filters = parsed;
         }
 
         var state = new DataViewState
@@ -130,14 +151,14 @@ public static partial class DataViewUrlState
             Page = page,
             PageSize = size,
             Sorts = sorts,
-            Search = Get("q"),
+            Search = query.TryGetValue(prefix + "q", out var search) ? search : defaults.Search,
             Filters = filters
         };
         return new DataViewUrlValues(state, Get("view"), Get("current"));
     }
 
     private static bool IsOwnKey(string key) =>
-        key is "q" or "sort" or "page" or "size" or "view" or "current" || key.StartsWith("f.", StringComparison.Ordinal);
+        key is "q" or "sort" or "page" or "size" or "view" or "current" or "f" || key.StartsWith("f.", StringComparison.Ordinal);
 
     public static FilterSpec? ParseFilter(string column, string? text)
     {

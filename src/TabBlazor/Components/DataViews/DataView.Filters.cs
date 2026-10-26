@@ -66,15 +66,15 @@ public partial class DataView<TItem>
 
         var cts = new CancellationTokenSource();
         filterDelays[columnId] = cts;
-        _ = ApplyFilterAfterDelayAsync(columnId, filter, cts.Token);
+        _ = ApplyFilterAfterDelayAsync(columnId, filter, cts);
     }
 
-    private async Task ApplyFilterAfterDelayAsync(string columnId, FilterSpec? filter, CancellationToken cancellationToken)
+    private async Task ApplyFilterAfterDelayAsync(string columnId, FilterSpec? filter, CancellationTokenSource cts)
     {
         var timeProvider = Services.GetService<TimeProvider>() ?? TimeProvider.System;
         try
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(SearchDelay), timeProvider, cancellationToken);
+            await Task.Delay(TimeSpan.FromMilliseconds(SearchDelay), timeProvider, cts.Token);
         }
         catch (OperationCanceledException)
         {
@@ -83,9 +83,26 @@ public partial class DataView<TItem>
 
         await InvokeAsync(async () =>
         {
+            // Cleared, replaced or disposed while waiting for the dispatcher.
+            if (cts.IsCancellationRequested || disposed)
+            {
+                return;
+            }
+
             filterDelays.Remove(columnId);
             await engine.SetFilterAsync(columnId, filter);
         });
+    }
+
+    /// <summary>Drops typed filters that have not been applied yet, so they cannot come back after a clear.</summary>
+    private void CancelFilterDelays()
+    {
+        foreach (var pending in filterDelays.Values)
+        {
+            pending.Cancel();
+        }
+
+        filterDelays.Clear();
     }
 
     internal DataFilterContext<TItem> GetFilterContext(IDataViewColumn<TItem> column) => new(this, column);
@@ -104,6 +121,7 @@ public partial class DataView<TItem>
             return false;
         }
 
+        CancelFilterDelays();
         engine.ApplyState(engine.GetState() with { Page = 1, Filters = Filters });
         return true;
     }
