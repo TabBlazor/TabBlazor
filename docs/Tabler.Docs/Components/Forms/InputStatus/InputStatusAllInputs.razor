@@ -1,0 +1,106 @@
+<div class="row g-3" style="max-width: 720px">
+    <div class="col-sm-6">
+        <label class="form-label">Text</label>
+        <InputStatus Value="model.Text" Save="() => SaveAsync(nameof(model.Text), model.Text)">
+            <input class="form-control" @bind="model.Text" />
+        </InputStatus>
+    </div>
+    <div class="col-sm-6">
+        <label class="form-label">Native select</label>
+        <InputStatus Value="model.Color" Save="() => SaveAsync(nameof(model.Color), model.Color)">
+            <select class="form-select" @bind="model.Color">
+                <option>Red</option>
+                <option>Green</option>
+                <option>Blue</option>
+            </select>
+        </InputStatus>
+    </div>
+    <div class="col-sm-6">
+        <InputStatus Value="model.Quantity" Save="() => SaveAsync(nameof(model.Quantity), model.Quantity)">
+            <NumberInput @bind-Value="model.Quantity" Label="NumberInput" Min="1" Max="99" />
+        </InputStatus>
+    </div>
+    <div class="col-sm-6">
+        <InputStatus Value="model.Date" Save="@(() => SaveAsync(nameof(model.Date), model.Date.ToString("d")))">
+            <Datepicker @bind-SelectedDate="model.Date" Label="Datepicker" />
+        </InputStatus>
+    </div>
+    <div class="col-sm-6">
+        <label class="form-label">Select</label>
+        <InputStatus Value="model.SelectCustomer" Save="() => SaveAsync(nameof(model.SelectCustomer), model.SelectCustomer?.CustomerName)">
+            <Select Items="customers" @bind-SelectedValue="model.SelectCustomer" TextExpression="c => c.CustomerName" />
+        </InputStatus>
+    </div>
+    <div class="col-sm-6">
+        <label class="form-label">ItemSelect</label>
+        <InputStatus Value="model.ItemSelectCustomer" Save="() => SaveAsync(nameof(model.ItemSelectCustomer), model.ItemSelectCustomer?.CustomerName)">
+            <ItemSelect TItem="Customer" TValue="Customer" Items="customers" @bind-SelectedValue="model.ItemSelectCustomer"
+                        SelectedTextExpression="c => c.CustomerName" NoSelectedText="Pick customer">
+                <ListTemplate>@context.CustomerName</ListTemplate>
+            </ItemSelect>
+        </InputStatus>
+    </div>
+    <div class="col-sm-6">
+        <label class="form-label">Typeahead</label>
+        <InputStatus Value="model.TypeaheadCustomer" Save="() => SaveAsync(nameof(model.TypeaheadCustomer), model.TypeaheadCustomer?.CustomerName)">
+            <Typeahead SearchMethod="SearchCustomers" @bind-SelectedValue="model.TypeaheadCustomer" Debounce="1" MinimumLength="1"
+                       SearchPlaceholderText="Search customer..." ListWidth="100%" SelectedTextExpression="c => c.CustomerName">
+                <ListTemplate>@context.CustomerName</ListTemplate>
+            </Typeahead>
+        </InputStatus>
+    </div>
+    <div class="col-sm-6">
+        <label class="form-label">ValueInput</label>
+        <InputStatus Value="model.Amount" Save="() => SaveAsync(nameof(model.Amount), model.Amount)">
+            <ValueInput @bind-Value="model.Amount" />
+        </InputStatus>
+    </div>
+    <div class="col-sm-6">
+        <label class="form-label">Textarea</label>
+        <InputStatus Value="model.Notes" Save="() => SaveAsync(nameof(model.Notes), model.Notes)">
+            <textarea class="form-control" rows="2" @bind="model.Notes"></textarea>
+        </InputStatus>
+    </div>
+    <div class="col-sm-6 d-flex align-items-end">
+        <InputStatus Value="model.Active" Save="() => SaveAsync(nameof(model.Active), model.Active)">
+            <Checkbox Label="Checkbox" @bind-Value="model.Active" />
+        </InputStatus>
+    </div>
+</div>
+
+<div class="mt-3 text-secondary">
+    @foreach (var entry in log.TakeLast(5))
+    {
+        <div>@entry</div>
+    }
+</div>
+
+@code {
+    List<Customer> customers = SampleData.GetCustomers();
+    List<string> log = [];
+    Model model = new();
+
+    async Task SaveAsync(string field, object value)
+    {
+        await Task.Delay(800);
+        log.Add($"{DateTime.Now:T} saved {field}: {value}");
+        StateHasChanged();
+    }
+
+    Task<IEnumerable<Customer>> SearchCustomers(string searchText) =>
+        Task.FromResult(customers.Where(c => c.CustomerName.Contains(searchText, StringComparison.CurrentCultureIgnoreCase)));
+
+    class Model
+    {
+        public string Text { get; set; } = "Hello";
+        public string Color { get; set; } = "Green";
+        public int Quantity { get; set; } = 1;
+        public DateTimeOffset Date { get; set; } = DateTimeOffset.Now.Date;
+        public Customer SelectCustomer { get; set; }
+        public Customer ItemSelectCustomer { get; set; }
+        public Customer TypeaheadCustomer { get; set; }
+        public int Amount { get; set; } = 100;
+        public string Notes { get; set; }
+        public bool Active { get; set; }
+    }
+}

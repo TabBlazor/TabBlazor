@@ -1,0 +1,47 @@
+<div class="table-responsive">
+    <table class="table table-vcenter card-table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th style="width: 140px">Price</th>
+                <th style="width: 140px">Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>
+                        <InputStatus Value="product.Price" Save="() => SaveAsync(product)">
+                            <input class="form-control form-control-sm" type="number" @bind="product.Price" />
+                        </InputStatus>
+                    </td>
+                    <td>
+                        <InputStatus Value="product.Stock" Save="() => SaveAsync(product)">
+                            <input class="form-control form-control-sm" type="number" @bind="product.Stock" />
+                        </InputStatus>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    List<Product> products =
+    [
+        new() { Name = "Desk lamp", Price = 49, Stock = 12 },
+        new() { Name = "Office chair", Price = 199, Stock = 4 },
+        new() { Name = "Monitor arm", Price = 89, Stock = 0 }
+    ];
+
+    Task SaveAsync(Product product) => Task.Delay(1000);
+
+    class Product
+    {
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public int Stock { get; set; }
+    }
+}
