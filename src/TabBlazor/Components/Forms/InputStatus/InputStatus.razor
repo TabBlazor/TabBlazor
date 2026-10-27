@@ -7,36 +7,36 @@
      @attributes="UnmatchedParameters">
     @ChildContent
     <span class="visually-hidden" role="status">@AnnouncedText</span>
-    @if (currentState == InputSaveState.Saving)
+    @switch (currentState)
     {
-        <span class="input-status-addon" aria-hidden="true">
-            <span class="spinner-border spinner-border-sm text-secondary"></span>
-        </span>
-    }
-    else if (currentState == InputSaveState.Saved)
-    {
-        <span class="input-status-addon text-success" aria-hidden="true">
-            <Icon IconType="@InternalIcons.Check" Size="18" />
-        </span>
-        <span class="input-status-bubble input-status-bubble-saved" aria-hidden="true" style="@SavedDurationStyle">@SavedText</span>
-    }
-    else if (currentState == InputSaveState.Error)
-    {
-        @if (CanRetry)
-        {
-            <button type="button" class="input-status-addon input-status-retry text-danger" title="@RetryText" aria-label="@RetryText" @onclick="RetryAsync">
-                <Icon IconType="@InternalIcons.Alert_triangle" Size="18" />
-            </button>
-        }
-        else
-        {
-            <span class="input-status-addon text-danger" aria-hidden="true">
-                <Icon IconType="@InternalIcons.Alert_triangle" Size="18" />
+        case InputSaveState.Saving:
+            <span class="input-status-addon" aria-hidden="true">
+                <span class="spinner-border spinner-border-sm text-secondary"></span>
             </span>
-        }
-        @if (!string.IsNullOrWhiteSpace(ErrorText))
-        {
-            <span class="input-status-bubble input-status-bubble-error" aria-hidden="true">@ErrorText</span>
-        }
+            break;
+        case InputSaveState.Saved:
+            <span class="input-status-addon text-success" aria-hidden="true">
+                <Icon IconType="@InternalIcons.Check" Size="18" />
+                <span class="input-status-bubble input-status-bubble-saved badge bg-success text-success-fg" style="@SavedDurationStyle">@SavedText</span>
+            </span>
+            break;
+        case InputSaveState.Error:
+            <span class="input-status-addon text-danger">
+                @if (Save != null)
+                {
+                    <button type="button" class="input-status-retry" title="@RetryText" aria-label="@RetryText" @onclick="SaveNowAsync">
+                        <Icon IconType="@InternalIcons.Alert_triangle" Size="18" />
+                    </button>
+                }
+                else
+                {
+                    <Icon IconType="@InternalIcons.Alert_triangle" Size="18" aria-hidden="true" />
+                }
+                @if (!string.IsNullOrWhiteSpace(ErrorText))
+                {
+                    <span class="input-status-bubble input-status-bubble-error badge bg-danger text-danger-fg" aria-hidden="true">@ErrorText</span>
+                }
+            </span>
+            break;
     }
 </div>

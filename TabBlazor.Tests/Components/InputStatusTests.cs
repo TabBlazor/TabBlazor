@@ -4,13 +4,42 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Time.Testing;
 
 namespace TabBlazor.Tests.Components
 {
     public class InputStatusTests : TabBlazorTestContext
     {
         private const string Input = "<input class=\"form-control\" />";
-        private static readonly TimeSpan ShortDelay = TimeSpan.FromMilliseconds(1);
+        private static readonly TimeSpan SaveDelay = TimeSpan.FromSeconds(1);
+        private static readonly TimeSpan SavedDuration = TimeSpan.FromSeconds(2);
+        private readonly FakeTimeProvider time = new();
+
+        public InputStatusTests()
+        {
+            Services.AddSingleton<TimeProvider>(time);
+        }
+
+        private IRenderedComponent<InputStatus> RenderAutosave(Func<Task> save, Action<ComponentParameterCollectionBuilder<InputStatus>> configure = null, TimeSpan saveDelay = default) =>
+            Render<InputStatus>(p =>
+            {
+                p.Add(s => s.Value, 1)
+                    .Add(s => s.SaveDelay, saveDelay)
+                    .Add(s => s.SavedDuration, SavedDuration)
+                    .Add(s => s.Save, save);
+                configure?.Invoke(p);
+            });
+
+        private IRenderedComponent<InputStatus> RenderRecordingAutosave(List<object> savedValues, TimeSpan saveDelay = default)
+        {
+            IRenderedComponent<InputStatus> cut = null;
+            cut = RenderAutosave(() => { savedValues.Add(cut.Instance.Value); return Task.CompletedTask; }, saveDelay: saveDelay);
+            return cut;
+        }
+
+        private static void ChangeValue(IRenderedComponent<InputStatus> cut, object value) =>
+            cut.Render(p => p.Add(s => s.Value, value));
 
         [Fact]
         public void Wraps_child_content_without_indicator_when_idle()
@@ -36,7 +65,7 @@ namespace TabBlazor.Tests.Components
             var cut = Render<InputStatus>(p => p
                 .Add(s => s.State, InputSaveState.Saved)
                 .Add(s => s.SavedText, "Done"));
-            Assert.Equal("Done", cut.Find(".input-status-bubble-saved").TextContent);
+            Assert.Equal("Done", cut.Find(".input-status-addon .input-status-bubble-saved").TextContent);
         }
 
         [Fact]
@@ -45,8 +74,10 @@ namespace TabBlazor.Tests.Components
             var hidden = false;
             var cut = Render<InputStatus>(p => p
                 .Add(s => s.State, InputSaveState.Saved)
-                .Add(s => s.SavedDuration, TimeSpan.FromMilliseconds(10))
+                .Add(s => s.SavedDuration, SavedDuration)
                 .Add(s => s.SavedHidden, () => hidden = true));
+
+            time.Advance(SavedDuration);
 
             cut.WaitForAssertion(() =>
             {
@@ -78,13 +109,9 @@ namespace TabBlazor.Tests.Components
         public void Does_not_save_initial_value()
         {
             var savedValues = new List<object>();
-            IRenderedComponent<InputStatus> cut = null;
-            cut = Render<InputStatus>(p => p
-                .Add(s => s.Value, 1)
-                .Add(s => s.SaveDelay, ShortDelay)
-                .Add(s => s.Save, () => { savedValues.Add(cut.Instance.Value); return Task.CompletedTask; }));
+            var cut = RenderRecordingAutosave(savedValues);
 
-            cut.Render(p => p.Add(s => s.Value, 2));
+            ChangeValue(cut, 2);
 
             cut.WaitForAssertion(() => Assert.Equal([2], savedValues));
         }
@@ -93,12 +120,9 @@ namespace TabBlazor.Tests.Components
         public void Saves_after_value_changes()
         {
             var saves = 0;
-            var cut = Render<InputStatus>(p => p
-                .Add(s => s.Value, 1)
-                .Add(s => s.SaveDelay, ShortDelay)
-                .Add(s => s.Save, () => { saves++; return Task.CompletedTask; }));
+            var cut = RenderAutosave(() => { saves++; return Task.CompletedTask; });
 
-            cut.Render(p => p.Add(s => s.Value, 2));
+            ChangeValue(cut, 2);
 
             cut.WaitForAssertion(() =>
             {
@@ -111,33 +135,27 @@ namespace TabBlazor.Tests.Components
         public void Saves_changes_made_within_save_delay_once()
         {
             var savedValues = new List<object>();
-            IRenderedComponent<InputStatus> cut = null;
-            cut = Render<InputStatus>(p => p
-                .Add(s => s.Value, 1)
-                .Add(s => s.SaveDelay, TimeSpan.FromMilliseconds(100))
-                .Add(s => s.Save, () => { savedValues.Add(cut.Instance.Value); return Task.CompletedTask; }));
+            var cut = RenderRecordingAutosave(savedValues, SaveDelay);
 
-            cut.Render(p => p.Add(s => s.Value, 2));
-            cut.Render(p => p.Add(s => s.Value, 3));
-            cut.Render(p => p.Add(s => s.Value, 4));
+            ChangeValue(cut, 2);
+            ChangeValue(cut, 3);
+            ChangeValue(cut, 4);
+            time.Advance(SaveDelay);
 
             cut.WaitForAssertion(() => Assert.Equal([4], savedValues));
         }
 
         [Fact]
-        public async Task Does_not_save_when_value_changes_back_before_delay()
+        public void Does_not_save_when_value_changes_back_before_delay()
         {
             var savedValues = new List<object>();
-            IRenderedComponent<InputStatus> cut = null;
-            cut = Render<InputStatus>(p => p
-                .Add(s => s.Value, 1)
-                .Add(s => s.SaveDelay, TimeSpan.FromMilliseconds(20))
-                .Add(s => s.Save, () => { savedValues.Add(cut.Instance.Value); return Task.CompletedTask; }));
+            var cut = RenderRecordingAutosave(savedValues, SaveDelay);
 
-            cut.Render(p => p.Add(s => s.Value, 2));
-            cut.Render(p => p.Add(s => s.Value, 1));
-            await Task.Delay(100);
-            cut.Render(p => p.Add(s => s.Value, 3));
+            ChangeValue(cut, 2);
+            ChangeValue(cut, 1);
+            time.Advance(SaveDelay);
+            ChangeValue(cut, 3);
+            time.Advance(SaveDelay);
 
             cut.WaitForAssertion(() => Assert.Equal([3], savedValues));
         }
@@ -148,18 +166,15 @@ namespace TabBlazor.Tests.Components
             var savedValues = new List<object>();
             var firstSave = new TaskCompletionSource();
             IRenderedComponent<InputStatus> cut = null;
-            cut = Render<InputStatus>(p => p
-                .Add(s => s.Value, 1)
-                .Add(s => s.SaveDelay, ShortDelay)
-                .Add(s => s.Save, () =>
-                {
-                    savedValues.Add(cut.Instance.Value);
-                    return savedValues.Count == 1 ? firstSave.Task : Task.CompletedTask;
-                }));
+            cut = RenderAutosave(() =>
+            {
+                savedValues.Add(cut.Instance.Value);
+                return savedValues.Count == 1 ? firstSave.Task : Task.CompletedTask;
+            });
 
-            cut.Render(p => p.Add(s => s.Value, 2));
+            ChangeValue(cut, 2);
             cut.WaitForAssertion(() => Assert.NotNull(cut.Find(".spinner-border")));
-            cut.Render(p => p.Add(s => s.Value, 3));
+            ChangeValue(cut, 3);
             firstSave.SetResult();
 
             cut.WaitForAssertion(() => Assert.Equal([2, 3], savedValues));
@@ -170,13 +185,11 @@ namespace TabBlazor.Tests.Components
         {
             var saves = 0;
             Exception failure = null;
-            var cut = Render<InputStatus>(p => p
-                .Add(s => s.Value, 1)
-                .Add(s => s.SaveDelay, ShortDelay)
-                .Add(s => s.Save, () => ++saves == 1 ? throw new InvalidOperationException("boom") : Task.CompletedTask)
-                .Add(s => s.SaveFailed, ex => failure = ex));
+            var cut = RenderAutosave(
+                () => ++saves == 1 ? throw new InvalidOperationException("boom") : Task.CompletedTask,
+                p => p.Add(s => s.SaveFailed, ex => failure = ex));
 
-            cut.Render(p => p.Add(s => s.Value, 2));
+            ChangeValue(cut, 2);
             cut.WaitForAssertion(() => Assert.Equal("Could not save", cut.Find(".input-status-bubble-error").TextContent));
             Assert.Equal("boom", failure?.Message);
 
@@ -193,15 +206,12 @@ namespace TabBlazor.Tests.Components
         public void Retries_on_next_change_after_error()
         {
             var saves = 0;
-            var cut = Render<InputStatus>(p => p
-                .Add(s => s.Value, 1)
-                .Add(s => s.SaveDelay, ShortDelay)
-                .Add(s => s.Save, () => ++saves == 1 ? throw new InvalidOperationException() : Task.CompletedTask));
+            var cut = RenderAutosave(() => ++saves == 1 ? throw new InvalidOperationException() : Task.CompletedTask);
 
-            cut.Render(p => p.Add(s => s.Value, 2));
+            ChangeValue(cut, 2);
             cut.WaitForAssertion(() => Assert.NotNull(cut.Find(".input-status-bubble-error")));
 
-            cut.Render(p => p.Add(s => s.Value, 3));
+            ChangeValue(cut, 3);
 
             cut.WaitForAssertion(() => Assert.NotNull(cut.Find(".input-status-bubble-saved")));
             Assert.Equal(2, saves);
@@ -210,15 +220,12 @@ namespace TabBlazor.Tests.Components
         [Fact]
         public void Clears_error_when_value_changes_back_to_saved_value()
         {
-            var cut = Render<InputStatus>(p => p
-                .Add(s => s.Value, 1)
-                .Add(s => s.SaveDelay, ShortDelay)
-                .Add(s => s.Save, () => throw new InvalidOperationException()));
+            var cut = RenderAutosave(() => throw new InvalidOperationException());
 
-            cut.Render(p => p.Add(s => s.Value, 2));
+            ChangeValue(cut, 2);
             cut.WaitForAssertion(() => Assert.NotNull(cut.Find(".input-status-bubble-error")));
 
-            cut.Render(p => p.Add(s => s.Value, 1));
+            ChangeValue(cut, 1);
 
             cut.WaitForAssertion(() => Assert.Empty(cut.FindAll(".input-status-addon")));
         }
@@ -228,18 +235,14 @@ namespace TabBlazor.Tests.Components
         {
             var save = new TaskCompletionSource();
             var hidden = false;
-            var cut = Render<InputStatus>(p => p
-                .Add(s => s.Value, 1)
-                .Add(s => s.SaveDelay, ShortDelay)
-                .Add(s => s.Save, () => save.Task)
-                .Add(s => s.SavedDuration, ShortDelay)
-                .Add(s => s.SavedHidden, () => hidden = true));
+            var cut = RenderAutosave(() => save.Task, p => p.Add(s => s.SavedHidden, () => hidden = true));
 
-            cut.Render(p => p.Add(s => s.Value, 2));
+            ChangeValue(cut, 2);
             cut.WaitForAssertion(() => Assert.NotNull(cut.Find(".spinner-border")));
             cut.Instance.Dispose();
             save.SetResult();
             await cut.InvokeAsync(() => { });
+            time.Advance(SavedDuration);
 
             Assert.Contains("input-status-busy", cut.Find("div").ClassList);
             Assert.False(hidden);
@@ -264,23 +267,29 @@ namespace TabBlazor.Tests.Components
             }
         }
 
-        [Fact]
-        public async Task Saves_once_field_becomes_valid()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task Saves_once_blocking_field_becomes_valid(bool setFor)
         {
             var model = new FormModel();
             var editContext = new EditContext(model);
             var messages = new ValidationMessageStore(editContext);
-            messages.Add(editContext.Field(nameof(FormModel.Age)), "Too old");
+            messages.Add(editContext.Field(setFor ? nameof(FormModel.Age) : nameof(FormModel.Name)), "Invalid");
             var invalidAtSave = new List<bool>();
-            var cut = Render<InputStatus>(p => p
-                .AddCascadingValue(editContext)
-                .Add(s => s.Value, 1)
-                .Add(s => s.SaveDelay, ShortDelay)
-                .Add(s => s.Save, () => { invalidAtSave.Add(editContext.GetValidationMessages().Any()); return Task.CompletedTask; })
-                .Add(s => s.For, () => model.Age));
+            var cut = RenderAutosave(
+                () => { invalidAtSave.Add(editContext.GetValidationMessages().Any()); return Task.CompletedTask; },
+                p =>
+                {
+                    p.AddCascadingValue(editContext);
+                    if (setFor)
+                    {
+                        p.Add(s => s.For, () => model.Age);
+                    }
+                });
 
-            cut.Render(p => p.Add(s => s.Value, 200));
-            await Task.Delay(50);
+            ChangeValue(cut, 200);
+            Assert.Empty(invalidAtSave);
             messages.Clear();
             await cut.InvokeAsync(editContext.NotifyValidationStateChanged);
 
@@ -294,37 +303,13 @@ namespace TabBlazor.Tests.Components
             var editContext = new EditContext(model);
             new ValidationMessageStore(editContext).Add(editContext.Field(nameof(FormModel.Name)), "Required");
             var saves = 0;
-            var cut = Render<InputStatus>(p => p
-                .AddCascadingValue(editContext)
-                .Add(s => s.Value, 1)
-                .Add(s => s.SaveDelay, ShortDelay)
-                .Add(s => s.Save, () => { saves++; return Task.CompletedTask; })
-                .Add(s => s.For, () => model.Age));
+            var cut = RenderAutosave(
+                () => { saves++; return Task.CompletedTask; },
+                p => p.AddCascadingValue(editContext).Add(s => s.For, () => model.Age));
 
-            cut.Render(p => p.Add(s => s.Value, 5));
+            ChangeValue(cut, 5);
 
             cut.WaitForAssertion(() => Assert.Equal(1, saves));
-        }
-
-        [Fact]
-        public async Task Saves_once_other_fields_become_valid_when_for_is_not_set()
-        {
-            var editContext = new EditContext(new FormModel());
-            var messages = new ValidationMessageStore(editContext);
-            messages.Add(editContext.Field(nameof(FormModel.Name)), "Required");
-            var invalidAtSave = new List<bool>();
-            var cut = Render<InputStatus>(p => p
-                .AddCascadingValue(editContext)
-                .Add(s => s.Value, 1)
-                .Add(s => s.SaveDelay, ShortDelay)
-                .Add(s => s.Save, () => { invalidAtSave.Add(editContext.GetValidationMessages().Any()); return Task.CompletedTask; }));
-
-            cut.Render(p => p.Add(s => s.Value, 5));
-            await Task.Delay(50);
-            messages.Clear();
-            await cut.InvokeAsync(editContext.NotifyValidationStateChanged);
-
-            cut.WaitForAssertion(() => Assert.Equal([false], invalidAtSave));
         }
 
         [Fact]
@@ -334,14 +319,11 @@ namespace TabBlazor.Tests.Components
             var editContext = new EditContext(model);
             var field = editContext.Field(nameof(FormModel.Age));
             editContext.NotifyFieldChanged(field);
-            var cut = Render<InputStatus>(p => p
-                .AddCascadingValue(editContext)
-                .Add(s => s.Value, 1)
-                .Add(s => s.SaveDelay, ShortDelay)
-                .Add(s => s.Save, () => Task.CompletedTask)
-                .Add(s => s.For, () => model.Age));
+            var cut = RenderAutosave(
+                () => Task.CompletedTask,
+                p => p.AddCascadingValue(editContext).Add(s => s.For, () => model.Age));
 
-            cut.Render(p => p.Add(s => s.Value, 5));
+            ChangeValue(cut, 5);
 
             cut.WaitForAssertion(() => Assert.False(editContext.IsModified(field)));
         }
@@ -354,7 +336,7 @@ namespace TabBlazor.Tests.Components
                 .Add(s => s.SavedText, "Done"));
 
             Assert.Equal("Done", cut.Find("[role=status]").TextContent);
-            Assert.Equal("true", cut.Find(".input-status-bubble-saved").GetAttribute("aria-hidden"));
+            Assert.Equal("true", cut.Find(".input-status-addon").GetAttribute("aria-hidden"));
 
             cut.Render(p => p.Add(s => s.State, InputSaveState.Idle));
             Assert.Equal("", cut.Find("[role=status]").TextContent);
@@ -366,8 +348,10 @@ namespace TabBlazor.Tests.Components
             var states = new List<InputSaveState>();
             var cut = Render<InputStatus>(p => p
                 .Add(s => s.State, InputSaveState.Saved)
-                .Add(s => s.SavedDuration, ShortDelay)
+                .Add(s => s.SavedDuration, SavedDuration)
                 .Add(s => s.StateChanged, state => states.Add(state)));
+
+            time.Advance(SavedDuration);
 
             cut.WaitForAssertion(() => Assert.Equal([InputSaveState.Idle], states));
         }
@@ -378,12 +362,13 @@ namespace TabBlazor.Tests.Components
             var state = InputSaveState.Saved;
             var cut = Render<InputStatus>(p => p
                 .Add(s => s.State, state)
-                .Add(s => s.SavedDuration, ShortDelay)
+                .Add(s => s.SavedDuration, SavedDuration)
                 .Add(s => s.StateChanged, value => state = value));
+            time.Advance(SavedDuration);
             cut.WaitForAssertion(() => Assert.Equal(InputSaveState.Idle, state));
 
             cut.Render(p => p.Add(s => s.State, InputSaveState.Idle));
-            cut.Render(p => p.Add(s => s.State, InputSaveState.Saved).Add(s => s.SavedDuration, TimeSpan.FromSeconds(5)));
+            cut.Render(p => p.Add(s => s.State, InputSaveState.Saved));
 
             Assert.NotNull(cut.Find(".input-status-bubble-saved"));
         }
@@ -392,12 +377,11 @@ namespace TabBlazor.Tests.Components
         public void Saves_pending_change_when_disposed_before_delay()
         {
             var saves = 0;
-            var cut = Render<InputStatus>(p => p
-                .Add(s => s.Value, 1)
-                .Add(s => s.SaveDelay, TimeSpan.FromSeconds(5))
-                .Add(s => s.Save, () => { saves++; return Task.CompletedTask; }));
+            var cut = RenderAutosave(
+                () => { saves++; return Task.CompletedTask; },
+                saveDelay: SaveDelay);
 
-            cut.Render(p => p.Add(s => s.Value, 2));
+            ChangeValue(cut, 2);
             cut.Instance.Dispose();
 
             Assert.Equal(1, saves);
@@ -408,11 +392,14 @@ namespace TabBlazor.Tests.Components
         {
             var cut = Render<InputStatus>(p => p
                 .Add(s => s.State, InputSaveState.Saved)
-                .Add(s => s.SavedDuration, ShortDelay)
+                .Add(s => s.SavedDuration, SavedDuration)
                 .Add(s => s.SavedHidden, () => throw new InvalidOperationException("hidden failed")));
 
             Assert.Throws<InvalidOperationException>(() =>
-                cut.WaitForAssertion(() => Assert.Empty(cut.FindAll(".input-status-bubble-saved"))));
+            {
+                time.Advance(SavedDuration);
+                cut.WaitForAssertion(() => Assert.Empty(cut.FindAll(".input-status-bubble-saved")));
+            });
         }
 
         private class FormModel

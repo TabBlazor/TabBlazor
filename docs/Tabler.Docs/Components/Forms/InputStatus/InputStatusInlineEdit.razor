@@ -13,12 +13,12 @@
                 <tr>
                     <td>@product.Name</td>
                     <td>
-                        <InputStatus Value="product.Price" Save="() => SaveAsync(product)">
+                        <InputStatus Value="product.Price" Save="SaveAsync">
                             <input class="form-control form-control-sm" type="number" @bind="product.Price" />
                         </InputStatus>
                     </td>
                     <td>
-                        <InputStatus Value="product.Stock" Save="() => SaveAsync(product)">
+                        <InputStatus Value="product.Stock" Save="SaveAsync">
                             <input class="form-control form-control-sm" type="number" @bind="product.Stock" />
                         </InputStatus>
                     </td>
@@ -36,7 +36,7 @@
         new() { Name = "Monitor arm", Price = 89, Stock = 0 }
     ];
 
-    Task SaveAsync(Product product) => Task.Delay(1000);
+    Task SaveAsync() => Task.Delay(1000);
 
     class Product
     {

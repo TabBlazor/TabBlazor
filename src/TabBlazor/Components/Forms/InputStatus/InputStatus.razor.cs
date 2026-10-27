@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TabBlazor;
 
@@ -69,9 +70,10 @@ public partial class InputStatus
     [Parameter] public EventCallback SavedHidden { get; set; }
 
     [CascadingParameter] private EditContext EditContext { get; set; }
+    [Inject] private IServiceProvider Services { get; set; }
 
     private InputSaveState currentState;
-    private InputSaveState? appliedStateParameter;
+    private InputSaveState appliedStateParameter;
     private bool isTrackingValue;
     private object observedValue;
     private object savedValue;
@@ -81,8 +83,6 @@ public partial class InputStatus
     private EditContext subscribedEditContext;
     private CancellationTokenSource pendingSave;
     private CancellationTokenSource hideSaved;
-
-    private bool CanRetry => Save != null;
 
     private string AnnouncedText => currentState switch
     {
@@ -127,19 +127,13 @@ public partial class InputStatus
 
         UnsubscribeFromValidation();
         subscribedEditContext = EditContext;
-        if (subscribedEditContext != null)
-        {
-            subscribedEditContext.OnValidationStateChanged += SaveWhenNoLongerBlocked;
-        }
+        subscribedEditContext?.OnValidationStateChanged += SaveWhenNoLongerBlocked;
     }
 
     private void UnsubscribeFromValidation()
     {
-        if (subscribedEditContext != null)
-        {
-            subscribedEditContext.OnValidationStateChanged -= SaveWhenNoLongerBlocked;
-            subscribedEditContext = null;
-        }
+        subscribedEditContext?.OnValidationStateChanged -= SaveWhenNoLongerBlocked;
+        subscribedEditContext = null;
     }
 
     private void SaveWhenNoLongerBlocked(object sender, ValidationStateChangedEventArgs args)
@@ -153,31 +147,23 @@ public partial class InputStatus
 
     private void ScheduleSave()
     {
-        CancelPendingSave();
+        Cancel(ref pendingSave);
         pendingSave = new CancellationTokenSource();
-        _ = SaveAfterDelayAsync(pendingSave.Token);
+        _ = RunAfterDelayAsync(SaveDelay, SaveNowAsync, pendingSave.Token);
     }
 
-    private async Task SaveAfterDelayAsync(CancellationToken token)
+    private async Task RunAfterDelayAsync(TimeSpan delay, Func<Task> action, CancellationToken token)
     {
-        try
-        {
-            await Task.Delay(SaveDelay, token);
-        }
-        catch (TaskCanceledException)
-        {
-            return;
-        }
+        var timeProvider = Services.GetService<TimeProvider>() ?? TimeProvider.System;
+        await Task.Delay(delay, timeProvider, token).ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
 
         await InvokeAsync(async () =>
         {
             if (token.IsCancellationRequested) return;
 
-            pendingSave?.Dispose();
-            pendingSave = null;
             try
             {
-                await SaveIfChangedAsync();
+                await action();
             }
             catch (Exception ex)
             {
@@ -186,9 +172,9 @@ public partial class InputStatus
         });
     }
 
-    private Task RetryAsync()
+    private Task SaveNowAsync()
     {
-        CancelPendingSave();
+        Cancel(ref pendingSave);
         return SaveIfChangedAsync();
     }
 
@@ -214,38 +200,35 @@ public partial class InputStatus
         await ChangeStateAsync(InputSaveState.Saving);
         StateHasChanged();
 
+        Exception failure = null;
         try
         {
             await Save();
         }
         catch (Exception ex)
         {
-            isSaving = false;
-            if (disposed) return;
-
-            await ChangeStateAsync(InputSaveState.Error);
-            await SaveFailed.InvokeAsync(ex);
-            StateHasChanged();
-            SaveAgainIfChangedSince(value);
-            return;
+            failure = ex;
         }
 
         isSaving = false;
         if (disposed) return;
 
-        savedValue = value;
-        if (For != null)
+        if (failure == null)
         {
-            EditContext?.MarkAsUnmodified(FieldIdentifier.Create(For));
+            savedValue = value;
+            if (For != null)
+            {
+                EditContext?.MarkAsUnmodified(FieldIdentifier.Create(For));
+            }
+            await ChangeStateAsync(InputSaveState.Saved);
+        }
+        else
+        {
+            await ChangeStateAsync(InputSaveState.Error);
+            await SaveFailed.InvokeAsync(failure);
         }
 
-        await ChangeStateAsync(InputSaveState.Saved);
         StateHasChanged();
-        SaveAgainIfChangedSince(value);
-    }
-
-    private void SaveAgainIfChangedSince(object value)
-    {
         if (!Equals(Value, value))
         {
             ScheduleSave();
@@ -272,46 +255,20 @@ public partial class InputStatus
 
     private void SetState(InputSaveState state)
     {
-        CancelHideSaved();
+        Cancel(ref hideSaved);
         currentState = state;
         if (state == InputSaveState.Saved)
         {
             hideSaved = new CancellationTokenSource();
-            _ = HideSavedAfterDelayAsync(hideSaved.Token);
+            _ = RunAfterDelayAsync(SavedDuration, HideSavedAsync, hideSaved.Token);
         }
     }
 
-    private async Task HideSavedAfterDelayAsync(CancellationToken token)
+    private async Task HideSavedAsync()
     {
-        try
-        {
-            await Task.Delay(SavedDuration, token);
-        }
-        catch (TaskCanceledException)
-        {
-            return;
-        }
-
-        await InvokeAsync(async () =>
-        {
-            if (token.IsCancellationRequested) return;
-
-            try
-            {
-                currentState = InputSaveState.Idle;
-                if (StateChanged.HasDelegate)
-                {
-                    appliedStateParameter = InputSaveState.Idle;
-                    await StateChanged.InvokeAsync(InputSaveState.Idle);
-                }
-                await SavedHidden.InvokeAsync();
-                StateHasChanged();
-            }
-            catch (Exception ex)
-            {
-                await DispatchExceptionAsync(ex);
-            }
-        });
+        await ChangeStateAsync(InputSaveState.Idle);
+        await SavedHidden.InvokeAsync();
+        StateHasChanged();
     }
 
     private void FlushPendingSave()
@@ -333,18 +290,11 @@ public partial class InputStatus
         }
     }
 
-    private void CancelPendingSave()
+    private static void Cancel(ref CancellationTokenSource source)
     {
-        pendingSave?.Cancel();
-        pendingSave?.Dispose();
-        pendingSave = null;
-    }
-
-    private void CancelHideSaved()
-    {
-        hideSaved?.Cancel();
-        hideSaved?.Dispose();
-        hideSaved = null;
+        source?.Cancel();
+        source?.Dispose();
+        source = null;
     }
 
     protected override string ClassNames => ClassBuilder
@@ -358,8 +308,8 @@ public partial class InputStatus
     {
         FlushPendingSave();
         disposed = true;
-        CancelPendingSave();
-        CancelHideSaved();
+        Cancel(ref pendingSave);
+        Cancel(ref hideSaved);
         UnsubscribeFromValidation();
     }
 }
