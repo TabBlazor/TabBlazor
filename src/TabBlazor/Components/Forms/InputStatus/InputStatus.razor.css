@@ -56,6 +56,10 @@
     max-width: 100%;
 }
 
+.input-status:not(:has(> .form-control:first-child, > .form-check, > .form-check-input)) > .input-status-bubble {
+    bottom: calc(var(--input-status-addon-height) + 4px);
+}
+
 .input-status:has(> .form-check, > .form-check-input) > .input-status-addon {
     top: 0;
     bottom: auto;
