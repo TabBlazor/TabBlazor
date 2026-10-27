@@ -1,0 +1,16 @@
+<div class="mb-3" style="max-width: 320px">
+    <InputStatus @bind-State="state" ErrorText="Server rejected the value">
+        <input class="form-control" value="Some value" readonly />
+    </InputStatus>
+</div>
+
+<div class="btn-list">
+    @foreach (var value in Enum.GetValues<InputSaveState>())
+    {
+        <button type="button" class="btn @(state == value ? "btn-primary" : null)" @onclick="() => state = value">@value</button>
+    }
+</div>
+
+@code {
+    InputSaveState state = InputSaveState.Saving;
+}

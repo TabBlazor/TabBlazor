@@ -1,0 +1,50 @@
+@page "/docs/forms/input-status"
+
+<Page>
+    <DocsExample Title="InputStatus" ComponentType="typeof(TabBlazor.InputStatus)">
+
+        <CodeSnippet Component="@typeof(InputStatusBasic)" Title="Autosave">
+            <Description>
+                Wrap an input in <code>InputStatus</code>, set <code>Value</code> to the bound value and pass a
+                <code>Save</code> callback. Each change is saved once the value has been unchanged for
+                <code>SaveDelay</code> (500 ms), with a spinner and then a short "Saved" bubble.
+            </Description>
+        </CodeSnippet>
+
+        <CodeSnippet Component="@typeof(InputStatusInlineEdit)" Title="Inline edit">
+            <Description>
+                One <code>InputStatus</code> per cell, each saving on its own.
+            </Description>
+        </CodeSnippet>
+
+        <CodeSnippet Component="@typeof(InputStatusAllInputs)" Title="Every input">
+            <Description>
+                Works with any input that binds a value. The status icon sits inside plain inputs and after other
+                controls. Stepper clicks and typing are batched into one save.
+            </Description>
+        </CodeSnippet>
+
+        <CodeSnippet Component="@typeof(InputStatusError)" Title="Save error">
+            <Description>
+                If <code>Save</code> throws, the input shows <code>ErrorText</code> and <code>SaveFailed</code> receives
+                the exception. Click the error icon or change the value to retry. This example always fails.
+            </Description>
+        </CodeSnippet>
+
+        <CodeSnippet Component="@typeof(InputStatusForm)" Title="Inside a form">
+            <Description>
+                Inside a <code>TablerForm</code>, saving waits until the field set in <code>For</code> is valid, and
+                the field is marked unmodified once saved. A <code>TabValidationMessage</code> placed after
+                <code>InputStatus</code> is shown as usual.
+            </Description>
+        </CodeSnippet>
+
+        <CodeSnippet Component="@typeof(InputStatusManual)" Title="Manual state">
+            <Description>
+                When the save happens elsewhere, set <code>State</code> yourself instead of <code>Save</code>. Bind it
+                with <code>@@bind-State</code> to see it fade back to <code>Idle</code> after a save.
+            </Description>
+        </CodeSnippet>
+
+    </DocsExample>
+</Page>

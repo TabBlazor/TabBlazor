@@ -1,0 +1,19 @@
+<div class="mb-3" style="max-width: 320px">
+    <label class="form-label">Name</label>
+    <InputStatus Value="name" Save="SaveAsync">
+        <input class="form-control" @bind="name" />
+    </InputStatus>
+</div>
+<span>Saved value: @savedName</span>
+
+@code {
+    string name = "Tabler";
+    string savedName = "Tabler";
+
+    async Task SaveAsync()
+    {
+        await Task.Delay(1200);
+        savedName = name;
+        StateHasChanged();
+    }
+}

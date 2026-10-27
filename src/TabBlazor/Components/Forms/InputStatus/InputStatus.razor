@@ -1,0 +1,42 @@
+@namespace TabBlazor
+@inherits TablerBaseComponent
+@implements IDisposable
+
+<div class="@ClassNames"
+     aria-busy="@(currentState == InputSaveState.Saving ? "true" : null)"
+     @attributes="UnmatchedParameters">
+    @ChildContent
+    <span class="visually-hidden" role="status">@AnnouncedText</span>
+    @switch (currentState)
+    {
+        case InputSaveState.Saving:
+            <span class="input-status-addon" aria-hidden="true">
+                <span class="spinner-border spinner-border-sm text-secondary"></span>
+            </span>
+            break;
+        case InputSaveState.Saved:
+            <span class="input-status-addon text-success" aria-hidden="true">
+                <Icon IconType="@InternalIcons.Check" Size="18" />
+                <span class="input-status-bubble input-status-bubble-saved badge bg-success text-success-fg" style="@SavedDurationStyle">@SavedText</span>
+            </span>
+            break;
+        case InputSaveState.Error:
+            <span class="input-status-addon text-danger">
+                @if (Save != null)
+                {
+                    <button type="button" class="input-status-retry" title="@RetryText" aria-label="@RetryText" @onclick="SaveNowAsync">
+                        <Icon IconType="@InternalIcons.Alert_triangle" Size="18" />
+                    </button>
+                }
+                else
+                {
+                    <Icon IconType="@InternalIcons.Alert_triangle" Size="18" aria-hidden="true" />
+                }
+                @if (!string.IsNullOrWhiteSpace(ErrorText))
+                {
+                    <span class="input-status-bubble input-status-bubble-error badge bg-danger text-danger-fg" aria-hidden="true">@ErrorText</span>
+                }
+            </span>
+            break;
+    }
+</div>

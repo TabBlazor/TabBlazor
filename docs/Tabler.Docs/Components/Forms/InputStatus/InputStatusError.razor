@@ -1,0 +1,21 @@
+<div class="mb-3" style="max-width: 320px">
+    <label class="form-label">Email</label>
+    <InputStatus Value="email" Save="SaveAsync" SaveFailed="ex => lastError = ex.Message" ErrorText="Could not save, try again">
+        <input class="form-control" @bind="email" />
+    </InputStatus>
+</div>
+@if (lastError != null)
+{
+    <span class="text-secondary">SaveFailed: @lastError</span>
+}
+
+@code {
+    string email = "tab@blazor.com";
+    string lastError;
+
+    async Task SaveAsync()
+    {
+        await Task.Delay(1000);
+        throw new InvalidOperationException("The server is unavailable");
+    }
+}
