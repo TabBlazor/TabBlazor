@@ -314,5 +314,54 @@ namespace TabBlazor.Tests.Components.DataViews
             Assert.Contains("offcanvas-bottom", cut.Find(".offcanvas").ClassList);
             Assert.NotNull(cut.Find(".offcanvas .dv-filters-panel"));
         }
+
+        [Fact]
+        public void The_filters_panel_keeps_its_order_while_a_filter_applies()
+        {
+            var cut = RenderFilterable();
+            cut.Find(".dv-filters-button").Click();
+            List<string> Labels() => cut.FindAll(".dv-filters-panel label.form-label").Select(l => l.TextContent).ToList();
+            var before = Labels();
+
+            cut.FindAll(".dv-filters-panel-item")[3].QuerySelectorAll(".dv-filter-bool button")[1].Click();
+
+            Assert.NotNull(cut.Instance.GetFilter("active"));
+            Assert.Equal(before, Labels());
+            Assert.Contains("active", cut.FindAll(".dv-filters-panel-item")[3].QuerySelectorAll(".dv-filter-bool button")[1].ClassList);
+        }
+
+        [Fact]
+        public async Task Clearing_all_filters_drops_a_typed_filter_that_has_not_applied_yet()
+        {
+            var cut = RenderFilterable(searchDelay: 300);
+            OpenFilter(cut, "name");
+            cut.Find("thead .dv-column-filter input").Input("Row");
+            await cut.InvokeAsync(() => cut.Instance.ClearFiltersAsync());
+            var calls = source.Calls.Count;
+
+            time.Advance(TimeSpan.FromMilliseconds(300));
+            await Task.Delay(50);
+
+            Assert.Equal(calls, source.Calls.Count);
+            Assert.Null(cut.Instance.GetFilter("name"));
+        }
+
+        [Fact]
+        public async Task Switching_from_in_to_equals_keeps_the_values_as_text()
+        {
+            var cut = RenderFilterable(p => p.AddChildContent<DataColumn<Row, string>>(c => c
+                .Add(x => x.Value, r => r.Name)
+                .Add(x => x.Id, "code")
+                .Add(x => x.Filterable, true)
+                .Add(x => x.FilterOperators, [FilterOperator.In, FilterOperator.Equals])));
+            await cut.InvokeAsync(() => cut.Instance.SetColumnFilterAsync("code", new FilterSpec("code", FilterOperator.In, new[] { "Row 01", "Row 02" })));
+            OpenFilter(cut, "code");
+
+            cut.Find("thead .dv-filter-operator").Change(nameof(FilterOperator.Equals));
+
+            var filter = cut.Instance.GetFilter("code")!;
+            Assert.Equal(FilterOperator.Equals, filter.Operator);
+            Assert.Equal("Row 01,Row 02", filter.Value);
+        }
     }
 }

@@ -95,7 +95,9 @@ public partial class DataView<TItem>
     /// <summary>Supplies rows to Blazor's Virtualize: from the cache, fetching missing ranges (one fetch at a time).</summary>
     internal async ValueTask<ItemsProviderResult<TItem>> ProvideVirtualItemsAsync(ItemsProviderRequest request)
     {
-        if (!engine.HasLoaded || engine.Error != null || engine.Items.Count == 0)
+        // An empty cache with rows loaded: the first page has not been copied in yet, and the reset that does it
+        // asks again. Fetching now would start the list from a stale position.
+        if (!engine.HasLoaded || engine.Error != null || engine.Items.Count == 0 || virtualCache.Count == 0)
         {
             return new ItemsProviderResult<TItem>([], 0);
         }
@@ -113,7 +115,7 @@ public partial class DataView<TItem>
                 // Infinite scroll: load the next pages in order until the requested range is covered.
                 while (generation == virtualGeneration && !virtualExhausted && virtualCache.Count < end)
                 {
-                    await FetchNextVirtualPageAsync(request.CancellationToken);
+                    await FetchNextVirtualPageAsync(generation, request.CancellationToken);
                 }
             }
             else
@@ -125,8 +127,7 @@ public partial class DataView<TItem>
                 {
                     var skip = missing[0];
                     var take = Math.Max(missing[^1] - skip + 1, engine.PageSize);
-                    var page = await engine.Source!.GetPageAsync(
-                        engine.BuildRequest(PageRequest.Offset(skip, take)), request.CancellationToken);
+                    var page = await engine.FetchPageAsync(PageRequest.Offset(skip, take), request.CancellationToken);
                     if (generation == virtualGeneration)
                     {
                         for (var i = 0; i < page.Items.Count; i++)
@@ -142,6 +143,10 @@ public partial class DataView<TItem>
         catch (OperationCanceledException) when (request.CancellationToken.IsCancellationRequested)
         {
             throw;
+        }
+        catch (OperationCanceledException)
+        {
+            // A new load replaced the query; its first page resets the list.
         }
         catch (Exception ex)
         {
@@ -170,12 +175,17 @@ public partial class DataView<TItem>
         return new ItemsProviderResult<TItem>(items, count);
     }
 
-    private async Task FetchNextVirtualPageAsync(CancellationToken cancellationToken)
+    private async Task FetchNextVirtualPageAsync(int generation, CancellationToken cancellationToken)
     {
         var page = engine.PagingMode == PagingMode.Cursor
             ? PageRequest.Cursor(virtualNextCursor, engine.PageSize)
             : PageRequest.Offset(virtualCache.Count, engine.PageSize);
-        var result = await engine.Source!.GetPageAsync(engine.BuildRequest(page), cancellationToken);
+        var result = await engine.FetchPageAsync(page, cancellationToken);
+        if (generation != virtualGeneration)
+        {
+            return;
+        }
+
         var offset = virtualCache.Count;
         for (var i = 0; i < result.Items.Count; i++)
         {

@@ -142,11 +142,11 @@
                         <ItemContent>
                             @if (inlineEdit && View.IsEditingRow(item))
                             {
-                                <DataTableEditRow @key="View.GetRowKey(item)" TItem="TItem" View="View" Session="View.EditSession!" />
+                                <DataTableEditRow @key="View.GetRenderKey(item)" TItem="TItem" View="View" Session="View.EditSession!" />
                             }
                             else
                             {
-                                <DataTableRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns"
+                                <DataTableRow @key="View.GetRenderKey(item)" TItem="TItem" Item="item" View="View" Columns="columns"
                                               Version="engine.RenderVersion" State="View.GetRowState(item)" />
                             }
                         </ItemContent>
@@ -165,16 +165,16 @@
                     {
                         if (inlineEdit && View.IsEditingRow(item))
                         {
-                            <DataTableEditRow @key="View.GetRowKey(item)" TItem="TItem" View="View" Session="View.EditSession!" />
+                            <DataTableEditRow @key="View.GetRenderKey(item)" TItem="TItem" View="View" Session="View.EditSession!" />
                             continue;
                         }
 
                         var state = View.GetRowState(item);
-                        <DataTableRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns"
+                        <DataTableRow @key="View.GetRenderKey(item)" TItem="TItem" Item="item" View="View" Columns="columns"
                                       Version="engine.RenderVersion" State="state" />
                         if (state.Expanded && View.ShowExpandColumn)
                         {
-                            <tr @key="(View.GetRowKey(item), 1)" class="dv-details-row">
+                            <tr @key="View.GetRenderKey(item, 1)" class="dv-details-row">
                                 <td colspan="@columnCount">@View.DetailsTemplate!(View.GetDetailsContext(item))</td>
                             </tr>
                         }

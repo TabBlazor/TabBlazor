@@ -602,7 +602,73 @@ public partial class DataView<TItem>
             return EditModelFactory(item);
         }
 
-        return item is null || typeof(TItem).IsValueType ? item : (TItem)MemberwiseCloneMethod.Invoke(item, null)!;
+        if (item is null || typeof(TItem).IsValueType)
+        {
+            return item;
+        }
+
+        var draft = (TItem)MemberwiseCloneMethod.Invoke(item, null)!;
+        var copies = new HashSet<object>(System.Collections.Generic.ReferenceEqualityComparer.Instance);
+        foreach (var column in FormColumns)
+        {
+            CopyObjectsOnPath(draft, column.Info.ValueExpression, copies);
+        }
+
+        return draft;
+    }
+
+    // The shallow copy shares nested objects with the row. An editor for o.Customer.Name writes into Customer,
+    // so the draft gets its own copy of every object on that path and the row stays as it was until saved.
+    private static void CopyObjectsOnPath(object draft, LambdaExpression? value, HashSet<object> copies)
+    {
+        if (value?.Body is not MemberExpression edited)
+        {
+            return;
+        }
+
+        var path = new Stack<MemberInfo>();
+        var owner = edited.Expression;
+        while (owner is MemberExpression member)
+        {
+            path.Push(member.Member);
+            owner = member.Expression;
+        }
+
+        if (owner is not ParameterExpression)
+        {
+            return;
+        }
+
+        var target = draft;
+        foreach (var member in path)
+        {
+            var (current, canSet) = member switch
+            {
+                PropertyInfo p => (p.GetValue(target), p.SetMethod is { IsPublic: true }),
+                FieldInfo f => (f.GetValue(target), !f.IsInitOnly && f.IsPublic),
+                _ => (null, false)
+            };
+            if (current is null || current is string || current.GetType().IsValueType || !canSet)
+            {
+                return;
+            }
+
+            if (!copies.Contains(current))
+            {
+                current = MemberwiseCloneMethod.Invoke(current, null)!;
+                copies.Add(current);
+                if (member is PropertyInfo property)
+                {
+                    property.SetValue(target, current);
+                }
+                else
+                {
+                    ((FieldInfo)member).SetValue(target, current);
+                }
+            }
+
+            target = current;
+        }
     }
 
     /// <summary>
@@ -767,7 +833,7 @@ public partial class DataView<TItem>
 
         var key = KeyOf(item);
         RemoveFromItems([item]);
-        selected.Remove(key);
+        var wasSelected = selected.Remove(key);
         expanded.Remove(key);
         if (Equals(currentKey, key))
         {
@@ -779,6 +845,11 @@ public partial class DataView<TItem>
         {
             EditSession = null;
             editKey = null;
+        }
+
+        if (wasSelected)
+        {
+            await NotifySelectionChangedAsync();
         }
 
         await engine.LoadAsync();
@@ -836,6 +907,12 @@ public partial class DataView<TItem>
 
     private async Task OnBeforeInternalNavigationAsync(LocationChangingContext context)
     {
+        // The view writing its own state to the URL is not leaving the page.
+        if (context.TargetLocation == lastWrittenUri)
+        {
+            return;
+        }
+
         if (EditingIsDirty && !await ConfirmAsync(Texts.DiscardChanges, Texts.DiscardChangesDetails))
         {
             context.PreventNavigation();

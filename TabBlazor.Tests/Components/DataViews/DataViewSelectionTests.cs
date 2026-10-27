@@ -369,6 +369,19 @@ namespace TabBlazor.Tests.Components.DataViews
 
             Assert.NotNull(cut.Find("tbody tr td:first-child button.dv-action"));
         }
+
+        [Fact]
+        public void Removing_the_declared_actions_brings_back_edit_and_delete()
+        {
+            var cut = RenderWithActions(Actions(3, ("Open", null)), p => p
+                .Add(x => x.SaveItem, ctx => Task.FromResult(EditResult.Saved(ctx.Draft)))
+                .Add(x => x.DeleteItem, _ => Task.FromResult(EditResult.Deleted())));
+            Assert.Equal(["Open"], cut.Find("tbody tr").QuerySelectorAll("button.dv-action").Select(b => b.GetAttribute("aria-label")));
+
+            cut.Render(p => p.AddChildContent<DataColumn<Row, string>>(c => c.Add(x => x.Value, r => r.Name)));
+
+            Assert.Equal(["Edit", "Delete"], cut.Find("tbody tr").QuerySelectorAll("button.dv-action").Select(b => b.GetAttribute("title")));
+        }
     }
 
     public class DataViewDetailsTests : TabBlazorTestContext

@@ -33,6 +33,19 @@ namespace TabBlazor.Tests.Components.DataViews
             }).ToList();
     }
 
+    public sealed class Address
+    {
+        public string City { get; set; } = "";
+    }
+
+    public sealed class Shipment
+    {
+        public int Id { get; set; }
+        public Address? To { get; set; }
+    }
+
+    public sealed record Tag(string Name);
+
     /// <summary>A source whose responses the test completes by hand.</summary>
     public sealed class FakeSource<T> : IDataViewSource<T>
     {

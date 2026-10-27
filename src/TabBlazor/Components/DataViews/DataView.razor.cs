@@ -24,7 +24,9 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
     private bool columnsInitialized;
     private bool initialLoadStarted;
     private object? lastSourceParameter;
+    private List<TItem>? lastItemsSnapshot;
     private int lastItemsCount = -1;
+    private DataViewText? appTexts;
     private bool lastNaturalSort;
     private ExpressionKey? lastKeySelector;
     private int lastPageSize;
@@ -231,7 +233,7 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
         new[] { DataViewKind.Table, DataViewKind.List }.Where(v => Views.HasFlag(v)).ToList();
 
     internal DataViewEngine<TItem> Engine => engine;
-    internal DataViewText Texts => Text ?? AppTexts();
+    internal DataViewText Texts => Text ?? (appTexts ??= AppTexts());
     internal TableDensity CurrentDensity => Density ?? density ?? TableDensity.Normal;
     internal IReadOnlyList<IDataViewColumn<TItem>> VisibleColumns =>
         engine.Columns.Where(c => c.Visible && c.ShowIn != ColumnVisibility.EditOnly).ToList();
@@ -284,7 +286,8 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
 
         var sourceParameter = (object?)Items ?? (object?)ItemsProvider ?? Source;
         var itemsCount = Items is ICollection<TItem> collection ? collection.Count : Items is IReadOnlyCollection<TItem> ro ? ro.Count : -1;
-        if (!ReferenceEquals(sourceParameter, lastSourceParameter) || NaturalSort != lastNaturalSort ||
+        var sameReference = ReferenceEquals(sourceParameter, lastSourceParameter);
+        if ((!sameReference && GivesOtherData(sourceParameter)) || NaturalSort != lastNaturalSort ||
             (ItemsProvider != null && engine.Source?.PagingMode != PagingMode))
         {
             engine.Source = Items != null
@@ -302,8 +305,15 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
             lastSourceParameter = sourceParameter;
             lastNaturalSort = NaturalSort;
         }
+        else if (!sameReference && Items != null)
+        {
+            // The same rows from a new sequence: read from it from now on, without starting over.
+            engine.Source = new InMemorySource<TItem>(Items, new InMemorySourceOptions { NaturalSort = NaturalSort });
+            lastSourceParameter = sourceParameter;
+        }
         else if (Items != null && itemsCount != lastItemsCount)
         {
+            lastItemsSnapshot = Items.ToList();
             reload = true;
         }
 
@@ -344,6 +354,22 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
         {
             await engine.LoadAsync();
         }
+    }
+
+    // A parent re-render creates a new delegate for ItemsProvider="LoadAsync" and a new sequence for
+    // Items="orders.Where(...)": those only count as a new source when they would give other data.
+    private bool GivesOtherData(object? sourceParameter)
+    {
+        if (Items == null)
+        {
+            lastItemsSnapshot = null;
+            return !Equals(sourceParameter, lastSourceParameter);
+        }
+
+        var snapshot = Items.ToList();
+        var same = lastItemsSnapshot != null && snapshot.SequenceEqual(lastItemsSnapshot);
+        lastItemsSnapshot = snapshot;
+        return !same;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -403,7 +429,7 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
     {
         collecting = false;
         var changed = collectingColumns.Count != engine.Columns.Count ||
-                      collectingColumns.Where((c, i) => !ReferenceEquals(c, engine.Columns[i]) || c.Resolve(i) != engine.Columns[i].Info).Any();
+                      collectingColumns.Where((c, i) => !ReferenceEquals(c, engine.Columns[i]) || !engine.IsUnchangedColumn(i, c)).Any();
         if (!changed)
         {
             return;
@@ -454,7 +480,6 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
         }
 
         chosenView = view;
-        resizeAttached = false;
         engine.InvalidateRows();
         WriteUrlState();
         await ViewChanged.InvokeAsync(view);
@@ -468,7 +493,40 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
         StateHasChanged();
     }
 
-    internal object? GetRowKey(TItem item) => engine.KeyGetter != null ? engine.KeyGetter(item) : item;
+    /// <summary>
+    /// The row's identity for selection, editing and details: the key, or without a <see cref="KeySelector"/> the
+    /// instance itself (so two equal records stay two rows).
+    /// </summary>
+    internal object? GetRowKey(TItem item) =>
+        engine.KeyGetter != null ? engine.KeyGetter(item)
+        : item is null || IsValueLike ? item
+        : new InstanceKey(item);
+
+    /// <summary>
+    /// The <c>@key</c> of a row's element. Equal values (value types, strings) have no identity of their own,
+    /// so without a <see cref="KeySelector"/> they render unkeyed instead of clashing.
+    /// </summary>
+    internal object? GetRenderKey(TItem item, int part = 0)
+    {
+        if (engine.KeyGetter == null && IsValueLike)
+        {
+            return null;
+        }
+
+        var key = GetRowKey(item);
+        return part == 0 ? key : (key, part);
+    }
+
+    private static bool IsValueLike => typeof(TItem).IsValueType || typeof(TItem) == typeof(string);
+
+    private sealed class InstanceKey(object instance)
+    {
+        private readonly object instance = instance;
+
+        public override bool Equals(object? obj) => obj is InstanceKey other && ReferenceEquals(instance, other.instance);
+
+        public override int GetHashCode() => System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(instance);
+    }
 
     internal string? GetRowClass(TItem item, bool table = true)
     {
@@ -538,19 +596,34 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
     public Task SetSortAsync(string? columnId, bool descending = false) => engine.SetSortAsync(columnId, descending);
 
     /// <summary>Replaces the column filters.</summary>
-    public Task SetFiltersAsync(IEnumerable<FilterSpec> filters) => engine.SetFiltersAsync(filters.ToList());
+    public Task SetFiltersAsync(IEnumerable<FilterSpec> filters)
+    {
+        CancelFilterDelays();
+        return engine.SetFiltersAsync(filters.ToList());
+    }
 
     /// <summary>Removes all column filters.</summary>
-    public Task ClearFiltersAsync() => engine.SetFiltersAsync([]);
+    public Task ClearFiltersAsync()
+    {
+        CancelFilterDelays();
+        return engine.SetFiltersAsync([]);
+    }
 
-    internal Task ClearSearchAndFiltersAsync() => engine.ClearSearchAndFiltersAsync();
+    internal Task ClearSearchAndFiltersAsync()
+    {
+        CancelFilterDelays();
+        return engine.ClearSearchAndFiltersAsync();
+    }
 
     public async ValueTask DisposeAsync()
     {
         disposed = true;
         engine?.Dispose();
-        await DisposeResponsiveAsync();
+        CancelFilterDelays();
+
+        // Before the JS call: the next page's view may register the same URL prefix while it is still running.
         DisposeUrlState();
+        await DisposeResponsiveAsync();
     }
 }
 

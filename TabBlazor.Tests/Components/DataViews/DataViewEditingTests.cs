@@ -133,11 +133,74 @@ namespace TabBlazor.Tests.Components.DataViews
             StartEditing(cut);
 
             cut.Find("tr.dv-edit-row").KeyDown(new KeyboardEventArgs { Key = "Enter" });
+            cut.Find("tr.dv-edit-row").KeyUp(new KeyboardEventArgs { Key = "Enter" });
             Assert.Single(saves);
 
             StartEditing(cut);
             cut.Find("tr.dv-edit-row").KeyDown(new KeyboardEventArgs { Key = "Escape" });
             Assert.Empty(cut.FindAll("tr.dv-edit-row"));
+        }
+
+        [Fact]
+        public void Enter_saves_the_value_changed_while_the_key_was_down()
+        {
+            var cut = RenderEditable(Row.Many(1));
+            StartEditing(cut);
+
+            cut.Find("tr.dv-edit-row").KeyDown(new KeyboardEventArgs { Key = "Enter" });
+            Assert.Empty(saves);
+            cut.Find("tr.dv-edit-row input.form-control").Change("Typed");
+            cut.Find("tr.dv-edit-row").KeyUp(new KeyboardEventArgs { Key = "Enter" });
+
+            Assert.Equal("Typed", Assert.Single(saves).Draft.Name);
+        }
+
+        [Fact]
+        public void Enter_released_without_being_pressed_in_the_row_does_not_save()
+        {
+            var cut = RenderEditable(Row.Many(1));
+            StartEditing(cut);
+
+            cut.Find("tr.dv-edit-row").KeyUp(new KeyboardEventArgs { Key = "Enter" });
+
+            Assert.Empty(saves);
+        }
+
+        [Fact]
+        public void Canceling_an_edit_of_a_nested_value_leaves_the_row_unchanged()
+        {
+            var shipment = new Shipment { Id = 1, To = new Address { City = "Oslo" } };
+            var cut = Render<DataView<Shipment>>(p => p
+                .Add(x => x.Items, new List<Shipment> { shipment })
+                .Add(x => x.KeySelector, s => s.Id)
+                .Add(x => x.SaveItem, ctx => Task.FromResult(EditResult.Saved(ctx.Draft)))
+                .Add(x => x.OnConfirm, _ => Task.FromResult(true))
+                .AddChildContent<DataColumn<Shipment, string>>(c => c.Add(x => x.Value, s => s.To!.City)));
+            var address = shipment.To;
+            cut.Find("tbody tr button.dv-action").Click();
+
+            cut.Find("tr.dv-edit-row input.form-control").Change("Bergen");
+            cut.Find("button.dv-cancel").Click();
+
+            Assert.Same(address, shipment.To);
+            Assert.Equal("Oslo", shipment.To!.City);
+            Assert.Equal("Oslo", cut.Find("tbody tr td").TextContent.Trim());
+        }
+
+        [Fact]
+        public void Deleting_a_selected_row_updates_the_bound_selection()
+        {
+            IReadOnlyList<Row> selected = [];
+            var cut = RenderEditable(Row.Many(2), p => p
+                .Add(x => x.SelectionMode, DataSelectionMode.Multiple)
+                .Add(x => x.SelectedItemsChanged, s => selected = s)
+                .Add(x => x.DeleteItem, _ => Task.FromResult(EditResult.Deleted())));
+            cut.FindAll("tbody tr")[0].QuerySelector("input.dv-select")!.Change(true);
+            Assert.Single(selected);
+
+            cut.FindAll("tbody tr")[0].QuerySelectorAll("button.dv-action")[1].Click();
+
+            Assert.Empty(selected);
         }
 
         [Fact]

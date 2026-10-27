@@ -18,11 +18,18 @@ internal sealed class DataViewEngine<TItem> : IDisposable
     // Cursor of each visited page: cursors[i] is the "after" cursor for page i (null for the first page).
     private readonly List<string?> cursors = [null];
 
+    // One call to the source at a time: loads and extra fetches (virtual scrolling) take turns.
+    private readonly SemaphoreSlim sourceGate = new(1, 1);
+
     private CancellationTokenSource? loadCts;
+    private CancellationTokenSource fetchCts = new();
     private Task? loadTask;
     private int loadVersion;
     private CancellationTokenSource? searchDelayCts;
     private IReadOnlyList<DataColumnInfo> requestColumns = [];
+
+    // The last page index known to exist when the source reports no total (found by paging past the end).
+    private int? lastKnownPageIndex;
 
     public DataViewEngine(Func<Func<Task>, Task> dispatch, Func<Task> render, TimeProvider timeProvider, ILogger logger)
     {
@@ -94,7 +101,8 @@ internal sealed class DataViewEngine<TItem> : IDisposable
 
     public bool HasNextPage => PagingMode == PagingMode.Cursor
         ? NextCursor != null
-        : TotalCount is { } total ? (PageIndex + 1) * PageSize < total : Items.Count >= PageSize;
+        : TotalCount is { } total ? (PageIndex + 1) * PageSize < total
+        : Items.Count >= PageSize && (lastKnownPageIndex == null || PageIndex < lastKnownPageIndex);
 
     /// <summary>The number of pages, when the total is known.</summary>
     public int? PageCount => TotalCount is { } total ? Math.Max(1, (int)Math.Ceiling(total / (double)Math.Max(1, PageSize))) : null;
@@ -148,11 +156,17 @@ internal sealed class DataViewEngine<TItem> : IDisposable
         BuildRequestColumns();
     }
 
+    private static DataColumnInfo RequestInfo(IDataViewColumn<TItem> column, DataColumnInfo info) =>
+        info with { Sortable = column.Sortable, Filterable = column.Filterable, Searchable = column.Searchable };
+
+    /// <summary>True when the column at <paramref name="index"/> still resolves to what the requests use.</summary>
+    public bool IsUnchangedColumn(int index, IDataViewColumn<TItem> column) =>
+        index < Columns.Count && index < requestColumns.Count &&
+        Equals(requestColumns[index], RequestInfo(column, column.Resolve(index)));
+
     private void BuildRequestColumns()
     {
-        var infos = Columns
-            .Select(c => c.Info with { Sortable = c.Sortable, Filterable = c.Filterable, Searchable = c.Searchable })
-            .ToList();
+        var infos = Columns.Select(c => RequestInfo(c, c.Info)).ToList();
         if (KeyInfo != null)
         {
             var existing = infos.FirstOrDefault(i => i.Id == KeyInfo.Id);
@@ -184,6 +198,7 @@ internal sealed class DataViewEngine<TItem> : IDisposable
     public void ResetPaging()
     {
         PageIndex = 0;
+        lastKnownPageIndex = null;
         cursors.Clear();
         cursors.Add(null);
     }
@@ -220,6 +235,11 @@ internal sealed class DataViewEngine<TItem> : IDisposable
     {
         var previous = loadTask;
         loadCts?.Cancel();
+
+        // Extra fetches belong to the query being replaced.
+        fetchCts.Cancel();
+        fetchCts = new CancellationTokenSource();
+
         var cts = new CancellationTokenSource();
         loadCts = cts;
         var version = ++loadVersion;
@@ -260,7 +280,15 @@ internal sealed class DataViewEngine<TItem> : IDisposable
         var request = BuildRequest();
         try
         {
-            page = await Source.GetPageAsync(request, cancellationToken);
+            await sourceGate.WaitAsync(cancellationToken);
+            try
+            {
+                page = await Source.GetPageAsync(request, cancellationToken);
+            }
+            finally
+            {
+                sourceGate.Release();
+            }
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
@@ -303,12 +331,24 @@ internal sealed class DataViewEngine<TItem> : IDisposable
             cursors[PageIndex + 1] = NextCursor;
         }
 
-        // A page past the end (for example after the last row of the last page was removed): go to the last page.
-        if (Items.Count == 0 && PageIndex > 0 && PagingMode == PagingMode.Offset && TotalCount is > 0)
+        // A page past the end (the last row of the last page was removed, or a full page had no successor):
+        // go back to the last page that has rows. Only ever backwards, so a total that overstates the rows
+        // cannot make it reload forever.
+        if (Items.Count == 0 && PageIndex > 0 && PagingMode == PagingMode.Offset && TotalCount is not 0)
         {
-            PageIndex = PageCount!.Value - 1;
-            _ = LoadAsync();
-            return;
+            var lastPage = TotalCount == null ? PageIndex - 1 : PageCount!.Value - 1;
+            if (TotalCount == null)
+            {
+                lastKnownPageIndex = lastPage;
+            }
+
+            if (lastPage < PageIndex)
+            {
+                PageIndex = lastPage;
+                await OnUserStateChangedAsync();
+                _ = LoadAsync();
+                return;
+            }
         }
 
         await render();
@@ -316,6 +356,35 @@ internal sealed class DataViewEngine<TItem> : IDisposable
         {
             await PageLoaded(page);
         }
+    }
+
+    /// <summary>
+    /// Fetches another page of the current query (virtual scrolling) without changing the engine's page. Takes
+    /// turns with <see cref="LoadAsync"/> at the source, and is canceled by the next load.
+    /// </summary>
+    public async Task<DataPage<TItem>> FetchPageAsync(PageRequest page, CancellationToken cancellationToken)
+    {
+        if (Source == null)
+        {
+            return DataPage<TItem>.Empty;
+        }
+
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, fetchCts.Token);
+        var request = BuildRequest(page);
+        await sourceGate.WaitAsync(linked.Token);
+        DataPage<TItem> result;
+        try
+        {
+            result = await Source.GetPageAsync(request, linked.Token);
+        }
+        finally
+        {
+            sourceGate.Release();
+        }
+
+        // A source that ignores the token still must not hand rows of a replaced query to the new one.
+        linked.Token.ThrowIfCancellationRequested();
+        return result;
     }
 
     /// <summary>Called for each keystroke in the search box: applies the search after <see cref="SearchDelay"/> ms of quiet.</summary>
@@ -594,6 +663,7 @@ internal sealed class DataViewEngine<TItem> : IDisposable
     public void Dispose()
     {
         loadCts?.Cancel();
+        fetchCts.Cancel();
         searchDelayCts?.Cancel();
     }
 }

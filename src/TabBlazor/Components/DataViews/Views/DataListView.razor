@@ -15,7 +15,7 @@
             <Virtualize @ref="View.VirtualizeComponent" TItem="TItem" ItemsProvider="View.ProvideVirtualItemsAsync"
                         ItemSize="View.ItemSize" OverscanCount="View.OverscanCount" Context="item">
                 <ItemContent>
-                    <DataListRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns" Version="engine.RenderVersion" State="View.GetRowState(item)" ItemTemplate="ItemTemplate" />
+                    <DataListRow @key="View.GetRenderKey(item)" TItem="TItem" Item="item" View="View" Columns="columns" Version="engine.RenderVersion" State="View.GetRowState(item)" ItemTemplate="ItemTemplate" />
                 </ItemContent>
                 <Placeholder>
                     <div class="list-group-item dv-placeholder-row placeholder-glow" aria-hidden="true" style="height: @(View.ItemSize)px">
@@ -27,7 +27,7 @@
         case DataViewStatus.Items:
             foreach (var item in engine.Items)
             {
-                <DataListRow @key="View.GetRowKey(item)" TItem="TItem" Item="item" View="View" Columns="columns" Version="engine.RenderVersion" State="View.GetRowState(item)" ItemTemplate="ItemTemplate" />
+                <DataListRow @key="View.GetRenderKey(item)" TItem="TItem" Item="item" View="View" Columns="columns" Version="engine.RenderVersion" State="View.GetRowState(item)" ItemTemplate="ItemTemplate" />
             }
             break;
         case DataViewStatus.FirstLoad when View.LoadingTemplate == null:

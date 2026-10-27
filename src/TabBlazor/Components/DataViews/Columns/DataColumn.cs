@@ -19,6 +19,9 @@ public partial class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<
     private ExpressionKey? infoKey;
     private ExpressionKey? valueKey;
     private Func<TItem, TValue>? getter;
+
+    // Null checks for a plain member chain; null for other expressions, which catch the exception instead.
+    private Func<TItem, bool>? hasValue;
     private string? defaultTitle;
 
     [CascadingParameter] internal DataViewContext<TItem>? Context { get; set; }
@@ -141,6 +144,7 @@ public partial class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<
         {
             valueKey = newValueKey;
             getter = Value?.Compile();
+            hasValue = Value == null ? null : NullGuard.ForMemberChain<TItem>(Value);
             defaultTitle = GetDefaultTitle(Value);
             setter = CompileSetter(Value);
         }
@@ -232,6 +236,17 @@ public partial class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<
         if (getter == null)
         {
             return false;
+        }
+
+        if (hasValue != null)
+        {
+            if (!hasValue(item))
+            {
+                return false;
+            }
+
+            value = getter(item);
+            return true;
         }
 
         try

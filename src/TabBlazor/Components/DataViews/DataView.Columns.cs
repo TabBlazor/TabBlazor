@@ -7,7 +7,9 @@ namespace TabBlazor;
 public partial class DataView<TItem>
 {
     private readonly Dictionary<string, int> columnWidths = [];
-    private bool resizeAttached;
+
+    // The table element resizing is attached to; a rebuilt table (other view, side panel to drawer) gets it again.
+    private string? resizeAttachedTo;
 
     /// <summary>Lets the user resize columns by dragging the edge of their header.</summary>
     [Parameter] public bool ResizableColumns { get; set; }
@@ -32,7 +34,8 @@ public partial class DataView<TItem>
 
     private async Task AttachColumnResizeAsync()
     {
-        if (!ResizableColumns || resizeAttached || CurrentView != DataViewKind.Table || TableElement.Context == null)
+        if (!ResizableColumns || CurrentView != DataViewKind.Table || TableElement.Context == null ||
+            TableElement.Id == resizeAttachedTo)
         {
             return;
         }
@@ -41,7 +44,7 @@ public partial class DataView<TItem>
         {
             selfReference ??= DotNetObjectReference.Create(this);
             await JS.InvokeVoidAsync("tabBlazor.attachColumnResize", TableElement, selfReference);
-            resizeAttached = true;
+            resizeAttachedTo = TableElement.Id;
         }
         catch (JSDisconnectedException)
         {

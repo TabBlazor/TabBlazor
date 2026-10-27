@@ -118,12 +118,27 @@
         }
         else if (current != null && !DataFilters.HasNoValue(current.Operator))
         {
-            await SetAsync(current with { Operator = op });
+            await SetAsync(WithOperator(current, op));
         }
         else if (current != null)
         {
             await SetAsync(null);
         }
+    }
+
+    // In holds a list; the other operators one value. Text keeps the comma-separated form the field shows.
+    private FilterSpec WithOperator(FilterSpec current, FilterOperator op)
+    {
+        if (current.Operator != FilterOperator.In || op == FilterOperator.In)
+        {
+            return current with { Operator = op };
+        }
+
+        var values = DataFilters.AsList(current.Value).ToList();
+        object value = values.Count == 1 || Column.Info.Kind != DataValueKind.Text
+            ? values.FirstOrDefault()
+            : string.Join(",", values.Select(DataFilters.FormatValue));
+        return current with { Operator = op, Value = value, Value2 = null };
     }
 
     private Task SetValueAsync(FilterOperator op, object value) =>
