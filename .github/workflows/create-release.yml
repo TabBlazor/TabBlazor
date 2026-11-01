@@ -4,6 +4,7 @@ on: workflow_dispatch
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   release:
@@ -36,8 +37,14 @@ jobs:
           dotnet pack src/TabBlazor/TabBlazor.csproj -c Release -o artifacts
           dotnet pack src/TabBlazor.QuickTable.EntityFramework/TabBlazor.QuickTable.EntityFramework.csproj -c Release -o artifacts
 
+      - name: NuGet login
+        uses: NuGet/login@v1
+        id: nuget_login
+        with:
+          user: mahlberg
+
       - name: Push to NuGet
-        run: dotnet nuget push "artifacts/*.nupkg" -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+        run: dotnet nuget push "artifacts/*.nupkg" -s https://api.nuget.org/v3/index.json -k ${{ steps.nuget_login.outputs.NUGET_API_KEY }} --skip-duplicate
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
