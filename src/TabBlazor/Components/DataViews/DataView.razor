@@ -21,7 +21,7 @@
                 <DataViewHeader TItem="TItem" View="this" />
             }
 
-            @if (ShowFilterChips && engine.Filters.Count > 0)
+            @if (FilterChipsVisible)
             {
                 <div class="dv-filter-chips">
                     @foreach (var filter in engine.Filters)
@@ -110,9 +110,20 @@
 
         @if (IsSmallScreen && FiltersButtonVisible)
         {
-            <Offcanvas Open="FiltersPanelOpen" OpenChanged="SetFiltersPanelOpen" Title="@Texts.Filters"
+            <Offcanvas Open="FiltersPanelOpen" OpenChanged="SetFiltersPanelOpen" Title="@FiltersSheetTitle"
                        Position="OffcanvasPosition.Bottom" Size="OffcanvasSize.Large" Class="dv-filters-sheet">
-                <DataViewFiltersPanel TItem="TItem" View="this" />
+                <ChildContent>
+                    <DataViewFiltersPanel TItem="TItem" View="this" ShowSort="true" ShowClearAll="false" />
+                </ChildContent>
+                <FooterTemplate>
+                    <div class="d-flex gap-2 w-100 dv-filters-sheet-footer">
+                        @if (ActiveFilterCount > 0)
+                        {
+                            <button type="button" class="btn flex-fill dv-filters-clear-all" @onclick="ClearFiltersAsync">@Texts.ClearAllFilters</button>
+                        }
+                        <button type="button" class="btn btn-primary flex-fill dv-filters-show-results" @onclick="() => SetFiltersPanelOpen(false)">@ShowResultsText</button>
+                    </div>
+                </FooterTemplate>
             </Offcanvas>
         }
 

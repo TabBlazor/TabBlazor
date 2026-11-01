@@ -81,7 +81,7 @@
             </Dropdown>
         }
 
-        @if (View.CurrentView != DataViewKind.Table && sortable.Count > 0)
+        @if (View.CurrentView != DataViewKind.Table && sortable.Count > 0 && !View.IsSmallScreen)
         {
             var current = sortable.FirstOrDefault(c => c.Id == engine.Sort?.Column);
             <Dropdown class="dv-sort-menu">
@@ -110,31 +110,16 @@
             </Dropdown>
         }
 
-        @if (View.FiltersButtonVisible)
+        @if (!View.IsSmallScreen)
         {
-            var count = View.ActiveFilterCount;
-            @if (View.IsSmallScreen)
-            {
-                <button type="button" class="btn dv-filters-button" @onclick="() => View.SetFiltersPanelOpen(true)">
-                    <Icon IconType="@InternalIcons.Filter" class="icon" />
-                    @texts.Filters
-                    @if (count > 0)
-                    {
-                        <span class="badge bg-primary text-primary-fg ms-2">@count</span>
-                    }
-                </button>
-            }
-            else
+            @if (View.FiltersButtonVisible)
             {
                 <Dropdown CloseOnClick="false" class="dv-filters-dropdown">
                     <ChildContent>
                         <button type="button" class="btn dv-filters-button">
                             <Icon IconType="@InternalIcons.Filter" class="icon" />
                             @texts.Filters
-                            @if (count > 0)
-                            {
-                                <span class="badge bg-primary text-primary-fg ms-2">@count</span>
-                            }
+                            @FilterCountBadge
                         </button>
                     </ChildContent>
                     <DropdownTemplate>
@@ -145,17 +130,11 @@
                     </DropdownTemplate>
                 </Dropdown>
             }
-        }
 
-        @if (View.SearchVisible)
-        {
-            <div class="input-icon dv-search">
-                <span class="input-icon-addon">
-                    <Icon IconType="@InternalIcons.Search" />
-                </span>
-                <input type="search" class="form-control" placeholder="@texts.Search" aria-label="@texts.Search"
-                       value="@engine.SearchInput" @oninput="e => engine.OnSearchInputAsync(e.Value?.ToString())" />
-            </div>
+            @if (View.SearchVisible)
+            {
+                @SearchBox
+            }
         }
 
         @if (View.RefreshVisible && !View.IsSmallScreen)
@@ -224,6 +203,23 @@
             </Dropdown>
         }
     </div>
+    @if (View.IsSmallScreen && (View.SearchVisible || View.FiltersButtonVisible))
+    {
+        <div class="dv-mobile-bar">
+            @if (View.SearchVisible)
+            {
+                @SearchBox
+            }
+            @if (View.FiltersButtonVisible)
+            {
+                <button type="button" class="btn dv-filters-button" @onclick="() => View.SetFiltersPanelOpen(true)">
+                    <Icon IconType="@InternalIcons.Filter" class="icon" />
+                    @(View.FilterableColumns.Count > 0 ? texts.Filters : texts.SortBy)
+                    @FilterCountBadge
+                </button>
+            }
+        </div>
+    }
     }
 </div>
 
@@ -231,6 +227,25 @@
     private static readonly TableDensity[] densities = [TableDensity.Compact, TableDensity.Normal, TableDensity.Comfortable];
 
     [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+
+    private RenderFragment SearchBox => __builder =>
+    {
+        <div class="input-icon dv-search">
+            <span class="input-icon-addon">
+                <Icon IconType="@InternalIcons.Search" />
+            </span>
+            <input type="search" class="form-control" placeholder="@View.Texts.Search" aria-label="@View.Texts.Search"
+                   value="@View.Engine.SearchInput" @oninput="e => View.Engine.OnSearchInputAsync(e.Value?.ToString())" />
+        </div>
+    };
+
+    private RenderFragment FilterCountBadge => __builder =>
+    {
+        if (View.ActiveFilterCount > 0)
+        {
+            <span class="badge bg-primary text-primary-fg ms-2">@View.ActiveFilterCount</span>
+        }
+    };
 
     private string ViewText(DataViewKind value) => value == DataViewKind.List ? View.Texts.ListView : View.Texts.TableView;
 

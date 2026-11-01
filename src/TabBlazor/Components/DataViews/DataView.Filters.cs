@@ -8,7 +8,9 @@ public partial class DataView<TItem>
     private readonly Dictionary<string, CancellationTokenSource> filterDelays = [];
     private IReadOnlyList<FilterSpec>? lastFiltersParameter;
 
-    /// <summary>Shows the "Filters (n)" button. Defaults to true when any column is filterable.</summary>
+    /// <summary>Shows the "Filters (n)" button on wide screens. Defaults to true when any column is filterable.
+    /// Below <see cref="MobileBreakpoint"/> the button is always shown when a column can be filtered or sorted,
+    /// because the column headers are not there to do it.</summary>
     [Parameter] public bool? ShowFilters { get; set; }
 
     /// <summary>Adds a row of removable chips for the active filters.</summary>
@@ -24,7 +26,24 @@ public partial class DataView<TItem>
 
     internal IReadOnlyList<IDataViewColumn<TItem>> FilterableColumns => engine.Columns.Where(c => c.Filterable).ToList();
 
-    internal bool FiltersButtonVisible => ShowFilters ?? engine.Columns.Any(c => c.Filterable);
+    internal IReadOnlyList<IDataViewColumn<TItem>> SortableColumns => engine.Columns.Where(c => c.Sortable).ToList();
+
+    internal bool FiltersButtonVisible => IsSmallScreen
+        ? engine.Columns.Any(c => c.Filterable || c.Sortable)
+        : ShowFilters ?? engine.Columns.Any(c => c.Filterable);
+
+    internal bool FilterChipsVisible => (ShowFilterChips || IsSmallScreen) && engine.Filters.Count > 0;
+
+    internal string FiltersSheetTitle => (engine.Columns.Any(c => c.Filterable), engine.Columns.Any(c => c.Sortable)) switch
+    {
+        (true, true) => Texts.FilterAndSort,
+        (false, true) => Texts.SortBy,
+        _ => Texts.Filters
+    };
+
+    internal string ShowResultsText => engine.TotalCount is { } total
+        ? string.Format(Texts.ShowResultCount, total.ToString("N0"))
+        : Texts.ShowResults;
 
     internal int ActiveFilterCount => engine.Filters.Count;
 
