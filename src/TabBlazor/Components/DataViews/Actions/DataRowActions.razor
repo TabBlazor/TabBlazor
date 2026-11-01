@@ -64,7 +64,7 @@
 
         @if (actions.Count > inlineCount)
         {
-            <Dropdown class="dv-action-menu">
+            <Dropdown class="dv-action-menu" Placement="Placement.BottomEnd">
                 <ChildContent>
                     <button type="button" class="btn btn-icon btn-sm btn-ghost-secondary" title="@texts.MoreActions" aria-label="@texts.MoreActions" disabled="@(busy != null)">
                         @if (busy != null && actions.Skip(inlineCount).Any(a => a.Key == busy))

@@ -115,6 +115,29 @@ namespace TabBlazor.Tests.Components.DataViews
         }
 
         [Fact]
+        public void Small_screens_put_the_menu_on_the_search_row()
+        {
+            SimulateSmallScreen();
+            var cut = RenderView();
+
+            Assert.NotNull(cut.Find(".dv-mobile-bar .dv-search"));
+            Assert.NotNull(cut.Find(".dv-mobile-bar button.dv-menu"));
+            Assert.Empty(cut.FindAll(".dv-toolbar"));
+            Assert.Empty(cut.FindAll(".dv-title"));
+        }
+
+        [Fact]
+        public void Small_screens_keep_the_toolbar_for_a_toolbar_template()
+        {
+            SimulateSmallScreen();
+            var cut = RenderView(p => p.AddChildContent<ToolbarTemplate>(t => t
+                .AddChildContent("<span class=\"custom-tool\"></span>")));
+
+            Assert.NotNull(cut.Find(".dv-toolbar .custom-tool"));
+            Assert.Empty(cut.FindAll(".dv-toolbar button.dv-menu"));
+        }
+
+        [Fact]
         public void Small_screens_get_a_compact_pager()
         {
             SimulateSmallScreen();

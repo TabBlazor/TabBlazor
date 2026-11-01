@@ -848,8 +848,11 @@
     min-width: 0;
 }
 
-.dataview.dv-small ::deep .dv-mobile-bar .dv-filters-button {
+.dataview.dv-small ::deep .dv-mobile-bar > :not(.dv-search) {
     flex: 0 0 auto;
+}
+
+.dataview.dv-small ::deep .dv-mobile-bar .dv-filters-button {
     margin-left: auto;
 }
 

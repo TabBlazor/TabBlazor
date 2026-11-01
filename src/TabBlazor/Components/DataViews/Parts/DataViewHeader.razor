@@ -46,45 +46,33 @@
     }
     else
     {
-    <div class="dv-title">
-        @if (View.HeaderTemplate != null)
-        {
-            @View.HeaderTemplate
-        }
-        else if (!string.IsNullOrWhiteSpace(View.Title))
-        {
-            <h3 class="card-title">@View.Title</h3>
-        }
-    </div>
+    @if (View.HeaderTemplate != null || !string.IsNullOrWhiteSpace(View.Title))
+    {
+        <div class="dv-title">
+            @if (View.HeaderTemplate != null)
+            {
+                @View.HeaderTemplate
+            }
+            else
+            {
+                <h3 class="card-title">@View.Title</h3>
+            }
+        </div>
+    }
+    @if (!View.IsSmallScreen || View.ToolbarTemplate != null)
+    {
     <div class="dv-toolbar">
         @View.ToolbarTemplate
 
-        @if (View.AvailableViews.Count > 1)
+        @if (!View.IsSmallScreen)
         {
-            <Dropdown class="dv-view-switcher">
-                <ChildContent>
-                    <button type="button" class="btn btn-icon" title="@ViewText(View.CurrentView)" aria-label="@ViewText(View.CurrentView)">
-                        <Icon IconType="@ViewIcon(View.CurrentView)" />
-                    </button>
-                </ChildContent>
-                <DropdownTemplate>
-                    <DropdownMenu class="dropdown-menu-end">
-                        @foreach (var option in View.AvailableViews)
-                        {
-                            var value = option;
-                            <DropdownItem Active="@(View.CurrentView == value)" OnClick="() => View.SwitchViewAsync(value)">
-                                <Icon IconType="@ViewIcon(value)" class="icon dropdown-item-icon" />@ViewText(value)
-                            </DropdownItem>
-                        }
-                    </DropdownMenu>
-                </DropdownTemplate>
-            </Dropdown>
+            @ViewSwitcher
         }
 
         @if (View.CurrentView != DataViewKind.Table && sortable.Count > 0 && !View.IsSmallScreen)
         {
             var current = sortable.FirstOrDefault(c => c.Id == engine.Sort?.Column);
-            <Dropdown class="dv-sort-menu">
+            <Dropdown class="dv-sort-menu" Placement="Placement.BottomEnd">
                 <ChildContent>
                     <button type="button" class="btn" aria-label="@texts.SortBy">
                         <Icon IconType="@(current == null ? InternalIcons.Sortable : engine.Sort!.Descending ? InternalIcons.Sort_Desc : InternalIcons.Sort_Asc)" class="icon" />
@@ -114,7 +102,7 @@
         {
             @if (View.FiltersButtonVisible)
             {
-                <Dropdown CloseOnClick="false" class="dv-filters-dropdown">
+                <Dropdown CloseOnClick="false" class="dv-filters-dropdown" Placement="Placement.BottomEnd">
                     <ChildContent>
                         <button type="button" class="btn dv-filters-button">
                             <Icon IconType="@InternalIcons.Filter" class="icon" />
@@ -153,57 +141,13 @@
             </button>
         }
 
-        @if (View.ShowMenu && (View.Density == null || View.IsSmallScreen))
+        @if (View.ShowMenu && View.Density == null && !View.IsSmallScreen)
         {
-            <Dropdown>
-                <ChildContent>
-                <button type="button" class="btn btn-icon btn-ghost-secondary dv-menu" title="@texts.MoreOptions" aria-label="@texts.MoreOptions">
-                    <Icon IconType="@InternalIcons.Dots_vertical" />
-                </button>
-                </ChildContent>
-                <DropdownTemplate>
-                    <DropdownMenu class="dropdown-menu-end">
-                        @if (View.IsSmallScreen)
-                        {
-                            @if (View.AddVisible)
-                            {
-                                <DropdownItem class="dv-menu-add" OnClick="View.AddAsync">
-                                    <Icon IconType="@InternalIcons.Plus" class="icon dropdown-item-icon" />@texts.Add
-                                </DropdownItem>
-                            }
-                            @if (View.RefreshVisible)
-                            {
-                                <DropdownItem class="dv-menu-refresh" OnClick="View.ReloadAsync">
-                                    <Icon IconType="@InternalIcons.Refresh" class="icon dropdown-item-icon" />@texts.Refresh
-                                </DropdownItem>
-                            }
-                            @if (View.PageSizes is { Length: > 0 } && !View.IsVirtualized)
-                            {
-                                <h6 class="dropdown-header">@texts.RowsPerPage</h6>
-                                @foreach (var size in View.PageSizes)
-                                {
-                                    var value = size;
-                                    <DropdownItem Active="@(engine.PageSize == value)" class="dv-menu-page-size" OnClick="() => engine.ChangePageSizeAsync(value)">@value</DropdownItem>
-                                }
-                            }
-                        }
-                        @if (View.Density == null)
-                        {
-                            <h6 class="dropdown-header">@texts.Density</h6>
-                            @foreach (var option in densities)
-                            {
-                                var value = option;
-                                <DropdownItem Active="@(View.CurrentDensity == value)" OnClick="() => View.SetDensity(value)">
-                                    @DensityText(value)
-                                </DropdownItem>
-                            }
-                        }
-                    </DropdownMenu>
-                </DropdownTemplate>
-            </Dropdown>
+            @MoreMenu
         }
     </div>
-    @if (View.IsSmallScreen && (View.SearchVisible || View.FiltersButtonVisible))
+    }
+    @if (View.IsSmallScreen)
     {
         <div class="dv-mobile-bar">
             @if (View.SearchVisible)
@@ -217,6 +161,11 @@
                     @(View.FilterableColumns.Count > 0 ? texts.Filters : texts.SortBy)
                     @FilterCountBadge
                 </button>
+            }
+            @ViewSwitcher
+            @if (View.ShowMenu)
+            {
+                @MoreMenu
             }
         </div>
     }
@@ -237,6 +186,81 @@
             <input type="search" class="form-control" placeholder="@View.Texts.Search" aria-label="@View.Texts.Search"
                    value="@View.Engine.SearchInput" @oninput="e => View.Engine.OnSearchInputAsync(e.Value?.ToString())" />
         </div>
+    };
+
+    private RenderFragment ViewSwitcher => __builder =>
+    {
+        if (View.AvailableViews.Count > 1)
+        {
+            <Dropdown class="dv-view-switcher" Placement="Placement.BottomEnd">
+                <ChildContent>
+                    <button type="button" class="btn btn-icon" title="@ViewText(View.CurrentView)" aria-label="@ViewText(View.CurrentView)">
+                        <Icon IconType="@ViewIcon(View.CurrentView)" />
+                    </button>
+                </ChildContent>
+                <DropdownTemplate>
+                    <DropdownMenu class="dropdown-menu-end">
+                        @foreach (var option in View.AvailableViews)
+                        {
+                            var value = option;
+                            <DropdownItem Active="@(View.CurrentView == value)" OnClick="() => View.SwitchViewAsync(value)">
+                                <Icon IconType="@ViewIcon(value)" class="icon dropdown-item-icon" />@ViewText(value)
+                            </DropdownItem>
+                        }
+                    </DropdownMenu>
+                </DropdownTemplate>
+            </Dropdown>
+        }
+    };
+
+    private RenderFragment MoreMenu => __builder =>
+    {
+        <Dropdown Placement="Placement.BottomEnd">
+            <ChildContent>
+                <button type="button" class="btn btn-icon btn-ghost-secondary dv-menu" title="@View.Texts.MoreOptions" aria-label="@View.Texts.MoreOptions">
+                    <Icon IconType="@InternalIcons.Dots_vertical" />
+                </button>
+            </ChildContent>
+            <DropdownTemplate>
+                <DropdownMenu class="dropdown-menu-end">
+                    @if (View.IsSmallScreen)
+                    {
+                        @if (View.AddVisible)
+                        {
+                            <DropdownItem class="dv-menu-add" OnClick="View.AddAsync">
+                                <Icon IconType="@InternalIcons.Plus" class="icon dropdown-item-icon" />@View.Texts.Add
+                            </DropdownItem>
+                        }
+                        @if (View.RefreshVisible)
+                        {
+                            <DropdownItem class="dv-menu-refresh" OnClick="View.ReloadAsync">
+                                <Icon IconType="@InternalIcons.Refresh" class="icon dropdown-item-icon" />@View.Texts.Refresh
+                            </DropdownItem>
+                        }
+                        @if (View.PageSizes is { Length: > 0 } && !View.IsVirtualized)
+                        {
+                            <h6 class="dropdown-header">@View.Texts.RowsPerPage</h6>
+                            @foreach (var size in View.PageSizes)
+                            {
+                                var value = size;
+                                <DropdownItem Active="@(View.Engine.PageSize == value)" class="dv-menu-page-size" OnClick="() => View.Engine.ChangePageSizeAsync(value)">@value</DropdownItem>
+                            }
+                        }
+                    }
+                    @if (View.Density == null)
+                    {
+                        <h6 class="dropdown-header">@View.Texts.Density</h6>
+                        @foreach (var option in densities)
+                        {
+                            var value = option;
+                            <DropdownItem Active="@(View.CurrentDensity == value)" OnClick="() => View.SetDensity(value)">
+                                @DensityText(value)
+                            </DropdownItem>
+                        }
+                    }
+                </DropdownMenu>
+            </DropdownTemplate>
+        </Dropdown>
     };
 
     private RenderFragment FilterCountBadge => __builder =>

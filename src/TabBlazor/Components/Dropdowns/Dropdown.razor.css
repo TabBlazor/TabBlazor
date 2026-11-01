@@ -15,3 +15,9 @@
     position: static;
     margin: 0;
 }
+
+/* Bootstrap only end-aligns .dropdown-menu-end when its own Popper sets data-bs-popper */
+div:not(.popper-host) ::deep .dropdown-menu-end {
+    right: 0;
+    left: auto;
+}
