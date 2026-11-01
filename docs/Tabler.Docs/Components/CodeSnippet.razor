@@ -1,27 +1,24 @@
-﻿<Card class="mb-3">
-    <CardHeader id="@Id">
-        <h4 class="card-title">@Title</h4>
-    </CardHeader>
+﻿<section class="mb-5">
+    <h4 class="h2 mb-2" id="@Id">@Title</h4>
 
-    <CardBody>
-        @Description
+    @if (Description != null)
+    {
+        <div class="mb-3">@Description</div>
+    }
 
-        @if (ShowExample)
-        {
-            <div class="p-3 @ExampleBackground()">
-                @if (Component != null)
-                {
-                    <DynamicComponent Type="Component"/>
-                }
-            </div>
-        }
-
-        <div class="card-code">
-            <figure class="highlight markdown">
-                @((MarkupString)@Code)
-            </figure>
+    @if (ShowExample)
+    {
+        <div class="mb-3 @ExampleBackground()">
+            @if (Component != null)
+            {
+                <DynamicComponent Type="Component"/>
+            }
         </div>
+    }
 
-    </CardBody>
-</Card>
-
+    <div class="card-code">
+        <figure class="highlight markdown">
+            @((MarkupString)@Code)
+        </figure>
+    </div>
+</section>
