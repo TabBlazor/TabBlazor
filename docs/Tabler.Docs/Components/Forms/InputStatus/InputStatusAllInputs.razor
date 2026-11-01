@@ -40,6 +40,15 @@
             </ItemSelect>
         </InputStatus>
     </div>
+    <div class="col-12">
+        <label class="form-label">ItemSelect, multiple</label>
+        <InputStatus Value="SelectedCustomerNames" Save="() => SaveAsync(nameof(model.ItemSelectCustomers), SelectedCustomerNames)">
+            <ItemSelect TItem="Customer" TValue="Customer" Items="customers" @bind-SelectedValues="model.ItemSelectCustomers"
+                        SelectedTextExpression="c => c.CustomerName" NoSelectedText="Pick customers" MultiSelect>
+                <ListTemplate>@context.CustomerName</ListTemplate>
+            </ItemSelect>
+        </InputStatus>
+    </div>
     <div class="col-sm-6">
         <label class="form-label">Typeahead</label>
         <InputStatus Value="model.TypeaheadCustomer" Save="() => SaveAsync(nameof(model.TypeaheadCustomer), model.TypeaheadCustomer?.CustomerName)">
@@ -77,6 +86,8 @@
 
 @code {
     List<Customer> customers = SampleData.GetCustomers();
+
+    string SelectedCustomerNames => string.Join(", ", model.ItemSelectCustomers.Select(c => c.CustomerName));
     List<string> log = [];
     Model model = new();
 
@@ -98,6 +109,7 @@
         public DateTimeOffset Date { get; set; } = DateTimeOffset.Now.Date;
         public Customer SelectCustomer { get; set; }
         public Customer ItemSelectCustomer { get; set; }
+        public List<Customer> ItemSelectCustomers { get; set; } = [];
         public Customer TypeaheadCustomer { get; set; }
         public int Amount { get; set; } = 100;
         public string Notes { get; set; }

@@ -56,6 +56,11 @@
     padding-inline-end: 2rem;
 }
 
+.input-status:not(:has(> .form-control:first-child)) > .input-status-addon {
+    top: 0;
+    bottom: auto;
+}
+
 .input-status:has(> .number-input, > .form-check, > .form-check-input) {
     width: fit-content;
     max-width: 100%;
