@@ -68,6 +68,9 @@ public sealed record DataViewText
     public string LastPage { get; init; } = "Last page";
     public string OpenRow { get; init; } = "Open";
     public string SortBy { get; init; } = "Sort by";
+    public string SortAscending { get; init; } = "Ascending";
+    public string SortDescending { get; init; } = "Descending";
+    public string NoSort { get; init; } = "None";
     public string TableView { get; init; } = "Table";
     public string ListView { get; init; } = "List";
     public string Add { get; init; } = "Add";
@@ -85,6 +88,10 @@ public sealed record DataViewText
     public string Filter { get; init; } = "Filter";
     public string ClearFilter { get; init; } = "Clear";
     public string ClearAllFilters { get; init; } = "Clear all";
+    public string FilterAndSort { get; init; } = "Filter & sort";
+    public string ShowResults { get; init; } = "Show results";
+    /// <summary>The filters sheet's close button when the total is known; {0} is the formatted count.</summary>
+    public string ShowResultCount { get; init; } = "Show {0} results";
     public string From { get; init; } = "From";
     public string To { get; init; } = "To";
     public string Any { get; init; } = "Any";

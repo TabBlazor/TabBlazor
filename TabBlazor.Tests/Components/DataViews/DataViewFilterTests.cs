@@ -316,6 +316,99 @@ namespace TabBlazor.Tests.Components.DataViews
         }
 
         [Fact]
+        public void Small_screens_show_the_filters_button_even_when_ShowFilters_is_false()
+        {
+            JSInterop.Setup<bool>("tabBlazor.watchMedia", _ => true).SetResult(true);
+            var cut = RenderFilterable(p => p.Add(x => x.ShowFilters, false));
+
+            Assert.NotNull(cut.Find(".dv-mobile-bar .dv-filters-button"));
+        }
+
+        [Fact]
+        public void Wide_screens_hide_the_filters_button_when_ShowFilters_is_false()
+        {
+            var cut = RenderFilterable(p => p.Add(x => x.ShowFilters, false));
+
+            Assert.Empty(cut.FindAll(".dv-filters-button"));
+        }
+
+        [Fact]
+        public void Small_screens_put_search_and_filters_in_their_own_bar()
+        {
+            JSInterop.Setup<bool>("tabBlazor.watchMedia", _ => true).SetResult(true);
+            var cut = RenderFilterable(p => p.Add(x => x.ShowSearch, true));
+
+            Assert.Empty(cut.FindAll(".dv-toolbar .dv-search"));
+            Assert.NotNull(cut.Find(".dv-mobile-bar .dv-search"));
+        }
+
+        [Fact]
+        public void Small_screens_show_filter_chips_without_ShowFilterChips()
+        {
+            JSInterop.Setup<bool>("tabBlazor.watchMedia", _ => true).SetResult(true);
+            var cut = RenderFilterable(p => p.Add(x => x.Filters, [new FilterSpec("total", FilterOperator.Between, 100m, null)]));
+
+            Assert.Single(cut.FindAll(".dv-filter-chip"));
+        }
+
+        [Fact]
+        public void Wide_screens_show_filter_chips_only_with_ShowFilterChips()
+        {
+            var cut = RenderFilterable(p => p.Add(x => x.Filters, [new FilterSpec("total", FilterOperator.Between, 100m, null)]));
+
+            Assert.Empty(cut.FindAll(".dv-filter-chip"));
+        }
+
+        [Fact]
+        public void Filters_sheet_sorts_by_the_picked_column_and_direction()
+        {
+            JSInterop.Setup<bool>("tabBlazor.watchMedia", _ => true).SetResult(true);
+            var cut = Render<DataView<Row>>(p => p
+                .Add(x => x.Source, source)
+                .AddChildContent<DataColumn<Row, string>>(c => c.Add(x => x.Value, r => r.Name).Add(x => x.Filterable, true))
+                .AddChildContent<DataColumn<Row, decimal>>(c => c.Add(x => x.Value, r => r.Total).Add(x => x.Sortable, true)));
+
+            cut.Find(".dv-filters-button").Click();
+            Assert.Equal("Filter & sort", cut.Find(".offcanvas-title").TextContent.Trim());
+
+            cut.Find(".offcanvas .dv-sort-select").Change("total");
+            Assert.Equal(new SortSpec("total", false), source.Last.Request.Sorts.First());
+
+            cut.Find(".offcanvas .dv-sort-descending").Click();
+            Assert.Equal(new SortSpec("total", true), source.Last.Request.Sorts.First());
+        }
+
+        [Fact]
+        public void Small_screens_offer_sorting_when_no_column_is_filterable()
+        {
+            JSInterop.Setup<bool>("tabBlazor.watchMedia", _ => true).SetResult(true);
+            var cut = Render<DataView<Row>>(p => p
+                .Add(x => x.Source, source)
+                .AddChildContent<DataColumn<Row, string>>(c => c.Add(x => x.Value, r => r.Name).Add(x => x.Sortable, true)));
+
+            var button = cut.Find(".dv-filters-button");
+            Assert.Contains("Sort by", button.TextContent);
+
+            button.Click();
+            Assert.NotNull(cut.Find(".offcanvas .dv-sort-select"));
+        }
+
+        [Fact]
+        public void Filters_sheet_footer_clears_and_closes()
+        {
+            JSInterop.Setup<bool>("tabBlazor.watchMedia", _ => true).SetResult(true);
+            var cut = RenderFilterable(p => p.Add(x => x.Filters, [new FilterSpec("total", FilterOperator.Between, 100m, null)]));
+            cut.Find(".dv-filters-button").Click();
+
+            cut.Find(".offcanvas-footer .dv-filters-clear-all").Click();
+            Assert.Empty(LastFilters);
+
+            Assert.Contains("Show", cut.Find(".dv-filters-show-results").TextContent);
+            cut.Find(".dv-filters-show-results").Click();
+            Assert.False(cut.Instance.FiltersPanelOpen);
+        }
+
+        [Fact]
         public void The_filters_panel_keeps_its_order_while_a_filter_applies()
         {
             var cut = RenderFilterable();

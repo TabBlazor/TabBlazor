@@ -6,6 +6,34 @@
     var columns = OrderedColumns();
 }
 <div class="dv-filters-panel" @onclick:stopPropagation="true">
+    @if (ShowSort && View.SortableColumns.Count > 0)
+    {
+        var sort = View.Engine.Sort;
+        <div class="dv-filters-panel-item dv-sort-panel mb-3">
+            <label class="form-label mb-1" for="@sortSelectId">@texts.SortBy</label>
+            <div class="d-flex gap-2">
+                <select id="@sortSelectId" class="form-select dv-sort-select" value="@(sort?.Column ?? string.Empty)" @onchange="OnSortColumnChanged">
+                    <option value="">@texts.NoSort</option>
+                    @foreach (var column in View.SortableColumns)
+                    {
+                        <option value="@column.Id">@column.Title</option>
+                    }
+                </select>
+                <div class="btn-group dv-sort-direction" role="group" aria-label="@texts.SortBy">
+                    <button type="button" class="btn btn-icon @(sort is { Descending: false } ? "btn-primary" : null) dv-sort-ascending"
+                            title="@texts.SortAscending" aria-label="@texts.SortAscending" aria-pressed="@(sort is { Descending: false } ? "true" : "false")"
+                            disabled="@(sort == null)" @onclick="() => SetSortDirectionAsync(false)">
+                        <Icon IconType="@InternalIcons.Sort_Asc" />
+                    </button>
+                    <button type="button" class="btn btn-icon @(sort is { Descending: true } ? "btn-primary" : null) dv-sort-descending"
+                            title="@texts.SortDescending" aria-label="@texts.SortDescending" aria-pressed="@(sort is { Descending: true } ? "true" : "false")"
+                            disabled="@(sort == null)" @onclick="() => SetSortDirectionAsync(true)">
+                        <Icon IconType="@InternalIcons.Sort_Desc" />
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
     @foreach (var column in columns)
     {
         var col = column;
@@ -21,7 +49,7 @@
             <DataColumnFilter TItem="TItem" View="View" Column="col" />
         </div>
     }
-    @if (View.ActiveFilterCount > 0)
+    @if (ShowClearAll && View.ActiveFilterCount > 0)
     {
         <button type="button" class="btn btn-sm w-100 dv-filters-clear-all" @onclick="View.ClearFiltersAsync">@texts.ClearAllFilters</button>
     }
@@ -30,7 +58,29 @@
 @code {
     private List<string> order;
 
+    private readonly string sortSelectId = $"dv-sort-{Guid.CreateVersion7():N}";
+
     [Parameter, EditorRequired] public DataView<TItem> View { get; set; } = default!;
+
+    /// <summary>Adds a sort picker above the filters (used on small screens, where the column headers are hidden).</summary>
+    [Parameter] public bool ShowSort { get; set; }
+
+    [Parameter] public bool ShowClearAll { get; set; } = true;
+
+    private Task OnSortColumnChanged(ChangeEventArgs e)
+    {
+        var columnId = e.Value?.ToString();
+        if (string.IsNullOrEmpty(columnId))
+        {
+            return View.Engine.SetSortAsync(null, false);
+        }
+
+        var column = View.SortableColumns.First(c => c.Id == columnId);
+        return View.Engine.SetSortAsync(column.Id, column.DefaultSort == SortOrder.Descending);
+    }
+
+    private Task SetSortDirectionAsync(bool descending) =>
+        View.Engine.Sort is { } sort ? View.Engine.SetSortAsync(sort.Column, descending) : Task.CompletedTask;
 
     // Active filters come first when the panel opens; the order then stays put, so a field being typed in
     // does not move away when its filter applies.
