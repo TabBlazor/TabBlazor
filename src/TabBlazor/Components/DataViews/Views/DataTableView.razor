@@ -29,9 +29,10 @@
                 {
                     <th class="w-1 dv-actions-column"></th>
                 }
-                @foreach (var column in columns)
+                @for (var index = 0; index < columns.Count; index++)
                 {
-                    var col = column;
+                    var col = columns[index];
+                    var menuEnd = OpensToStart(index, columns.Count);
                     var sorted = engine.Sort?.Column == col.Id;
                     var headerClass = col == columns[0] ? $"dv-first-col {col.GetHeaderClass()}" : col.GetHeaderClass();
                     <th scope="col" class="@headerClass" style="@View.GetHeaderStyle(col)" data-column-id="@col.Id"
@@ -53,7 +54,7 @@
                         @if (col.Filterable && View.FilterMode == DataFilterMode.Menu)
                         {
                             var active = View.GetFilter(col.Id) != null;
-                            <Dropdown CloseOnClick="false" class="dv-filter-menu">
+                            <Dropdown CloseOnClick="false" class="dv-filter-menu" Placement="@MenuPlacement(menuEnd)">
                                 <ChildContent>
                                     <button type="button" class="btn btn-icon btn-sm btn-ghost-@(active ? "primary" : "secondary") dv-filter-button @(active ? "dv-filter-active" : null)"
                                             title="@($"{View.Texts.Filter}: {col.Title}")" aria-label="@($"{View.Texts.Filter}: {col.Title}")" aria-pressed="@(active ? "true" : "false")">
@@ -61,7 +62,7 @@
                                     </button>
                                 </ChildContent>
                                 <DropdownTemplate>
-                                    <DropdownMenu Card="true" class="p-3 dv-filter-menu-card">
+                                    <DropdownMenu Card="true" class="@($"p-3 dv-filter-menu-card {(menuEnd ? "dropdown-menu-end" : null)}")">
                                         <DataViewPopupHeader Title="@col.Title" CloseLabel="@View.Texts.Close" />
                                         <DataColumnFilter TItem="TItem" View="View" Column="col" />
                                         @if (active)
@@ -75,14 +76,14 @@
                         }
                         @if (col.ColumnOptions != null)
                         {
-                            <Dropdown CloseOnClick="false" class="dv-column-options">
+                            <Dropdown CloseOnClick="false" class="dv-column-options" Placement="@MenuPlacement(menuEnd)">
                                 <ChildContent>
                                     <button type="button" class="btn btn-icon btn-sm btn-ghost-secondary" title="@View.Texts.ColumnOptions" aria-label="@View.Texts.ColumnOptions">
                                         <Icon IconType="@InternalIcons.Dots_vertical" Size="16" />
                                     </button>
                                 </ChildContent>
                                 <DropdownTemplate>
-                                    <DropdownMenu Card="true" class="dv-column-options-menu p-3">@col.ColumnOptions</DropdownMenu>
+                                    <DropdownMenu Card="true" class="@($"dv-column-options-menu p-3 {(menuEnd ? "dropdown-menu-end" : null)}")">@col.ColumnOptions</DropdownMenu>
                                 </DropdownTemplate>
                             </Dropdown>
                         }
@@ -207,6 +208,12 @@
     private string ScrollStyle => View.Height == null
         ? null
         : View.IsVirtualized ? $"height: {View.Height}; overflow-y: auto;" : $"max-height: {View.Height};";
+
+    // Header menus of columns in the right half open towards the start, so the last column's menu is not cut off
+    // by the scroll container or the page edge. A lone column keeps the start alignment.
+    internal static bool OpensToStart(int index, int count) => index > 0 && 2 * index >= count;
+
+    private static Placement MenuPlacement(bool end) => end ? Placement.BottomEnd : Placement.BottomStart;
 
     private static RenderFragment HeaderContent(IDataViewColumn<TItem> column) => builder =>
     {

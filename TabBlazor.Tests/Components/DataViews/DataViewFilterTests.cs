@@ -100,6 +100,29 @@ namespace TabBlazor.Tests.Components.DataViews
         }
 
         [Fact]
+        public void Filter_menus_of_right_hand_columns_open_towards_the_start()
+        {
+            var cut = RenderFilterable();
+
+            OpenFilter(cut, "name");
+            Assert.DoesNotContain("dropdown-menu-end", cut.Find("thead th[data-column-id='name'] .dv-filter-menu-card").ClassList);
+
+            OpenFilter(cut, "score");
+            Assert.Contains("dropdown-menu-end", cut.Find("thead th[data-column-id='score'] .dv-filter-menu-card").ClassList);
+        }
+
+        [Theory]
+        [InlineData(0, 1, false)]
+        [InlineData(0, 2, false)]
+        [InlineData(1, 2, true)]
+        [InlineData(1, 3, false)]
+        [InlineData(2, 3, true)]
+        [InlineData(3, 7, false)]
+        [InlineData(4, 7, true)]
+        public void Header_menus_open_towards_the_start_in_the_right_half(int index, int count, bool expected) =>
+            Assert.Equal(expected, DataTableView<Row>.OpensToStart(index, count));
+
+        [Fact]
         public void Enum_filter_leaves_out_placeholder_members()
         {
             var cut = Render<DataView<GeneratedRow>>(p => p
