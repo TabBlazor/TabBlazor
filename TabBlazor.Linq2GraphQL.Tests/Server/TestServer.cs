@@ -61,10 +61,16 @@ namespace TabBlazor.Linq2GraphQL.Tests.Server
 
     public static class TestServerSetup
     {
-        public static void AddTestGraphQLServer(this IServiceCollection services) =>
+        // HotChocolate costs variable filter inputs as the worst case, so its default cost limit rejects the
+        // adapter's queries (HC0047); maxFieldCost turns the limit on for the tests that check that error.
+        public static void AddTestGraphQLServer(this IServiceCollection services, double? maxFieldCost = null) =>
             services
                 .AddGraphQLServer()
-                .ModifyCostOptions(options => options.EnforceCostLimits = false)
+                .ModifyCostOptions(options =>
+                {
+                    options.EnforceCostLimits = maxFieldCost != null;
+                    options.MaxFieldCost = maxFieldCost ?? options.MaxFieldCost;
+                })
                 .AddQueryType<Query>()
                 .AddFiltering()
                 .AddSorting();

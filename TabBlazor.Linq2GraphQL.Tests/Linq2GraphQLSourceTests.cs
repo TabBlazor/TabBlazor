@@ -149,3 +149,53 @@ public class Linq2GraphQLSourceBehaviourTests(GraphQLServerFixture server) : ICl
         Assert.Empty(missing.FilterOperators);
     }
 }
+
+public class CostLimitTests(CostLimitedGraphQLServerFixture server) : IClassFixture<CostLimitedGraphQLServerFixture>
+{
+    private readonly SourceTestColumns<TestItem> columns = new();
+
+    [Fact]
+    public async Task A_query_over_the_servers_cost_limit_is_a_clear_error()
+    {
+        var source = Linq2GraphQLSource.Cursor<TestItem, TestItemFilterInput, TestItemSortInput>(
+            (first, after, where, order) => server.Client.Query.Items(first: first, after: after, where: where, order: order));
+        var request = new DataRequest(PageRequest.Cursor(null, 10), [], null,
+            [new FilterSpec(columns.FirstName.Id, FilterOperator.Contains, "a")], columns.All);
+
+        var error = await Assert.ThrowsAsync<GraphQLCostLimitException>(() => source.GetPageAsync(request, CancellationToken.None));
+
+        Assert.Equal(20, error.MaxFieldCost);
+        Assert.True(error.FieldCost > 20);
+        Assert.Contains("HC0047", error.Message);
+        Assert.Contains("EnforceCostLimits", error.Message);
+        Assert.IsType<global::Linq2GraphQL.Client.GraphQueryRequestException>(error.InnerException);
+    }
+
+    [Fact]
+    public void Cost_errors_in_parsed_GraphQL_errors_are_recognised()
+    {
+        var errors = new[]
+        {
+            new global::Linq2GraphQL.Client.GraphQueryError
+            {
+                Message = "The maximum allowed field cost was exceeded.",
+                Extensions = new()
+                {
+                    ["code"] = System.Text.Json.JsonDocument.Parse("\"HC0047\"").RootElement,
+                    ["fieldCost"] = System.Text.Json.JsonDocument.Parse("4200").RootElement,
+                    ["maxFieldCost"] = System.Text.Json.JsonDocument.Parse("1000").RootElement
+                }
+            }
+        };
+
+        var error = GraphQLCostLimitException.From(new global::Linq2GraphQL.Client.GraphQueryExecutionException(errors, "query", []));
+
+        Assert.NotNull(error);
+        Assert.Equal(4200, error.FieldCost);
+        Assert.Equal(1000, error.MaxFieldCost);
+    }
+
+    [Fact]
+    public void Other_errors_are_not_cost_errors() =>
+        Assert.Null(GraphQLCostLimitException.From(new global::Linq2GraphQL.Client.GraphQueryRequestException("Http error! Status code BadRequest", "query", [])));
+}

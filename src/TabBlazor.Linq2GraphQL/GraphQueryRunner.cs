@@ -25,7 +25,15 @@ internal static class GraphQueryRunner
 
         var execute = shape.Select.Invoke(query, null)!;
         var task = (Task)shape.ExecuteAsync(execute.GetType()).Invoke(execute, [cancellationToken])!;
-        await task.ConfigureAwait(false);
+        try
+        {
+            await task.ConfigureAwait(false);
+        }
+        catch (Exception ex) when (GraphQLCostLimitException.From(ex) is { } costError)
+        {
+            throw costError;
+        }
+
         var result = task.GetType().GetProperty(nameof(Task<object>.Result))!.GetValue(task);
         if (result == null)
         {

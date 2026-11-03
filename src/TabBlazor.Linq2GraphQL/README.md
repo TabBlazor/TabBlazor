@@ -32,3 +32,23 @@ var orders = Linq2GraphQLSource.Cursor<Order, OrderFilterInput, OrderSortInput>(
   (`orders.Convention(new HotChocolateConvention { Contains = "icontains" })`) or derive from it and override
   `AddSearch`, `AddFilter` or `BuildSort`.
 - HotChocolate's `contains` follows the database collation, so search can be case-sensitive.
+
+## HotChocolate's cost limit
+
+Linq2GraphQL sends `where` and `order` as variables, and HotChocolate costs a variable filter input as the worst
+case (every field and operator used), not by the filter actually sent. A filtered page of a wide type easily costs
+a few thousand against the default `MaxFieldCost` of 1,000, and the server rejects every query with `HC0047`
+("The maximum allowed field cost was exceeded"); the same filter written inline would cost a few dozen.
+
+Turn the limit off, or raise it, on the server:
+
+```csharp
+builder.Services
+    .AddGraphQLServer()
+    .ModifyCostOptions(o => o.EnforceCostLimits = false) // or: o.MaxFieldCost = 10_000
+    .AddFiltering()
+    .AddSorting();
+```
+
+The adapter recognises the error and throws a `GraphQLCostLimitException` (with the reported `FieldCost` and
+`MaxFieldCost`) whose message names these settings, so the DataView's error state says what to change.
