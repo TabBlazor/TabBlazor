@@ -26,7 +26,8 @@ add `!` to any other argument the compiler warns about in the same way.
 ```
 
 - **Rows** are the generated types. The adapter includes the nodes (their scalar fields), the total count and the
-  page info; include nested objects your columns show yourself, as above.
+  page info; include nested objects your columns show yourself, as above. To fetch less, see
+  [Fetching only the columns' fields](#fetching-only-the-columns-fields).
 - **Paths:** each column's member paths (`o => o.Customer.Name` → `customer.name`) are turned into GraphQL paths
   through the generated `[GraphQLMember]` names and checked against the generated filter and sort inputs on first
   use. A sortable, filterable or searchable column whose path does not exist is a clear error before any query.
@@ -38,6 +39,30 @@ add `!` to any other argument the compiler warns about in the same way.
   (`orders.Convention(new HotChocolateConvention { Contains = "icontains" })`) or derive from it and override
   `AddSearch`, `AddFilter` or `BuildSort`.
 - HotChocolate's `contains` follows the database collation, so search can be case-sensitive.
+
+## Fetching only the columns' fields
+
+By default every row comes with all its scalar fields, whether a column shows them or not. `FetchColumnFieldsOnly()`
+asks for just the fields the columns read: the members of each column's value (`o => o.Customer.Name`,
+`$"{o.FirstName} {o.LastName}"`), its `SortBy` and `FilterBy` members, and the `KeySelector` when it is a member
+path. Nested fields come along (`customer { name }`), so the page function no longer needs to include them.
+
+```csharp
+var orders = Linq2GraphQLSource.Cursor<Order, OrderFilterInput, OrderSortInput>(
+        (first, after, where, order) => client.Query
+            .Orders(first: first, after: after!, where: where, order: order!)
+            .Include(c => c.Nodes.Select(o => o.Email))) // read by a cell template
+    .FetchColumnFieldsOnly();
+```
+
+It is off by default because a DataView can read fields that no column names, and those come back empty:
+
+- cell `Template`s, `ListItemTemplate`, `DetailsTemplate`, row actions, `CellColor`/`CellClass`/`CellStyle`;
+- edit forms, which would also save the missing fields back as empty values;
+- a `KeySelector` that is not a member path (`o => new { o.A, o.B }`), which would give every row the same key.
+
+Include such fields in the page function as above. A column that uses the whole row in a way that cannot be traced
+to fields (`o => Describe(o)`) makes the adapter fetch every scalar field, as without the option.
 
 ## HotChocolate's cost limit
 

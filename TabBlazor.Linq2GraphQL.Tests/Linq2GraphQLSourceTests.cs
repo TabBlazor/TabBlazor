@@ -59,6 +59,110 @@ public class OffsetSourceTests(GraphQLServerFixture server)
     protected override int IdOf(TestItem item) => item.Id;
 }
 
+/// <summary>The shared source tests with only the columns' fields fetched.</summary>
+public class ColumnFieldsSourceTests(GraphQLServerFixture server)
+    : DataViewSourceTests<Linq2GraphQLSource<TestItem, TestItemFilterInput, TestItemSortInput>, TestItem>, IClassFixture<GraphQLServerFixture>
+{
+    protected override bool SearchIsCaseInsensitive => false;
+
+    protected override Linq2GraphQLSource<TestItem, TestItemFilterInput, TestItemSortInput> CreateSource(IReadOnlyList<SourceTestItem> items) =>
+        Linq2GraphQLSource.Cursor<TestItem, TestItemFilterInput, TestItemSortInput>(
+            (first, after, where, order) => server.Client.Query.Items(first: first, after: after, where: where, order: order))
+            .FetchColumnFieldsOnly();
+
+    protected override int IdOf(TestItem item) => item.Id;
+}
+
+public class ColumnFieldsTests(GraphQLServerFixture server) : IClassFixture<GraphQLServerFixture>
+{
+    private static readonly System.Linq.Expressions.Expression<Func<TestItem, string>> WholeRow = x => Describe(x);
+
+    private Linq2GraphQLSource<TestItem, TestItemFilterInput, TestItemSortInput> CreateSource() =>
+        Linq2GraphQLSource.Cursor<TestItem, TestItemFilterInput, TestItemSortInput>(
+            (first, after, where, order) => server.Client.Query.Items(first: first, after: after, where: where, order: order));
+
+    private static DataRequest Request(params DataColumnInfo[] columns) =>
+        new(PageRequest.Cursor(null, 50), [], null, [], columns);
+
+    private static string Describe(TestItem item) => item.FirstName;
+
+    [Fact]
+    public async Task Every_scalar_field_is_fetched_by_default()
+    {
+        var page = await CreateSource().GetPageAsync(
+            Request(DataColumnInfoBuilder.Create<TestItem, string>(x => x.FirstName)), CancellationToken.None);
+
+        var ada = page.Items.First(i => i.Id == 1);
+        Assert.Equal("Lovelace", ada.LastName);
+        Assert.Equal(2026, ada.Quantity);
+        Assert.Null(ada.Customer);
+    }
+
+    [Fact]
+    public async Task Only_the_fields_the_columns_read_are_fetched()
+    {
+        var request = Request(
+            DataColumnInfoBuilder.Create<TestItem, int>(x => x.Id),
+            DataColumnInfoBuilder.Create<TestItem, string>(x => x.FirstName),
+            DataColumnInfoBuilder.Create<TestItem, string>(x => x.Customer!.Name));
+
+        var page = await CreateSource().FetchColumnFieldsOnly().GetPageAsync(request, CancellationToken.None);
+
+        var ada = page.Items.First(i => i.Id == 1);
+        Assert.Equal("Ada", ada.FirstName);
+        Assert.Equal("Odin AB", ada.Customer!.Name);
+        Assert.Null(ada.LastName);
+        Assert.Equal(0, ada.Quantity);
+    }
+
+    [Fact]
+    public async Task Calculated_values_SortBy_and_FilterBy_members_are_fetched()
+    {
+        var request = Request(
+            DataColumnInfoBuilder.Create<TestItem, int>(x => x.Id),
+            DataColumnInfoBuilder.Create<TestItem, string>(x => $"{x.FirstName} {x.Note}",
+                sortBy: (System.Linq.Expressions.Expression<Func<TestItem, object>>)(x => x.Quantity),
+                filterBy: (System.Linq.Expressions.Expression<Func<TestItem, object>>)(x => x.Price)));
+
+        var page = await CreateSource().FetchColumnFieldsOnly().GetPageAsync(request, CancellationToken.None);
+
+        var ada = page.Items.First(i => i.Id == 1);
+        Assert.Equal("Ada", ada.FirstName);
+        Assert.Equal("vip", ada.Note);
+        Assert.Equal(2026, ada.Quantity);
+        Assert.Equal(10.50m, ada.Price);
+        Assert.Null(ada.LastName);
+    }
+
+    [Fact]
+    public async Task A_column_that_uses_the_whole_row_fetches_every_field()
+    {
+        var request = Request(
+            DataColumnInfoBuilder.Create<TestItem, int>(x => x.Id),
+            DataColumnInfoBuilder.Create(typeof(string), WholeRow, "description"));
+
+        var page = await CreateSource().FetchColumnFieldsOnly().GetPageAsync(request, CancellationToken.None);
+
+        Assert.Equal("Lovelace", page.Items.First(i => i.Id == 1).LastName);
+    }
+
+    [Fact]
+    public async Task The_page_function_can_include_more_fields()
+    {
+        var source = Linq2GraphQLSource.Cursor<TestItem, TestItemFilterInput, TestItemSortInput>(
+                (first, after, where, order) => server.Client.Query
+                    .Items(first: first, after: after, where: where, order: order)
+                    .Include(c => c!.Nodes!.Select(i => i.LastName)))
+            .FetchColumnFieldsOnly();
+
+        var page = await source.GetPageAsync(Request(DataColumnInfoBuilder.Create<TestItem, int>(x => x.Id)), CancellationToken.None);
+
+        var ada = page.Items.First(i => i.Id == 1);
+        Assert.Equal("Lovelace", ada.LastName);
+        Assert.Null(ada.FirstName);
+    }
+}
+
 public class Linq2GraphQLSourceBehaviourTests(GraphQLServerFixture server) : IClassFixture<GraphQLServerFixture>
 {
     private readonly SourceTestColumns<TestItem> columns = new();

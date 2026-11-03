@@ -219,7 +219,8 @@ Running list of places where the implementation differs from, or fills a gap in,
   three type arguments are enough; the connection type is read from the returned query. A wrong return type is a
   clear error on first load.
 - **The adapter includes** the connection's nodes (or items), total count and page info itself; nested objects
-  the columns show must be included by the page function (the doc's "fetch what the columns show" stays a later idea).
+  the columns show must be included by the page function. "Fetch what the columns show" is opt-in
+  (`FetchColumnFieldsOnly()`), because templates, details, edit forms and non-path keys read fields no column names.
 - **Combining filters:** every condition is its own filter object, combined with `and` (the doc's "conditions on one
   field share an object" is not needed for correctness). A Between filter sets `gte` and `lte` on one object.
 - **A search word that no column can match** (letters on number columns) returns an empty page without calling
