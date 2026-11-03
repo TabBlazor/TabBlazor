@@ -29,7 +29,7 @@
                         var f = filter;
                         var column = engine.Columns.FirstOrDefault(c => c.Id == f.Column);
                         <span class="badge bg-azure-lt dv-filter-chip">
-                            @column?.Title: @DataFilters.Describe(f, Texts)
+                            @column?.Title: @DataFilters.Describe(f, Texts, column == null ? null : column.GetFilterValueText)
                             <button type="button" class="btn-close ms-1" aria-label="@($"{Texts.ClearFilter} {column?.Title}")"
                                     @onclick="() => SetColumnFilterAsync(f.Column, null)"></button>
                         </span>

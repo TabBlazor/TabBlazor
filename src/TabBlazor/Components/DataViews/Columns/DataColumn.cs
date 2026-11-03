@@ -229,6 +229,20 @@ public partial class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<
         };
     }
 
+    /// <summary>
+    /// Enum filter options and chips use <c>OptionText</c>, else <see cref="Formatter"/>, when the value is the
+    /// column's enum type; other values keep the default text.
+    /// </summary>
+    public string? GetFilterValueText(object value)
+    {
+        if (value is not Enum || value is not TValue typed)
+        {
+            return null;
+        }
+
+        return OptionText != null ? OptionText(typed) : Formatter?.Invoke(typed);
+    }
+
     /// <summary>Reads the value; false when a null in the member chain stops it.</summary>
     public bool TryGetValue(TItem item, out TValue? value)
     {

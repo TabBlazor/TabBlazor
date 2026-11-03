@@ -42,7 +42,7 @@
                     <label class="form-check mb-1">
                         <input type="checkbox" class="form-check-input" checked="@selected.Contains(v)"
                                @onchange="e => ToggleEnumAsync(v, e.Value is true)" />
-                        <span class="form-check-label">@EnumDisplay.GetName((Enum)v)</span>
+                        <span class="form-check-label">@(Column.GetFilterValueText(v) ?? EnumDisplay.GetName((Enum)v))</span>
                     </label>
                 }
             </div>

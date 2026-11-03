@@ -6,9 +6,21 @@ using System.Reflection;
 
 namespace TabBlazor;
 
-/// <summary>Display names for enum values: <see cref="DisplayAttribute"/>, then <see cref="DescriptionAttribute"/>, then the name.</summary>
+/// <summary>
+/// Display names for enum values: <see cref="Formatter"/>, then <see cref="DisplayAttribute"/>, then
+/// <see cref="DescriptionAttribute"/>, then the name.
+/// </summary>
 public static class EnumDisplay
 {
+    /// <summary>
+    /// Names enum values app-wide, for enums that cannot carry attributes (generated GraphQL clients, for example).
+    /// Return null to fall back to the attributes and the name. Set it once at startup; it is called on every use, so
+    /// it can follow the current culture. DataView uses it for cells, filter options, filter chips, editors and the
+    /// in-memory search.
+    /// </summary>
+    /// <example><c>EnumDisplay.Formatter = e =&gt; e is SystemKind.SapS4 ? "SAP S/4HANA" : null;</c></example>
+    public static Func<Enum, string?>? Formatter { get; set; }
+
     private static readonly ConcurrentDictionary<Enum, string> Names = new();
     private static readonly ConcurrentDictionary<Type, Array> Values = new();
 
@@ -25,7 +37,7 @@ public static class EnumDisplay
         return result;
     });
 
-    public static string GetName(Enum value) => Names.GetOrAdd(value, static v =>
+    public static string GetName(Enum value) => Formatter?.Invoke(value) ?? Names.GetOrAdd(value, static v =>
     {
         var name = v.ToString();
         var field = v.GetType().GetField(name, BindingFlags.Public | BindingFlags.Static);
