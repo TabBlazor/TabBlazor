@@ -144,7 +144,7 @@ public partial class DataColumn<TItem, TValue>
         }
 
         IEnumerable<object?> values = Options?.Cast<object?>()
-                                       ?? (type.IsEnum ? Enum.GetValues(type).Cast<object?>()
+                                       ?? (type.IsEnum ? EnumDisplay.GetValues(type).Cast<object?>()
                                            : type == typeof(bool) ? [true, false] : []);
         foreach (var value in values)
         {

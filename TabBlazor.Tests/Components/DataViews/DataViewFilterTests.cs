@@ -100,6 +100,31 @@ namespace TabBlazor.Tests.Components.DataViews
         }
 
         [Fact]
+        public void Enum_filter_leaves_out_placeholder_members()
+        {
+            var cut = Render<DataView<GeneratedRow>>(p => p
+                .Add(x => x.Items, [new GeneratedRow { Status = GeneratedStatus.Open }])
+                .AddChildContent<DataColumn<GeneratedRow, GeneratedStatus>>(c => c.Add(x => x.Value, r => r.Status).Add(x => x.Filterable, true)));
+
+            cut.Find("thead th[data-column-id='status'] .dv-filter-button").Click();
+
+            Assert.Equal(["Open", "Closed"], cut.FindAll("thead .dv-column-filter .form-check-label").Select(l => l.TextContent));
+        }
+
+        // Shaped like a Linq2GraphQL enum generated with AddUnknownOption.
+        public enum GeneratedStatus
+        {
+            Open,
+            Closed,
+            __Unknown
+        }
+
+        public sealed class GeneratedRow
+        {
+            public GeneratedStatus Status { get; set; }
+        }
+
+        [Fact]
         public void Number_range_converts_to_the_column_type()
         {
             var cut = RenderFilterable();
