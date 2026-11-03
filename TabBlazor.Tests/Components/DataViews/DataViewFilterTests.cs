@@ -169,11 +169,16 @@ namespace TabBlazor.Tests.Components.DataViews
             Assert.Equal(["option Open", "option Closed"], cut.FindAll("thead .dv-column-filter .form-check-label").Select(l => l.TextContent));
         }
 
-        // Shaped like a Linq2GraphQL enum generated with AddUnknownOption.
+        // As Linq2GraphQL generates an enum with AddUnknownOption.
         public enum GeneratedStatus
         {
+            [System.Runtime.Serialization.EnumMember(Value = "OPEN")]
             Open,
+            [System.Runtime.Serialization.EnumMember(Value = "CLOSED")]
             Closed,
+            [System.Runtime.Serialization.EnumMember(Value = "")]
+            [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+            [System.ComponentModel.Browsable(false)]
             __Unknown
         }
 

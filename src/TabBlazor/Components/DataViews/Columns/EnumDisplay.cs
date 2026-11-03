@@ -25,13 +25,16 @@ public static class EnumDisplay
     private static readonly ConcurrentDictionary<Type, Array> Values = new();
 
     /// <summary>
-    /// The values offered in filters and editors. Members named with a leading <c>__</c> are left out: GraphQL reserves
-    /// that prefix, so such a member is a client-side placeholder (Linq2GraphQL's <c>__Unknown</c>) that a server never
-    /// accepts.
+    /// The values offered in filters and editors. Members marked <c>[Browsable(false)]</c> are left out, as are members
+    /// named with a leading <c>__</c>: GraphQL reserves that prefix, so such a member is a client-side placeholder
+    /// that a server never accepts (Linq2GraphQL's <c>__Unknown</c>, which carries both).
     /// </summary>
     public static Array GetValues(Type enumType) => Values.GetOrAdd(enumType, static t =>
     {
-        var values = Enum.GetValues(t).Cast<Enum>().Where(v => !v.ToString().StartsWith("__", StringComparison.Ordinal)).ToArray();
+        var values = t.GetFields(BindingFlags.Public | BindingFlags.Static)
+            .Where(f => !f.Name.StartsWith("__", StringComparison.Ordinal) && f.GetCustomAttribute<BrowsableAttribute>()?.Browsable != false)
+            .Select(f => f.GetValue(null))
+            .ToArray();
         var result = Array.CreateInstance(t, values.Length);
         Array.Copy(values, result, values.Length);
         return result;

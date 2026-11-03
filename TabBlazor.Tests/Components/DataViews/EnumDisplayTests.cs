@@ -13,9 +13,20 @@ namespace TabBlazor.Tests.Components.DataViews
             __Unknown
         }
 
+        private enum Hidden
+        {
+            Open,
+            [Browsable(false)] Legacy,
+            [Browsable(true)] Closed
+        }
+
         [Fact]
         public void GetValues_leaves_out_members_with_a_leading_double_underscore() =>
             Assert.Equal([Status.Open, Status.Closed], EnumDisplay.GetValues(typeof(Status)).Cast<Status>());
+
+        [Fact]
+        public void GetValues_leaves_out_members_marked_not_browsable() =>
+            Assert.Equal([Hidden.Open, Hidden.Closed], EnumDisplay.GetValues(typeof(Hidden)).Cast<Hidden>());
 
         [Fact]
         public void GetValues_returns_an_array_of_the_enum_type() =>

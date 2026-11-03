@@ -42,7 +42,8 @@ add `!` to any other argument the compiler warns about in the same way.
 - **Enum names:** generated enums show their member names (`SapS4`) and cannot carry `[Display]`. Name them once
   with `EnumDisplay.Formatter = e => e is SystemKind.SapS4 ? "SAP S/4HANA" : null;` (cells, filter options, chips
   and editors), or per column with `Formatter`/`OptionText`, which enum filter options and chips also use.
-  Members starting with `__` (the generator's `AddUnknownOption` adds `__Unknown`) are not offered as filter options.
+  Members marked `[Browsable(false)]` or starting with `__` (the generator's `AddUnknownOption` adds `__Unknown` with
+  both) are not offered as filter options.
 
 ## Fetching only the columns' fields
 
