@@ -10,10 +10,11 @@ public class CursorSourceTests(GraphQLServerFixture server)
     // HotChocolate filters an IQueryable in memory with ordinal string comparisons.
     protected override bool SearchIsCaseInsensitive => false;
 
+    // Written as in the README, with the '!' a client generated without nullable annotations needs.
     protected override Linq2GraphQLSource<TestItem, TestItemFilterInput, TestItemSortInput> CreateSource(IReadOnlyList<SourceTestItem> items) =>
         Linq2GraphQLSource.Cursor<TestItem, TestItemFilterInput, TestItemSortInput>(
             (first, after, where, order) => server.Client.Query
-                .Items(first: first, after: after, where: where, order: order)
+                .Items(first: first, after: after!, where: where, order: order!)
                 .Include(c => c!.Nodes!.Select(i => i.Customer)));
 
     protected override int IdOf(TestItem item) => item.Id;

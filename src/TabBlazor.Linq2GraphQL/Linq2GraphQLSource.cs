@@ -11,7 +11,7 @@ namespace TabBlazor.Linq2GraphQL;
 /// <code>
 /// var orders = Linq2GraphQLSource.Cursor&lt;Order, OrderFilterInput, OrderSortInput&gt;(
 ///     (first, after, where, order) => client.Query
-///         .Orders(first: first, after: after, where: where, order: order)
+///         .Orders(first: first, after: after!, where: where, order: order!)
 ///         .Include(c => c.Nodes.Select(o => o.Customer)));
 /// </code>
 /// </example>

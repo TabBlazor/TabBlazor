@@ -7,9 +7,15 @@ search and column filters go to a HotChocolate server (`[UsePaging]`/`[UseOffset
 ```csharp
 var orders = Linq2GraphQLSource.Cursor<Order, OrderFilterInput, OrderSortInput>(
     (first, after, where, order) => client.Query
-        .Orders(first: first, after: after, where: where, order: order)
+        .Orders(first: first, after: after!, where: where, order: order!)
         .Include(c => c.Nodes.Select(o => o.Customer)));
 ```
+
+The `!` keep a nullable-enabled app free of warnings: the page function passes `string?` and `List<TSort>?`
+(null on the first page and when nothing is sorted), but a client generated without the generator's nullable
+option (`-nu`) declares `string after = null` and `List<TSort> order = null`, which gives CS8604. Null is what those
+parameters default to, so the `!` only silence the warning. With a client generated with `-nu` they are not needed;
+add `!` to any other argument the compiler warns about in the same way.
 
 ```razor
 <DataView TItem="Order" Source="orders" KeySelector="o => o.OrderId">
