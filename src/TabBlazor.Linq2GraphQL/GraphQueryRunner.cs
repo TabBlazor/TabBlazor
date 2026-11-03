@@ -18,14 +18,26 @@ internal static class GraphQueryRunner
 {
     private static readonly ConcurrentDictionary<Type, QueryShape> Shapes = new();
 
-    public static async Task<GraphQLPageResult<TNode>> ExecuteAsync<TNode>(object query, CancellationToken cancellationToken)
+    /// <param name="query">The query the page function returned.</param>
+    /// <param name="nodeFields">The row fields to fetch, or null for all of the rows' scalar fields.</param>
+    /// <param name="cancellationToken">Cancels the request.</param>
+    public static async Task<GraphQLPageResult<TNode>> ExecuteAsync<TNode>(object query, IReadOnlyList<PropertyInfo[]>? nodeFields,
+        CancellationToken cancellationToken)
     {
         var shape = Shapes.GetOrAdd(query.GetType(), QueryShape.For);
-        shape.IncludeResultFields(query);
+        shape.IncludeResultFields(query, nodeFields);
 
         var execute = shape.Select.Invoke(query, null)!;
         var task = (Task)shape.ExecuteAsync(execute.GetType()).Invoke(execute, [cancellationToken])!;
-        await task.ConfigureAwait(false);
+        try
+        {
+            await task.ConfigureAwait(false);
+        }
+        catch (Exception ex) when (GraphQLCostLimitException.From(ex) is { } costError)
+        {
+            throw costError;
+        }
+
         var result = task.GetType().GetProperty(nameof(Task<object>.Result))!.GetValue(task);
         if (result == null)
         {
@@ -90,10 +102,23 @@ internal static class GraphQueryRunner
             t.GetMethod("ExecuteAsync", [typeof(CancellationToken)])
             ?? throw new InvalidOperationException($"{t.Name} has no ExecuteAsync(CancellationToken)."));
 
-        // The page needs its rows (their scalar fields), the total and the page info, whatever the page function included.
-        public void IncludeResultFields(object query)
+        // The page needs its rows (their scalar fields, or the given fields), the total and the page info, whatever
+        // the page function included. Including the rows as such makes Linq2GraphQL add all their scalar fields;
+        // including paths below them adds just those.
+        public void IncludeResultFields(object query, IReadOnlyList<PropertyInfo[]>? nodeFields)
         {
-            IncludeMember(query, Items);
+            if (nodeFields is { Count: > 0 })
+            {
+                foreach (var fields in nodeFields)
+                {
+                    IncludeNodeField(query, fields);
+                }
+            }
+            else
+            {
+                IncludeMember(query, Items);
+            }
+
             if (TotalCount != null)
             {
                 IncludeMember(query, TotalCount);
@@ -103,6 +128,23 @@ internal static class GraphQueryRunner
             {
                 IncludeMember(query, PageInfo);
             }
+        }
+
+        // c => c.Nodes.Select(n => n.Customer.Name)
+        private void IncludeNodeField(object query, PropertyInfo[] fields)
+        {
+            var nodeType = GraphQLMembers.ElementType(Items.PropertyType);
+            var node = Expression.Parameter(nodeType, "n");
+            Expression body = node;
+            foreach (var field in fields)
+            {
+                body = Expression.Property(body, field);
+            }
+
+            var connection = Expression.Parameter(ResultType, "c");
+            var select = Expression.Call(typeof(Enumerable), nameof(Enumerable.Select), [nodeType, body.Type],
+                Expression.Property(connection, Items), Expression.Lambda(body, node));
+            Include.MakeGenericMethod(select.Type).Invoke(query, [Expression.Lambda(select, connection)]);
         }
 
         private void IncludeMember(object query, PropertyInfo member)

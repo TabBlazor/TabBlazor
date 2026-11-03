@@ -202,11 +202,15 @@ public static class DataFilters
     };
 
     /// <summary>A short text for a filter, for chips: "contains odi", "2026-01-01 – 2026-03-31", "Open, Closed".</summary>
-    public static string Describe(FilterSpec filter, DataViewText texts)
+    /// <param name="filter">The filter.</param>
+    /// <param name="texts">The UI strings.</param>
+    /// <param name="valueText">The column's text for a value, or null for the default (see <see cref="IDataViewColumn{TItem}.GetFilterValueText"/>).</param>
+    public static string Describe(FilterSpec filter, DataViewText texts, Func<object, string?>? valueText = null)
     {
         string Show(object? v) => v switch
         {
             null => "…",
+            _ when valueText?.Invoke(v) is { } text => text,
             Enum e => EnumDisplay.GetName(e),
             DateTime d => d.ToString("d", CultureInfo.CurrentCulture),
             DateTimeOffset d => d.ToString("d", CultureInfo.CurrentCulture),

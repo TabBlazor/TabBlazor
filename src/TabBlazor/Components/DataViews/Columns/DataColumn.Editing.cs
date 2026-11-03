@@ -24,7 +24,7 @@ public partial class DataColumn<TItem, TValue>
     /// <summary>Values for a dropdown editor, for example a list of customer ids.</summary>
     [Parameter] public IEnumerable<TValue>? Options { get; set; }
 
-    /// <summary>The text of each option of <see cref="Options"/>. Defaults to the formatted value.</summary>
+    /// <summary>The text of each option of <see cref="Options"/>, and of an enum column's filter options and chips. Defaults to the formatted value.</summary>
     [Parameter] public Func<TValue, string>? OptionText { get; set; }
 
     public bool CanEdit(TItem draft) =>
@@ -144,7 +144,7 @@ public partial class DataColumn<TItem, TValue>
         }
 
         IEnumerable<object?> values = Options?.Cast<object?>()
-                                       ?? (type.IsEnum ? Enum.GetValues(type).Cast<object?>()
+                                       ?? (type.IsEnum ? EnumDisplay.GetValues(type).Cast<object?>()
                                            : type == typeof(bool) ? [true, false] : []);
         foreach (var value in values)
         {

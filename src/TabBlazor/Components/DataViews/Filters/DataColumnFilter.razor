@@ -36,13 +36,13 @@
             var enumType = Nullable.GetUnderlyingType(info.FilterValueType!) ?? info.FilterValueType!;
             var selected = DataFilters.AsList(filter?.Value).ToList();
             <div class="dv-filter-options">
-                @foreach (var value in Enum.GetValues(enumType))
+                @foreach (var value in EnumDisplay.GetValues(enumType))
                 {
                     var v = value;
                     <label class="form-check mb-1">
                         <input type="checkbox" class="form-check-input" checked="@selected.Contains(v)"
                                @onchange="e => ToggleEnumAsync(v, e.Value is true)" />
-                        <span class="form-check-label">@EnumDisplay.GetName((Enum)v)</span>
+                        <span class="form-check-label">@(Column.GetFilterValueText(v) ?? EnumDisplay.GetName((Enum)v))</span>
                     </label>
                 }
             </div>

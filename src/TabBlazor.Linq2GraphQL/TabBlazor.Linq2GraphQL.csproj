@@ -5,8 +5,14 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Description>Linq2GraphQL adapter for TabBlazor DataView: sorts, searches, filters and pages HotChocolate GraphQL APIs through generated Linq2GraphQL clients.</Description>
+        <Authors>Joakim Dangården</Authors>
+        <Product>TabBlazor</Product>
         <PackageTags>Blazor Tabler DataView GraphQL Linq2GraphQL HotChocolate</PackageTags>
+        <RepositoryUrl>https://github.com/TabBlazor/TabBlazor</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageProjectUrl>https://tabblazor.com/</PackageProjectUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>TabBlazorLogo.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
@@ -22,6 +28,7 @@
 
     <ItemGroup>
         <None Include="README.md" Pack="true" PackagePath="\" />
+        <None Include="..\TabBlazor\TabBlazorLogo.png" Pack="true" PackagePath="\" Visible="false" />
     </ItemGroup>
 
     <ItemGroup>

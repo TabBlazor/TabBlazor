@@ -11,9 +11,12 @@ using TabBlazor.Tests.Components.DataViews;
 namespace TabBlazor.Linq2GraphQL.Tests;
 
 /// <summary>Runs the HotChocolate test server in-process, seeded with the shared source tests' rows.</summary>
-public sealed class GraphQLServerFixture : IAsyncLifetime
+public class GraphQLServerFixture : IAsyncLifetime
 {
     private WebApplication? app;
+
+    /// <summary>HotChocolate's field cost limit, or null to turn cost limits off.</summary>
+    protected virtual double? MaxFieldCost => null;
 
     public TestItemsClient Client { get; private set; } = default!;
 
@@ -36,7 +39,7 @@ public sealed class GraphQLServerFixture : IAsyncLifetime
 
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
-        builder.Services.AddTestGraphQLServer();
+        builder.Services.AddTestGraphQLServer(MaxFieldCost);
         app = builder.Build();
         app.MapTestGraphQLServer();
         await app.StartAsync();
@@ -54,4 +57,10 @@ public sealed class GraphQLServerFixture : IAsyncLifetime
             await app.DisposeAsync();
         }
     }
+}
+
+/// <summary>The test server with HotChocolate's cost limit on and set low, so filtered queries exceed it (HC0047).</summary>
+public sealed class CostLimitedGraphQLServerFixture : GraphQLServerFixture
+{
+    protected override double? MaxFieldCost => 20;
 }

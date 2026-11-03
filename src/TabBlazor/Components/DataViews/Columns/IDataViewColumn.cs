@@ -38,6 +38,9 @@ public interface IDataViewColumn<TItem>
     /// <summary>The formatted value as text, or null.</summary>
     string? GetDisplayText(TItem item);
 
+    /// <summary>The column's own text for a filter value (an enum filter option or chip), or null for the default.</summary>
+    string? GetFilterValueText(object value) => null;
+
     string? GetCellClass(TItem item);
     string? GetCellStyle(TItem item);
 

@@ -30,12 +30,15 @@ jobs:
         uses: dotnet/nbgv@master
 
       - name: Test
-        run: dotnet test TabBlazor.Tests/TabBlazor.Tests.csproj -c Release
+        run: |
+          dotnet test TabBlazor.Tests/TabBlazor.Tests.csproj -c Release
+          dotnet test TabBlazor.Linq2GraphQL.Tests/TabBlazor.Linq2GraphQL.Tests.csproj -c Release
 
       - name: Pack libraries
         run: |
           dotnet pack src/TabBlazor/TabBlazor.csproj -c Release -o artifacts
           dotnet pack src/TabBlazor.QuickTable.EntityFramework/TabBlazor.QuickTable.EntityFramework.csproj -c Release -o artifacts
+          dotnet pack src/TabBlazor.Linq2GraphQL/TabBlazor.Linq2GraphQL.csproj -c Release -o artifacts
 
       - name: NuGet login
         uses: NuGet/login@v1

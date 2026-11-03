@@ -100,6 +100,94 @@ namespace TabBlazor.Tests.Components.DataViews
         }
 
         [Fact]
+        public void Filter_menus_of_right_hand_columns_open_towards_the_start()
+        {
+            var cut = RenderFilterable();
+
+            OpenFilter(cut, "name");
+            Assert.DoesNotContain("dropdown-menu-end", cut.Find("thead th[data-column-id='name'] .dv-filter-menu-card").ClassList);
+
+            OpenFilter(cut, "score");
+            Assert.Contains("dropdown-menu-end", cut.Find("thead th[data-column-id='score'] .dv-filter-menu-card").ClassList);
+        }
+
+        [Theory]
+        [InlineData(0, 1, false)]
+        [InlineData(0, 2, false)]
+        [InlineData(1, 2, true)]
+        [InlineData(1, 3, false)]
+        [InlineData(2, 3, true)]
+        [InlineData(3, 7, false)]
+        [InlineData(4, 7, true)]
+        public void Header_menus_open_towards_the_start_in_the_right_half(int index, int count, bool expected) =>
+            Assert.Equal(expected, DataTableView<Row>.OpensToStart(index, count));
+
+        [Fact]
+        public void Enum_filter_leaves_out_placeholder_members()
+        {
+            var cut = Render<DataView<GeneratedRow>>(p => p
+                .Add(x => x.Items, [new GeneratedRow { Status = GeneratedStatus.Open }])
+                .AddChildContent<DataColumn<GeneratedRow, GeneratedStatus>>(c => c.Add(x => x.Value, r => r.Status).Add(x => x.Filterable, true)));
+
+            cut.Find("thead th[data-column-id='status'] .dv-filter-button").Click();
+
+            Assert.Equal(["Open", "Closed"], cut.FindAll("thead .dv-column-filter .form-check-label").Select(l => l.TextContent));
+        }
+
+        [Fact]
+        public async Task Enum_filter_options_and_chips_use_the_columns_formatter()
+        {
+            var cut = Render<DataView<GeneratedRow>>(p => p
+                .Add(x => x.Items, [new GeneratedRow { Status = GeneratedStatus.Open }])
+                .Add(x => x.ShowFilterChips, true)
+                .AddChildContent<DataColumn<GeneratedRow, GeneratedStatus>>(c => c
+                    .Add(x => x.Value, r => r.Status)
+                    .Add(x => x.Formatter, s => s == GeneratedStatus.Open ? "Is open" : null)
+                    .Add(x => x.Filterable, true)));
+
+            cut.Find("thead th[data-column-id='status'] .dv-filter-button").Click();
+            Assert.Equal(["Is open", "Closed"], cut.FindAll("thead .dv-column-filter .form-check-label").Select(l => l.TextContent));
+            Assert.Equal("Is open", cut.Find("tbody td").TextContent.Trim());
+
+            await cut.InvokeAsync(() => cut.Instance.SetFiltersAsync([new FilterSpec("status", FilterOperator.In, new[] { GeneratedStatus.Open, GeneratedStatus.Closed })]));
+            Assert.Contains("Status: Is open, Closed", cut.Find(".dv-filter-chip").TextContent);
+        }
+
+        [Fact]
+        public void Enum_filter_options_prefer_OptionText()
+        {
+            var cut = Render<DataView<GeneratedRow>>(p => p
+                .Add(x => x.Items, [new GeneratedRow()])
+                .AddChildContent<DataColumn<GeneratedRow, GeneratedStatus>>(c => c
+                    .Add(x => x.Value, r => r.Status)
+                    .Add(x => x.Formatter, s => "formatted")
+                    .Add(x => x.OptionText, s => $"option {s}")
+                    .Add(x => x.Filterable, true)));
+
+            cut.Find("thead th[data-column-id='status'] .dv-filter-button").Click();
+
+            Assert.Equal(["option Open", "option Closed"], cut.FindAll("thead .dv-column-filter .form-check-label").Select(l => l.TextContent));
+        }
+
+        // As Linq2GraphQL generates an enum with AddUnknownOption.
+        public enum GeneratedStatus
+        {
+            [System.Runtime.Serialization.EnumMember(Value = "OPEN")]
+            Open,
+            [System.Runtime.Serialization.EnumMember(Value = "CLOSED")]
+            Closed,
+            [System.Runtime.Serialization.EnumMember(Value = "")]
+            [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+            [System.ComponentModel.Browsable(false)]
+            __Unknown
+        }
+
+        public sealed class GeneratedRow
+        {
+            public GeneratedStatus Status { get; set; }
+        }
+
+        [Fact]
         public void Number_range_converts_to_the_column_type()
         {
             var cut = RenderFilterable();

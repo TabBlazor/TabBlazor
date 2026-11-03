@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using Linq2GraphQL.Client;
 
 namespace TabBlazor.Linq2GraphQL;
@@ -11,7 +12,7 @@ namespace TabBlazor.Linq2GraphQL;
 /// <code>
 /// var orders = Linq2GraphQLSource.Cursor&lt;Order, OrderFilterInput, OrderSortInput&gt;(
 ///     (first, after, where, order) => client.Query
-///         .Orders(first: first, after: after, where: where, order: order)
+///         .Orders(first: first, after: after!, where: where, order: order!)
 ///         .Include(c => c.Nodes.Select(o => o.Customer)));
 /// </code>
 /// </example>
@@ -51,6 +52,9 @@ public sealed class Linq2GraphQLSource<TNode, TFilter, TSort> : IDataViewSource<
     private IGraphQLConvention convention = HotChocolateConvention.Default;
     private IReadOnlyList<DataColumnInfo>? checkedColumns;
     private FieldPaths? fieldPaths;
+    private bool fetchColumnFieldsOnly;
+    private IReadOnlyList<DataColumnInfo>? fieldsColumns;
+    private IReadOnlyList<PropertyInfo[]>? nodeFields;
 
     internal Linq2GraphQLSource(PagingMode pagingMode, Func<PageRequest, TFilter?, List<TSort>?, object> query)
     {
@@ -65,6 +69,23 @@ public sealed class Linq2GraphQLSource<TNode, TFilter, TSort> : IDataViewSource<
     {
         convention = value ?? throw new ArgumentNullException(nameof(value));
         checkedColumns = null;
+        return this;
+    }
+
+    /// <summary>
+    /// Fetches only the row fields the columns read (their values, <c>SortBy</c> and <c>FilterBy</c> members, and the
+    /// key when it is a member path) instead of every scalar field. Smaller responses, and a lower query cost.
+    /// </summary>
+    /// <remarks>
+    /// Off by default, because a DataView can read fields no column names: cell and list templates, details,
+    /// edit forms (which would save the missing fields as empty), <c>CellColor</c> and a <c>KeySelector</c> that is
+    /// not a member path. Include those fields in the page function
+    /// (<c>.Include(c =&gt; c.Nodes.Select(o =&gt; o.Email))</c>). When a column uses the row in a way that cannot be
+    /// traced to fields (the row passed to a method), every scalar field is fetched as without this option.
+    /// </remarks>
+    public Linq2GraphQLSource<TNode, TFilter, TSort> FetchColumnFieldsOnly(bool value = true)
+    {
+        fetchColumnFieldsOnly = value;
         return this;
     }
 
@@ -93,10 +114,26 @@ public sealed class Linq2GraphQLSource<TNode, TFilter, TSort> : IDataViewSource<
         var sort = (List<TSort>?)convention.BuildSort(typeof(TSort), request.Sorts, paths);
         var graphQuery = query(request.Page, (TFilter?)filter, sort)
                          ?? throw new InvalidOperationException("The page function returned no query.");
-        var result = await GraphQueryRunner.ExecuteAsync<TNode>(graphQuery, cancellationToken).ConfigureAwait(false);
+        var result = await GraphQueryRunner.ExecuteAsync<TNode>(graphQuery, NodeFieldsFor(request), cancellationToken).ConfigureAwait(false);
 
         var nextCursor = PagingMode == PagingMode.Cursor && result.HasNextPage ? result.EndCursor : null;
         return new DataPage<TNode>(result.Items, result.TotalCount, nextCursor);
+    }
+
+    private IReadOnlyList<PropertyInfo[]>? NodeFieldsFor(DataRequest request)
+    {
+        if (!fetchColumnFieldsOnly)
+        {
+            return null;
+        }
+
+        if (!ReferenceEquals(request.Columns, fieldsColumns))
+        {
+            nodeFields = NodeFields.Collect(typeof(TNode), request.Columns);
+            fieldsColumns = request.Columns;
+        }
+
+        return nodeFields;
     }
 
     // Column paths become GraphQL paths, checked against the generated inputs once per set of columns.
