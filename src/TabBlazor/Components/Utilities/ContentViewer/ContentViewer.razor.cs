@@ -1,3 +1,5 @@
+using Microsoft.JSInterop;
+
 namespace TabBlazor
 {
     /// <summary>
@@ -28,9 +30,18 @@ namespace TabBlazor
 
         public async ValueTask DisposeAsync()
         {
-            if (objectURL != null) {
+            if (objectURL == null)
+            {
+                return;
+            }
+
+            try
+            {
                 await TablerService.RevokeObjectURLAsync(objectURL);
-            }    
+            }
+            catch (JSDisconnectedException)
+            {
+            }
         }
 
     }
