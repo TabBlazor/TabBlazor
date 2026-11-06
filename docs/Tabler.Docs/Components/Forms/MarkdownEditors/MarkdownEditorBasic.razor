@@ -1,0 +1,7 @@
+<MarkdownEditor @bind-Value="notes" Label="Notes" Placeholder="Write some markdown…" Rows="4" />
+
+<div class="mt-2 text-secondary small">@(notes?.Length ?? 0) characters sent to .NET</div>
+
+@code {
+    private string notes = "Select a word and press **Ctrl+B**.\n\n- Press Enter to continue this list";
+}

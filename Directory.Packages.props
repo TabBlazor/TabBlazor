@@ -16,6 +16,7 @@
     <PackageVersion Include="HotChocolate.Types.OffsetPagination" Version="16.6.4" />
     <PackageVersion Include="Linq2GraphQL.Client" Version="1.0.67-prerelease" />
     <PackageVersion Include="LinqKit.Core" Version="1.2.11" />
+    <PackageVersion Include="Markdig" Version="1.6.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="10.0.7" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.7" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.7" />

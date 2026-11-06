@@ -48,4 +48,16 @@ public class TablerOptions
     /// <see cref="TabBlazor.DataViewText"/> property names; missing keys fall back to <see cref="DataViewText"/>.
     /// </summary>
     public Type DataViewTextResource { get; set; }
+
+    /// <summary>
+    /// App-wide UI strings for <c>MarkdownEditor</c>. An editor's <c>Text</c> parameter takes precedence.
+    /// </summary>
+    public MarkdownEditorText MarkdownEditorText { get; set; } = MarkdownEditorText.Default;
+
+    /// <summary>
+    /// A resource type whose strings translate <c>MarkdownEditor</c> through <c>IStringLocalizerFactory</c>
+    /// (<c>services.AddLocalization()</c>). The keys are the <see cref="TabBlazor.MarkdownEditorText"/> property
+    /// names; missing keys fall back to <see cref="MarkdownEditorText"/>.
+    /// </summary>
+    public Type MarkdownEditorTextResource { get; set; }
 }

@@ -7,7 +7,9 @@ using Tabler.Docs.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+    .AddInteractiveServerComponents()
+    // Text fields send their whole value in one message; the MarkdownEditor upload demo keeps images inline.
+    .AddHubOptions(options => options.MaximumReceiveMessageSize = 2 * 1024 * 1024);
 
 builder.Services.AddScoped<IDataService, LocalDataService>();
 builder.Services.AddDbContextFactory<ApplicationDbContext>(options => options.UseSqlite("Data Source=app.db"));

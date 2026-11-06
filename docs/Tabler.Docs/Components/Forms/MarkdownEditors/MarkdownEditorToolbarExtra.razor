@@ -1,0 +1,17 @@
+<MarkdownEditor @ref="editor" @bind-Value="text" aria-label="Description">
+    <ToolbarExtra>
+        <button type="button" class="btn btn-ghost-secondary btn-sm" @onclick="InsertTableAsync">Table</button>
+        <button type="button" class="btn btn-ghost-secondary btn-sm" @onclick="InsertDateAsync">Today</button>
+    </ToolbarExtra>
+</MarkdownEditor>
+
+@code {
+    private MarkdownEditor editor;
+    private string text = "";
+
+    private Task InsertTableAsync() =>
+        editor.InsertAsync("\n| Column | Column |\n|--------|--------|\n| Cell   | Cell   |\n");
+
+    private Task InsertDateAsync() =>
+        editor.InsertAsync(DateTime.Today.ToString("yyyy-MM-dd"));
+}

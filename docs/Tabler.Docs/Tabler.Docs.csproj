@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\TabBlazor\TabBlazor.csproj" />
+    <ProjectReference Include="..\..\src\TabBlazor.Markdown\TabBlazor.Markdown.csproj" />
   </ItemGroup>
 
   <ItemGroup>
