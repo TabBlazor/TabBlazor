@@ -363,6 +363,19 @@ namespace TabBlazor.Tests.Components
             Assert.Equal("Table", cut.Find(".markdown-editor-table-menu").GetAttribute("aria-label"));
         }
 
+        [Fact]
+        public void Table_button_carries_the_edit_label_and_the_table_editor_shortcut()
+        {
+            var cut = RenderEditor(null, p => p.Add(e => e.Text, new MarkdownEditorText { Table = "Tabell", EditTable = "Redigera tabell" }));
+
+            var button = cut.Find("button[data-md-table-button]");
+            Assert.Equal("Tabell", button.GetAttribute("data-md-label"));
+            Assert.Equal("Redigera tabell", button.GetAttribute("data-md-edit-label"));
+            Assert.Equal("Control+Alt+T", button.GetAttribute("aria-keyshortcuts"));
+            var item = cut.Find("[data-md-open-table-editor]");
+            Assert.Equal("Ctrl+Alt+T", item.QuerySelector("[data-md-shortcut]")!.TextContent);
+        }
+
         private IRenderedComponent<MarkdownEditor> OpenTableDialog(MarkdownTableSource source, out BunitJSModuleInterop module)
         {
             module = JSInterop.SetupModule(ModulePath);

@@ -32,6 +32,15 @@ export function attach(root, options) {
         state.committed = textarea.value;
     });
     listen(state, textarea, 'keydown', event => onTextareaKeyDown(state, event));
+    // The table button becomes "Edit table" while the caret is in a table.
+    for (const type of ['keyup', 'mouseup', 'input', 'focus', 'select']) {
+        listen(state, textarea, type, () => scheduleTableButton(state));
+    }
+    listen(state, document, 'selectionchange', () => {
+        if (document.activeElement === textarea) {
+            scheduleTableButton(state);
+        }
+    });
     listen(state, textarea, 'paste', event => onPaste(state, event));
     listen(state, root, 'dragover', event => onDragOver(state, event));
     listen(state, root, 'dragleave', event => {
@@ -89,6 +98,7 @@ export function attach(root, options) {
 
     applyOptions(state);
     showMacShortcuts(root);
+    updateTableButton(state);
     setupRoving(state);
     resize(state);
 }
@@ -116,6 +126,7 @@ export function refresh(root) {
     state.committed = state.textarea.value;
     paint(state);
     resize(state);
+    updateTableButton(state);
 }
 
 export function detach(root) {
@@ -125,6 +136,7 @@ export function detach(root) {
     }
 
     clearTimeout(state.timer);
+    cancelAnimationFrame(state.tableFrame);
     state.cleanup.forEach(dispose => dispose());
     states.delete(root);
 }
@@ -1140,6 +1152,14 @@ function onTextareaKeyDown(state, event) {
     }
 
     const modifier = isMac ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey;
+    // Ctrl+Alt+T (Option+Command+T on a Mac) opens the table editor. AltGr is Ctrl+Alt on Windows, so a key that
+    // types a character with AltGr is left alone.
+    if (modifier && event.altKey && !event.shiftKey && event.code === 'KeyT' && (isMac || event.key.toLowerCase() === 't')) {
+        if (openTableEditor(state)) {
+            event.preventDefault();
+        }
+        return;
+    }
     if (!modifier || event.altKey) {
         return;
     }
@@ -1219,6 +1239,12 @@ function sendFiles(state, files) {
 function onClick(state, event) {
     const menuButton = event.target.closest?.('[data-md-menu]');
     if (menuButton && state.root.contains(menuButton)) {
+        // In a table the table button edits that table instead of offering a new one.
+        if (menuButton.matches('[data-md-table-button]') && caretInTable(state)) {
+            closeMenu(state, false);
+            openTableEditor(state);
+            return;
+        }
         toggleMenu(state, menuButton, event.detail === 0);
         return;
     }
@@ -1396,6 +1422,10 @@ function onToolbarKeyDown(state, event) {
 
     if (target.matches('[data-md-menu]') && (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ')) {
         event.preventDefault();
+        if (target.matches('[data-md-table-button]') && caretInTable(state)) {
+            openTableEditor(state);
+            return;
+        }
         if (openDropdown(state) !== target.closest('.dropdown')) {
             toggleMenu(state, target, true);
         }
@@ -1441,6 +1471,60 @@ function showMacShortcuts(root) {
             element.title = element.title.replace('Ctrl+', '⌘');
         }
     }
+    for (const element of root.querySelectorAll('[data-md-shortcut]')) {
+        element.textContent = macShortcut(element.dataset.mdShortcut);
+    }
+}
+
+/** "Ctrl+Alt+T" as a Mac shows it: "⌥⌘T". */
+function macShortcut(shortcut) {
+    const keys = shortcut.split('+');
+    const key = keys.pop();
+    return (keys.includes('Alt') ? '⌥' : '') + (keys.includes('Shift') ? '⇧' : '') + (keys.includes('Ctrl') ? '⌘' : '') + key;
+}
+
+// Table button
+
+function caretInTable(state) {
+    const textarea = state.textarea;
+    return !!findTable(textarea.value, textarea.selectionStart);
+}
+
+function scheduleTableButton(state) {
+    cancelAnimationFrame(state.tableFrame);
+    state.tableFrame = requestAnimationFrame(() => updateTableButton(state));
+}
+
+/** Shows the table button as "Edit table" while the caret is in a table. */
+function updateTableButton(state) {
+    const button = state.root.querySelector('[data-md-table-button]');
+    if (!button) {
+        return;
+    }
+
+    const inTable = caretInTable(state);
+    const label = inTable ? button.dataset.mdEditLabel : button.dataset.mdLabel;
+    const title = inTable ? `${label} (${isMac ? macShortcut('Ctrl+Alt+T') : 'Ctrl+Alt+T'})` : label;
+    if (button.title === title) {
+        return;
+    }
+
+    button.classList.toggle('markdown-editor-in-table', inTable);
+    button.title = title;
+    button.setAttribute('aria-label', label);
+    button.setAttribute('aria-haspopup', inTable ? 'dialog' : 'menu');
+}
+
+/** Opens the table dialog through its menu item, so .NET reads the table at the caret. */
+function openTableEditor(state) {
+    const item = state.root.querySelector('[data-md-open-table-editor]');
+    const button = state.root.querySelector('[data-md-table-button]');
+    if (!item || button?.disabled) {
+        return false;
+    }
+
+    item.click();
+    return true;
 }
 
 // Helpers

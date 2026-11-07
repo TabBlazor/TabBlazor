@@ -43,9 +43,10 @@
                     @ToolButton("image", InternalIcons.Photo, Texts.Image, null)
                 }
                 <div class="dropdown">
-                    <button type="button" class="btn btn-ghost-secondary btn-icon" data-md-menu
+                    <button type="button" class="btn btn-ghost-secondary btn-icon" data-md-menu data-md-table-button
                             aria-haspopup="menu" aria-expanded="false" title="@Texts.Table" aria-label="@Texts.Table"
-                            disabled="@FormattingDisabled">
+                            data-md-label="@Texts.Table" data-md-edit-label="@Texts.EditTable"
+                            aria-keyshortcuts="Control+Alt+T" disabled="@FormattingDisabled">
                         <Icon IconType="InternalIcons.Table" Size="18" />
                     </button>
                     <div class="dropdown-menu markdown-editor-table-menu" role="menu" aria-label="@Texts.Table">
@@ -63,8 +64,11 @@
                         </div>
                         <div class="markdown-editor-table-size" aria-hidden="true" data-md-default="@Texts.Table" data-md-size="@Texts.Table"></div>
                         <div class="dropdown-divider"></div>
-                        <button type="button" role="menuitem" class="dropdown-item" tabindex="-1" data-md-close-menu
-                                @onclick="OpenTableEditorAsync">@Texts.TableEditor</button>
+                        <button type="button" role="menuitem" class="dropdown-item" tabindex="-1" data-md-close-menu data-md-open-table-editor
+                                aria-keyshortcuts="Control+Alt+T" @onclick="OpenTableEditorAsync">
+                            @Texts.TableEditor
+                            <span class="markdown-editor-shortcut" data-md-shortcut="Ctrl+Alt+T" aria-hidden="true">Ctrl+Alt+T</span>
+                        </button>
                     </div>
                 </div>
             </div>
