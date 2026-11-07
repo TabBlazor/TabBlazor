@@ -79,6 +79,7 @@ public sealed record MarkdownEditorText
     public string ImageTextPlaceholder { get; init; } = "image description";
     public string Mode { get; init; } = "View";
     public string Write { get; init; } = "Write";
+    public string Hybrid { get; init; } = "Hybrid";
     public string Preview { get; init; } = "Preview";
     public string Split { get; init; } = "Side by side";
     public string NothingToPreview { get; init; } = "Nothing to preview";

@@ -92,7 +92,7 @@ public partial class MarkdownEditor : TablerBaseComponent, IAsyncDisposable
 
     /// <summary>What the editor shows. Supports two-way binding via <c>@bind-Mode</c>. Defaults to <see cref="MarkdownEditorMode.Edit"/>.</summary>
     [Parameter] public MarkdownEditorMode Mode { get; set; } = MarkdownEditorMode.Edit;
-    /// <summary>Raised when the user switches between write, preview and side by side.</summary>
+    /// <summary>Raised when the user switches between write, hybrid, preview and side by side.</summary>
     [Parameter] public EventCallback<MarkdownEditorMode> ModeChanged { get; set; }
     /// <summary>Renders the preview. Defaults to the <see cref="IMarkdownRenderer"/> registered in DI.</summary>
     [Parameter] public IMarkdownRenderer? Renderer { get; set; }
@@ -139,8 +139,12 @@ public partial class MarkdownEditor : TablerBaseComponent, IAsyncDisposable
     private bool ToolbarVisible => Interactive && ShowToolbar;
     private bool UploadsEnabled => Interactive && UploadFile is not null && !Disabled && !ReadOnly;
     private bool ImagesOnly => MarkdownSyntax.AcceptsOnlyImages(AcceptedFileTypes);
-    private MarkdownEditorMode EffectiveMode => Interactive && HasRenderer ? currentMode : MarkdownEditorMode.Edit;
-    private bool ShowPreview => EffectiveMode != MarkdownEditorMode.Edit;
+    // Hybrid styles the text in the browser, so it needs no renderer; the preview modes do.
+    private MarkdownEditorMode EffectiveMode => Interactive && (HasRenderer || currentMode == MarkdownEditorMode.Hybrid)
+        ? currentMode
+        : MarkdownEditorMode.Edit;
+    private bool Hybrid => EffectiveMode == MarkdownEditorMode.Hybrid;
+    private bool ShowPreview => EffectiveMode is MarkdownEditorMode.Preview or MarkdownEditorMode.Split;
     private bool FormattingDisabled => Disabled || ReadOnly || EffectiveMode == MarkdownEditorMode.Preview;
     private string? AriaInvalid => fieldCssClasses.Contains("invalid", StringComparison.Ordinal) ? "true" : null;
 
@@ -153,13 +157,14 @@ public partial class MarkdownEditor : TablerBaseComponent, IAsyncDisposable
     private string BodyClassNames => new ClassBuilder("markdown-editor-body")
         .AddCompare("markdown-editor-body-preview", EffectiveMode, MarkdownEditorMode.Preview)
         .AddCompare("markdown-editor-body-split", EffectiveMode, MarkdownEditorMode.Split)
+        .AddIf("markdown-editor-body-hybrid", Hybrid)
         .ToString();
 
     private string InputClassNames => new ClassBuilder("form-control markdown-editor-input")
         .AddIf(fieldCssClasses, !string.IsNullOrEmpty(fieldCssClasses))
         .ToString();
 
-    private string ClientOptions => string.Join('|', DebounceMs ?? 0, MaxHeight, Disabled, ReadOnly, Texts.LinkTextPlaceholder, Texts.ImageTextPlaceholder, Texts.TableColumn);
+    private string ClientOptions => string.Join('|', DebounceMs ?? 0, MaxHeight, Disabled, ReadOnly, Texts.LinkTextPlaceholder, Texts.ImageTextPlaceholder, Texts.TableColumn, Hybrid);
 
     protected override void OnParametersSet()
     {
@@ -245,7 +250,8 @@ public partial class MarkdownEditor : TablerBaseComponent, IAsyncDisposable
         locked = Disabled || ReadOnly,
         linkText = Texts.LinkTextPlaceholder,
         imageText = Texts.ImageTextPlaceholder,
-        columnText = Texts.TableColumn
+        columnText = Texts.TableColumn,
+        hybrid = Hybrid
     };
 
     private async Task OnChangeAsync(ChangeEventArgs args)

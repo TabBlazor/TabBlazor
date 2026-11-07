@@ -73,6 +73,7 @@
             {
                 <div class="btn-group markdown-editor-modes" role="group" aria-label="@Texts.Mode">
                     @ModeButton(MarkdownEditorMode.Edit, Texts.Write)
+                    @ModeButton(MarkdownEditorMode.Hybrid, Texts.Hybrid)
                     @ModeButton(MarkdownEditorMode.Preview, Texts.Preview)
                     @ModeButton(MarkdownEditorMode.Split, Texts.Split)
                 </div>
@@ -80,6 +81,11 @@
         </div>
     }
     <div class="@BodyClassNames">
+        @if (Interactive)
+        {
+            @* Filled by the script in hybrid mode: the styled copy of the text, shown through the transparent text area. *@
+            <div class="markdown-editor-highlight" aria-hidden="true"></div>
+        }
         <textarea @attributes="UnmatchedParameters"
                   id="@InputId"
                   name="@NameValue"

@@ -183,6 +183,115 @@
     white-space: pre-wrap;
 }
 
+/* Hybrid: the styled copy shows through the text area, whose text is transparent. Nothing may change the width of
+   a character (font size, padding, a different font), or the caret drifts from the text. */
+
+.markdown-editor-highlight {
+    display: none;
+}
+
+.markdown-editor-body-hybrid {
+    position: relative;
+}
+
+.markdown-editor-body-hybrid .markdown-editor-highlight {
+    display: block;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    color: var(--tblr-body-color);
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: normal;
+    pointer-events: none;
+}
+
+.markdown-editor-body-hybrid .markdown-editor-input {
+    position: relative;
+    font-family: var(--tblr-font-monospace);
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: normal;
+    color: transparent;
+    caret-color: var(--tblr-body-color);
+}
+
+.markdown-editor-body-hybrid .markdown-editor-input::selection {
+    background-color: rgba(var(--tblr-primary-rgb), .25);
+}
+
+.markdown-editor-highlight ::deep .md-mark {
+    color: var(--tblr-secondary);
+    opacity: .7;
+}
+
+.markdown-editor-highlight ::deep .md-heading {
+    color: var(--tblr-emphasis-color, var(--tblr-body-color));
+    font-weight: var(--tblr-font-weight-bold, 600);
+}
+
+.markdown-editor-highlight ::deep .md-h1,
+.markdown-editor-highlight ::deep .md-h2 {
+    color: var(--tblr-primary);
+}
+
+.markdown-editor-highlight ::deep .md-bold {
+    font-weight: var(--tblr-font-weight-bold, 600);
+}
+
+.markdown-editor-highlight ::deep .md-italic {
+    font-style: italic;
+}
+
+.markdown-editor-highlight ::deep .md-strike,
+.markdown-editor-highlight ::deep .md-done {
+    text-decoration: line-through;
+    color: var(--tblr-secondary);
+}
+
+.markdown-editor-highlight ::deep .md-code,
+.markdown-editor-highlight ::deep .md-code-block {
+    color: var(--tblr-code-color, var(--tblr-pink));
+}
+
+.markdown-editor-highlight ::deep .md-code {
+    border-radius: 2px;
+    background-color: var(--tblr-bg-surface-secondary);
+}
+
+.markdown-editor-highlight ::deep .md-fence {
+    color: var(--tblr-secondary);
+}
+
+.markdown-editor-highlight ::deep .md-link,
+.markdown-editor-highlight ::deep .md-image {
+    color: var(--tblr-link-color, var(--tblr-primary));
+}
+
+.markdown-editor-highlight ::deep .md-link {
+    text-decoration: underline;
+}
+
+.markdown-editor-highlight ::deep .md-list,
+.markdown-editor-highlight ::deep .md-task {
+    color: var(--tblr-primary);
+    font-weight: var(--tblr-font-weight-bold, 600);
+}
+
+.markdown-editor-highlight ::deep .md-quote {
+    color: var(--tblr-secondary);
+    font-style: italic;
+}
+
+.markdown-editor-highlight ::deep .md-table-header {
+    font-weight: var(--tblr-font-weight-bold, 600);
+    background-color: rgba(var(--tblr-primary-rgb), .08);
+}
+
+.markdown-editor-highlight ::deep .md-table-even {
+    background-color: var(--tblr-bg-surface-secondary);
+}
+
 .markdown-editor-body-split .markdown-editor-preview {
     border-top: var(--tblr-border-width, 1px) solid var(--tblr-border-color);
 }

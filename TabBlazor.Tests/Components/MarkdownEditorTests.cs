@@ -127,7 +127,7 @@ namespace TabBlazor.Tests.Components
 
             var cut = RenderEditor("text", p => p.Add(e => e.Mode, MarkdownEditorMode.Split));
 
-            Assert.Equal(3, cut.FindAll("[data-md-mode]").Count);
+            Assert.Equal(["Write", "Hybrid", "Preview", "Side by side"], cut.FindAll("[data-md-mode]").Select(b => b.TextContent));
             Assert.Contains("markdown-editor-body-split", cut.Find(".markdown-editor-body").ClassList);
             Assert.Equal("text", cut.Find(".markdown-editor-preview p.rendered").TextContent);
         }
@@ -174,10 +174,36 @@ namespace TabBlazor.Tests.Components
             MarkdownEditorMode? changed = null;
 
             var cut = RenderEditor("text", p => p.Add(e => e.ModeChanged, mode => changed = mode));
-            cut.FindAll("[data-md-mode]")[1].Click();
+            cut.FindAll("[data-md-mode]")[2].Click();
 
             Assert.Equal(MarkdownEditorMode.Preview, changed);
-            Assert.Equal("true", cut.FindAll("[data-md-mode]")[1].GetAttribute("aria-pressed"));
+            Assert.Equal("true", cut.FindAll("[data-md-mode]")[2].GetAttribute("aria-pressed"));
+        }
+
+        [Fact]
+        public void Hybrid_mode_styles_the_text_area_without_preview_or_renderer()
+        {
+            var module = JSInterop.SetupModule(ModulePath);
+
+            var cut = RenderEditor("**text**", p => p.Add(e => e.Mode, MarkdownEditorMode.Hybrid));
+
+            Assert.Contains("markdown-editor-body-hybrid", cut.Find(".markdown-editor-body").ClassList);
+            Assert.Equal("true", cut.Find(".markdown-editor-highlight").GetAttribute("aria-hidden"));
+            Assert.Empty(cut.FindAll(".markdown-editor-preview"));
+            Assert.False(cut.Find("button[data-md-action=bold]").HasAttribute("disabled"));
+            var options = Assert.Single(module.Invocations, i => i.Identifier == "attach").Arguments[1]!;
+            Assert.Equal(true, options.GetType().GetProperty("hybrid")!.GetValue(options));
+        }
+
+        [Fact]
+        public void Hybrid_mode_falls_back_to_plain_text_area_when_not_interactive()
+        {
+            interactive = false;
+
+            var cut = RenderEditor("text", p => p.Add(e => e.Mode, MarkdownEditorMode.Hybrid));
+
+            Assert.DoesNotContain("markdown-editor-body-hybrid", cut.Find(".markdown-editor-body").ClassList);
+            Assert.Empty(cut.FindAll(".markdown-editor-highlight"));
         }
 
         [Fact]

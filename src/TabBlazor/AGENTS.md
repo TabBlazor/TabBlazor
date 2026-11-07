@@ -260,7 +260,8 @@ Failures: `EditResult.Failed("message")`.
                 UploadFile="UploadAsync" OnUploadStateChanged="busy => saving = busy" />
 ```
 - A text area with a toolbar (including a table size picker), shortcuts, and Enter continuing lists,
-  quotes and table rows. It works inside and outside a form,
+  quotes and table rows. In a table, Tab/Shift+Tab move between cells and line up the columns
+  (Escape, then Tab leaves the editor). It works inside and outside a form,
   and in static server rendering it is a plain text area that posts as `Model.Description`
   (override with `Name`).
 - The value reaches .NET after `DebounceMs` (300) of no typing, on blur and after toolbar
@@ -269,6 +270,9 @@ Failures: `EditResult.Failed("message")`.
   package (Markdig, safe by default), or any `IMarkdownRenderer`. Without one there are no
   preview buttons. Use the same `IMarkdownRenderer` to show saved markdown elsewhere:
   `<div class="markdown">@Markdown.Render(text)</div>`.
+- `Mode="MarkdownEditorMode.Hybrid"` keeps the markdown text but styles it as you type
+  (monospace, bold/headings/links/code highlighted, markers dimmed). It needs no renderer;
+  with one it is also a view button.
 - **Uploads**: `UploadFile(MarkdownUploadFile file, CancellationToken token)` stores the file
   and returns `new MarkdownUploadResult(url)`. Images are embedded, other files linked.
   `AcceptedFileTypes` defaults to `"image/*"`; `MaxFileSize` to 10 MB. Throw
