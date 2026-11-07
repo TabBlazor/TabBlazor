@@ -1,0 +1,21 @@
+@page "/docs/forms/markdown-editors"
+
+<Page>
+    <DocsExample Title="MarkdownEditor" ComponentType="typeof(MarkdownEditor)">
+        <CodeSnippet Component="@typeof(MarkdownEditorBasic)" Title="Basic">
+            <Description>A text area with a formatting toolbar. The toolbar and the shortcuts (Ctrl+B, Ctrl+I, Ctrl+K, Ctrl+E) change the text in the browser, so Ctrl+Z undoes them. The table button inserts a table of the size you pick. Enter continues a list, quote or table, and Enter on an empty item or row ends it. In a table, Tab and Shift+Tab move between cells and line up the columns, and Tab in the last cell adds a row; press Escape before Tab to leave the editor from a table. The text area grows with its content. The value is sent to .NET when you pause typing (DebounceMs, 300 ms by default) or leave the field.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(MarkdownEditorModes)" Title="Hybrid, preview and side by side">
+            <Description>With a renderer registered (services.AddTabBlazorMarkdown() from the TabBlazor.Markdown package) the toolbar gets Write, Hybrid, Preview and Side by side. Hybrid keeps the markdown but styles it as you type, in the monospace font: bold looks bold, headings, lists, links and code stand out, the markers are dimmed, and table headers and rows get a background so lined-up columns read as a grid. Everything else works as in Write, including undo. Bind Mode to remember the user's choice. Without a renderer there is no preview and no view buttons, but Mode="MarkdownEditorMode.Hybrid" still works.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(MarkdownEditorUploads)" Title="Images and files">
+            <Description>Set UploadFile to let users paste, drop or pick files. A placeholder appears at the caret right away and is replaced by an image or link when your handler returns the URL; progress and cancel show under the editor. AcceptedFileTypes defaults to images; set it to allow other files. This demo keeps images as data URLs because the docs have no server; a real app uploads to its own storage and returns that URL.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(MarkdownEditorToolbarExtra)" Title="Custom toolbar buttons">
+            <Description>Add buttons with ToolbarExtra and insert text with InsertAsync. The insert replaces the selection and can be undone.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(MarkdownEditorValidation)" Title="Validation">
+            <Description>Inside a form the editor validates like any input. It also works outside a form, without validation.</Description>
+        </CodeSnippet>
+    </DocsExample>
+</Page>

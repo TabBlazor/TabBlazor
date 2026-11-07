@@ -18,6 +18,7 @@ namespace Tabler.Docs
                    options.EnablePopper = true;
                    options.DefaultPositioning = Positioning.Absolute;
                })
+               .AddTabBlazorMarkdown(options => options.AllowedImageUrlSchemes.Add("data"))
                .AddSingleton<AppService>();
         }
 

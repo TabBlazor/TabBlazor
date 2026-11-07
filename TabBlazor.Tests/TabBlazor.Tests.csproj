@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\docs\Tabler.Docs\Tabler.Docs.csproj" />
     <ProjectReference Include="..\src\TabBlazor\TabBlazor.csproj" />
+    <ProjectReference Include="..\src\TabBlazor.Markdown\TabBlazor.Markdown.csproj" />
   </ItemGroup>
 
 </Project>

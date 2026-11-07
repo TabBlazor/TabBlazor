@@ -1,0 +1,163 @@
+@namespace TabBlazor
+@inherits TablerBaseComponent
+
+@if (!string.IsNullOrWhiteSpace(Label))
+{
+    <label class="form-label" for="@InputId">@Label</label>
+}
+<div @ref="root" class="@ClassNames" style="@ProvidedStyle">
+    @if (ToolbarVisible)
+    {
+        <div class="markdown-editor-toolbar" role="toolbar" aria-label="@Texts.Toolbar" aria-controls="@InputId">
+            <div class="markdown-editor-toolbar-group">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-ghost-secondary btn-icon" data-md-menu
+                            aria-haspopup="menu" aria-expanded="false" title="@Texts.Heading" aria-label="@Texts.Heading"
+                            disabled="@FormattingDisabled">
+                        <Icon IconType="InternalIcons.Heading" Size="18" />
+                    </button>
+                    <div class="dropdown-menu" role="menu">
+                        <button type="button" role="menuitem" class="dropdown-item markdown-editor-h1" data-md-action="h1" tabindex="-1">@Texts.Heading1</button>
+                        <button type="button" role="menuitem" class="dropdown-item markdown-editor-h2" data-md-action="h2" tabindex="-1">@Texts.Heading2</button>
+                        <button type="button" role="menuitem" class="dropdown-item markdown-editor-h3" data-md-action="h3" tabindex="-1">@Texts.Heading3</button>
+                        <button type="button" role="menuitem" class="dropdown-item" data-md-action="paragraph" tabindex="-1">@Texts.NormalText</button>
+                    </div>
+                </div>
+                @ToolButton("bold", InternalIcons.Bold, Texts.Bold, "B")
+                @ToolButton("italic", InternalIcons.Italic, Texts.Italic, "I")
+            </div>
+            <div class="markdown-editor-toolbar-group">
+                @ToolButton("bulleted-list", InternalIcons.List, Texts.BulletedList, "Shift+8")
+                @ToolButton("numbered-list", InternalIcons.List_numbers, Texts.NumberedList, "Shift+7")
+                @ToolButton("quote", InternalIcons.Blockquote, Texts.Quote, "Shift+.")
+                @ToolButton("code", InternalIcons.Code, Texts.Code, "E")
+            </div>
+            <div class="markdown-editor-toolbar-group">
+                @ToolButton("link", InternalIcons.Link, Texts.Link, "K")
+                @if (UploadsEnabled)
+                {
+                    @ToolButton("upload", ImagesOnly ? InternalIcons.Photo : InternalIcons.Paperclip, ImagesOnly ? Texts.AttachImages : Texts.AttachFiles, null)
+                }
+                else
+                {
+                    @ToolButton("image", InternalIcons.Photo, Texts.Image, null)
+                }
+                <div class="dropdown">
+                    <button type="button" class="btn btn-ghost-secondary btn-icon" data-md-menu
+                            aria-haspopup="menu" aria-expanded="false" title="@Texts.Table" aria-label="@Texts.Table"
+                            disabled="@FormattingDisabled">
+                        <Icon IconType="InternalIcons.Table" Size="18" />
+                    </button>
+                    <div class="dropdown-menu markdown-editor-table-menu" role="menu" aria-label="@Texts.Table">
+                        <div class="markdown-editor-table-grid" data-md-columns="@TablePickerSize"
+                             style="grid-template-columns: repeat(@TablePickerSize, 1.125rem)">
+                            @for (var row = 1; row <= TablePickerSize; row++)
+                            {
+                                @for (var column = 1; column <= TablePickerSize; column++)
+                                {
+                                    <button type="button" role="menuitem" class="markdown-editor-table-cell" tabindex="-1"
+                                            data-md-action="table" data-md-columns="@column" data-md-rows="@row"
+                                            aria-label="@string.Format(Texts.TableSize, column, row)"></button>
+                                }
+                            }
+                        </div>
+                        <div class="markdown-editor-table-size" aria-hidden="true" data-md-default="@Texts.Table" data-md-size="@Texts.Table"></div>
+                    </div>
+                </div>
+            </div>
+            @if (ToolbarExtra != null)
+            {
+                <div class="markdown-editor-toolbar-group">@ToolbarExtra</div>
+            }
+            @if (HasRenderer)
+            {
+                <div class="btn-group markdown-editor-modes" role="group" aria-label="@Texts.Mode">
+                    @ModeButton(MarkdownEditorMode.Edit, Texts.Write)
+                    @ModeButton(MarkdownEditorMode.Hybrid, Texts.Hybrid)
+                    @ModeButton(MarkdownEditorMode.Preview, Texts.Preview)
+                    @ModeButton(MarkdownEditorMode.Split, Texts.Split)
+                </div>
+            }
+        </div>
+    }
+    <div class="@BodyClassNames">
+        @if (Interactive)
+        {
+            @* Filled by the script in hybrid mode: the styled copy of the text, shown through the transparent text area. *@
+            <div class="markdown-editor-highlight" aria-hidden="true"></div>
+        }
+        <textarea @attributes="UnmatchedParameters"
+                  id="@InputId"
+                  name="@NameValue"
+                  class="@InputClassNames"
+                  rows="@Rows"
+                  placeholder="@Placeholder"
+                  disabled="@Disabled"
+                  readonly="@ReadOnly"
+                  aria-invalid="@AriaInvalid"
+                  value="@currentValue"
+                  @onchange="OnChangeAsync"></textarea>
+        @if (ShowPreview)
+        {
+            <div class="markdown markdown-editor-preview" tabindex="0">
+                @if (string.IsNullOrWhiteSpace(currentValue))
+                {
+                    <span class="text-secondary">@Texts.NothingToPreview</span>
+                }
+                else
+                {
+                    @RenderPreview()
+                }
+            </div>
+        }
+    </div>
+    @if (uploads.Count > 0 || uploadErrors.Count > 0)
+    {
+        <div class="markdown-editor-uploads" aria-live="polite">
+            @foreach (var upload in uploads)
+            {
+                <div class="markdown-editor-upload" @key="upload">
+                    <span class="markdown-editor-upload-name">@string.Format(Texts.Uploading, upload.FileName)</span>
+                    <div class="progress progress-sm">
+                        <div class="progress-bar" style="width: @(upload.Percent)%" role="progressbar"
+                             aria-valuenow="@upload.Percent" aria-valuemin="0" aria-valuemax="100"
+                             aria-label="@string.Format(Texts.Uploading, upload.FileName)"></div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-ghost-secondary" @onclick="() => CancelUpload(upload)">@Texts.Cancel</button>
+                </div>
+            }
+            @foreach (var error in uploadErrors)
+            {
+                <div class="markdown-editor-upload markdown-editor-upload-error" @key="error">
+                    <span class="markdown-editor-upload-name text-danger">@error.Message</span>
+                    <button type="button" class="btn-close" aria-label="@Texts.Dismiss" title="@Texts.Dismiss" @onclick="() => DismissError(error)"></button>
+                </div>
+            }
+        </div>
+    }
+    @if (UploadsEnabled)
+    {
+        <InputFile class="markdown-editor-file" multiple accept="@AcceptedFileTypes" OnChange="OnFilesSelectedAsync" hidden tabindex="-1" aria-hidden="true" />
+    }
+</div>
+
+@code {
+    /// <summary>The table picker offers up to this many columns and rows (header row included).</summary>
+    private const int TablePickerSize = 6;
+
+    private RenderFragment ToolButton(string action, IIconType icon, string label, string shortcut) =>
+        @<button type="button" class="btn btn-ghost-secondary btn-icon" data-md-action="@action"
+                 title="@(shortcut == null ? label : $"{label} (Ctrl+{shortcut})")"
+                 aria-label="@label"
+                 aria-keyshortcuts="@(shortcut == null ? null : $"Control+{shortcut}")"
+                 disabled="@FormattingDisabled">
+            <Icon IconType="icon" Size="18" />
+        </button>;
+
+    private RenderFragment ModeButton(MarkdownEditorMode mode, string label) =>
+        @<button type="button" class="@(EffectiveMode == mode ? "btn btn-sm active" : "btn btn-sm")"
+                 aria-pressed="@(EffectiveMode == mode ? "true" : "false")"
+                 data-md-mode
+                 disabled="@Disabled"
+                 @onclick="() => SetModeAsync(mode)">@label</button>;
+}

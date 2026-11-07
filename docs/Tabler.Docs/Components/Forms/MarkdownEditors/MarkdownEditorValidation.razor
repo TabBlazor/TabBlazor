@@ -1,0 +1,19 @@
+@using System.ComponentModel.DataAnnotations
+<TablerForm Model="Model">
+    <div class="mb-3">
+        <MarkdownEditor @bind-Value="Model.Description" Label="Description" Rows="3" />
+        <TabValidationMessage For="() => Model.Description" />
+    </div>
+    <Button BackgroundColor="TablerColor.Primary" Type="ButtonType.Submit" Text="Save" />
+</TablerForm>
+
+@code {
+    private IssueModel Model { get; set; } = new();
+
+    public class IssueModel
+    {
+        [Required(ErrorMessage = "Describe the issue")]
+        [MinLength(20, ErrorMessage = "Write at least 20 characters")]
+        public string Description { get; set; }
+    }
+}

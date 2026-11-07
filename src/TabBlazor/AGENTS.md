@@ -64,6 +64,7 @@ together, and the traps.
 | List or table of records, new code | `DataView` (preview) — see below |
 | Existing screens built on `Table` / `QuickTable` | Keep them; they are unchanged. Don't migrate unless asked. |
 | Form with validation | `TablerForm` + inputs |
+| Markdown text with toolbar, preview, uploads | `MarkdownEditor` (+ `TabBlazor.Markdown` for the preview) |
 | Tabbed page or card | `Tabs` / `Tab` |
 | Dialog returning a result | `IModalService.ShowAsync<T>` |
 | Yes/no confirm | `IModalService.ShowDialogAsync` |
@@ -252,6 +253,34 @@ Failures: `EditResult.Failed("message")`.
   check the manifest. `Select`/`ItemSelect` need `ConvertExpression` when the bound value is not
   the item itself.
 
+## Markdown editor
+
+```razor
+<MarkdownEditor @bind-Value="model.Description" Label="Description" Mode="MarkdownEditorMode.Split"
+                UploadFile="UploadAsync" OnUploadStateChanged="busy => saving = busy" />
+```
+- A text area with a toolbar (including a table size picker), shortcuts, and Enter continuing lists,
+  quotes and table rows. In a table, Tab/Shift+Tab move between cells and line up the columns
+  (Escape, then Tab leaves the editor). It works inside and outside a form,
+  and in static server rendering it is a plain text area that posts as `Model.Description`
+  (override with `Name`).
+- The value reaches .NET after `DebounceMs` (300) of no typing, on blur and after toolbar
+  actions — not on every key.
+- **Preview needs a renderer**: `services.AddTabBlazorMarkdown()` from the `TabBlazor.Markdown`
+  package (Markdig, safe by default), or any `IMarkdownRenderer`. Without one there are no
+  preview buttons. Use the same `IMarkdownRenderer` to show saved markdown elsewhere:
+  `<div class="markdown">@Markdown.Render(text)</div>`.
+- `Mode="MarkdownEditorMode.Hybrid"` keeps the markdown text but styles it as you type
+  (monospace, bold/headings/links/code highlighted, markers dimmed). It needs no renderer;
+  with one it is also a view button.
+- **Uploads**: `UploadFile(MarkdownUploadFile file, CancellationToken token)` stores the file
+  and returns `new MarkdownUploadResult(url)`. Images are embedded, other files linked.
+  `AcceptedFileTypes` defaults to `"image/*"`; `MaxFileSize` to 10 MB. Throw
+  `MarkdownUploadException("…")` to reject a file with a message. Disable saving while
+  `IsUploading`, or the saved text contains placeholders. Serve uploaded files with
+  `Content-Disposition: attachment` (or from another domain) and `X-Content-Type-Options: nosniff`.
+- Custom buttons: `<ToolbarExtra>` plus `editorRef.InsertAsync("…")`.
+
 ## Modals
 
 ```csharp
@@ -297,6 +326,7 @@ Set in `AddTabBlazor(options => …)`:
 - `DataViewText` — app-wide DataView UI strings.
 - `DataViewTextResource` — a resource marker type to translate DataView strings through
   `IStringLocalizerFactory` (`services.AddLocalization()`); keys are the `DataViewText` property names.
+- `MarkdownEditorText` / `MarkdownEditorTextResource` — the same for `MarkdownEditor`.
 
 ## Registered services (from AddTabBlazor)
 
@@ -315,6 +345,9 @@ stacking. `IPopperService` is registered only when Popper is enabled.
   `@using Align = TabBlazor.Align`.
 - **bUnit tests:** TabBlazor has a `RenderComponent<T>` type. Use bUnit's `Render<T>(…)`.
 - **Tabler CSS version:** link the Tabler version this package targets (1.7.x), not an older one.
+- **Long text on Blazor Server**: a text field sends its whole value in one SignalR message, and
+  the default limit is 32 KB. Raise it for `MarkdownEditor` (and `InputTextArea`) with
+  `.AddInteractiveServerComponents().AddHubOptions(o => o.MaximumReceiveMessageSize = 1024 * 1024)`.
 - **`TabBlazor.QuickTable.EntityFramework` is for QuickTable only.** DataView needs no
   adapter: query EF Core in an `ItemsProvider`.
 
