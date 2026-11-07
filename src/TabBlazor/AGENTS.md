@@ -262,7 +262,8 @@ Failures: `EditResult.Failed("message")`.
 - A text area with a toolbar (including a table size picker), shortcuts, and Enter continuing lists,
   quotes and table rows. In a table, Tab/Shift+Tab move between cells and line up the columns
   (Escape, then Tab leaves the editor); the table menu's "Table editor…" edits the table at the
-  caret in a dialog (grid, rows/columns, alignment, spreadsheet paste). It works inside and outside a form,
+  caret in a dialog (grid, rows/columns, alignment, spreadsheet paste). Outer pipes are optional;
+  a table needs a separator row under its header. It works inside and outside a form,
   and in static server rendering it is a plain text area that posts as `Model.Description`
   (override with `Name`).
 - The value reaches .NET after `DebounceMs` (300) of no typing, on blur and after toolbar

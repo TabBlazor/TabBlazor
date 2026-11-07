@@ -431,19 +431,20 @@ export function highlightMarkdown(value) {
         }
 
         // Table rows get a background (only behind the text, so aligned columns read as a grid): the header
-        // row, the line above a separator row, stands out; body rows are striped.
+        // row, the line above a separator row, stands out; body rows are striped. The outer pipes are optional.
         if (TABLE_LINE.test(line)) {
             let kind;
-            if (TABLE_SEPARATOR.test(line)) {
+            if (tableRow < 0 && TABLE_SEPARATOR.test(lines[i + 1] ?? '')) {
+                kind = 'md-table-header';
+                tableRow = -2;
+            } else if (tableRow === -2) {
                 kind = 'md-table-separator';
                 tableRow = 0;
-            } else if (TABLE_SEPARATOR.test(lines[i + 1] ?? '')) {
-                kind = 'md-table-header';
             } else if (tableRow >= 0) {
                 kind = tableRow++ % 2 ? 'md-table-row md-table-even' : 'md-table-row';
             }
             if (kind) {
-                out.push(span(kind, highlightLine(line)));
+                out.push(span(kind, highlightTableRow(line, kind === 'md-table-separator')));
                 continue;
             }
         } else {
@@ -455,8 +456,23 @@ export function highlightMarkdown(value) {
     return out.join('\n');
 }
 
-const TABLE_LINE = /^\s*\|/;
+// A table line has a pipe that is not escaped; with or without the outer pipes. Whether it is in a table depends on
+// a separator row below the header.
+const TABLE_LINE = /(^|[^\\])\|/;
 const TABLE_SEPARATOR = /^\s*\|?(\s*:?-+:?\s*\|)+\s*(:?-+:?)?\s*$/;
+
+function highlightTableRow(line, separator) {
+    if (separator) {
+        return mark(line);
+    }
+    let html = '';
+    let position = 0;
+    for (const cell of parseRow(line)) {
+        html += mark(line.slice(position, cell.start)) + highlightInline(line.slice(cell.start, cell.end));
+        position = cell.end;
+    }
+    return html + mark(line.slice(position));
+}
 
 function highlightLine(line) {
     let m;
@@ -474,18 +490,6 @@ function highlightLine(line) {
         const rest = m[5];
         return escapeHtml(m[1]) + span('md-list', escapeHtml(m[2])) + escapeHtml(m[3]) + task
             + (m[4] && /x/i.test(m[4]) ? span('md-done', highlightInline(rest)) : highlightInline(rest));
-    }
-    if (TABLE_LINE.test(line)) {
-        if (TABLE_SEPARATOR.test(line)) {
-            return mark(line);
-        }
-        let html = '';
-        let position = 0;
-        for (const cell of parseRow(line)) {
-            html += mark(line.slice(position, cell.start)) + highlightInline(line.slice(cell.start, cell.end));
-            position = cell.end;
-        }
-        return html + mark(line.slice(position));
     }
     return highlightInline(line);
 }
@@ -760,10 +764,13 @@ function insertBlock(state, lines, position, selection) {
  * the table.
  */
 function continueTable(state, event, value, lineStart, lineEnd) {
+    const caret = state.textarea.selectionStart;
     const line = value.slice(lineStart, lineEnd);
     const trimmed = line.trim();
-    if (!trimmed.startsWith('|') || !trimmed.endsWith('|') || trimmed.length < 2
-        || value.slice(state.textarea.selectionStart, lineEnd).trim() !== '') {
+    // A table (outer pipes optional), or a row with outer pipes being typed before its separator row exists.
+    const table = findTable(value, caret);
+    const wrapped = trimmed.length >= 2 && trimmed.startsWith('|') && trimmed.endsWith('|');
+    if ((!table && !wrapped) || value.slice(caret, lineEnd).trim() !== '') {
         return false;
     }
 
@@ -774,7 +781,6 @@ function continueTable(state, event, value, lineStart, lineEnd) {
         return true;
     }
 
-    const table = findTable(value, state.textarea.selectionStart);
     if (table) {
         // Below the header the new row goes after the separator row.
         const row = Math.max(table.caretRow, 1) + 1;
@@ -824,8 +830,9 @@ function tabInTable(state, event) {
 }
 
 /**
- * The table around position: its lines need a leading pipe and a separator row as the second line. Returns its
- * range, the cell texts per row and the caret's row, cell and offset in that cell's text.
+ * The table around position: lines with a pipe (the outer pipes are optional) whose second line is a separator row.
+ * Lines with pipes just above the header are not part of it. Returns its range, the cell texts per row and the
+ * caret's row, cell and offset in that cell's text.
  */
 function findTable(value, position) {
     const lineStart = value.lastIndexOf('\n', position - 1) + 1;
@@ -834,13 +841,13 @@ function findTable(value, position) {
         return null;
     }
 
-    let start = lineStart;
-    while (start > 0) {
-        const previous = value.lastIndexOf('\n', start - 2) + 1;
-        if (!TABLE_LINE.test(value.slice(previous, start - 1))) {
+    let blockStart = lineStart;
+    while (blockStart > 0) {
+        const previous = value.lastIndexOf('\n', blockStart - 2) + 1;
+        if (!TABLE_LINE.test(value.slice(previous, blockStart - 1))) {
             break;
         }
-        start = previous;
+        blockStart = previous;
     }
     let end = lineEnd;
     while (end < value.length) {
@@ -851,13 +858,17 @@ function findTable(value, position) {
         end = next;
     }
 
-    const lines = value.slice(start, end).split('\n');
-    if (lines.length < 2 || !TABLE_SEPARATOR.test(lines[1])) {
+    const block = value.slice(blockStart, end).split('\n');
+    const separator = block.findIndex((line, i) => i > 0 && TABLE_SEPARATOR.test(line));
+    const caretLine = value.slice(blockStart, lineStart).split('\n').length - 1;
+    if (separator < 0 || caretLine < separator - 1) {
         return null;
     }
 
+    const lines = block.slice(separator - 1);
+    const start = blockStart + block.slice(0, separator - 1).reduce((sum, line) => sum + line.length + 1, 0);
     const parsed = lines.map(parseRow);
-    const caretRow = value.slice(start, lineStart).split('\n').length - 1;
+    const caretRow = caretLine - (separator - 1);
     const caretInLine = position - lineStart;
     const cells = parsed[caretRow];
     let caretCell = cells.findIndex(cell => caretInLine <= cell.end);
@@ -879,10 +890,14 @@ function findTable(value, position) {
     };
 }
 
-/** The cells of a table row: their raw range in the line and their trimmed text. Pipes in code or escaped do not split. */
+/**
+ * The cells of a table row: their raw range in the line and their trimmed text. The outer pipes are optional. Pipes in
+ * code or escaped do not split.
+ */
 function parseRow(line) {
     const cells = [];
-    let start = line.indexOf('|') + 1;
+    const leading = /^\s*\|/.exec(line);
+    let start = leading ? leading[0].length : 0;
     let code = 0;
     for (let i = start; i < line.length; i++) {
         const char = line[i];
