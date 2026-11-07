@@ -69,13 +69,13 @@
             {
                 <div class="markdown-editor-toolbar-group">@ToolbarExtra</div>
             }
-            @if (HasRenderer)
+            @if (ShowModeButtons)
             {
                 <div class="btn-group markdown-editor-modes" role="group" aria-label="@Texts.Mode">
-                    @ModeButton(MarkdownEditorMode.Edit, Texts.Write)
-                    @ModeButton(MarkdownEditorMode.Hybrid, Texts.Hybrid)
-                    @ModeButton(MarkdownEditorMode.Preview, Texts.Preview)
-                    @ModeButton(MarkdownEditorMode.Split, Texts.Split)
+                    @foreach (var mode in availableModes)
+                    {
+                        @ModeButton(mode, ModeLabel(mode))
+                    }
                 </div>
             }
         </div>

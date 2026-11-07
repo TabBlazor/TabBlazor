@@ -1,0 +1,6 @@
+<MarkdownEditor @bind-Value="text" Mode="MarkdownEditorMode.Hybrid"
+                Modes="[MarkdownEditorMode.Hybrid, MarkdownEditorMode.Edit]" aria-label="Comment" />
+
+@code {
+    private string? text = "Only **Hybrid** and **Write** are offered here, with Hybrid first.";
+}

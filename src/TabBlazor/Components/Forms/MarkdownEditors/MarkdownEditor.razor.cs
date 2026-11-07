@@ -44,6 +44,7 @@ public partial class MarkdownEditor : TablerBaseComponent, IAsyncDisposable
     private bool valueSetByParent;
     private MarkdownEditorMode currentMode;
     private MarkdownEditorMode lastModeParameter;
+    private IReadOnlyList<MarkdownEditorMode> availableModes = [MarkdownEditorMode.Edit];
     private string? lastClientOptions;
     private string? previewSource;
     private MarkupString previewMarkup;
@@ -94,6 +95,14 @@ public partial class MarkdownEditor : TablerBaseComponent, IAsyncDisposable
     [Parameter] public MarkdownEditorMode Mode { get; set; } = MarkdownEditorMode.Edit;
     /// <summary>Raised when the user switches between write, hybrid, preview and side by side.</summary>
     [Parameter] public EventCallback<MarkdownEditorMode> ModeChanged { get; set; }
+    /// <summary>
+    /// The views users can switch between, in the order of their buttons, for example
+    /// <c>Modes="[MarkdownEditorMode.Edit, MarkdownEditorMode.Hybrid]"</c>. Defaults to all of them.
+    /// <see cref="MarkdownEditorMode.Preview"/> and <see cref="MarkdownEditorMode.Split"/> are offered only with a
+    /// renderer. With one view left there are no view buttons and the editor stays in that view. When
+    /// <see cref="Mode"/> is not offered, the editor shows the first view that is.
+    /// </summary>
+    [Parameter] public IReadOnlyList<MarkdownEditorMode>? Modes { get; set; }
     /// <summary>Renders the preview. Defaults to the <see cref="IMarkdownRenderer"/> registered in DI.</summary>
     [Parameter] public IMarkdownRenderer? Renderer { get; set; }
 
@@ -139,10 +148,9 @@ public partial class MarkdownEditor : TablerBaseComponent, IAsyncDisposable
     private bool ToolbarVisible => Interactive && ShowToolbar;
     private bool UploadsEnabled => Interactive && UploadFile is not null && !Disabled && !ReadOnly;
     private bool ImagesOnly => MarkdownSyntax.AcceptsOnlyImages(AcceptedFileTypes);
-    // Hybrid styles the text in the browser, so it needs no renderer; the preview modes do.
-    private MarkdownEditorMode EffectiveMode => Interactive && (HasRenderer || currentMode == MarkdownEditorMode.Hybrid)
-        ? currentMode
-        : MarkdownEditorMode.Edit;
+    private MarkdownEditorMode EffectiveMode => availableModes.Contains(currentMode) ? currentMode : availableModes[0];
+    // Without a renderer the default is no view buttons (Mode still works); listing Modes asks for them.
+    private bool ShowModeButtons => availableModes.Count > 1 && (Modes is not null || HasRenderer);
     private bool Hybrid => EffectiveMode == MarkdownEditorMode.Hybrid;
     private bool ShowPreview => EffectiveMode is MarkdownEditorMode.Preview or MarkdownEditorMode.Split;
     private bool FormattingDisabled => Disabled || ReadOnly || EffectiveMode == MarkdownEditorMode.Preview;
@@ -183,6 +191,8 @@ public partial class MarkdownEditor : TablerBaseComponent, IAsyncDisposable
             lastModeParameter = Mode;
             currentMode = Mode;
         }
+
+        availableModes = AvailableModes();
 
         if (ValueExpression is not null)
         {
@@ -239,6 +249,33 @@ public partial class MarkdownEditor : TablerBaseComponent, IAsyncDisposable
             await module.InvokeVoidAsync("refresh", root);
         }
     }
+
+    /// <summary>
+    /// The offered views that work here: all of them by default, the preview views only with a renderer (Hybrid styles
+    /// the text in the browser and needs none) and only the plain text area in static rendering. Never empty.
+    /// </summary>
+    private List<MarkdownEditorMode> AvailableModes()
+    {
+        if (!Interactive)
+        {
+            return [MarkdownEditorMode.Edit];
+        }
+
+        var hasRenderer = HasRenderer;
+        var modes = (Modes ?? [MarkdownEditorMode.Edit, MarkdownEditorMode.Hybrid, MarkdownEditorMode.Preview, MarkdownEditorMode.Split])
+            .Where(mode => Enum.IsDefined(mode) && (hasRenderer || mode is MarkdownEditorMode.Edit or MarkdownEditorMode.Hybrid))
+            .Distinct()
+            .ToList();
+        return modes.Count > 0 ? modes : [MarkdownEditorMode.Edit];
+    }
+
+    private string ModeLabel(MarkdownEditorMode mode) => mode switch
+    {
+        MarkdownEditorMode.Hybrid => Texts.Hybrid,
+        MarkdownEditorMode.Preview => Texts.Preview,
+        MarkdownEditorMode.Split => Texts.Split,
+        _ => Texts.Write
+    };
 
     private Task<IJSObjectReference> GetModuleAsync() =>
         moduleTask ??= JS.InvokeAsync<IJSObjectReference>("import", ModulePath).AsTask();

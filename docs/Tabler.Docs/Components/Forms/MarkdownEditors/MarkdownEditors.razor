@@ -8,6 +8,9 @@
         <CodeSnippet Component="@typeof(MarkdownEditorModes)" Title="Hybrid, preview and side by side">
             <Description>With a renderer registered (services.AddTabBlazorMarkdown() from the TabBlazor.Markdown package) the toolbar gets Write, Hybrid, Preview and Side by side. Hybrid keeps the markdown but styles it as you type, in the monospace font: bold looks bold, headings, lists, links and code stand out, the markers are dimmed, and table headers and rows get a background so lined-up columns read as a grid. Everything else works as in Write, including undo. Bind Mode to remember the user's choice. Without a renderer there is no preview and no view buttons, but Mode="MarkdownEditorMode.Hybrid" still works.</Description>
         </CodeSnippet>
+        <CodeSnippet Component="@typeof(MarkdownEditorChosenModes)" Title="Choose the views">
+            <Description>Modes lists the views users can switch between, in the order of their buttons. Preview and Side by side are offered only with a renderer; Write and Hybrid always work, so listing them gives a toggle even without one. With a single view there are no view buttons, and a Mode that is not offered falls back to the first one listed.</Description>
+        </CodeSnippet>
         <CodeSnippet Component="@typeof(MarkdownEditorUploads)" Title="Images and files">
             <Description>Set UploadFile to let users paste, drop or pick files. A placeholder appears at the caret right away and is replaced by an image or link when your handler returns the URL; progress and cancel show under the editor. AcceptedFileTypes defaults to images; set it to allow other files. This demo keeps images as data URLs because the docs have no server; a real app uploads to its own storage and returns that URL.</Description>
         </CodeSnippet>

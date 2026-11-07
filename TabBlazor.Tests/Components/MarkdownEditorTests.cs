@@ -206,6 +206,65 @@ namespace TabBlazor.Tests.Components
             Assert.Empty(cut.FindAll(".markdown-editor-highlight"));
         }
 
+        private static string[] ModeButtons(IRenderedComponent<MarkdownEditor> cut) =>
+            cut.FindAll("[data-md-mode]").Select(b => b.TextContent).ToArray();
+
+        [Fact]
+        public void Modes_limits_and_orders_the_view_buttons()
+        {
+            Services.AddSingleton<IMarkdownRenderer>(new FakeRenderer());
+
+            var cut = RenderEditor("text", p => p.Add(e => e.Modes, [MarkdownEditorMode.Split, MarkdownEditorMode.Edit]));
+
+            Assert.Equal(["Side by side", "Write"], ModeButtons(cut));
+            Assert.Equal("true", cut.FindAll("[data-md-mode]")[1].GetAttribute("aria-pressed"));
+        }
+
+        [Fact]
+        public void Modes_without_renderer_offers_only_write_and_hybrid()
+        {
+            var cut = RenderEditor("text", p => p.Add(e => e.Modes,
+                [MarkdownEditorMode.Edit, MarkdownEditorMode.Hybrid, MarkdownEditorMode.Preview]));
+
+            Assert.Equal(["Write", "Hybrid"], ModeButtons(cut));
+            cut.FindAll("[data-md-mode]")[1].Click();
+            Assert.Contains("markdown-editor-body-hybrid", cut.Find(".markdown-editor-body").ClassList);
+        }
+
+        [Fact]
+        public void Single_mode_has_no_view_buttons_and_is_used()
+        {
+            Services.AddSingleton<IMarkdownRenderer>(new FakeRenderer());
+
+            var cut = RenderEditor("text", p => p.Add(e => e.Modes, [MarkdownEditorMode.Hybrid]));
+
+            Assert.Empty(cut.FindAll("[data-md-mode]"));
+            Assert.Contains("markdown-editor-body-hybrid", cut.Find(".markdown-editor-body").ClassList);
+        }
+
+        [Fact]
+        public void Mode_that_is_not_offered_shows_the_first_offered_view()
+        {
+            Services.AddSingleton<IMarkdownRenderer>(new FakeRenderer());
+
+            var cut = RenderEditor("text", p => p
+                .Add(e => e.Mode, MarkdownEditorMode.Split)
+                .Add(e => e.Modes, [MarkdownEditorMode.Hybrid, MarkdownEditorMode.Edit]));
+
+            Assert.Empty(cut.FindAll(".markdown-editor-preview"));
+            Assert.Contains("markdown-editor-body-hybrid", cut.Find(".markdown-editor-body").ClassList);
+            Assert.Equal("true", cut.FindAll("[data-md-mode]")[0].GetAttribute("aria-pressed"));
+        }
+
+        [Fact]
+        public void Without_renderer_and_Modes_there_are_no_view_buttons_but_Mode_works()
+        {
+            var cut = RenderEditor("text", p => p.Add(e => e.Mode, MarkdownEditorMode.Hybrid));
+
+            Assert.Empty(cut.FindAll("[data-md-mode]"));
+            Assert.Contains("markdown-editor-body-hybrid", cut.Find(".markdown-editor-body").ClassList);
+        }
+
         [Fact]
         public void Change_event_raises_ValueChanged_and_notifies_edit_context()
         {
