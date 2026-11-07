@@ -73,6 +73,32 @@ public sealed record MarkdownEditorText
 
     /// <summary>The header of each column in an inserted table. Argument: the column number.</summary>
     public string TableColumn { get; init; } = "Column {0}";
+
+    /// <summary>The table menu item that opens the table dialog, for the table at the caret or a new one.</summary>
+    public string TableEditor { get; init; } = "Table editor…";
+
+    /// <summary>The table dialog's title when the caret is in a table, or when it is not.</summary>
+    public string EditTable { get; init; } = "Edit table";
+    public string InsertTable { get; init; } = "Insert table";
+    public string AddRow { get; init; } = "Add row";
+    public string AddColumn { get; init; } = "Add column";
+    public string DeleteRow { get; init; } = "Delete row";
+    public string DeleteColumn { get; init; } = "Delete column";
+    public string MoveRowUp { get; init; } = "Move row up";
+    public string MoveRowDown { get; init; } = "Move row down";
+    public string MoveColumnLeft { get; init; } = "Move column left";
+    public string MoveColumnRight { get; init; } = "Move column right";
+    public string AlignLeft { get; init; } = "Align left";
+    public string AlignCenter { get; init; } = "Center";
+    public string AlignRight { get; init; } = "Align right";
+    public string Save { get; init; } = "Save";
+
+    /// <summary>The accessible name of a body cell in the table dialog. Arguments: the row and the column number.</summary>
+    public string TableCell { get; init; } = "Row {0}, column {1}";
+
+    /// <summary>The accessible name of a header cell in the table dialog. Argument: the column number.</summary>
+    public string TableHeaderCell { get; init; } = "Header, column {0}";
+    public string TablePasteHint { get; init; } = "Paste cells copied from a spreadsheet to fill the table. Enter moves down.";
     public string AttachFiles { get; init; } = "Attach files";
     public string AttachImages { get; init; } = "Add images";
     public string LinkTextPlaceholder { get; init; } = "link text";

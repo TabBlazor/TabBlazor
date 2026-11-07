@@ -62,6 +62,9 @@
                             }
                         </div>
                         <div class="markdown-editor-table-size" aria-hidden="true" data-md-default="@Texts.Table" data-md-size="@Texts.Table"></div>
+                        <div class="dropdown-divider"></div>
+                        <button type="button" role="menuitem" class="dropdown-item" tabindex="-1" data-md-close-menu
+                                @onclick="OpenTableEditorAsync">@Texts.TableEditor</button>
                     </div>
                 </div>
             </div>
@@ -139,6 +142,12 @@
     {
         <InputFile class="markdown-editor-file" multiple accept="@AcceptedFileTypes" OnChange="OnFilesSelectedAsync" hidden tabindex="-1" aria-hidden="true" />
     }
+    @if (tableEdit is { } table)
+    {
+        <ModalView Title="@(tableSource?.Found == true ? Texts.EditTable : Texts.InsertTable)" Options="TableDialogOptions" OnClosed="CloseTableEditorAsync">
+            @TableDialog(table)
+        </ModalView>
+    }
 </div>
 
 @code {
@@ -152,6 +161,90 @@
                  aria-keyshortcuts="@(shortcut == null ? null : $"Control+{shortcut}")"
                  disabled="@FormattingDisabled">
             <Icon IconType="icon" Size="18" />
+        </button>;
+
+    private RenderFragment TableDialog(MarkdownTable table) =>
+        @<div class="markdown-table-editor" data-md-table-editor>
+            <input class="d-none" data-md-table-paste tabindex="-1" aria-hidden="true" @onchange="OnTablePaste" />
+            <div class="markdown-table-scroll">
+                <table class="table table-sm table-bordered mb-0 markdown-table-grid">
+                    <thead>
+                        <tr class="markdown-table-tools">
+                            @for (var c = 0; c < table.Columns; c++)
+                            {
+                                var column = c;
+                                <th scope="col">
+                                    <div class="markdown-table-column-tools">
+                                        <div class="btn-group" role="group">
+                                            @AlignButton(column, MarkdownTableAlignment.Left, InternalIcons.Align_left, Texts.AlignLeft)
+                                            @AlignButton(column, MarkdownTableAlignment.Center, InternalIcons.Align_center, Texts.AlignCenter)
+                                            @AlignButton(column, MarkdownTableAlignment.Right, InternalIcons.Align_right, Texts.AlignRight)
+                                        </div>
+                                        @TableButton(InternalIcons.Chevron_left, Texts.MoveColumnLeft, column == 0, () => table.MoveColumn(column, -1))
+                                        @TableButton(InternalIcons.Chevron_right, Texts.MoveColumnRight, column == table.Columns - 1, () => table.MoveColumn(column, 1))
+                                        @TableButton(InternalIcons.Trash, Texts.DeleteColumn, table.Columns == 1, () => table.RemoveColumn(column))
+                                    </div>
+                                </th>
+                            }
+                            <th class="markdown-table-row-tools"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var r = 0; r < table.Rows.Count; r++)
+                        {
+                            var row = r;
+                            var cells = table.Rows[row];
+                            <tr class="@(row == 0 ? "markdown-table-header" : null)">
+                                @for (var c = 0; c < table.Columns; c++)
+                                {
+                                    var column = c;
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" value="@cells[column]"
+                                               style="@AlignmentStyle(table.Alignments[column])"
+                                               data-md-row="@row" data-md-column="@column"
+                                               aria-label="@(row == 0 ? string.Format(Texts.TableHeaderCell, column + 1) : string.Format(Texts.TableCell, row, column + 1))"
+                                               @onchange="args => SetCell(cells, column, args)" />
+                                    </td>
+                                }
+                                <td class="markdown-table-row-tools">
+                                    @if (row > 0)
+                                    {
+                                        @TableButton(InternalIcons.Chevron_up, Texts.MoveRowUp, row == 1, () => table.MoveRow(row, -1))
+                                        @TableButton(InternalIcons.Chevron_down, Texts.MoveRowDown, row == table.Rows.Count - 1, () => table.MoveRow(row, 1))
+                                        @TableButton(InternalIcons.Trash, Texts.DeleteRow, false, () => table.RemoveRow(row))
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="markdown-table-actions">
+                <button type="button" class="btn btn-sm" data-md-table-add-row @onclick="() => table.AddRow(table.Rows.Count)">
+                    <Icon IconType="InternalIcons.Plus" Size="16" /> @Texts.AddRow
+                </button>
+                <button type="button" class="btn btn-sm" @onclick="() => table.AddColumn(table.Columns)">
+                    <Icon IconType="InternalIcons.Plus" Size="16" /> @Texts.AddColumn
+                </button>
+                <span class="markdown-table-hint">@Texts.TablePasteHint</span>
+            </div>
+            <div class="markdown-table-footer">
+                <button type="button" class="btn" @onclick="CloseTableEditorAsync">@Texts.Cancel</button>
+                <button type="button" class="btn btn-primary" data-md-table-save @onclick="SaveTableAsync">@Texts.Save</button>
+            </div>
+        </div>;
+
+    private RenderFragment AlignButton(int column, MarkdownTableAlignment alignment, IIconType icon, string label) =>
+        @<button type="button" class="@(tableEdit?.Alignments[column] == alignment ? "btn btn-sm btn-icon active" : "btn btn-sm btn-icon")"
+                 title="@label" aria-label="@label" aria-pressed="@(tableEdit?.Alignments[column] == alignment ? "true" : "false")"
+                 @onclick="() => ToggleAlignment(column, alignment)">
+            <Icon IconType="icon" Size="16" />
+        </button>;
+
+    private RenderFragment TableButton(IIconType icon, string label, bool disabled, Action action) =>
+        @<button type="button" class="btn btn-sm btn-ghost-secondary btn-icon" title="@label" aria-label="@label"
+                 disabled="@disabled" @onclick="action">
+            <Icon IconType="icon" Size="16" />
         </button>;
 
     private RenderFragment ModeButton(MarkdownEditorMode mode, string label) =>

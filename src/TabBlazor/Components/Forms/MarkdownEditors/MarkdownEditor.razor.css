@@ -307,6 +307,84 @@
     }
 }
 
+/* Table dialog */
+
+.markdown-table-scroll {
+    overflow-x: auto;
+}
+
+.markdown-table-grid {
+    width: auto;
+    min-width: 100%;
+}
+
+.markdown-table-grid td,
+.markdown-table-grid th {
+    min-width: 9rem;
+    padding: .25rem;
+    vertical-align: middle;
+}
+
+.markdown-table-grid .markdown-table-row-tools {
+    width: 1%;
+    min-width: 0;
+    white-space: nowrap;
+}
+
+.markdown-table-tools th {
+    background-color: var(--tblr-bg-surface-secondary);
+}
+
+.markdown-table-column-tools {
+    display: flex;
+    align-items: center;
+    gap: .125rem;
+}
+
+.markdown-table-column-tools .btn-group {
+    margin-right: auto;
+}
+
+.markdown-table-grid .btn-icon {
+    min-width: 1.75rem;
+    min-height: 1.75rem;
+    padding: .125rem;
+}
+
+.markdown-table-grid .btn-group .btn.active {
+    border-color: var(--tblr-primary);
+    background-color: var(--tblr-primary-lt);
+    color: var(--tblr-primary);
+}
+
+.markdown-table-header .form-control {
+    font-weight: var(--tblr-font-weight-bold, 600);
+    background-color: rgba(var(--tblr-primary-rgb), .06);
+}
+
+.markdown-table-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+    margin-top: .75rem;
+}
+
+.markdown-table-hint {
+    margin-left: auto;
+    color: var(--tblr-secondary);
+    font-size: .8125rem;
+}
+
+.markdown-table-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: .5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: var(--tblr-border-width, 1px) solid var(--tblr-border-color);
+}
+
 /* Uploads */
 
 .markdown-editor-uploads {

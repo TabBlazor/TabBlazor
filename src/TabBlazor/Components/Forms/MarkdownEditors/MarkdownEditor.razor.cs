@@ -248,6 +248,12 @@ public partial class MarkdownEditor : TablerBaseComponent, IAsyncDisposable
             valueSetByParent = false;
             await module.InvokeVoidAsync("refresh", root);
         }
+
+        if (focusTableEditor && TableDialogOpen)
+        {
+            focusTableEditor = false;
+            await module.InvokeVoidAsync("focusTableEditor", root);
+        }
     }
 
     /// <summary>
