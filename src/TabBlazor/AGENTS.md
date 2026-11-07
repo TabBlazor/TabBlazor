@@ -261,7 +261,8 @@ Failures: `EditResult.Failed("message")`.
 ```
 - A text area with a toolbar (including a table size picker), shortcuts, and Enter continuing lists,
   quotes and table rows. In a table, Tab/Shift+Tab move between cells and line up the columns
-  (Escape, then Tab leaves the editor). It works inside and outside a form,
+  (Escape, then Tab leaves the editor); the table menu's "Table editor…" edits the table at the
+  caret in a dialog (grid, rows/columns, alignment, spreadsheet paste). It works inside and outside a form,
   and in static server rendering it is a plain text area that posts as `Model.Description`
   (override with `Name`).
 - The value reaches .NET after `DebounceMs` (300) of no typing, on blur and after toolbar
@@ -273,6 +274,8 @@ Failures: `EditResult.Failed("message")`.
 - `Mode="MarkdownEditorMode.Hybrid"` keeps the markdown text but styles it as you type
   (monospace, bold/headings/links/code highlighted, markers dimmed). It needs no renderer;
   with one it is also a view button.
+- `Modes="[MarkdownEditorMode.Edit, MarkdownEditorMode.Hybrid]"` picks the view buttons and
+  their order (default: all; Preview/Split only with a renderer). One mode = no buttons.
 - **Uploads**: `UploadFile(MarkdownUploadFile file, CancellationToken token)` stores the file
   and returns `new MarkdownUploadResult(url)`. Images are embedded, other files linked.
   `AcceptedFileTypes` defaults to `"image/*"`; `MaxFileSize` to 10 MB. Throw

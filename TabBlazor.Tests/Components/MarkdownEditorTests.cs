@@ -206,6 +206,65 @@ namespace TabBlazor.Tests.Components
             Assert.Empty(cut.FindAll(".markdown-editor-highlight"));
         }
 
+        private static string[] ModeButtons(IRenderedComponent<MarkdownEditor> cut) =>
+            cut.FindAll("[data-md-mode]").Select(b => b.TextContent).ToArray();
+
+        [Fact]
+        public void Modes_limits_and_orders_the_view_buttons()
+        {
+            Services.AddSingleton<IMarkdownRenderer>(new FakeRenderer());
+
+            var cut = RenderEditor("text", p => p.Add(e => e.Modes, [MarkdownEditorMode.Split, MarkdownEditorMode.Edit]));
+
+            Assert.Equal(["Side by side", "Write"], ModeButtons(cut));
+            Assert.Equal("true", cut.FindAll("[data-md-mode]")[1].GetAttribute("aria-pressed"));
+        }
+
+        [Fact]
+        public void Modes_without_renderer_offers_only_write_and_hybrid()
+        {
+            var cut = RenderEditor("text", p => p.Add(e => e.Modes,
+                [MarkdownEditorMode.Edit, MarkdownEditorMode.Hybrid, MarkdownEditorMode.Preview]));
+
+            Assert.Equal(["Write", "Hybrid"], ModeButtons(cut));
+            cut.FindAll("[data-md-mode]")[1].Click();
+            Assert.Contains("markdown-editor-body-hybrid", cut.Find(".markdown-editor-body").ClassList);
+        }
+
+        [Fact]
+        public void Single_mode_has_no_view_buttons_and_is_used()
+        {
+            Services.AddSingleton<IMarkdownRenderer>(new FakeRenderer());
+
+            var cut = RenderEditor("text", p => p.Add(e => e.Modes, [MarkdownEditorMode.Hybrid]));
+
+            Assert.Empty(cut.FindAll("[data-md-mode]"));
+            Assert.Contains("markdown-editor-body-hybrid", cut.Find(".markdown-editor-body").ClassList);
+        }
+
+        [Fact]
+        public void Mode_that_is_not_offered_shows_the_first_offered_view()
+        {
+            Services.AddSingleton<IMarkdownRenderer>(new FakeRenderer());
+
+            var cut = RenderEditor("text", p => p
+                .Add(e => e.Mode, MarkdownEditorMode.Split)
+                .Add(e => e.Modes, [MarkdownEditorMode.Hybrid, MarkdownEditorMode.Edit]));
+
+            Assert.Empty(cut.FindAll(".markdown-editor-preview"));
+            Assert.Contains("markdown-editor-body-hybrid", cut.Find(".markdown-editor-body").ClassList);
+            Assert.Equal("true", cut.FindAll("[data-md-mode]")[0].GetAttribute("aria-pressed"));
+        }
+
+        [Fact]
+        public void Without_renderer_and_Modes_there_are_no_view_buttons_but_Mode_works()
+        {
+            var cut = RenderEditor("text", p => p.Add(e => e.Mode, MarkdownEditorMode.Hybrid));
+
+            Assert.Empty(cut.FindAll("[data-md-mode]"));
+            Assert.Contains("markdown-editor-body-hybrid", cut.Find(".markdown-editor-body").ClassList);
+        }
+
         [Fact]
         public void Change_event_raises_ValueChanged_and_notifies_edit_context()
         {
@@ -302,6 +361,92 @@ namespace TabBlazor.Tests.Components
             Assert.Equal("6", last.GetAttribute("data-md-rows"));
             Assert.Equal("Tabell 3 × 2", cut.Find("button[data-md-columns='3'][data-md-rows='2']").GetAttribute("aria-label"));
             Assert.Equal("Table", cut.Find(".markdown-editor-table-menu").GetAttribute("aria-label"));
+        }
+
+        private IRenderedComponent<MarkdownEditor> OpenTableDialog(MarkdownTableSource source, out BunitJSModuleInterop module)
+        {
+            module = JSInterop.SetupModule(ModulePath);
+            module.Setup<MarkdownTableSource?>("readTable", _ => true).SetResult(source);
+            var cut = RenderEditor("text");
+            cut.Find("[data-md-close-menu]").Click();
+            return cut;
+        }
+
+        private static object? Payload(BunitJSModuleInterop module, string name)
+        {
+            var payload = module.Invocations.Single(i => i.Identifier == "writeTable").Arguments[1]!;
+            return payload.GetType().GetProperty(name)!.GetValue(payload);
+        }
+
+        [Fact]
+        public void Table_editor_opens_the_table_at_the_caret_and_saves_it()
+        {
+            var cut = OpenTableDialog(new MarkdownTableSource
+            {
+                Found = true, Start = 5, End = 40, Text = "table", Indent = "",
+                Rows = [["Name", "Qty"], [":--", "---"], ["Apples", "3"]]
+            }, out var module);
+
+            Assert.Equal("Edit table", cut.Find(".modal-title").TextContent);
+            var inputs = cut.FindAll("[data-md-table-editor] input[data-md-row]");
+            Assert.Equal(["Name", "Qty", "Apples", "3"], inputs.Select(i => i.GetAttribute("value")));
+            Assert.Equal("Header, column 1", inputs[0].GetAttribute("aria-label"));
+            Assert.Equal("Row 1, column 2", inputs[3].GetAttribute("aria-label"));
+            Assert.Equal("true", cut.FindAll("[aria-label='Align left']")[0].GetAttribute("aria-pressed"));
+
+            cut.Find("input[data-md-row='1'][data-md-column='0']").Change("Pears | plums");
+            cut.FindAll("[aria-label='Align right']")[1].Click();
+            cut.Find("[data-md-table-save]").Click();
+
+            Assert.Equal(true, Payload(module, "found"));
+            Assert.Equal(5, Payload(module, "start"));
+            var rows = (string[][])Payload(module, "rows")!;
+            Assert.Equal(["Name", "Qty"], rows[0]);
+            Assert.Equal([":--", "--:"], rows[1]);
+            Assert.Equal(["Pears \\| plums", "3"], rows[2]);
+            Assert.Empty(cut.FindAll("[data-md-table-editor]"));
+        }
+
+        [Fact]
+        public void Table_editor_starts_a_new_table_when_the_caret_is_not_in_one()
+        {
+            var cut = OpenTableDialog(new MarkdownTableSource { Found = false, Start = 3, End = 3 }, out _);
+
+            Assert.Equal("Insert table", cut.Find(".modal-title").TextContent);
+            Assert.Equal(9, cut.FindAll("[data-md-table-editor] input[data-md-row]").Count);
+            Assert.Equal("Column 1", cut.Find("input[data-md-row='0'][data-md-column='0']").GetAttribute("value"));
+        }
+
+        [Fact]
+        public void Table_editor_pastes_spreadsheet_cells_and_edits_rows_and_columns()
+        {
+            var cut = OpenTableDialog(new MarkdownTableSource
+            {
+                Found = true, Rows = [["A", "B"], ["---", "---"], ["1", "2"]]
+            }, out _);
+
+            cut.Find("[data-md-table-paste]").Change("{\"row\":1,\"column\":1,\"text\":\"x\\ty\\tz\\r\\nu\\tv\\tw\\r\\n\"}");
+            Assert.Equal(4, cut.FindAll("input[data-md-row='0']").Count);
+            Assert.Equal("z", cut.Find("input[data-md-row='1'][data-md-column='3']").GetAttribute("value"));
+            Assert.Equal(3, cut.FindAll("input[data-md-column='0']").Count);
+
+            cut.Find("[aria-label='Delete column']").Click();
+            Assert.Equal("x", cut.Find("input[data-md-row='1'][data-md-column='0']").GetAttribute("value"));
+            cut.FindAll("[aria-label='Move row down']")[0].Click();
+            Assert.Equal("u", cut.Find("input[data-md-row='1'][data-md-column='0']").GetAttribute("value"));
+            cut.Find("[data-md-table-add-row]").Click();
+            Assert.Equal(4, cut.FindAll("input[data-md-column='0']").Count);
+        }
+
+        [Fact]
+        public void Cancelling_the_table_editor_writes_nothing()
+        {
+            var cut = OpenTableDialog(new MarkdownTableSource { Found = false }, out var module);
+
+            cut.FindAll(".markdown-table-footer button")[0].Click();
+
+            Assert.Empty(cut.FindAll("[data-md-table-editor]"));
+            Assert.DoesNotContain(module.Invocations, i => i.Identifier == "writeTable");
         }
 
         [Fact]

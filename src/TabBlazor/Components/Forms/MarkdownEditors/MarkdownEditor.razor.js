@@ -43,10 +43,13 @@ export function attach(root, options) {
 
     // Keep the focus (and the selection) in the textarea when a toolbar button is clicked with the mouse.
     listen(state, root, 'mousedown', event => {
-        if (event.target.closest?.('[data-md-action], [data-md-menu]')) {
+        if (event.target.closest?.('[data-md-action], [data-md-menu], [data-md-close-menu]')) {
             event.preventDefault();
         }
     });
+    // The table dialog: spreadsheet paste, Enter to move down, Ctrl+Enter to save.
+    listen(state, root, 'paste', event => onTableDialogPaste(event));
+    listen(state, root, 'keydown', event => onTableDialogKeyDown(event));
     // Send pending text before Blazor handles a view switch, so the preview shows it.
     listen(state, root, 'click', event => {
         if (event.target.closest?.('[data-md-mode]')) {
@@ -173,6 +176,116 @@ export function replace(root, token, markdown) {
     replaceRange(state, start, end, markdown, null, { keepSelection: true });
     commit(state);
     return true;
+}
+
+/** The table at the caret for the table dialog, or where a new one goes when the caret is not in a table. */
+export function readTable(root) {
+    const state = states.get(root);
+    if (!state) {
+        return null;
+    }
+
+    const textarea = state.textarea;
+    const value = textarea.value;
+    const table = findTable(value, textarea.selectionStart);
+    if (!table) {
+        return { found: false, start: textarea.selectionStart, end: textarea.selectionEnd, text: null, indent: '', rows: [] };
+    }
+    return { found: true, start: table.start, end: table.end, text: value.slice(table.start, table.end), indent: table.indent, rows: table.rows };
+}
+
+/**
+ * Writes the table from the dialog back, lined up, as one undoable edit, and puts the caret after it. When the text
+ * around it changed while the dialog was open, it finds the table by its old text; when it cannot, it inserts the
+ * table as a new one rather than overwrite something else.
+ */
+export function writeTable(root, table) {
+    const state = states.get(root);
+    if (!state || state.options.locked || !table?.rows?.length) {
+        return;
+    }
+
+    const value = state.textarea.value;
+    const columns = Math.max(...table.rows.map(row => row.length));
+    const text = formatTable(table.rows, columns, table.found ? table.indent ?? '' : '').lines.join('\n');
+    let start = table.found ? table.start : -1;
+    if (table.found && value.slice(table.start, table.end) !== table.text) {
+        const at = value.indexOf(table.text);
+        start = at >= 0 && value.indexOf(table.text, at + 1) < 0 ? at : -1;
+    }
+
+    if (start >= 0) {
+        const end = start + table.text.length;
+        replaceRange(state, start, end, text, start + text.length);
+    } else {
+        insertBlock(state, text.split('\n'), Math.min(table.start, value.length), (blockStart, block) => [blockStart + block.length, blockStart + block.length]);
+    }
+    commit(state);
+}
+
+/** Focuses the first cell of the table dialog once the dialog has taken the focus itself. */
+export function focusTableEditor(root) {
+    setTimeout(() => {
+        const input = root.querySelector('[data-md-table-editor] input[data-md-row]');
+        input?.focus();
+        input?.select();
+    }, 50);
+}
+
+/**
+ * Spreadsheet cells pasted into a dialog cell go to .NET through the hidden input as JSON: an input's value cannot
+ * hold line breaks, JSON escapes them.
+ */
+function onTableDialogPaste(event) {
+    const input = event.target.closest?.('[data-md-table-editor] input[data-md-row]');
+    const text = event.clipboardData?.getData('text/plain') ?? '';
+    // A single copied cell comes with a trailing line break: paste that as usual.
+    if (!input || !/[\t\n]/.test(text.replace(/\r?\n$/, ''))) {
+        return;
+    }
+
+    event.preventDefault();
+    const hidden = input.closest('[data-md-table-editor]').querySelector('[data-md-table-paste]');
+    hidden.value = JSON.stringify({ row: Number(input.dataset.mdRow), column: Number(input.dataset.mdColumn), text });
+    hidden.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+/** Enter moves to the cell below (adding a row at the end); Ctrl+Enter saves. */
+function onTableDialogKeyDown(event) {
+    const input = event.target.closest?.('[data-md-table-editor] input[data-md-row]');
+    if (!input || event.key !== 'Enter' || event.isComposing || event.altKey || event.shiftKey) {
+        return;
+    }
+
+    event.preventDefault();
+    const editor = input.closest('[data-md-table-editor]');
+    if (event.ctrlKey || event.metaKey) {
+        // Commit the cell first: clicking from script does not take the focus from it.
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+        editor.querySelector('[data-md-table-save]')?.click();
+        return;
+    }
+
+    const below = `input[data-md-row="${Number(input.dataset.mdRow) + 1}"][data-md-column="${input.dataset.mdColumn}"]`;
+    const next = editor.querySelector(below);
+    if (next) {
+        next.focus();
+        next.select();
+        return;
+    }
+
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+    editor.querySelector('[data-md-table-add-row]')?.click();
+    let frames = 0;
+    const focusNew = () => {
+        const added = editor.querySelector(below);
+        if (added) {
+            added.focus();
+        } else if (frames++ < 60) {
+            requestAnimationFrame(focusNew);
+        }
+    };
+    requestAnimationFrame(focusNew);
 }
 
 function normalize(options) {
@@ -611,13 +724,6 @@ function link(state, image) {
  * has text, and selects the first header so it can be typed over.
  */
 function table(state, columns, rows) {
-    const textarea = state.textarea;
-    const value = textarea.value;
-    const end = textarea.selectionEnd;
-    const lineStart = value.lastIndexOf('\n', end - 1) + 1;
-    const lineEnd = indexOrLength(value, '\n', end);
-    const at = value.slice(lineStart, lineEnd).trim() === '' ? lineStart : lineEnd;
-
     const headers = Array.from({ length: columns }, (_, i) => state.options.columnText.replace('{0}', String(i + 1)));
     const widths = headers.map(header => Math.max(3, header.length));
     const row = cells => '| ' + cells.map((cell, i) => cell.padEnd(widths[i])).join(' | ') + ' |';
@@ -626,14 +732,27 @@ function table(state, columns, rows) {
         lines.push(row(headers.map(() => '')));
     }
 
-    // A blank line before and after, so the table does not run into a paragraph.
+    insertBlock(state, lines, state.textarea.selectionEnd, blockStart => [blockStart + 2, blockStart + 2 + headers[0].length]);
+}
+
+/**
+ * Inserts lines as a block of their own at position: below its line when that has text, with a blank line before and
+ * after so the block does not run into a paragraph. selection maps where the block starts to the selection to set.
+ */
+function insertBlock(state, lines, position, selection) {
+    const value = state.textarea.value;
+    const lineStart = value.lastIndexOf('\n', position - 1) + 1;
+    const lineEnd = indexOrLength(value, '\n', position);
+    const at = value.slice(lineStart, lineEnd).trim() === '' ? lineStart : lineEnd;
+
     const head = value.slice(0, at);
     const tail = value.slice(lineEnd);
     const before = at === 0 || head.endsWith('\n\n') ? '' : head.endsWith('\n') ? '\n' : '\n\n';
     const after = tail === '' || tail.startsWith('\n\n') ? '' : tail.startsWith('\n') ? '\n' : '\n\n';
-    const text = before + lines.join('\n') + after;
-    const headerStart = at + before.length + 2;
-    replaceRange(state, at, lineEnd, text, headerStart, { selectionEnd: headerStart + headers[0].length });
+    const block = lines.join('\n');
+    const blockStart = at + before.length;
+    const [selectionStart, selectionEnd] = selection(blockStart, block);
+    replaceRange(state, at, lineEnd, before + block + after, selectionStart, { selectionEnd });
 }
 
 /**
@@ -1089,6 +1208,12 @@ function onClick(state, event) {
         return;
     }
 
+    // A menu item Blazor handles, such as the table editor: just close the menu.
+    if (event.target.closest?.('[data-md-close-menu]')) {
+        closeMenu(state, false);
+        return;
+    }
+
     const button = event.target.closest?.('[data-md-action]');
     if (!button || !state.root.contains(button) || button.disabled) {
         return;
@@ -1170,23 +1295,47 @@ function resetTable(menu) {
     size.setAttribute('data-md-size', size.dataset.mdDefault ?? '');
 }
 
-/** Arrow keys in a menu: up and down in a list, in all four directions in the table grid. */
+/**
+ * Arrow keys in a menu: up and down in a list, in all four directions in the table grid. Down from the grid's last
+ * row goes to the items below it, and up from the first of those back into the grid.
+ */
 function moveInMenu(menu, target, key) {
-    const items = Array.from(menu.querySelectorAll('[role="menuitem"]'));
-    const index = items.indexOf(target);
-    const grid = target.closest('.markdown-editor-table-grid');
-    const width = grid ? Number(grid.dataset.mdColumns) : 1;
-    const column = index % width;
-    let next;
-    switch (key) {
-        case 'ArrowDown': next = grid ? Math.min(index + width, items.length - 1 - (width - 1 - column)) : (index + 1) % items.length; break;
-        case 'ArrowUp': next = grid ? Math.max(index - width, column) : (index - 1 + items.length) % items.length; break;
-        case 'ArrowRight': next = grid && column < width - 1 ? index + 1 : index; break;
-        case 'ArrowLeft': next = grid && column > 0 ? index - 1 : index; break;
-        default: return false;
+    const grid = menu.querySelector('.markdown-editor-table-grid');
+    const cells = grid ? Array.from(grid.querySelectorAll('[role="menuitem"]')) : [];
+    const items = Array.from(menu.querySelectorAll('[role="menuitem"]')).filter(item => !cells.includes(item));
+
+    if (cells.includes(target)) {
+        const width = Number(grid.dataset.mdColumns);
+        const index = cells.indexOf(target);
+        const column = index % width;
+        let next = index;
+        switch (key) {
+            case 'ArrowDown':
+                if (index + width < cells.length) {
+                    next = index + width;
+                } else if (items.length > 0) {
+                    items[0].focus();
+                    return true;
+                }
+                break;
+            case 'ArrowUp': next = index - width >= 0 ? index - width : index; break;
+            case 'ArrowRight': next = column < width - 1 ? index + 1 : index; break;
+            case 'ArrowLeft': next = column > 0 ? index - 1 : index; break;
+            default: return false;
+        }
+        cells[next].focus();
+        return true;
     }
 
-    items[next].focus();
+    if (key !== 'ArrowDown' && key !== 'ArrowUp') {
+        return false;
+    }
+    const index = items.indexOf(target);
+    if (key === 'ArrowUp' && index === 0 && cells.length > 0) {
+        cells[cells.length - Number(grid.dataset.mdColumns)].focus();
+        return true;
+    }
+    items[(index + (key === 'ArrowDown' ? 1 : -1) + items.length) % items.length].focus();
     return true;
 }
 
