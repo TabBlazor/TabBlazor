@@ -1,0 +1,29 @@
+@* Type or paste HTML on the left; the right shows what the sanitizer keeps and how RichTextView shows it. *@
+<div class="row g-3">
+    <div class="col-md-6">
+        <label class="form-label" for="sanitizer-input">HTML as posted by a browser</label>
+        <textarea id="sanitizer-input" class="form-control font-monospace" rows="9" @bind="html" @bind:event="oninput"></textarea>
+    </div>
+    <div class="col-md-6">
+        <div class="form-label">After the sanitizer</div>
+        <pre class="mb-3 text-wrap" style="min-height: 6rem">@sanitizer.Sanitize(html ?? "")</pre>
+        <div class="form-label">Shown with RichTextView</div>
+        <div class="card card-body">
+            <RichTextView Html="@html" />
+        </div>
+    </div>
+</div>
+
+@code {
+    // The same sanitizer the docs register with AddTabBlazorTipTap(o => o.AllowHtml(...)).
+    private readonly Ganss.Xss.HtmlSanitizer sanitizer = DocsRichTextSanitizer.Create();
+
+    private string html = """
+        <p onclick="alert('xss')">A <strong>paragraph</strong> with an onclick handler.</p>
+        <script>alert('xss')</script>
+        <p><a href="javascript:alert('xss')">A javascript: link</a> and <a href="https://tabblazor.com" rel="noopener noreferrer nofollow">a safe one</a>.</p>
+        <iframe src="https://example.com"></iframe>
+        <p>Mention: <span data-type="mention" data-id="2" data-label="Björn Lind">@Björn Lind</span></p>
+        <p style="text-align: center; position: fixed; top: 0">Centered, but not fixed</p>
+        """;
+}
