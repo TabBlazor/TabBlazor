@@ -90,6 +90,13 @@ public partial class RichTextEditor : TablerBaseComponent, IAsyncDisposable
     /// <summary>When false, hides the toolbar. Keyboard shortcuts still work.</summary>
     [Parameter] public bool ShowToolbar { get; set; } = true;
     /// <summary>
+    /// The toolbar buttons, in order; <see cref="RichTextTool.Separator"/> starts a new group. Defaults to
+    /// <see cref="RichTextToolbar.Full"/>; <see cref="RichTextToolbar.Minimal"/> has just the essentials. Buttons whose
+    /// feature is off are left out. This only picks buttons: what content is allowed is <see cref="Extensions"/>, so
+    /// keyboard shortcuts and pasted formatting still work without a button.
+    /// </summary>
+    [Parameter] public IReadOnlyList<RichTextTool>? Toolbar { get; set; }
+    /// <summary>
     /// Extra toolbar content. A button with <c>data-rt-command="toggleBold"</c> (and optional JSON in
     /// <c>data-rt-args</c>) runs that TipTap command in the browser; or call <see cref="RunCommandAsync"/>.
     /// </summary>
@@ -147,6 +154,47 @@ public partial class RichTextEditor : TablerBaseComponent, IAsyncDisposable
     private bool ImagesOnly => MarkdownSyntax.AcceptsOnlyImages(AcceptedFileTypes);
     private bool MentionsEnabled => Has(RichTextExtensions.Mention) && MentionSearch is not null;
     private bool Has(RichTextExtensions extension) => (Extensions & extension) == extension;
+
+    /// <summary>Whether a tool can work with the editor's features and settings.</summary>
+    private bool Available(RichTextTool tool) => tool switch
+    {
+        RichTextTool.Separator => true,
+        RichTextTool.Highlight => Has(RichTextExtensions.Highlight),
+        RichTextTool.TaskList => Has(RichTextExtensions.TaskList),
+        RichTextTool.Table => Has(RichTextExtensions.Table),
+        RichTextTool.AlignLeft or RichTextTool.AlignCenter or RichTextTool.AlignRight => Has(RichTextExtensions.TextAlign),
+        RichTextTool.Upload => UploadsEnabled,
+        RichTextTool.Undo or RichTextTool.Redo => true,
+        _ => Has(RichTextExtensions.Basic)
+    };
+
+    /// <summary>The toolbar's groups of available tools, without empty groups. Duplicates are shown once.</summary>
+    internal List<List<RichTextTool>> ToolbarGroups()
+    {
+        var groups = new List<List<RichTextTool>>();
+        var current = new List<RichTextTool>();
+        var seen = new HashSet<RichTextTool>();
+        foreach (var tool in Toolbar ?? RichTextToolbar.Full)
+        {
+            if (tool == RichTextTool.Separator)
+            {
+                if (current.Count > 0)
+                {
+                    groups.Add(current);
+                    current = [];
+                }
+            }
+            else if (Enum.IsDefined(tool) && Available(tool) && seen.Add(tool))
+            {
+                current.Add(tool);
+            }
+        }
+        if (current.Count > 0)
+        {
+            groups.Add(current);
+        }
+        return groups;
+    }
     private string? AriaInvalid => fieldCssClasses.Contains("invalid", StringComparison.Ordinal) ? "true" : null;
 
     protected override string ClassNames => ClassBuilder

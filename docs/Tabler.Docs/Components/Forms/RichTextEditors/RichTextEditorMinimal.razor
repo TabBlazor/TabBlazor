@@ -1,0 +1,17 @@
+<RichTextEditor @bind-Value="html"
+                Toolbar="RichTextToolbar.Minimal"
+                Extensions="RichTextExtensions.Basic"
+                MinHeight="5rem"
+                aria-label="Comment" />
+
+<RichTextEditor @bind-Value="note"
+                Toolbar="@([RichTextTool.Bold, RichTextTool.Italic, RichTextTool.Underline, RichTextTool.Separator, RichTextTool.Link, RichTextTool.Separator, RichTextTool.Undo, RichTextTool.Redo])"
+                Extensions="RichTextExtensions.Basic"
+                MinHeight="5rem"
+                class="mt-3"
+                aria-label="Note" />
+
+@code {
+    private string html = "<p>Just the essentials: <strong>bold</strong>, <em>italic</em>, lists and links.</p>";
+    private string note = "<p>Your own pick of buttons, in your own order.</p>";
+}

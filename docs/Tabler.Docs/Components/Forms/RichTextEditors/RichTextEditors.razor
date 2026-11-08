@@ -5,6 +5,9 @@
         <CodeSnippet Component="@typeof(RichTextEditorBasic)" Title="Basic">
             <Description>A WYSIWYG editor built on TipTap, from the TabBlazor.TipTap package. The value is HTML and is sent to .NET when you pause typing (DebounceMs, 300 ms by default) or leave the editor. The toolbar, keyboard shortcuts and undo work in the browser without round trips. Alt+F10 moves to the toolbar and Escape goes back to the text. Ctrl+K edits the link at the caret.</Description>
         </CodeSnippet>
+        <CodeSnippet Component="@typeof(RichTextEditorMinimal)" Title="Minimal toolbar">
+            <Description>Toolbar picks the buttons and their order. RichTextToolbar.Minimal has the essentials (bold, italic, lists, link); list RichTextTool values for your own, with Separator between groups. The toolbar only picks buttons: what content is allowed stays with Extensions, so set both for a simple editor. Keyboard shortcuts such as Ctrl+U still work without a button, as long as the feature is on.</Description>
+        </CodeSnippet>
         <CodeSnippet Component="@typeof(RichTextEditorAll)" Title="More features">
             <Description>Extensions turns on built-in features: tables (with a size picker and row and column tools while the caret is in a table), task lists, alignment, highlight and smart typography. Content of a feature that is off, such as a pasted table without Table, becomes plain paragraphs. MaxLength adds a character counter.</Description>
         </CodeSnippet>

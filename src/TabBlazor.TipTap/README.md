@@ -34,6 +34,23 @@ when it first renders. Its styles are part of the app's scoped CSS bundle (`Your
 
 Content of a feature that is off is reduced to plain paragraphs when it is pasted or loaded.
 
+## Toolbar
+
+`Toolbar` picks the buttons and their order. `RichTextToolbar.Full` (the default) has every button whose feature is on;
+`RichTextToolbar.Minimal` has bold, italic, lists and link. Or list your own, with `Separator` between groups:
+
+```razor
+<RichTextEditor @bind-Value="model.Comment"
+                Toolbar="RichTextToolbar.Minimal"
+                Extensions="RichTextExtensions.Basic" />
+
+<RichTextEditor @bind-Value="model.Note"
+                Toolbar="@([RichTextTool.Bold, RichTextTool.Italic, RichTextTool.Separator, RichTextTool.Link])" />
+```
+
+The toolbar only picks buttons. What content is allowed is `Extensions`, so shortcuts (Ctrl+U) and pasted formatting
+still work without a button; set both for a simple editor.
+
 ## Showing saved HTML safely
 
 The browser can post any HTML, so sanitize it where you save it and again where you show it. `RichTextView` shows
