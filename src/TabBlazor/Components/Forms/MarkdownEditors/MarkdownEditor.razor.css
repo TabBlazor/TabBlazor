@@ -86,6 +86,7 @@
 .markdown-editor-table-grid {
     display: grid;
     gap: .1875rem;
+    justify-content: center;
 }
 
 .markdown-editor-table-cell {
@@ -117,6 +118,23 @@
 
 .markdown-editor-table-size::after {
     content: attr(data-md-size);
+}
+
+.markdown-editor-table-menu .dropdown-item {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.markdown-editor-shortcut {
+    color: var(--tblr-secondary);
+    font-size: .75rem;
+}
+
+/* The table button while the caret is in a table: it opens the table editor. */
+.markdown-editor-in-table {
+    color: var(--tblr-primary);
+    background: var(--tblr-primary-lt);
 }
 
 .markdown-editor-h1 {
