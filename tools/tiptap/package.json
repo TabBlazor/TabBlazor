@@ -1,7 +1,7 @@
 {
   "name": "tabblazor-tiptap-bundle",
   "private": true,
-  "description": "Builds src/TabBlazor.TipTap/wwwroot/tiptap.js. Run `npm ci && npm run build` after changing versions; commit the lockfile and the bundle.",
+  "description": "Builds src/TabBlazor.TipTap/wwwroot/tiptap.js and tiptap-markdown.js. Run `npm ci && npm run build` after changing versions; commit the lockfile and the bundles.",
   "type": "module",
   "scripts": {
     "build": "node build.mjs"
@@ -9,15 +9,16 @@
   "devDependencies": {
     "@tiptap/core": "3.32.0",
     "@tiptap/pm": "3.32.0",
-    "@tiptap/starter-kit": "3.32.0",
-    "@tiptap/extension-image": "3.32.0",
-    "@tiptap/extension-table": "3.32.0",
-    "@tiptap/extension-list": "3.32.0",
-    "@tiptap/extension-text-align": "3.32.0",
     "@tiptap/extension-highlight": "3.32.0",
-    "@tiptap/extension-typography": "3.32.0",
+    "@tiptap/extension-image": "3.32.0",
+    "@tiptap/extension-list": "3.32.0",
     "@tiptap/extension-mention": "3.32.0",
+    "@tiptap/extension-table": "3.32.0",
+    "@tiptap/extension-text-align": "3.32.0",
+    "@tiptap/extension-typography": "3.32.0",
     "@tiptap/extensions": "3.32.0",
+    "@tiptap/markdown": "3.32.0",
+    "@tiptap/starter-kit": "3.32.0",
     "@tiptap/suggestion": "3.32.0",
     "esbuild": "0.28.2"
   }

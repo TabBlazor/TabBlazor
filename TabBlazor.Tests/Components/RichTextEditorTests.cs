@@ -240,6 +240,52 @@ namespace TabBlazor.Tests.Components
         }
 
         [Fact]
+        public void Markdown_format_turns_off_features_markdown_cannot_store()
+        {
+            var module = JSInterop.SetupModule(ModulePath);
+
+            var cut = RenderEditor("**Hi**", p => p
+                .Add(e => e.Format, RichTextEditorFormat.Markdown)
+                .Add(e => e.Extensions, RichTextExtensions.All));
+
+            var options = Json(module.Invocations.Single(i => i.Identifier == "attach").Arguments[1]);
+            Assert.Equal("markdown", options.GetProperty("format").GetString());
+            Assert.Equal(TipTapOptions.DefaultMarkdownScriptUrl, options.GetProperty("markdownScriptUrl").GetString());
+            var extensions = options.GetProperty("extensions");
+            Assert.False(extensions.GetProperty("underline").GetBoolean());
+            Assert.False(extensions.GetProperty("highlight").GetBoolean());
+            Assert.False(extensions.GetProperty("textAlign").GetBoolean());
+            Assert.True(extensions.GetProperty("table").GetBoolean());
+            Assert.True(extensions.GetProperty("taskList").GetBoolean());
+
+            Assert.Empty(cut.FindAll("[data-rt-command=toggleUnderline]"));
+            Assert.Empty(cut.FindAll("[data-rt-command=toggleHighlight]"));
+            Assert.Empty(cut.FindAll("[data-rt-command=setTextAlign]"));
+            Assert.NotEmpty(cut.FindAll("[data-rt-command=toggleTaskList]"));
+        }
+
+        [Fact]
+        public void Static_rendering_shows_markdown_through_the_markdown_renderer()
+        {
+            interactive = false;
+            Services.AddTabBlazorMarkdown();
+
+            var cut = RenderEditor("**Hi**", p => p.Add(e => e.Format, RichTextEditorFormat.Markdown));
+
+            Assert.Contains("<strong>Hi</strong>", cut.Find(".rich-text-editor-content").InnerHtml);
+        }
+
+        [Fact]
+        public void Static_rendering_shows_markdown_text_without_a_renderer()
+        {
+            interactive = false;
+
+            var cut = RenderEditor("**Hi**", p => p.Add(e => e.Format, RichTextEditorFormat.Markdown));
+
+            Assert.Equal("**Hi**", cut.Find(".rich-text-editor-content div").TextContent);
+        }
+
+        [Fact]
         public void Mention_is_off_without_a_search_callback()
         {
             var module = JSInterop.SetupModule(ModulePath);
@@ -507,6 +553,14 @@ namespace TabBlazor.Tests.Components
             var json = """{"type":"doc","content":[{"type":"paragraph","content":[{"type":"mention","attrs":{"id":"5","label":"Anna"}},{"type":"text","text":" hi "},{"type":"mention","attrs":{"id":12}}]}]}""";
 
             Assert.Equal(new[] { "5", "12" }, RichTextMentions.GetIds(json, RichTextEditorFormat.Json));
+        }
+
+        [Fact]
+        public void Gets_ids_from_markdown()
+        {
+            var markdown = "Thanks [@ id=\"2\" label=\"Björn Lind\"] and [@ id=\"7\"], and [@ id=\"2\" label=\"Björn Lind\"] again. [link](x) [@nope]";
+
+            Assert.Equal(new[] { "2", "7" }, RichTextMentions.GetIds(markdown, RichTextEditorFormat.Markdown));
         }
 
         [Fact]

@@ -1,0 +1,25 @@
+<RichTextEditor @bind-Value="markdown"
+                Format="RichTextEditorFormat.Markdown"
+                Extensions="RichTextExtensions.All"
+                aria-label="Notes" />
+
+<div class="mt-3">
+    <div class="form-label">Value</div>
+    <pre class="mb-0" style="max-height: 14rem">@(markdown ?? "null")</pre>
+</div>
+
+@code {
+    private string markdown = """
+        ## Stored as markdown
+
+        Edit it **visually**; the value stays *markdown*, with [links](https://tabblazor.com) and `code`.
+
+        - [x] Tables and task lists are GitHub markdown
+        - [ ] Underline, highlight and alignment are off
+
+        | Format | Stored as |
+        | --- | --- |
+        | Html | HTML |
+        | Markdown | Markdown |
+        """;
+}

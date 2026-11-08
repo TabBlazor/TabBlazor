@@ -33,6 +33,16 @@ public static partial class RichTextMentions
                 return [];
             }
         }
+        else if (format == RichTextEditorFormat.Markdown)
+        {
+            foreach (Match shortcode in MarkdownMention().Matches(content))
+            {
+                if (Attribute(shortcode.Groups["attributes"].Value, "id") is { Length: > 0 } id)
+                {
+                    ids.Add(id);
+                }
+            }
+        }
         else
         {
             foreach (Match tag in StartTag().Matches(content))
@@ -88,6 +98,10 @@ public static partial class RichTextMentions
         }
         return null;
     }
+
+    /// <summary>A mention in markdown: <c>[@ id="42" label="Anna"]</c>.</summary>
+    [GeneratedRegex(@"\[@(?<attributes>\s[^\]]*)\]", RegexOptions.CultureInvariant)]
+    private static partial Regex MarkdownMention();
 
     [GeneratedRegex(@"<[a-zA-Z][a-zA-Z0-9-]*(?<attributes>(?:\s+[^\s""'>/=]+(?:\s*=\s*(?:""[^""]*""|'[^']*'|[^\s""'=<>`]+))?)*)\s*/?>", RegexOptions.CultureInvariant)]
     private static partial Regex StartTag();

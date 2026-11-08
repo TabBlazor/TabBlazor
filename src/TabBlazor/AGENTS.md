@@ -297,11 +297,14 @@ Failures: `EditResult.Failed("message")`.
 <RichTextView Html="@article.Body" />
 ```
 - A TipTap (ProseMirror) WYSIWYG editor with a Tabler toolbar. `Value` is HTML (`Format` =
-  `RichTextEditorFormat.Json` for the TipTap JSON document); an empty editor is `null`. Same sync
+  `RichTextEditorFormat.Json` for the TipTap JSON document, `Markdown` for markdown); an empty editor is `null`. Same sync
   rules as `MarkdownEditor`: `DebounceMs` (300), blur and toolbar actions, never per key.
 - `Extensions` (flags): `Basic` (headings, marks, lists, quote, code block, link, undo), `Image`,
   `Table`, `TaskList`, `TextAlign`, `Highlight`, `Typography`, `Mention`. `Default` = Basic | Image.
   Content of a feature that is off is reduced to paragraphs on paste and load.
+- `Format="RichTextEditorFormat.Markdown"` stores markdown (GFM tables and task lists) while editing
+  visually; underline, highlight and alignment are off in that mode. Mentions become
+  `[@ id="…" label="…"]`. Show it with an `IMarkdownRenderer`.
 - `Toolbar` picks buttons and order: `RichTextToolbar.Minimal` (bold, italic, lists, link),
   `RichTextToolbar.Full` (default), or a list of `RichTextTool` with `Separator` between groups. It does
   not restrict content; set `Extensions` too.

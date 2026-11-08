@@ -116,7 +116,7 @@ export function refresh(root) {
     }
 
     const { from, to } = editor.state.selection;
-    editor.commands.setContent(parse(state, value), { emitUpdate: false });
+    editor.commands.setContent(parse(state, value), { emitUpdate: false, contentType: contentType(state) });
     const size = editor.state.doc.content.size;
     editor.commands.setTextSelection({ from: Math.min(from, size), to: Math.min(to, size) });
     scheduleToolbar(state);
@@ -208,9 +208,10 @@ export function finishUpload(root, token, content) {
 function normalize(options) {
     return {
         scriptUrl: options?.scriptUrl || './_content/TabBlazor.TipTap/tiptap.js',
+        markdownScriptUrl: options?.markdownScriptUrl || './_content/TabBlazor.TipTap/tiptap-markdown.js',
         extensionModules: options?.extensionModules ?? [],
         setupKey: options?.setupKey ?? '',
-        format: options?.format === 'json' ? 'json' : 'html',
+        format: ['json', 'markdown'].includes(options?.format) ? options.format : 'html',
         debounceMs: options?.debounceMs ?? 0,
         locked: !!options?.locked,
         placeholder: options?.placeholder ?? '',
@@ -251,6 +252,15 @@ async function load(options) {
         }
         await loadedModules.get(resolved);
     }
+
+    // Markdown support is a separate file that imports this bundle, unless a custom bundle includes it.
+    if (options.format === 'markdown' && !tiptap.Markdown) {
+        const markdownUrl = absolute(options.markdownScriptUrl);
+        if (!tiptapModules.has(markdownUrl)) {
+            tiptapModules.set(markdownUrl, import(markdownUrl));
+        }
+        return { ...tiptap, Markdown: (await tiptapModules.get(markdownUrl)).Markdown };
+    }
     return tiptap;
 }
 
@@ -272,6 +282,7 @@ async function create(state) {
         element: state.content,
         extensions: buildExtensions(tiptap, state),
         content: parse(state, state.hidden.value),
+        contentType: contentType(state),
         editable: !state.options.locked,
         injectCSS: false,
         editorProps: {
@@ -311,7 +322,7 @@ function buildExtensions(tiptap, state) {
             heading: basic ? { levels: [1, 2, 3] } : false,
             bold: basic ? {} : false,
             italic: basic ? {} : false,
-            underline: basic ? {} : false,
+            underline: basic && on.underline !== false ? {} : false,
             strike: basic ? {} : false,
             code: basic ? {} : false,
             codeBlock: basic ? {} : false,
@@ -350,6 +361,9 @@ function buildExtensions(tiptap, state) {
         })
     ];
 
+    if (state.options.format === 'markdown') {
+        extensions.push(tiptap.Markdown);
+    }
     if (on.image) {
         extensions.push(tiptap.Image.configure({ allowBase64: false, inline: false }));
     }
@@ -453,6 +467,11 @@ function placeholderElement(label) {
 
 // Value sync
 
+/** TipTap's content type option: only markdown needs one (HTML strings and JSON objects are recognized). */
+function contentType(state) {
+    return state.options.format === 'markdown' ? 'markdown' : undefined;
+}
+
 function parse(state, value) {
     if (!value) {
         return '';
@@ -473,7 +492,12 @@ function serialize(state) {
     if (!editor || editor.isEmpty) {
         return '';
     }
-    return state.options.format === 'json' ? JSON.stringify(editor.getJSON()) : editor.getHTML();
+    switch (state.options.format) {
+        case 'json': return JSON.stringify(editor.getJSON());
+        // TipTap leaves blank lines after the last block; they carry no content.
+        case 'markdown': return editor.getMarkdown().replace(/\s+$/, '');
+        default: return editor.getHTML();
+    }
 }
 
 function schedule(state) {

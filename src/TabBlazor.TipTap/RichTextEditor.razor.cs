@@ -153,12 +153,18 @@ public partial class RichTextEditor : TablerBaseComponent, IAsyncDisposable
     private bool UploadsEnabled => Interactive && UploadFile is not null && !Locked;
     private bool ImagesOnly => MarkdownSyntax.AcceptsOnlyImages(AcceptedFileTypes);
     private bool MentionsEnabled => Has(RichTextExtensions.Mention) && MentionSearch is not null;
-    private bool Has(RichTextExtensions extension) => (Extensions & extension) == extension;
+    private bool Has(RichTextExtensions extension) => (EffectiveExtensions & extension) == extension;
+    private bool IsMarkdown => Format == RichTextEditorFormat.Markdown;
+
+    /// <summary>Features markdown cannot store; off in markdown format (underline too, which is part of Basic).</summary>
+    private const RichTextExtensions NotInMarkdown = RichTextExtensions.Highlight | RichTextExtensions.TextAlign;
+    private RichTextExtensions EffectiveExtensions => IsMarkdown ? Extensions & ~NotInMarkdown : Extensions;
 
     /// <summary>Whether a tool can work with the editor's features and settings.</summary>
     private bool Available(RichTextTool tool) => tool switch
     {
         RichTextTool.Separator => true,
+        RichTextTool.Underline => Has(RichTextExtensions.Basic) && !IsMarkdown,
         RichTextTool.Highlight => Has(RichTextExtensions.Highlight),
         RichTextTool.TaskList => Has(RichTextExtensions.TaskList),
         RichTextTool.Table => Has(RichTextExtensions.Table),
@@ -299,7 +305,8 @@ public partial class RichTextEditor : TablerBaseComponent, IAsyncDisposable
             scriptUrl = options.ScriptUrl,
             extensionModules = options.ExtensionModules,
             setupKey = SetupKey,
-            format = Format == RichTextEditorFormat.Json ? "json" : "html",
+            markdownScriptUrl = options.MarkdownScriptUrl,
+            format = Format switch { RichTextEditorFormat.Json => "json", RichTextEditorFormat.Markdown => "markdown", _ => "html" },
             debounceMs = DebounceMs is > 0 ? DebounceMs.Value : 0,
             locked = Locked,
             placeholder = Placeholder,
@@ -310,6 +317,7 @@ public partial class RichTextEditor : TablerBaseComponent, IAsyncDisposable
             extensions = new
             {
                 basic = Has(RichTextExtensions.Basic),
+                underline = Has(RichTextExtensions.Basic) && !IsMarkdown,
                 image = Has(RichTextExtensions.Image),
                 table = Has(RichTextExtensions.Table),
                 taskList = Has(RichTextExtensions.TaskList),
@@ -584,7 +592,10 @@ public partial class RichTextEditor : TablerBaseComponent, IAsyncDisposable
         }
     }
 
-    /// <summary>What static rendering shows: the HTML when it may be shown, otherwise its text.</summary>
+    /// <summary>
+    /// What static rendering shows: HTML when it may be shown, markdown through the app's <see cref="IMarkdownRenderer"/>,
+    /// otherwise the text.
+    /// </summary>
     private RenderFragment StaticContent() => builder =>
     {
         if (string.IsNullOrWhiteSpace(currentValue))
@@ -592,13 +603,23 @@ public partial class RichTextEditor : TablerBaseComponent, IAsyncDisposable
             return;
         }
 
-        if (Format == RichTextEditorFormat.Html && TipTap.SafeHtml(currentValue) is { } html)
+        switch (Format)
         {
-            builder.AddMarkupContent(0, html);
-        }
-        else
-        {
-            builder.AddContent(1, Format == RichTextEditorFormat.Html ? PlainText(currentValue) : "");
+            case RichTextEditorFormat.Html when TipTap.SafeHtml(currentValue) is { } html:
+                builder.AddMarkupContent(0, html);
+                break;
+            case RichTextEditorFormat.Html:
+                builder.AddContent(1, PlainText(currentValue));
+                break;
+            case RichTextEditorFormat.Markdown when Services.GetService<IMarkdownRenderer>() is { } renderer:
+                builder.AddContent(2, renderer.Render(currentValue));
+                break;
+            case RichTextEditorFormat.Markdown:
+                builder.OpenElement(3, "div");
+                builder.AddAttribute(4, "style", "white-space: pre-wrap");
+                builder.AddContent(5, currentValue);
+                builder.CloseElement();
+                break;
         }
     };
 

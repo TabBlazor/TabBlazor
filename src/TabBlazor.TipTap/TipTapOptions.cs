@@ -12,6 +12,15 @@ public sealed class TipTapOptions
     /// </summary>
     public string ScriptUrl { get; set; } = DefaultScriptUrl;
 
+    /// <summary>The default for <see cref="MarkdownScriptUrl"/>.</summary>
+    public const string DefaultMarkdownScriptUrl = "./_content/TabBlazor.TipTap/tiptap-markdown.js";
+
+    /// <summary>
+    /// Where the markdown support is loaded from, only by editors with <see cref="RichTextEditorFormat.Markdown"/>.
+    /// Not used when the bundle at <see cref="ScriptUrl"/> exports <c>Markdown</c> itself.
+    /// </summary>
+    public string MarkdownScriptUrl { get; set; } = DefaultMarkdownScriptUrl;
+
     /// <summary>
     /// ES modules with app-defined TipTap extensions, loaded once before the first editor starts. Each exports
     /// <c>register(registry)</c> and calls <c>registry.add(name, options =&gt; extension)</c>; editors turn them on by
