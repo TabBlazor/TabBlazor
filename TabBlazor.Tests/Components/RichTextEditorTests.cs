@@ -289,6 +289,28 @@ namespace TabBlazor.Tests.Components
         }
 
         [Fact]
+        public void Static_rendering_shows_json_as_html()
+        {
+            interactive = false;
+
+            var cut = RenderEditor(
+                """{"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","marks":[{"type":"bold"}],"text":"Hi"}]}]}""",
+                p => p.Add(e => e.Format, RichTextEditorFormat.Json));
+
+            Assert.Contains("<p><strong>Hi</strong></p>", cut.Find(".rich-text-editor-content").InnerHtml);
+        }
+
+        [Fact]
+        public void Static_rendering_shows_nothing_for_invalid_json()
+        {
+            interactive = false;
+
+            var cut = RenderEditor("{broken", p => p.Add(e => e.Format, RichTextEditorFormat.Json));
+
+            Assert.Equal("", cut.Find(".rich-text-editor-content").TextContent.Trim());
+        }
+
+        [Fact]
         public void Static_rendering_shows_markdown_text_without_a_renderer()
         {
             interactive = false;
@@ -586,6 +608,35 @@ namespace TabBlazor.Tests.Components
             var cut = Render<RichTextView>(p => p.Add(v => v.Html, "<p>Hi</p>"));
 
             Assert.Equal("<p>Hi</p>", cut.Find(".rich-text-view").InnerHtml);
+        }
+
+        [Fact]
+        public void Renders_json_without_a_sanitizer()
+        {
+            var cut = Render<RichTextView>(p => p.Add(v => v.Json,
+                """{"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"Hi <b>"}]}]}"""));
+
+            Assert.Equal("<p>Hi &lt;b&gt;</p>", cut.Find(".rich-text-view").InnerHtml);
+        }
+
+        [Fact]
+        public void Renders_json_custom_nodes_from_the_options()
+        {
+            Services.AddTabBlazorTipTap(o => o.Json.Nodes["note"] = node => $"<aside>{node.ContentHtml}</aside>");
+
+            var cut = Render<RichTextView>(p => p.Add(v => v.Json,
+                """{"type":"doc","content":[{"type":"note","content":[{"type":"paragraph","content":[{"type":"text","text":"N"}]}]}]}"""));
+
+            Assert.Equal("<aside><p>N</p></aside>", cut.Find(".rich-text-view").InnerHtml);
+        }
+
+        [Fact]
+        public void Throws_with_both_html_and_json()
+        {
+            Services.AddTabBlazorTipTap(o => o.AllowUnsanitizedHtml = true);
+
+            Assert.Throws<InvalidOperationException>(() =>
+                Render<RichTextView>(p => p.Add(v => v.Html, "<p>a</p>").Add(v => v.Json, "{}")));
         }
 
         [Fact]

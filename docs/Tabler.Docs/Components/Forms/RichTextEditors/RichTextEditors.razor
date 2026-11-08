@@ -69,7 +69,7 @@ sanitizer.AllowedCssProperties.Add("text-align"); // alignment, nothing else
 
 builder.Services.AddTabBlazorTipTap(o =&gt; o.AllowHtml(html =&gt; sanitizer.Sanitize(html)));</pre>
                 <p class="mb-0">
-                    Use the same sanitizer where you save. The JSON value carries no markup to sanitize, and the markdown value is shown
+                    Use the same sanitizer where you save. The JSON value carries no markup to sanitize and is turned into safe HTML by RichTextJson, and the markdown value is shown
                     through an IMarkdownRenderer, which in TabBlazor.Markdown escapes raw HTML by default.
                 </p>
             </Description>
@@ -78,7 +78,7 @@ builder.Services.AddTabBlazorTipTap(o =&gt; o.AllowHtml(html =&gt; sanitizer.San
             <Description>An app can add its own TipTap extensions: list the module in TipTapOptions.ExtensionModules, register the extension by name, and turn it on with CustomExtensions. The module imports TipTap from the editor's bundle so both share one ProseMirror. A ToolbarExtra button with data-rt-command runs a command in the browser; RunCommandAsync and InsertContentAsync do the same from .NET.</Description>
         </CodeSnippet>
         <CodeSnippet Component="@typeof(RichTextEditorJson)" Title="JSON value">
-            <Description>Format="RichTextEditorFormat.Json" stores the TipTap document as JSON instead of HTML: lossless, and with no markup to sanitize.</Description>
+            <Description>Format="RichTextEditorFormat.Json" stores the TipTap document as JSON instead of HTML: lossless, and with no markup to sanitize. RichTextJson.ToHtml turns it into the editor's HTML in .NET, without a browser, so it also works in emails, PDFs and APIs; RichTextView shows it with Json instead of Html. The HTML is safe by construction: text is encoded, only known tags and attributes are written and unsafe links are dropped, so it needs no sanitizer. Nodes of your own extensions are left out unless you render them with TipTapOptions.Json.Nodes.</Description>
         </CodeSnippet>
         <CodeSnippet Component="@typeof(RichTextEditorMarkdown)" Title="Markdown value">
             <Description>Format="RichTextEditorFormat.Markdown" edits visually but stores markdown, with GitHub tables and task lists. Features markdown cannot store are turned off and leave the toolbar: underline, highlight and alignment. Mentions are stored as [@@ id="42" label="Anna"], which RichTextMentions.GetIds(value, RichTextEditorFormat.Markdown) reads. The markdown support is a separate 19 KB file, loaded only by editors that use it. Show saved markdown with an IMarkdownRenderer, such as the one from TabBlazor.Markdown.</Description>

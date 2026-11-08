@@ -37,6 +37,12 @@ public sealed class TipTapOptions
     /// </summary>
     public bool AllowUnsanitizedHtml { get; set; }
 
+    /// <summary>
+    /// How <see cref="RichTextView"/> and the read-only editor in static rendering turn JSON values into HTML, for
+    /// example renderers for the nodes of your own extensions. JSON needs no sanitizer: see <see cref="RichTextJson"/>.
+    /// </summary>
+    public RichTextJsonOptions Json { get; } = new();
+
     internal Func<string, string>? Sanitizer { get; private set; }
 
     /// <summary>

@@ -93,9 +93,31 @@ sanitizer.AllowedCssProperties.Add("text-align"); // TextAlign
 builder.Services.AddTabBlazorTipTap(options => options.AllowHtml(html => sanitizer.Sanitize(html)));
 ```
 
-Links accept only `http`, `https`, `mailto` and relative URLs, and get `rel="noopener noreferrer nofollow"`. The JSON
-format (`Format="RichTextEditorFormat.Json"`) carries no markup, but an app that turns it into HTML must allow-list node
-types and URL schemes itself.
+Links accept only `http`, `https`, `mailto` and relative URLs, and get `rel="noopener noreferrer nofollow"`.
+
+## JSON to HTML
+
+The JSON format (`Format="RichTextEditorFormat.Json"`) carries no markup. `RichTextJson.ToHtml` turns it into the same
+HTML the editor writes, in .NET, so it works without a browser: in emails, PDFs, background jobs and APIs.
+
+```razor
+<RichTextView Json="@article.Body" />
+```
+
+```csharp
+string html = RichTextJson.ToHtml(article.Body);
+```
+
+The HTML is safe by construction and needs no sanitizer: text and attribute values are encoded, only known attributes
+are written, links keep only `http`, `https`, `mailto` and relative URLs, and images only `http`, `https` and relative
+ones. Nodes of unknown types are left out with their content, and marks of unknown types are left out with their text
+kept. Render the nodes of your own extensions with `Json.Nodes`, and encode every value from the document:
+
+```csharp
+builder.Services.AddTabBlazorTipTap(options =>
+    options.Json.Nodes["callout"] = node =>
+        $"<div class=\"callout\" data-kind=\"{RichTextJson.Encode(node.Attr("kind"))}\">{node.ContentHtml}</div>");
+```
 
 ## Uploads
 

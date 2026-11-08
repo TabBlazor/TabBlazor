@@ -1,6 +1,7 @@
 using System.IO;
 using System.Linq.Expressions;
 using System.Net;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -636,7 +637,7 @@ public partial class RichTextEditor : TablerBaseComponent, IAsyncDisposable
     }
 
     /// <summary>
-    /// What static rendering shows: HTML when it may be shown, markdown through the app's <see cref="IMarkdownRenderer"/>,
+    /// What static rendering shows: HTML when it may be shown, JSON as HTML, markdown through the app's <see cref="IMarkdownRenderer"/>,
     /// otherwise the text.
     /// </summary>
     private RenderFragment StaticContent() => builder =>
@@ -654,6 +655,9 @@ public partial class RichTextEditor : TablerBaseComponent, IAsyncDisposable
             case RichTextEditorFormat.Html:
                 builder.AddContent(1, PlainText(currentValue));
                 break;
+            case RichTextEditorFormat.Json when JsonHtml(currentValue) is { } html:
+                builder.AddMarkupContent(6, html);
+                break;
             case RichTextEditorFormat.Markdown when Services.GetService<IMarkdownRenderer>() is { } renderer:
                 builder.AddContent(2, renderer.Render(currentValue));
                 break;
@@ -665,6 +669,18 @@ public partial class RichTextEditor : TablerBaseComponent, IAsyncDisposable
                 break;
         }
     };
+
+    private string? JsonHtml(string json)
+    {
+        try
+        {
+            return RichTextJson.ToHtml(json, TipTap.Json);
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
 
     internal static string PlainText(string html) =>
         WebUtility.HtmlDecode(Tags().Replace(BlockEnds().Replace(html, "\n"), "")).Trim();
