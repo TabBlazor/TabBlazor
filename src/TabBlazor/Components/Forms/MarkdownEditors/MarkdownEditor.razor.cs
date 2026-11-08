@@ -31,8 +31,8 @@ public partial class MarkdownEditor : TablerBaseComponent, IAsyncDisposable
     private const int ProgressRefreshMs = 100;
 
     private readonly string generatedId = $"markdown-editor-{Guid.CreateVersion7():N}";
-    private readonly List<MarkdownUpload> uploads = [];
-    private readonly List<MarkdownUploadError> uploadErrors = [];
+    private readonly List<EditorUpload> uploads = [];
+    private readonly List<EditorUploadError> uploadErrors = [];
     private ElementReference root;
     private IJSObjectReference? module;
     private Task<IJSObjectReference>? moduleTask;
@@ -111,10 +111,10 @@ public partial class MarkdownEditor : TablerBaseComponent, IAsyncDisposable
 
     /// <summary>
     /// Uploads a pasted, dropped or picked file and returns where it is. Setting it enables uploads. Throw a
-    /// <see cref="MarkdownUploadException"/> to reject a file with a message for the user. The token is cancelled
+    /// <see cref="EditorUploadException"/> to reject a file with a message for the user. The token is cancelled
     /// when the user cancels the upload or the editor goes away.
     /// </summary>
-    [Parameter] public Func<MarkdownUploadFile, CancellationToken, Task<MarkdownUploadResult>>? UploadFile { get; set; }
+    [Parameter] public Func<EditorUploadFile, CancellationToken, Task<EditorUploadResult>>? UploadFile { get; set; }
     /// <summary>
     /// The file types users may upload, in the syntax of the HTML <c>accept</c> attribute, for example
     /// <c>"image/*,.pdf"</c>. Defaults to <c>"image/*"</c>. Null or <c>"*"</c> allows every type. This is a convenience
@@ -124,12 +124,12 @@ public partial class MarkdownEditor : TablerBaseComponent, IAsyncDisposable
     /// <summary>The largest file users may upload, in bytes. Defaults to 10 MB.</summary>
     [Parameter] public long MaxFileSize { get; set; } = 10 * 1024 * 1024;
     /// <summary>Raised when a file is rejected or its upload fails. The user already sees the message.</summary>
-    [Parameter] public EventCallback<MarkdownUploadError> OnUploadError { get; set; }
+    [Parameter] public EventCallback<EditorUploadError> OnUploadError { get; set; }
     /// <summary>
     /// Raised when an upload finishes after the user deleted its placeholder, so its link was not inserted.
     /// Use it to delete the stored file.
     /// </summary>
-    [Parameter] public EventCallback<MarkdownUploadResult> OnUploadDiscarded { get; set; }
+    [Parameter] public EventCallback<EditorUploadResult> OnUploadDiscarded { get; set; }
     /// <summary>Raised with true when the first upload starts and with false when the last one ends. See <see cref="IsUploading"/>.</summary>
     [Parameter] public EventCallback<bool> OnUploadStateChanged { get; set; }
 
@@ -364,21 +364,21 @@ public partial class MarkdownEditor : TablerBaseComponent, IAsyncDisposable
             return;
         }
 
-        var started = new List<(MarkdownUpload Upload, IBrowserFile File)>();
+        var started = new List<(EditorUpload Upload, IBrowserFile File)>();
         foreach (var file in args.GetMultipleFiles(Math.Max(1, args.FileCount)))
         {
             if (!MarkdownSyntax.Accepts(AcceptedFileTypes, file.Name, file.ContentType))
             {
-                await ReportErrorAsync(new MarkdownUploadError(file.Name, string.Format(Texts.FileTypeNotAccepted, file.Name), null));
+                await ReportErrorAsync(new EditorUploadError(file.Name, string.Format(Texts.FileTypeNotAccepted, file.Name), null));
             }
             else if (file.Size > MaxFileSize)
             {
-                await ReportErrorAsync(new MarkdownUploadError(file.Name,
+                await ReportErrorAsync(new EditorUploadError(file.Name,
                     string.Format(Texts.FileTooLarge, file.Name, MarkdownSyntax.FormatSize(MaxFileSize)), null));
             }
             else
             {
-                started.Add((new MarkdownUpload(Guid.NewGuid().ToString("N")[..12], file.Name, file.Size), file));
+                started.Add((new EditorUpload(Guid.NewGuid().ToString("N")[..12], file.Name, file.Size), file));
             }
         }
 
@@ -399,11 +399,11 @@ public partial class MarkdownEditor : TablerBaseComponent, IAsyncDisposable
         }
     }
 
-    private async Task RunUploadAsync(MarkdownUpload upload, IBrowserFile browserFile)
+    private async Task RunUploadAsync(EditorUpload upload, IBrowserFile browserFile)
     {
         try
         {
-            var file = MarkdownUploadFile.FromBrowserFile(browserFile, MaxFileSize);
+            var file = EditorUploadFile.FromBrowserFile(browserFile, MaxFileSize);
             file.Progress = bytes =>
             {
                 upload.BytesRead = bytes;
@@ -426,7 +426,7 @@ public partial class MarkdownEditor : TablerBaseComponent, IAsyncDisposable
         {
             await ReplacePlaceholderAsync(upload, "");
         }
-        catch (MarkdownUploadException exception)
+        catch (EditorUploadException exception)
         {
             await FailAsync(upload, exception.Message, exception);
         }
@@ -446,16 +446,16 @@ public partial class MarkdownEditor : TablerBaseComponent, IAsyncDisposable
         }
     }
 
-    private async Task FailAsync(MarkdownUpload upload, string message, Exception exception)
+    private async Task FailAsync(EditorUpload upload, string message, Exception exception)
     {
         await ReplacePlaceholderAsync(upload, "");
         if (!disposed)
         {
-            await ReportErrorAsync(new MarkdownUploadError(upload.FileName, message, exception));
+            await ReportErrorAsync(new EditorUploadError(upload.FileName, message, exception));
         }
     }
 
-    private async Task<bool> ReplacePlaceholderAsync(MarkdownUpload upload, string markdown)
+    private async Task<bool> ReplacePlaceholderAsync(EditorUpload upload, string markdown)
     {
         if (module is null || disposed)
         {
@@ -476,15 +476,15 @@ public partial class MarkdownEditor : TablerBaseComponent, IAsyncDisposable
         }
     }
 
-    private async Task ReportErrorAsync(MarkdownUploadError error)
+    private async Task ReportErrorAsync(EditorUploadError error)
     {
         uploadErrors.Add(error);
         await OnUploadError.InvokeAsync(error);
     }
 
-    private void DismissError(MarkdownUploadError error) => uploadErrors.Remove(error);
+    private void DismissError(EditorUploadError error) => uploadErrors.Remove(error);
 
-    private void CancelUpload(MarkdownUpload upload) => upload.Cancellation.Cancel();
+    private void CancelUpload(EditorUpload upload) => upload.Cancellation.Cancel();
 
     private void RefreshProgress()
     {
