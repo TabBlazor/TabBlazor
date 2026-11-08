@@ -7,8 +7,14 @@
 @code {
     [Inject] private IServiceProvider Services { get; set; } = default!;
 
-    /// <summary>The HTML from a <see cref="RichTextEditor"/> to show.</summary>
+    /// <summary>The HTML from a <see cref="RichTextEditor"/> to show, through the registered sanitizer.</summary>
     [Parameter] public string? Html { get; set; }
+
+    /// <summary>
+    /// The JSON from a <see cref="RichTextEditor"/> with <see cref="RichTextEditorFormat.Json"/> to show, instead of
+    /// <see cref="Html"/>. It is turned into HTML with <see cref="RichTextJson"/>, which needs no sanitizer.
+    /// </summary>
+    [Parameter] public string? Json { get; set; }
 
     private string? SafeHtml { get; set; }
 
@@ -17,13 +23,22 @@
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
+        var options = Services.GetService<TipTapOptions>();
+        if (Json is not null && Html is not null)
+        {
+            throw new InvalidOperationException("RichTextView shows either Html or Json, not both.");
+        }
+        if (Json is not null)
+        {
+            SafeHtml = RichTextJson.ToHtml(Json, options?.Json);
+            return;
+        }
         if (string.IsNullOrEmpty(Html))
         {
             SafeHtml = null;
             return;
         }
 
-        var options = Services.GetService<TipTapOptions>();
         SafeHtml = options?.SafeHtml(Html) ?? throw new InvalidOperationException(
             "RichTextView shows HTML only through a sanitizer, so stored content cannot run script in the browser. " +
             "Register one with services.AddTabBlazorTipTap(o => o.AllowHtml(sanitize)), or set AllowUnsanitizedHtml " +
