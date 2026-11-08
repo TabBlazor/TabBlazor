@@ -1,0 +1,18 @@
+@using System.ComponentModel.DataAnnotations
+<TablerForm Model="Model">
+    <div class="mb-3">
+        <RichTextEditor @bind-Value="Model.Description" Label="Description" Placeholder="Describe the issue" />
+        <TabValidationMessage For="() => Model.Description" />
+    </div>
+    <Button BackgroundColor="TablerColor.Primary" Type="ButtonType.Submit" Text="Save" />
+</TablerForm>
+
+@code {
+    private IssueModel Model { get; set; } = new();
+
+    public class IssueModel
+    {
+        [Required(ErrorMessage = "Describe the issue")]
+        public string Description { get; set; }
+    }
+}

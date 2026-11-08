@@ -1,0 +1,198 @@
+@namespace TabBlazor
+@inherits TablerBaseComponent
+
+@if (!string.IsNullOrWhiteSpace(Label))
+{
+    <label class="form-label" id="@LabelId" data-rt-label-for="@InputId">@Label</label>
+}
+<div @ref="root" @attributes="UnmatchedParameters" id="@InputId" class="@ClassNames" style="@ProvidedStyle">
+    <div class="@FrameClassNames" style="@FrameStyle">
+        @if (ToolbarVisible)
+        {
+            <div class="rich-text-editor-toolbar" role="toolbar" aria-label="@Texts.Toolbar">
+                @if (Has(RichTextExtensions.Basic))
+                {
+                    <div class="rich-text-editor-toolbar-group">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-ghost-secondary rich-text-editor-style" data-rt-menu
+                                    aria-haspopup="menu" aria-expanded="false" title="@Texts.TextStyle" disabled="@Disabled">
+                                <span data-rt-style-label data-rt-default="@Texts.NormalText"></span>
+                                <Icon IconType="InternalIcons.Chevron_down" Size="14" />
+                            </button>
+                            <div class="dropdown-menu" role="menu">
+                                <button type="button" role="menuitemradio" class="dropdown-item" tabindex="-1" data-rt-command="setParagraph" data-rt-active='["paragraph"]' data-rt-label="@Texts.NormalText">@Texts.NormalText</button>
+                                <button type="button" role="menuitemradio" class="dropdown-item rich-text-h1" tabindex="-1" data-rt-command="toggleHeading" data-rt-args='{"level":1}' data-rt-active='["heading",{"level":1}]' data-rt-label="@Texts.Heading1">@Texts.Heading1</button>
+                                <button type="button" role="menuitemradio" class="dropdown-item rich-text-h2" tabindex="-1" data-rt-command="toggleHeading" data-rt-args='{"level":2}' data-rt-active='["heading",{"level":2}]' data-rt-label="@Texts.Heading2">@Texts.Heading2</button>
+                                <button type="button" role="menuitemradio" class="dropdown-item rich-text-h3" tabindex="-1" data-rt-command="toggleHeading" data-rt-args='{"level":3}' data-rt-active='["heading",{"level":3}]' data-rt-label="@Texts.Heading3">@Texts.Heading3</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rich-text-editor-toolbar-group">
+                        @ToolButton("toggleBold", null, "[\"bold\"]", InternalIcons.Bold, Texts.Bold, "B")
+                        @ToolButton("toggleItalic", null, "[\"italic\"]", InternalIcons.Italic, Texts.Italic, "I")
+                        @ToolButton("toggleUnderline", null, "[\"underline\"]", RichTextIcons.Underline, Texts.Underline, "U")
+                        @ToolButton("toggleStrike", null, "[\"strike\"]", RichTextIcons.Strikethrough, Texts.Strike, "Shift+S")
+                        @ToolButton("toggleCode", null, "[\"code\"]", InternalIcons.Code, Texts.Code, "E")
+                        @if (Has(RichTextExtensions.Highlight))
+                        {
+                            @ToolButton("toggleHighlight", null, "[\"highlight\"]", RichTextIcons.Highlight, Texts.Highlight, "Shift+H")
+                        }
+                    </div>
+                    <div class="rich-text-editor-toolbar-group">
+                        @ToolButton("toggleBulletList", null, "[\"bulletList\"]", InternalIcons.List, Texts.BulletedList, "Shift+8")
+                        @ToolButton("toggleOrderedList", null, "[\"orderedList\"]", InternalIcons.List_numbers, Texts.NumberedList, "Shift+7")
+                        @if (Has(RichTextExtensions.TaskList))
+                        {
+                            @ToolButton("toggleTaskList", null, "[\"taskList\"]", RichTextIcons.List_check, Texts.TaskList, "Shift+9")
+                        }
+                        @ToolButton("toggleBlockquote", null, "[\"blockquote\"]", InternalIcons.Blockquote, Texts.Quote, "Shift+B")
+                        @ToolButton("toggleCodeBlock", null, "[\"codeBlock\"]", RichTextIcons.Source_code, Texts.CodeBlock, "Alt+C")
+                    </div>
+                    <div class="rich-text-editor-toolbar-group">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-ghost-secondary btn-icon" data-rt-menu data-rt-link-button data-rt-active='["link"]'
+                                    aria-haspopup="dialog" aria-expanded="false" title="@($"{Texts.Link} (Ctrl+K)")" aria-label="@Texts.Link"
+                                    aria-keyshortcuts="Control+K" disabled="@Disabled">
+                                <Icon IconType="InternalIcons.Link" Size="18" />
+                            </button>
+                            <div class="dropdown-menu rich-text-editor-link-menu" role="dialog" aria-label="@Texts.Link">
+                                <input type="url" class="form-control form-control-sm" data-rt-link-input placeholder="https://" aria-label="@Texts.LinkUrl" />
+                                <div class="rich-text-editor-link-actions">
+                                    <button type="button" class="btn btn-sm btn-ghost-danger" data-rt-link-remove>
+                                        <Icon IconType="RichTextIcons.Link_off" Size="16" /> @Texts.RemoveLink
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-primary" data-rt-link-apply>@Texts.Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                        @if (UploadsEnabled)
+                        {
+                            <button type="button" class="btn btn-ghost-secondary btn-icon" data-rt-upload
+                                    title="@(ImagesOnly ? Texts.AttachImages : Texts.AttachFiles)" aria-label="@(ImagesOnly ? Texts.AttachImages : Texts.AttachFiles)"
+                                    disabled="@Disabled">
+                                <Icon IconType="@(ImagesOnly ? InternalIcons.Photo : InternalIcons.Paperclip)" Size="18" />
+                            </button>
+                        }
+                        @if (Has(RichTextExtensions.Table))
+                        {
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-ghost-secondary btn-icon" data-rt-menu
+                                        aria-haspopup="menu" aria-expanded="false" title="@Texts.Table" aria-label="@Texts.Table" disabled="@Disabled">
+                                    <Icon IconType="InternalIcons.Table" Size="18" />
+                                </button>
+                                <div class="dropdown-menu rich-text-editor-table-menu" role="menu" aria-label="@Texts.Table">
+                                    <div class="rich-text-editor-table-grid" data-rt-columns="@TablePickerSize"
+                                         style="grid-template-columns: repeat(@TablePickerSize, 1.125rem)">
+                                        @for (var row = 1; row <= TablePickerSize; row++)
+                                        {
+                                            @for (var column = 1; column <= TablePickerSize; column++)
+                                            {
+                                                <button type="button" role="menuitem" class="rich-text-editor-table-cell" tabindex="-1"
+                                                        data-rt-command="insertTable" data-rt-args="@($"{{\"rows\":{row},\"cols\":{column},\"withHeaderRow\":true}}")"
+                                                        data-rt-columns="@column" data-rt-rows="@row"
+                                                        aria-label="@string.Format(Texts.TableSize, column, row)"></button>
+                                            }
+                                        }
+                                    </div>
+                                    <div class="rich-text-editor-table-size" aria-hidden="true" data-rt-default="@Texts.Table" data-rt-size="@Texts.Table"></div>
+                                </div>
+                            </div>
+                        }
+                        @ToolButton("setHorizontalRule", null, null, RichTextIcons.Separator_horizontal, Texts.HorizontalRule, null)
+                    </div>
+                    @if (Has(RichTextExtensions.Table))
+                    {
+                        <div class="rich-text-editor-toolbar-group" data-rt-table-tools hidden>
+                            @ToolButton("addRowAfter", null, null, RichTextIcons.Row_insert_bottom, Texts.AddRow, null)
+                            @ToolButton("addColumnAfter", null, null, RichTextIcons.Column_insert_right, Texts.AddColumn, null)
+                            @ToolButton("deleteRow", null, null, RichTextIcons.Row_remove, Texts.DeleteRow, null)
+                            @ToolButton("deleteColumn", null, null, RichTextIcons.Column_remove, Texts.DeleteColumn, null)
+                            @ToolButton("deleteTable", null, null, RichTextIcons.Table_off, Texts.DeleteTable, null)
+                        </div>
+                    }
+                    @if (Has(RichTextExtensions.TextAlign))
+                    {
+                        <div class="rich-text-editor-toolbar-group">
+                            @ToolButton("setTextAlign", "\"left\"", "[{\"textAlign\":\"left\"}]", InternalIcons.Align_left, Texts.AlignLeft, "Shift+L")
+                            @ToolButton("setTextAlign", "\"center\"", "[{\"textAlign\":\"center\"}]", InternalIcons.Align_center, Texts.AlignCenter, "Shift+E")
+                            @ToolButton("setTextAlign", "\"right\"", "[{\"textAlign\":\"right\"}]", InternalIcons.Align_right, Texts.AlignRight, "Shift+R")
+                        </div>
+                    }
+                    <div class="rich-text-editor-toolbar-group">
+                        @ToolButton("undo", null, null, RichTextIcons.Arrow_back_up, Texts.Undo, "Z")
+                        @ToolButton("redo", null, null, RichTextIcons.Arrow_forward_up, Texts.Redo, "Shift+Z")
+                    </div>
+                }
+                else if (UploadsEnabled)
+                {
+                    <div class="rich-text-editor-toolbar-group">
+                        <button type="button" class="btn btn-ghost-secondary btn-icon" data-rt-upload
+                                title="@(ImagesOnly ? Texts.AttachImages : Texts.AttachFiles)" aria-label="@(ImagesOnly ? Texts.AttachImages : Texts.AttachFiles)"
+                                disabled="@Disabled">
+                            <Icon IconType="@(ImagesOnly ? InternalIcons.Photo : InternalIcons.Paperclip)" Size="18" />
+                        </button>
+                    </div>
+                }
+                @if (ToolbarExtra != null)
+                {
+                    <div class="rich-text-editor-toolbar-group">@ToolbarExtra</div>
+                }
+            </div>
+        }
+        @* The browser editor mounts in here, so Blazor must never render children in it while interactive. *@
+        <RichTextContent class="rich-text-editor-content">
+            @if (!Interactive)
+            {
+                @StaticContent()
+            }
+        </RichTextContent>
+        @if (MaxLength is { } max)
+        {
+            <div class="rich-text-editor-count" data-rt-count data-rt-count-text="@string.Format(Texts.CharacterCount, 0, max)" aria-live="polite"></div>
+        }
+    </div>
+    <input type="hidden" class="rich-text-editor-value" name="@NameValue" value="@currentValue" @onchange="OnChangeAsync" />
+    @if (uploads.Count > 0 || uploadErrors.Count > 0)
+    {
+        <div class="rich-text-editor-uploads" aria-live="polite">
+            @foreach (var upload in uploads)
+            {
+                <div class="rich-text-editor-upload" @key="upload">
+                    <span class="rich-text-editor-upload-name">@string.Format(Texts.Uploading, upload.FileName)</span>
+                    <div class="progress progress-sm">
+                        <div class="progress-bar" style="width: @(upload.Percent)%" role="progressbar"
+                             aria-valuenow="@upload.Percent" aria-valuemin="0" aria-valuemax="100"
+                             aria-label="@string.Format(Texts.Uploading, upload.FileName)"></div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-ghost-secondary" @onclick="() => CancelUpload(upload)">@Texts.Cancel</button>
+                </div>
+            }
+            @foreach (var error in uploadErrors)
+            {
+                <div class="rich-text-editor-upload rich-text-editor-upload-error" @key="error">
+                    <span class="rich-text-editor-upload-name text-danger">@error.Message</span>
+                    <button type="button" class="btn-close" aria-label="@Texts.Dismiss" title="@Texts.Dismiss" @onclick="() => DismissError(error)"></button>
+                </div>
+            }
+        </div>
+    }
+    @if (UploadsEnabled)
+    {
+        <InputFile class="rich-text-editor-file" multiple accept="@AcceptedFileTypes" OnChange="OnFilesSelectedAsync" hidden tabindex="-1" aria-hidden="true" />
+    }
+</div>
+
+@code {
+    /// <summary>The table picker offers up to this many columns and rows (header row included).</summary>
+    private const int TablePickerSize = 6;
+
+    private RenderFragment ToolButton(string command, string? args, string? active, IIconType icon, string label, string? shortcut) =>
+        @<button type="button" class="btn btn-ghost-secondary btn-icon" data-rt-command="@command" data-rt-args="@args" data-rt-active="@active"
+                 title="@(shortcut == null ? label : $"{label} (Ctrl+{shortcut})")"
+                 aria-label="@label"
+                 aria-pressed="@(active == null ? null : "false")"
+                 aria-keyshortcuts="@(shortcut == null ? null : $"Control+{shortcut}")"
+                 disabled="@Disabled">
+            <Icon IconType="icon" Size="18" />
+        </button>;
+}

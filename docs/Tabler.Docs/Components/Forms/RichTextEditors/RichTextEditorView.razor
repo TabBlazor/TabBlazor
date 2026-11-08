@@ -1,0 +1,20 @@
+<div class="row g-3">
+    <div class="col-md-6">
+        <RichTextEditor @bind-Value="html" Extensions="RichTextExtensions.All" aria-label="Article" />
+    </div>
+    <div class="col-md-6">
+        <div class="card card-body h-100">
+            <RichTextView Html="@html" />
+        </div>
+    </div>
+</div>
+
+@code {
+    // The script, the onclick handler and the javascript: link are removed by the sanitizer before RichTextView shows the HTML.
+    private string html = """
+        <h3>Saved article</h3>
+        <p>Shown with <strong>RichTextView</strong>.</p>
+        <script>alert('not run')</script>
+        <p onclick="alert('not run')">Unsafe markup is gone, <a href="javascript:alert('not run')">this link</a> included.</p>
+        """;
+}

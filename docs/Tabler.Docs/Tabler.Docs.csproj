@@ -21,6 +21,7 @@
     <PackageReference Include="Blazor-ApexCharts" />
     <PackageReference Include="ClosedXML" />
     <PackageReference Include="ColorCode.HTML" />
+    <PackageReference Include="HtmlSanitizer" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.Extensions.Http" />
@@ -30,6 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\TabBlazor\TabBlazor.csproj" />
     <ProjectReference Include="..\..\src\TabBlazor.Markdown\TabBlazor.Markdown.csproj" />
+    <ProjectReference Include="..\..\src\TabBlazor.TipTap\TabBlazor.TipTap.csproj" />
   </ItemGroup>
 
   <ItemGroup>

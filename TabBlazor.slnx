@@ -26,5 +26,6 @@
   <Project Path="src/TabBlazor.Linq2GraphQL/TabBlazor.Linq2GraphQL.csproj" />
   <Project Path="src/TabBlazor.Markdown/TabBlazor.Markdown.csproj" />
   <Project Path="src/TabBlazor.QuickTable.EntityFramework/TabBlazor.QuickTable.EntityFramework.csproj" />
+  <Project Path="src/TabBlazor.TipTap/TabBlazor.TipTap.csproj" />
   <Project Path="src/TabBlazor/TabBlazor.csproj" />
 </Solution>

@@ -1,0 +1,21 @@
+<RichTextEditor @bind-Value="html"
+                Extensions="RichTextExtensions.All"
+                MaxLength="2000"
+                MaxHeight="24rem"
+                aria-label="Release notes" />
+
+@code {
+    private string html = """
+        <h2>Release notes</h2>
+        <p>Put the caret in the table to see the <mark>row and column tools</mark>.</p>
+        <table><tbody>
+            <tr><th><p>Area</p></th><th><p>Change</p></th></tr>
+            <tr><td><p>Orders</p></td><td><p>Faster search</p></td></tr>
+        </tbody></table>
+        <ul data-type="taskList">
+            <li data-type="taskItem" data-checked="true"><p>Write the notes</p></li>
+            <li data-type="taskItem" data-checked="false"><p>Publish them</p></li>
+        </ul>
+        <p style="text-align: center">Centered text -- typed dashes become an en dash.</p>
+        """;
+}

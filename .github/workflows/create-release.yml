@@ -40,6 +40,7 @@ jobs:
           dotnet pack src/TabBlazor.QuickTable.EntityFramework/TabBlazor.QuickTable.EntityFramework.csproj -c Release -o artifacts
           dotnet pack src/TabBlazor.Linq2GraphQL/TabBlazor.Linq2GraphQL.csproj -c Release -o artifacts
           dotnet pack src/TabBlazor.Markdown/TabBlazor.Markdown.csproj -c Release -o artifacts
+          dotnet pack src/TabBlazor.TipTap/TabBlazor.TipTap.csproj -c Release -o artifacts
 
       - name: NuGet login
         uses: NuGet/login@v1

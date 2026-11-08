@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TabBlazor;
 using Tabler.Docs.Services;
+using Tabler.Docs.Components.Forms.RichTextEditors;
 
 namespace Tabler.Docs
 {
@@ -19,6 +20,12 @@ namespace Tabler.Docs
                    options.DefaultPositioning = Positioning.Absolute;
                })
                .AddTabBlazorMarkdown(options => options.AllowedImageUrlSchemes.Add("data"))
+               .AddTabBlazorTipTap(options =>
+               {
+                   var sanitizer = DocsRichTextSanitizer.Create();
+                   options.AllowHtml(html => sanitizer.Sanitize(html));
+                   options.ExtensionModules.Add("./_content/Tabler.Docs/js/rich-text-callout.js");
+               })
                .AddSingleton<AppService>();
         }
 

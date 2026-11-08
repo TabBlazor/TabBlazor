@@ -1,0 +1,32 @@
+@namespace TabBlazor
+@using Microsoft.Extensions.DependencyInjection
+@inherits TablerBaseComponent
+
+<RichTextContent @attributes="UnmatchedParameters" class="@ClassNames" style="@ProvidedStyle">@((MarkupString)(SafeHtml ?? ""))</RichTextContent>
+
+@code {
+    [Inject] private IServiceProvider Services { get; set; } = default!;
+
+    /// <summary>The HTML from a <see cref="RichTextEditor"/> to show.</summary>
+    [Parameter] public string? Html { get; set; }
+
+    private string? SafeHtml { get; set; }
+
+    protected override string ClassNames => ClassBuilder.Add("rich-text-view").ToString();
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (string.IsNullOrEmpty(Html))
+        {
+            SafeHtml = null;
+            return;
+        }
+
+        var options = Services.GetService<TipTapOptions>();
+        SafeHtml = options?.SafeHtml(Html) ?? throw new InvalidOperationException(
+            "RichTextView shows HTML only through a sanitizer, so stored content cannot run script in the browser. " +
+            "Register one with services.AddTabBlazorTipTap(o => o.AllowHtml(sanitize)), or set AllowUnsanitizedHtml " +
+            "when the HTML is already sanitized where it is saved.");
+    }
+}

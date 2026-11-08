@@ -344,3 +344,7 @@ healthchecksdb
 *.db-wal
 # Generated component API manifest (produced at pack time)
 src/TabBlazor/componentapi.json
+
+# Playwright
+e2e/test-results/
+e2e/playwright-report/

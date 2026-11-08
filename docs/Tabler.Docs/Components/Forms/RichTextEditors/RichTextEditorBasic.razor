@@ -1,0 +1,10 @@
+<RichTextEditor @bind-Value="html" Label="Description" Placeholder="Write something…" />
+
+<div class="mt-3">
+    <div class="form-label">Value</div>
+    <pre class="mb-0 text-wrap" style="max-height: 10rem">@(html ?? "null")</pre>
+</div>
+
+@code {
+    private string html = "<p>Select text and use the toolbar, or try <strong>Ctrl+B</strong>, <em>Ctrl+I</em> and <u>Ctrl+U</u>.</p>";
+}

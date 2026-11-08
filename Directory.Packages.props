@@ -11,6 +11,7 @@
     <PackageVersion Include="ClosedXML" Version="0.105.0" />
     <PackageVersion Include="ColorCode.HTML" Version="2.0.15" />
     <PackageVersion Include="coverlet.collector" Version="10.0.0" />
+    <PackageVersion Include="HtmlSanitizer" Version="9.2.1039" />
     <PackageVersion Include="HotChocolate.AspNetCore" Version="16.6.4" />
     <PackageVersion Include="HotChocolate.Data" Version="16.6.4" />
     <PackageVersion Include="HotChocolate.Types.OffsetPagination" Version="16.6.4" />
