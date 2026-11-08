@@ -43,6 +43,7 @@ public partial class RichTextEditor : TablerBaseComponent, IAsyncDisposable
     private long lastProgressRefresh;
     private bool wasUploading;
     private bool disposed;
+    private bool loadFailed;
 
     [Inject] private IJSRuntime JS { get; set; } = default!;
     [Inject] private IServiceProvider Services { get; set; } = default!;
@@ -126,6 +127,12 @@ public partial class RichTextEditor : TablerBaseComponent, IAsyncDisposable
     /// <summary>Raised with true when the first upload starts and with false when the last one ends.</summary>
     [Parameter] public EventCallback<bool> OnUploadStateChanged { get; set; }
 
+    /// <summary>
+    /// Raised with the reason when TipTap cannot start in the browser, for example because <c>tiptap.js</c> is blocked
+    /// or missing. The editor then shows the raw value in a plain text area, so the user can still read and change it.
+    /// </summary>
+    [Parameter] public EventCallback<string> OnLoadError { get; set; }
+
     /// <summary>Finds the people offered after <c>@</c>. Needed for <see cref="RichTextExtensions.Mention"/>.</summary>
     [Parameter] public Func<string, CancellationToken, Task<IReadOnlyList<RichTextMention>>>? MentionSearch { get; set; }
     /// <summary>The character that starts a mention. Defaults to <c>@</c>.</summary>
@@ -140,6 +147,9 @@ public partial class RichTextEditor : TablerBaseComponent, IAsyncDisposable
     /// <summary>True while files are uploading. Disable saving meanwhile, or the upload is not in the saved content.</summary>
     public bool IsUploading => uploads.Count > 0;
 
+    /// <summary>True when TipTap could not start and the editor shows a plain text area instead. See <see cref="OnLoadError"/>.</summary>
+    public bool LoadFailed => loadFailed;
+
     private TipTapOptions TipTap => Services.GetService<TipTapOptions>() ?? DefaultOptions;
     private static readonly TipTapOptions DefaultOptions = new();
     internal RichTextEditorText Texts => Text ?? TipTap.Text;
@@ -149,8 +159,8 @@ public partial class RichTextEditor : TablerBaseComponent, IAsyncDisposable
     private string? NameValue => Name ?? MarkdownSyntax.FieldPath(ValueExpression);
     private bool Interactive => RendererInfo.IsInteractive;
     private bool Locked => Disabled || ReadOnly;
-    private bool ToolbarVisible => Interactive && ShowToolbar && !ReadOnly;
-    private bool UploadsEnabled => Interactive && UploadFile is not null && !Locked;
+    private bool ToolbarVisible => Interactive && ShowToolbar && !ReadOnly && !loadFailed;
+    private bool UploadsEnabled => Interactive && UploadFile is not null && !Locked && !loadFailed;
     private bool ImagesOnly => MarkdownSyntax.AcceptsOnlyImages(AcceptedFileTypes);
     private bool MentionsEnabled => Has(RichTextExtensions.Mention) && MentionSearch is not null;
     private bool Has(RichTextExtensions extension) => (EffectiveExtensions & extension) == extension;
@@ -261,7 +271,7 @@ public partial class RichTextEditor : TablerBaseComponent, IAsyncDisposable
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!Interactive || disposed)
+        if (!Interactive || disposed || loadFailed)
         {
             return;
         }
@@ -269,13 +279,30 @@ public partial class RichTextEditor : TablerBaseComponent, IAsyncDisposable
         var options = ClientOptions;
         if (module is null)
         {
-            module = await GetModuleAsync();
-            if (disposed)
+            LoadResult? result;
+            try
             {
+                var loaded = await GetModuleAsync();
+                if (disposed)
+                {
+                    return;
+                }
+                selfReference ??= DotNetObjectReference.Create(this);
+                result = await loaded.InvokeAsync<LoadResult?>("attach", root, CreateClientOptions(), selfReference);
+                module = loaded;
+            }
+            catch (Exception exception) when (exception is JSException or TaskCanceledException && !disposed)
+            {
+                // The editor's own module did not load. Never let it escape: on Server it would end the circuit.
+                await FailLoadAsync(exception.Message);
                 return;
             }
-            selfReference ??= DotNetObjectReference.Create(this);
-            await module.InvokeVoidAsync("attach", root, CreateClientOptions(), selfReference);
+
+            if (result?.Error is { } error)
+            {
+                await FailLoadAsync(error);
+                return;
+            }
             lastClientOptions = options;
             valueSetByParent = false;
             return;
@@ -284,7 +311,12 @@ public partial class RichTextEditor : TablerBaseComponent, IAsyncDisposable
         if (options != lastClientOptions)
         {
             lastClientOptions = options;
-            await module.InvokeVoidAsync("update", root, CreateClientOptions());
+            var result = await module.InvokeAsync<LoadResult?>("update", root, CreateClientOptions());
+            if (result?.Error is { } error)
+            {
+                await FailLoadAsync(error);
+                return;
+            }
         }
 
         if (valueSetByParent)
@@ -292,6 +324,17 @@ public partial class RichTextEditor : TablerBaseComponent, IAsyncDisposable
             valueSetByParent = false;
             await module.InvokeVoidAsync("refresh", root);
         }
+    }
+
+    /// <summary>What the browser editor's attach and update return: null, or why TipTap could not start.</summary>
+    internal sealed record LoadResult(string? Error);
+
+    /// <summary>Switches to the plain text area. The value is unchanged: it is still in the hidden input and in .NET.</summary>
+    private async Task FailLoadAsync(string error)
+    {
+        loadFailed = true;
+        await OnLoadError.InvokeAsync(error);
+        StateHasChanged();
     }
 
     private Task<IJSObjectReference> GetModuleAsync() =>

@@ -60,6 +60,8 @@ public sealed record RichTextEditorText
     public string UploadFailed { get; init; } = "Could not upload {0}.";
 
     public string NoMentionMatches { get; init; } = "No matches";
+    /// <summary>Shown under the plain text area when the editor could not load.</summary>
+    public string LoadFailed { get; init; } = "The editor could not load, so the content is shown as plain text.";
     /// <summary>The counter under the editor with <c>MaxLength</c>. {0} is the number of characters, {1} the limit.</summary>
     public string CharacterCount { get; init; } = "{0} / {1}";
 }

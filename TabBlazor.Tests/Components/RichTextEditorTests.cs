@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
 
 namespace TabBlazor.Tests.Components
 {
@@ -37,6 +38,18 @@ namespace TabBlazor.Tests.Components
         }
 
         private static JsonElement Json(object? value) => JsonSerializer.SerializeToElement(value);
+
+        /// <summary>A browser where the editor's module cannot be imported (bUnit cannot fail an import).</summary>
+        private sealed class FailingImportRuntime : IJSRuntime
+        {
+            public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) =>
+                InvokeAsync<TValue>(identifier, CancellationToken.None, args);
+
+            public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args) =>
+                identifier == "import"
+                    ? ValueTask.FromException<TValue>(new JSException("404 RichTextEditor.razor.js"))
+                    : ValueTask.FromResult(default(TValue)!);
+        }
 
         [Fact]
         public void Renders_frame_label_hidden_value_and_content_area()
@@ -283,6 +296,57 @@ namespace TabBlazor.Tests.Components
             var cut = RenderEditor("**Hi**", p => p.Add(e => e.Format, RichTextEditorFormat.Markdown));
 
             Assert.Equal("**Hi**", cut.Find(".rich-text-editor-content div").TextContent);
+        }
+
+        [Fact]
+        public void Falls_back_to_a_text_area_when_tiptap_cannot_start()
+        {
+            var module = JSInterop.SetupModule(ModulePath);
+            module.Setup<RichTextEditor.LoadResult?>("attach", _ => true).SetResult(new RichTextEditor.LoadResult("Failed to fetch tiptap.js"));
+            var errors = new List<string>();
+            var values = new List<string?>();
+
+            var cut = RenderEditor("<p>Hi</p>", p => p
+                .Add(e => e.Label, "Body")
+                .Add(e => e.OnLoadError, errors.Add), values.Add);
+
+            cut.WaitForAssertion(() => Assert.True(cut.Instance.LoadFailed));
+            Assert.Equal(new[] { "Failed to fetch tiptap.js" }, errors);
+            Assert.Empty(cut.FindAll(".rich-text-editor-toolbar"));
+            Assert.Empty(cut.FindAll(".rich-text-editor-content"));
+            var textarea = cut.Find("textarea.rich-text-editor-fallback");
+            Assert.Equal("<p>Hi</p>", textarea.GetAttribute("value"));
+            Assert.Equal(cut.Find("label").Id, textarea.GetAttribute("aria-labelledby"));
+            Assert.Contains("could not load", cut.Find(".rich-text-editor-fallback-note").TextContent);
+
+            textarea.Change("<p>Changed</p>");
+            Assert.Equal(new string?[] { "<p>Changed</p>" }, values);
+            Assert.Equal("<p>Changed</p>", cut.Find("input.rich-text-editor-value").GetAttribute("value"));
+        }
+
+        [Fact]
+        public void Falls_back_when_the_editor_module_itself_fails_to_load()
+        {
+            Services.AddSingleton<IJSRuntime>(new FailingImportRuntime());
+            SetRendererInfo(new RendererInfo("Server", true));
+            string? error = null;
+
+            var cut = Render<RichTextEditor>(p => p.Add(e => e.OnLoadError, e => error = e));
+
+            cut.WaitForAssertion(() => Assert.NotNull(cut.Find("textarea.rich-text-editor-fallback")));
+            Assert.Contains("404", error);
+        }
+
+        [Fact]
+        public void Falls_back_when_recreating_the_editor_fails()
+        {
+            var module = JSInterop.SetupModule(ModulePath);
+            module.Setup<RichTextEditor.LoadResult?>("update", _ => true).SetResult(new RichTextEditor.LoadResult("extension threw"));
+            var cut = RenderEditor(null);
+
+            cut.Render(p => p.Add(e => e.Extensions, RichTextExtensions.All));
+
+            cut.WaitForAssertion(() => Assert.NotNull(cut.Find("textarea.rich-text-editor-fallback")));
         }
 
         [Fact]
