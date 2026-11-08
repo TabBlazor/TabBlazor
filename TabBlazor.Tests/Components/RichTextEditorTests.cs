@@ -86,6 +86,64 @@ namespace TabBlazor.Tests.Components
         }
 
         [Fact]
+        public void Minimal_toolbar_has_only_the_essentials_in_groups()
+        {
+            var cut = RenderEditor(null, p => p.Add(e => e.Toolbar, RichTextToolbar.Minimal));
+
+            var groups = cut.FindAll(".rich-text-editor-toolbar > .rich-text-editor-toolbar-group");
+            Assert.Equal(3, groups.Count);
+            Assert.Equal(new[] { "toggleBold", "toggleItalic" }, groups[0].QuerySelectorAll("[data-rt-command]").Select(b => b.GetAttribute("data-rt-command")));
+            Assert.Equal(new[] { "toggleBulletList", "toggleOrderedList" }, groups[1].QuerySelectorAll("[data-rt-command]").Select(b => b.GetAttribute("data-rt-command")));
+            Assert.NotNull(groups[2].QuerySelector("[data-rt-link-button]"));
+            Assert.Empty(cut.FindAll("[data-rt-style-label]"));
+            Assert.Empty(cut.FindAll("[data-rt-command=undo]"));
+        }
+
+        [Fact]
+        public void Custom_toolbar_keeps_order_and_drops_unavailable_tools_and_empty_groups()
+        {
+            var cut = RenderEditor(null, p => p
+                .Add(e => e.Extensions, RichTextExtensions.Basic)
+                .Add(e => e.Toolbar, new[]
+                {
+                    RichTextTool.Separator, RichTextTool.Redo, RichTextTool.Undo, RichTextTool.Undo,
+                    RichTextTool.Separator, RichTextTool.Separator, RichTextTool.Table, RichTextTool.Highlight, RichTextTool.Upload,
+                    RichTextTool.Separator, RichTextTool.Italic, RichTextTool.Separator
+                }));
+
+            var groups = cut.FindAll(".rich-text-editor-toolbar > .rich-text-editor-toolbar-group");
+            Assert.Equal(2, groups.Count);
+            Assert.Equal(new[] { "redo", "undo" }, groups[0].QuerySelectorAll("[data-rt-command]").Select(b => b.GetAttribute("data-rt-command")));
+            Assert.Equal(new[] { "toggleItalic" }, groups[1].QuerySelectorAll("[data-rt-command]").Select(b => b.GetAttribute("data-rt-command")));
+            Assert.Empty(cut.FindAll("[data-rt-table-tools]"));
+        }
+
+        [Fact]
+        public void Table_tools_follow_the_group_with_the_table_button()
+        {
+            var cut = RenderEditor(null, p => p
+                .Add(e => e.Extensions, RichTextExtensions.Basic | RichTextExtensions.Table)
+                .Add(e => e.Toolbar, new[] { RichTextTool.Bold, RichTextTool.Separator, RichTextTool.Table, RichTextTool.Separator, RichTextTool.Undo }));
+
+            var groups = cut.FindAll(".rich-text-editor-toolbar > .rich-text-editor-toolbar-group");
+            Assert.Equal(4, groups.Count);
+            Assert.True(groups[2].HasAttribute("data-rt-table-tools"));
+            Assert.NotNull(groups[1].QuerySelector(".rich-text-editor-table-menu"));
+        }
+
+        [Fact]
+        public void Upload_tool_shows_only_with_an_upload_handler()
+        {
+            var tools = new[] { RichTextTool.Bold, RichTextTool.Upload };
+            Assert.Empty(RenderEditor(null, p => p.Add(e => e.Toolbar, tools)).FindAll("[data-rt-upload]"));
+
+            var cut = RenderEditor(null, p => p
+                .Add(e => e.Toolbar, tools)
+                .Add(e => e.UploadFile, (_, _) => Task.FromResult(new EditorUploadResult("/x"))));
+            Assert.Single(cut.FindAll("[data-rt-upload]"));
+        }
+
+        [Fact]
         public void Hides_toolbar_when_read_only_or_turned_off()
         {
             Assert.Empty(RenderEditor(null, p => p.Add(e => e.ReadOnly, true)).FindAll(".rich-text-editor-toolbar"));

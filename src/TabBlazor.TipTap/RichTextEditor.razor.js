@@ -338,10 +338,12 @@ function buildExtensions(tiptap, state) {
             name: 'tabblazorShortcuts',
             addKeyboardShortcuts: () => ({
                 'Mod-k': () => {
+                    // Without a link button in the toolbar, leave Ctrl+K to the browser.
                     const button = state.root.querySelector('[data-rt-link-button]');
-                    if (button && !button.disabled) {
-                        openMenu(state, button);
+                    if (!button || button.disabled) {
+                        return false;
                     }
+                    openMenu(state, button);
                     return true;
                 }
             })

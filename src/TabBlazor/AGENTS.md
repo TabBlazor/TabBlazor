@@ -302,6 +302,9 @@ Failures: `EditResult.Failed("message")`.
 - `Extensions` (flags): `Basic` (headings, marks, lists, quote, code block, link, undo), `Image`,
   `Table`, `TaskList`, `TextAlign`, `Highlight`, `Typography`, `Mention`. `Default` = Basic | Image.
   Content of a feature that is off is reduced to paragraphs on paste and load.
+- `Toolbar` picks buttons and order: `RichTextToolbar.Minimal` (bold, italic, lists, link),
+  `RichTextToolbar.Full` (default), or a list of `RichTextTool` with `Separator` between groups. It does
+  not restrict content; set `Extensions` too.
 - **Sanitize**: HTML from the browser can contain anything. Sanitize where you save, and show it
   with `RichTextView`, which needs `services.AddTabBlazorTipTap(o => o.AllowHtml(sanitize))` (or
   `AllowUnsanitizedHtml = true`) and throws otherwise. Allow the `data-*` attributes of mentions
