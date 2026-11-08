@@ -5,6 +5,10 @@
 // through a JS-to-.NET call instead. The one JS-to-.NET call is the mention search, which is request/response.
 //
 // The toolbar is rendered by Blazor, but its clicks and its active states are handled here, without round trips.
+//
+// attach and update never throw to .NET: on Blazor Server an exception there would end the whole circuit. When TipTap
+// cannot start (the bundle is blocked or missing, an extension throws), they return { error } instead and .NET shows
+// a plain text area.
 
 const states = new WeakMap();
 const registry = new Map();
@@ -27,13 +31,13 @@ const extensionRegistry = Object.freeze({
 
 export async function attach(root, options, dotnet) {
     if (!root || states.has(root)) {
-        return;
+        return null;
     }
 
     const content = root.querySelector('.rich-text-editor-content');
     const hidden = root.querySelector('.rich-text-editor-value');
     if (!content || !hidden) {
-        return;
+        return null;
     }
 
     const state = { root, content, hidden, dotnet, options: normalize(options), editor: null, timer: 0, frame: 0, committed: hidden.value, cleanup: [] };
@@ -69,28 +73,27 @@ export async function attach(root, options, dotnet) {
 
     showMacShortcuts(root);
     setupRoving(state);
-    await create(state);
+    return await start(state);
 }
 
 export async function update(root, options) {
     const state = states.get(root);
     if (!state) {
-        return;
+        return null;
     }
 
     const next = normalize(options);
     const previous = state.options;
     state.options = next;
     if (!state.editor) {
-        return;
+        return null;
     }
 
     if (next.setupKey !== previous.setupKey || next.placeholder !== previous.placeholder) {
         flush(state);
         state.editor.destroy();
         state.editor = null;
-        await create(state);
-        return;
+        return await start(state);
     }
 
     if (next.locked !== previous.locked) {
@@ -98,6 +101,28 @@ export async function update(root, options) {
     }
     state.editor.setOptions({ editorProps: { ...state.editor.options.editorProps, attributes: editorAttributes(state) } });
     scheduleToolbar(state);
+    return null;
+}
+
+/** Creates the editor. Never throws: returns null, or { error } with the reason it could not start. */
+async function start(state) {
+    try {
+        await create(state);
+        return null;
+    } catch (error) {
+        console.error('RichTextEditor: TipTap could not start, so the editor falls back to a plain text area.', error);
+        if (states.get(state.root) === state) {
+            clearTimeout(state.timer);
+            state.cleanup.forEach(dispose => dispose());
+            try {
+                state.editor?.destroy();
+            } catch {
+                // Already broken.
+            }
+            states.delete(state.root);
+        }
+        return { error: String(error?.message ?? error) };
+    }
 }
 
 /** Called after .NET set a new value: it is already in .NET, so it is not sent back. */
@@ -234,10 +259,10 @@ function absolute(url) {
 /** Loads the TipTap bundle and the app's extension modules, once each. */
 async function load(options) {
     const url = absolute(options.scriptUrl);
-    if (!tiptapModules.has(url)) {
-        tiptapModules.set(url, import(url));
+    const tiptap = await importOnce(url);
+    if (typeof tiptap.Editor !== 'function') {
+        throw new Error(`${options.scriptUrl} is not a TipTap bundle: it does not export Editor.`);
     }
-    const tiptap = await tiptapModules.get(url);
 
     for (const moduleUrl of options.extensionModules) {
         const resolved = absolute(moduleUrl);
@@ -255,13 +280,24 @@ async function load(options) {
 
     // Markdown support is a separate file that imports this bundle, unless a custom bundle includes it.
     if (options.format === 'markdown' && !tiptap.Markdown) {
-        const markdownUrl = absolute(options.markdownScriptUrl);
-        if (!tiptapModules.has(markdownUrl)) {
-            tiptapModules.set(markdownUrl, import(markdownUrl));
+        const markdown = await importOnce(absolute(options.markdownScriptUrl));
+        if (!markdown.Markdown) {
+            throw new Error(`${options.markdownScriptUrl} does not export Markdown.`);
         }
-        return { ...tiptap, Markdown: (await tiptapModules.get(markdownUrl)).Markdown };
+        return { ...tiptap, Markdown: markdown.Markdown };
     }
     return tiptap;
+}
+
+/** Imports a module once; a failed import is forgotten, so the next editor tries again. */
+function importOnce(url) {
+    if (!tiptapModules.has(url)) {
+        tiptapModules.set(url, import(url).catch(error => {
+            tiptapModules.delete(url);
+            throw error;
+        }));
+    }
+    return tiptapModules.get(url);
 }
 
 let uploadsPluginKey = null;

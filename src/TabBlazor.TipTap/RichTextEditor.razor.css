@@ -207,6 +207,29 @@
     user-select: none;
 }
 
+/* Shown when TipTap could not start. */
+.rich-text-editor-fallback {
+    display: block;
+    width: 100%;
+    min-height: var(--rt-min-height, 8rem);
+    max-height: var(--rt-max-height, none);
+    padding: var(--tblr-input-padding-y, .5625rem) var(--tblr-input-padding-x, .75rem);
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    color: inherit;
+    font-family: var(--tblr-font-monospace);
+    font-size: .875rem;
+    resize: vertical;
+    outline: none;
+}
+
+.rich-text-editor-fallback-note {
+    margin-top: .25rem;
+    font-size: .75rem;
+    color: var(--tblr-secondary);
+}
+
 .rich-text-editor-count {
     padding: 0 .75rem .25rem;
     text-align: right;

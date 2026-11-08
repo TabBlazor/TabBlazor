@@ -2,6 +2,21 @@
 
 <Page>
     <DocsExample Title="RichTextEditor" ComponentType="typeof(RichTextEditor)">
+        <Alert BackgroundColor="TablerColor.Info" Title="Needs the TabBlazor.TipTap package" class="mb-5">
+            <div>
+                <p class="mb-2">RichTextEditor and RichTextView are not in the TabBlazor package. Add the package and register it next to TabBlazor:</p>
+                <ol class="mb-2">
+                    <li><code>dotnet add package TabBlazor.TipTap</code></li>
+                    <li><code>builder.Services.AddTabBlazorTipTap(o =&gt; o.AllowHtml(html =&gt; sanitizer.Sanitize(html)));</code></li>
+                </ol>
+                <p class="mb-0">
+                    The sanitizer removes unsafe markup before saved HTML is shown; RichTextView needs it, the editor itself works
+                    without it. See Sanitizing HTML below for why and how to set it up. No script tag is needed:
+                    the editor loads TipTap when it first renders. For markdown text with a preview, see
+                    <a href="docs/forms/markdown-editors">Markdown Editor</a>, which is in TabBlazor itself.
+                </p>
+            </div>
+        </Alert>
         <CodeSnippet Component="@typeof(RichTextEditorBasic)" Title="Basic">
             <Description>A WYSIWYG editor built on TipTap, from the TabBlazor.TipTap package. The value is HTML and is sent to .NET when you pause typing (DebounceMs, 300 ms by default) or leave the editor. The toolbar, keyboard shortcuts and undo work in the browser without round trips. Alt+F10 moves to the toolbar and Escape goes back to the text. Ctrl+K edits the link at the caret.</Description>
         </CodeSnippet>
@@ -19,6 +34,45 @@
         </CodeSnippet>
         <CodeSnippet Component="@typeof(RichTextEditorView)" Title="Showing saved content">
             <Description>RichTextView shows saved HTML with the editor's styles, through the sanitizer registered with AddTabBlazorTipTap(o =&gt; o.AllowHtml(...)). Without one it refuses to render, so stored content cannot run script in other users' browsers. Sanitize again where you save: a browser can post any HTML.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(RichTextEditorSanitizer)" Title="Sanitizing HTML">
+            <Description>
+                <p>
+                    The HTML value comes from the browser, and anyone can post any HTML to your app without using the editor. If you show
+                    it to other users unchanged, a <code>&lt;script&gt;</code>, an <code>onclick</code> or a <code>javascript:</code> link in it runs
+                    in their browsers (cross-site scripting). A sanitizer removes everything that is not on an allow-list of safe tags,
+                    attributes, CSS properties and URL schemes. Edit the HTML on the left to see what survives.
+                </p>
+                <p class="mb-1">Content is filtered in three places, and only the last two protect you:</p>
+                <ul>
+                    <li><strong>In the editor.</strong> TipTap keeps only what its features know, and links only http, https, mailto and relative URLs. This keeps the editor clean, but it runs in the browser, so it is not a security check.</li>
+                    <li><strong>Where you save.</strong> Sanitize the value in your API or service before storing it. This is your code: the component cannot do it, since the value reaches .NET as a plain bound string, and in WebAssembly it runs in the user's browser.</li>
+                    <li><strong>Where you show it.</strong> RichTextView, and the read-only editor in static rendering, pass the HTML through the sanitizer you register. RichTextView throws without one, unless you set AllowUnsanitizedHtml because you sanitize when saving.</li>
+                </ul>
+                <p>
+                    TabBlazor.TipTap does not include a sanitizer, so WebAssembly apps that don't need one don't download it. These docs use the
+                    <a href="https://github.com/mganss/HtmlSanitizer" target="_blank" rel="noopener noreferrer">HtmlSanitizer</a> package. Its defaults remove
+                    the data attributes the editor writes, so allow those, or mentions lose their ids and task lists their check marks:
+                </p>
+                <pre class="mb-2">var sanitizer = new Ganss.Xss.HtmlSanitizer();
+sanitizer.AllowedSchemes.Add("mailto");
+foreach (var attribute in new[] { "data-type", "data-id", "data-label", "data-mention-suggestion-char", "data-checked", "rel" })
+{
+    sanitizer.AllowedAttributes.Add(attribute);   // mentions, task lists, link rel
+}
+sanitizer.AllowedTags.Add("input");               // task list check boxes
+sanitizer.AllowedTags.Add("label");
+sanitizer.AllowedAttributes.Add("type");
+sanitizer.AllowedAttributes.Add("checked");
+sanitizer.AllowedCssProperties.Clear();
+sanitizer.AllowedCssProperties.Add("text-align"); // alignment, nothing else
+
+builder.Services.AddTabBlazorTipTap(o =&gt; o.AllowHtml(html =&gt; sanitizer.Sanitize(html)));</pre>
+                <p class="mb-0">
+                    Use the same sanitizer where you save. The JSON value carries no markup to sanitize, and the markdown value is shown
+                    through an IMarkdownRenderer, which in TabBlazor.Markdown escapes raw HTML by default.
+                </p>
+            </Description>
         </CodeSnippet>
         <CodeSnippet Component="@typeof(RichTextEditorCustomExtension)" Title="Custom extensions and toolbar buttons">
             <Description>An app can add its own TipTap extensions: list the module in TipTapOptions.ExtensionModules, register the extension by name, and turn it on with CustomExtensions. The module imports TipTap from the editor's bundle so both share one ProseMirror. A ToolbarExtra button with data-rt-command runs a command in the browser; RunCommandAsync and InsertContentAsync do the same from .NET.</Description>

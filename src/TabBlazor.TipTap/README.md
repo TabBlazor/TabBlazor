@@ -181,5 +181,8 @@ second copy.
 - In static server rendering the editor shows the content read-only (sanitized HTML, or its text without a sanitizer)
   and posts the value through a hidden input named after the bound field.
 - Keyboard: Alt+F10 moves to the toolbar, Escape returns to the text, Ctrl+K edits the link.
+- If TipTap cannot start in the browser (the bundle is blocked by a proxy or CSP, missing, or an extension throws), the
+  editor shows the raw value in a plain text area that still binds, raises `OnLoadError` with the reason and sets
+  `LoadFailed`. It never throws into Blazor, so a Server circuit survives. The browser console has the details.
 - The TipTap bundles are built from `tools/tiptap` in the repository (`npm ci && npm run build`); CI checks that the
   committed bundles match the lockfile and that every bundled package is MIT licensed.

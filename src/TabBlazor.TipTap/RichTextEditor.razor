@@ -35,18 +35,40 @@
                 }
             </div>
         }
-        @* The browser editor mounts in here, so Blazor must never render children in it while interactive. *@
-        <RichTextContent class="rich-text-editor-content">
-            @if (!Interactive)
-            {
-                @StaticContent()
-            }
-        </RichTextContent>
-        @if (MaxLength is { } max)
+        @if (loadFailed)
+        {
+            @* TipTap could not start: the raw value in a plain text area, so the user can still read and change it. *@
+            <textarea class="rich-text-editor-fallback"
+                      rows="6"
+                      value="@currentValue"
+                      placeholder="@Placeholder"
+                      disabled="@Disabled"
+                      readonly="@ReadOnly"
+                      maxlength="@MaxLength"
+                      aria-labelledby="@(string.IsNullOrWhiteSpace(Label) ? null : LabelId)"
+                      aria-invalid="@AriaInvalid"
+                      aria-describedby="@(InputId + "-fallback")"
+                      @onchange="OnChangeAsync"></textarea>
+        }
+        else
+        {
+            @* The browser editor mounts in here, so Blazor must never render children in it while interactive. *@
+            <RichTextContent class="rich-text-editor-content">
+                @if (!Interactive)
+                {
+                    @StaticContent()
+                }
+            </RichTextContent>
+        }
+        @if (MaxLength is { } max && !loadFailed)
         {
             <div class="rich-text-editor-count" data-rt-count data-rt-count-text="@string.Format(Texts.CharacterCount, 0, max)" aria-live="polite"></div>
         }
     </div>
+    @if (loadFailed)
+    {
+        <div class="rich-text-editor-fallback-note" id="@(InputId + "-fallback")">@Texts.LoadFailed</div>
+    }
     <input type="hidden" class="rich-text-editor-value" name="@NameValue" value="@currentValue" @onchange="OnChangeAsync" />
     @if (uploads.Count > 0 || uploadErrors.Count > 0)
     {

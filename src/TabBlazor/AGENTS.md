@@ -312,6 +312,8 @@ Failures: `EditResult.Failed("message")`.
   with `RichTextView`, which needs `services.AddTabBlazorTipTap(o => o.AllowHtml(sanitize))` (or
   `AllowUnsanitizedHtml = true`) and throws otherwise. Allow the `data-*` attributes of mentions
   and task lists in the sanitizer (see the package README).
+- If `tiptap.js` can't load (blocked, missing, CSP), the editor falls back to a plain text area
+  with the raw value (still bound), raises `OnLoadError` and sets `LoadFailed`; it never throws.
 - **Mentions**: `RichTextExtensions.Mention` + `MentionSearch(query, token)` returning
   `RichTextMention(id, label)`. Stored as `<span data-type="mention" data-id="…">`;
   `RichTextMentions.GetIds(html)` returns the ids.
