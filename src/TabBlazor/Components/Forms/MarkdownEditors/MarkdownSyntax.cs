@@ -70,7 +70,7 @@ internal static class MarkdownSyntax
         contentType is not null && EmbeddableImageTypes.Contains(contentType);
 
     /// <summary>The markdown inserted for an uploaded file.</summary>
-    public static string ForUpload(MarkdownUploadResult result, string fileName, string contentType)
+    public static string ForUpload(EditorUploadResult result, string fileName, string contentType)
     {
         var embed = result.Embed ?? IsEmbeddableImage(contentType);
         var text = result.Text ?? (embed ? Path.GetFileNameWithoutExtension(fileName) : fileName);

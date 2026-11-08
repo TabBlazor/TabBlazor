@@ -69,6 +69,7 @@
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="TabBlazor.Tests" />
+		<InternalsVisibleTo Include="TabBlazor.TipTap" />
 	</ItemGroup>
 
 	<ItemGroup>

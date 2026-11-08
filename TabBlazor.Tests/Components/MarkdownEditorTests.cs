@@ -476,7 +476,7 @@ namespace TabBlazor.Tests.Components
         public void Shows_attach_button_and_file_input_with_upload_handler()
         {
             var cut = RenderEditor(null, p => p
-                .Add(e => e.UploadFile, (_, _) => Task.FromResult(new MarkdownUploadResult("/f")))
+                .Add(e => e.UploadFile, (_, _) => Task.FromResult(new EditorUploadResult("/f")))
                 .Add(e => e.AcceptedFileTypes, "image/*,.pdf"));
 
             Assert.Equal("Attach files", cut.Find("button[data-md-action=upload]").GetAttribute("aria-label"));
@@ -489,7 +489,7 @@ namespace TabBlazor.Tests.Components
             var module = JSInterop.SetupModule(ModulePath);
             module.Setup<bool>("replace", _ => true).SetResult(true);
             var states = new List<bool>();
-            MarkdownUploadFile? received = null;
+            EditorUploadFile? received = null;
 
             var cut = RenderEditor(null, p => p
                 .Add(e => e.UploadFile, async (file, token) =>
@@ -497,7 +497,7 @@ namespace TabBlazor.Tests.Components
                     received = file;
                     await using var stream = file.OpenReadStream(token);
                     await stream.CopyToAsync(System.IO.Stream.Null, token);
-                    return new MarkdownUploadResult("/files/photo one.png");
+                    return new EditorUploadResult("/files/photo one.png");
                 })
                 .Add(e => e.OnUploadStateChanged, uploading => states.Add(uploading)));
 
@@ -521,8 +521,8 @@ namespace TabBlazor.Tests.Components
             var cut = RenderEditor(null, p => p
                 .Add(e => e.AcceptedFileTypes, "*")
                 .Add(e => e.UploadFile, (file, _) => Task.FromResult(file.Name == "b.png"
-                    ? new MarkdownUploadResult("/b") { Embed = false, Text = "Diagram" }
-                    : new MarkdownUploadResult("/a"))));
+                    ? new EditorUploadResult("/b") { Embed = false, Text = "Diagram" }
+                    : new EditorUploadResult("/a"))));
 
             cut.FindComponent<InputFile>().UploadFiles(
                 InputFileContent.CreateFromText("x", "a.pdf", contentType: "application/pdf"),
@@ -538,12 +538,12 @@ namespace TabBlazor.Tests.Components
         public void Rejects_files_that_are_too_large_or_not_accepted()
         {
             var module = JSInterop.SetupModule(ModulePath);
-            var errors = new List<MarkdownUploadError>();
+            var errors = new List<EditorUploadError>();
             var uploads = 0;
 
             var cut = RenderEditor(null, p => p
                 .Add(e => e.MaxFileSize, 10)
-                .Add(e => e.UploadFile, (_, _) => { uploads++; return Task.FromResult(new MarkdownUploadResult("/x")); })
+                .Add(e => e.UploadFile, (_, _) => { uploads++; return Task.FromResult(new EditorUploadResult("/x")); })
                 .Add(e => e.OnUploadError, error => errors.Add(error)));
 
             cut.FindComponent<InputFile>().UploadFiles(
@@ -563,10 +563,10 @@ namespace TabBlazor.Tests.Components
         {
             var module = JSInterop.SetupModule(ModulePath);
             module.Setup<bool>("replace", _ => true).SetResult(true);
-            MarkdownUploadError? error = null;
+            EditorUploadError? error = null;
 
             var cut = RenderEditor(null, p => p
-                .Add(e => e.UploadFile, (_, _) => throw new MarkdownUploadException("Images are limited to 1 per comment"))
+                .Add(e => e.UploadFile, (_, _) => throw new EditorUploadException("Images are limited to 1 per comment"))
                 .Add(e => e.OnUploadError, e => error = e));
 
             cut.FindComponent<InputFile>().UploadFiles(InputFileContent.CreateFromBinary(new byte[1], "a.png", contentType: "image/png"));
@@ -580,7 +580,7 @@ namespace TabBlazor.Tests.Components
         public void Shows_generic_message_when_upload_handler_fails()
         {
             JSInterop.SetupModule(ModulePath).Setup<bool>("replace", _ => true).SetResult(true);
-            MarkdownUploadError? error = null;
+            EditorUploadError? error = null;
 
             var cut = RenderEditor(null, p => p
                 .Add(e => e.UploadFile, (_, _) => throw new InvalidOperationException("storage down"))
@@ -597,10 +597,10 @@ namespace TabBlazor.Tests.Components
         public void Raises_discarded_when_placeholder_was_deleted()
         {
             JSInterop.SetupModule(ModulePath).Setup<bool>("replace", _ => true).SetResult(false);
-            MarkdownUploadResult? discarded = null;
+            EditorUploadResult? discarded = null;
 
             var cut = RenderEditor(null, p => p
-                .Add(e => e.UploadFile, (_, _) => Task.FromResult(new MarkdownUploadResult("/orphan")))
+                .Add(e => e.UploadFile, (_, _) => Task.FromResult(new EditorUploadResult("/orphan")))
                 .Add(e => e.OnUploadDiscarded, result => discarded = result));
 
             cut.FindComponent<InputFile>().UploadFiles(InputFileContent.CreateFromBinary(new byte[1], "a.png", contentType: "image/png"));
@@ -620,7 +620,7 @@ namespace TabBlazor.Tests.Components
                 {
                     started.SetResult();
                     await Task.Delay(Timeout.Infinite, token);
-                    return new MarkdownUploadResult("/never");
+                    return new EditorUploadResult("/never");
                 }));
 
             cut.FindComponent<InputFile>().UploadFiles(InputFileContent.CreateFromBinary(new byte[1], "a.png", contentType: "image/png"));

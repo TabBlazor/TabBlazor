@@ -1,0 +1,36 @@
+@using System.IO
+@using System.Threading
+
+<RichTextEditor @bind-Value="html"
+                UploadFile="UploadAsync"
+                MaxFileSize="512 * 1024"
+                MaxHeight="20rem"
+                OnUploadStateChanged="uploading => isUploading = uploading"
+                aria-label="Comment" />
+
+<div class="mt-2">
+    <Button BackgroundColor="TablerColor.Primary" Disabled="isUploading">
+        @(isUploading ? "Uploading…" : "Save")
+    </Button>
+</div>
+
+@code {
+    private string html = "<p>Paste a screenshot, drop an image here or use the image button.</p>";
+    private bool isUploading;
+
+    private async Task<EditorUploadResult> UploadAsync(EditorUploadFile file, CancellationToken cancellationToken)
+    {
+        await using var stream = file.OpenReadStream(cancellationToken);
+        using var buffer = new MemoryStream();
+        var chunk = new byte[8 * 1024];
+        int read;
+        while ((read = await stream.ReadAsync(chunk, cancellationToken)) > 0)
+        {
+            buffer.Write(chunk, 0, read);
+            await Task.Delay(30, cancellationToken); // Simulates a slow connection so the progress shows.
+        }
+
+        // A real app stores the file (blob storage, database, disk) and returns its URL.
+        return new EditorUploadResult($"data:{file.ContentType};base64,{Convert.ToBase64String(buffer.ToArray())}");
+    }
+}

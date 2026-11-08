@@ -1,0 +1,30 @@
+@page "/docs/forms/rich-text-editors"
+
+<Page>
+    <DocsExample Title="RichTextEditor" ComponentType="typeof(RichTextEditor)">
+        <CodeSnippet Component="@typeof(RichTextEditorBasic)" Title="Basic">
+            <Description>A WYSIWYG editor built on TipTap, from the TabBlazor.TipTap package. The value is HTML and is sent to .NET when you pause typing (DebounceMs, 300 ms by default) or leave the editor. The toolbar, keyboard shortcuts and undo work in the browser without round trips. Alt+F10 moves to the toolbar and Escape goes back to the text. Ctrl+K edits the link at the caret.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(RichTextEditorAll)" Title="More features">
+            <Description>Extensions turns on built-in features: tables (with a size picker and row and column tools while the caret is in a table), task lists, alignment, highlight and smart typography. Content of a feature that is off, such as a pasted table without Table, becomes plain paragraphs. MaxLength adds a character counter.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(RichTextEditorUploads)" Title="Images and files">
+            <Description>Set UploadFile to let users paste, drop or pick files. A placeholder appears at the caret and becomes an image or a link when your handler returns the URL; progress and cancel show under the editor. Images pasted from Word or a web page arrive as data URLs and are uploaded too, so nothing is stored inline as base64. This demo returns data URLs because the docs have no server.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(RichTextEditorMentions)" Title="Mentions">
+            <Description>With RichTextExtensions.Mention and MentionSearch, typing @@ shows matches from .NET. Arrow keys move, Enter or Tab picks, Escape closes. A mention is stored as a span with data-id, and RichTextMentions.GetIds reads the ids back, for example to notify people when you save.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(RichTextEditorView)" Title="Showing saved content">
+            <Description>RichTextView shows saved HTML with the editor's styles, through the sanitizer registered with AddTabBlazorTipTap(o =&gt; o.AllowHtml(...)). Without one it refuses to render, so stored content cannot run script in other users' browsers. Sanitize again where you save: a browser can post any HTML.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(RichTextEditorCustomExtension)" Title="Custom extensions and toolbar buttons">
+            <Description>An app can add its own TipTap extensions: list the module in TipTapOptions.ExtensionModules, register the extension by name, and turn it on with CustomExtensions. The module imports TipTap from the editor's bundle so both share one ProseMirror. A ToolbarExtra button with data-rt-command runs a command in the browser; RunCommandAsync and InsertContentAsync do the same from .NET.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(RichTextEditorJson)" Title="JSON value">
+            <Description>Format="RichTextEditorFormat.Json" stores the TipTap document as JSON instead of HTML: lossless, and with no markup to sanitize.</Description>
+        </CodeSnippet>
+        <CodeSnippet Component="@typeof(RichTextEditorValidation)" Title="Validation">
+            <Description>Inside a form the editor validates like any input. An empty editor is null, so [Required] works.</Description>
+        </CodeSnippet>
+    </DocsExample>
+</Page>

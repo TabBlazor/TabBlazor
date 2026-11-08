@@ -1,0 +1,12 @@
+@namespace TabBlazor
+@* The element rich text content lives in, in the editor and in RichTextView, so both get the same content styles. *@
+<div @attributes="AdditionalAttributes" class="@CssClass">@ChildContent</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string CssClass => AdditionalAttributes?.TryGetValue("class", out var extra) == true && extra is not null
+        ? $"rich-text {extra}"
+        : "rich-text";
+}

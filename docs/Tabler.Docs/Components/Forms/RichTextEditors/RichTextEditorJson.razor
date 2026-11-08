@@ -1,0 +1,10 @@
+<RichTextEditor @bind-Value="json" Format="RichTextEditorFormat.Json" aria-label="Notes" />
+
+<div class="mt-3">
+    <div class="form-label">Value</div>
+    <pre class="mb-0 text-wrap" style="max-height: 10rem">@(json ?? "null")</pre>
+</div>
+
+@code {
+    private string json = """{"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"Stored as "},{"type":"text","marks":[{"type":"bold"}],"text":"JSON"},{"type":"text","text":"."}]}]}""";
+}

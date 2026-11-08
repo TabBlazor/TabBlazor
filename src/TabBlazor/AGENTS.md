@@ -14,7 +14,8 @@ types (services, options, `DataRequest`, …) read the XML docs (`TabBlazor.xml`
 This file covers what the manifest can't: which component to use, how the pieces fit
 together, and the traps.
 
-- Packages: `TabBlazor` (components), `TabBlazor.QuickTable.EntityFramework` (optional EF Core adapter for `QuickTable` only)
+- Packages: `TabBlazor` (components), `TabBlazor.QuickTable.EntityFramework` (optional EF Core adapter for `QuickTable` only),
+  `TabBlazor.Markdown` (Markdig renderer for `MarkdownEditor`), `TabBlazor.TipTap` (`RichTextEditor`, WYSIWYG)
 - Root namespace: `TabBlazor`
 - Target: .NET 10, Blazor Server and WebAssembly
 - UI base: [Tabler](https://preview.tabler.io/) 1.7 (Bootstrap-based). Minimal JS interop.
@@ -65,6 +66,7 @@ together, and the traps.
 | Existing screens built on `Table` / `QuickTable` | Keep them; they are unchanged. Don't migrate unless asked. |
 | Form with validation | `TablerForm` + inputs |
 | Markdown text with toolbar, preview, uploads | `MarkdownEditor` (+ `TabBlazor.Markdown` for the preview) |
+| Rich text (WYSIWYG), stored as HTML or JSON | `RichTextEditor` from `TabBlazor.TipTap` (+ `RichTextView` to show it) |
 | Tabbed page or card | `Tabs` / `Tab` |
 | Dialog returning a result | `IModalService.ShowAsync<T>` |
 | Yes/no confirm | `IModalService.ShowDialogAsync` |
@@ -278,13 +280,42 @@ Failures: `EditResult.Failed("message")`.
   with one it is also a view button.
 - `Modes="[MarkdownEditorMode.Edit, MarkdownEditorMode.Hybrid]"` picks the view buttons and
   their order (default: all; Preview/Split only with a renderer). One mode = no buttons.
-- **Uploads**: `UploadFile(MarkdownUploadFile file, CancellationToken token)` stores the file
-  and returns `new MarkdownUploadResult(url)`. Images are embedded, other files linked.
+- **Uploads**: `UploadFile(EditorUploadFile file, CancellationToken token)` stores the file
+  and returns `new EditorUploadResult(url)`. Images are embedded, other files linked.
   `AcceptedFileTypes` defaults to `"image/*"`; `MaxFileSize` to 10 MB. Throw
-  `MarkdownUploadException("…")` to reject a file with a message. Disable saving while
+  `EditorUploadException("…")` to reject a file with a message. Disable saving while
   `IsUploading`, or the saved text contains placeholders. Serve uploaded files with
   `Content-Disposition: attachment` (or from another domain) and `X-Content-Type-Options: nosniff`.
 - Custom buttons: `<ToolbarExtra>` plus `editorRef.InsertAsync("…")`.
+
+## Rich text editor (TabBlazor.TipTap)
+
+```razor
+<RichTextEditor @bind-Value="model.Body" Label="Body"
+                Extensions="RichTextExtensions.Default | RichTextExtensions.Table | RichTextExtensions.Mention"
+                MentionSearch="SearchPeopleAsync" UploadFile="UploadAsync" />
+<RichTextView Html="@article.Body" />
+```
+- A TipTap (ProseMirror) WYSIWYG editor with a Tabler toolbar. `Value` is HTML (`Format` =
+  `RichTextEditorFormat.Json` for the TipTap JSON document); an empty editor is `null`. Same sync
+  rules as `MarkdownEditor`: `DebounceMs` (300), blur and toolbar actions, never per key.
+- `Extensions` (flags): `Basic` (headings, marks, lists, quote, code block, link, undo), `Image`,
+  `Table`, `TaskList`, `TextAlign`, `Highlight`, `Typography`, `Mention`. `Default` = Basic | Image.
+  Content of a feature that is off is reduced to paragraphs on paste and load.
+- **Sanitize**: HTML from the browser can contain anything. Sanitize where you save, and show it
+  with `RichTextView`, which needs `services.AddTabBlazorTipTap(o => o.AllowHtml(sanitize))` (or
+  `AllowUnsanitizedHtml = true`) and throws otherwise. Allow the `data-*` attributes of mentions
+  and task lists in the sanitizer (see the package README).
+- **Mentions**: `RichTextExtensions.Mention` + `MentionSearch(query, token)` returning
+  `RichTextMention(id, label)`. Stored as `<span data-type="mention" data-id="…">`;
+  `RichTextMentions.GetIds(html)` returns the ids.
+- **Uploads**: same `UploadFile`/`EditorUploadResult` contract as `MarkdownEditor`. Images are never
+  stored as base64; pasted `data:` images are uploaded.
+- **Custom extensions**: list ES modules in `TipTapOptions.ExtensionModules`; each exports
+  `register(registry)` and calls `registry.add(name, options => Node.create(...))`, importing TipTap
+  from `_content/TabBlazor.TipTap/tiptap.js` (never npm). Turn on with `CustomExtensions="['name']"`.
+  Toolbar buttons: `<ToolbarExtra>` with `data-rt-command="toggleBold"` (+ `data-rt-args` JSON), or
+  `RunCommandAsync` / `InsertContentAsync`.
 
 ## Modals
 

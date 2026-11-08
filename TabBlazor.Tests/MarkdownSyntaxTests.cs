@@ -44,7 +44,7 @@ namespace TabBlazor.Tests
         [Fact]
         public void ForUpload_embeds_displayable_images_without_extension_in_text()
         {
-            var markdown = MarkdownSyntax.ForUpload(new MarkdownUploadResult("/a b(1).png"), "my_photo.png", "image/png");
+            var markdown = MarkdownSyntax.ForUpload(new EditorUploadResult("/a b(1).png"), "my_photo.png", "image/png");
 
             Assert.Equal(@"![my\_photo](/a%20b%281%29.png)", markdown);
         }
@@ -52,7 +52,7 @@ namespace TabBlazor.Tests
         [Fact]
         public void ForUpload_links_other_types_with_file_name()
         {
-            Assert.Equal("[report.tiff](/r)", MarkdownSyntax.ForUpload(new MarkdownUploadResult("/r"), "report.tiff", "image/tiff"));
+            Assert.Equal("[report.tiff](/r)", MarkdownSyntax.ForUpload(new EditorUploadResult("/r"), "report.tiff", "image/tiff"));
         }
 
         [Fact]

@@ -1,0 +1,33 @@
+@using System.Threading
+
+<RichTextEditor @bind-Value="html"
+                Extensions="RichTextExtensions.Default | RichTextExtensions.Mention"
+                MentionSearch="SearchPeopleAsync"
+                Placeholder="Type @@ to mention someone"
+                aria-label="Comment" />
+
+<div class="mt-2 text-secondary">
+    Mentioned ids: @(string.Join(", ", RichTextMentions.GetIds(html)) is { Length: > 0 } ids ? ids : "none")
+</div>
+
+@code {
+    private string html = """<p>Thanks <span data-type="mention" data-id="2" data-label="Björn Lind">@Björn Lind</span>, looks good!</p>""";
+
+    private static readonly RichTextMention[] People =
+    [
+        new("1", "Anna Svensson") { Description = "Sales" },
+        new("2", "Björn Lind") { Description = "Engineering" },
+        new("3", "Cecilia Holm") { Description = "Support" },
+        new("4", "David Ek") { Description = "Engineering" },
+        new("5", "Elin Berg") { Description = "Marketing" }
+    ];
+
+    private async Task<IReadOnlyList<RichTextMention>> SearchPeopleAsync(string query, CancellationToken cancellationToken)
+    {
+        await Task.Delay(100, cancellationToken); // A real app queries its user directory here.
+        return People
+            .Where(p => p.Label.Contains(query, StringComparison.OrdinalIgnoreCase))
+            .Take(8)
+            .ToList();
+    }
+}

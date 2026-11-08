@@ -65,6 +65,26 @@ jobs:
       - name: Test
         run: dotnet test --no-build --configuration Release --no-restore --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Browser smoke tests (RichTextEditor)
+        working-directory: ./e2e
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+          npm test
+
+      - name: Upload Playwright traces
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: e2e/test-results/
+          if-no-files-found: ignore
+
       - name: Upload coverage artifact
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
@@ -83,6 +103,26 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs/Tabler.Docs.Wasm/bin/Release/net10.0/publish/wwwroot
+
+  tiptap-bundle:
+    name: TipTap bundle matches lockfile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Rebuild bundle
+        working-directory: ./tools/tiptap
+        run: |
+          npm ci
+          npm run build
+
+      - name: Fail when the committed bundle differs
+        run: git diff --exit-code -- src/TabBlazor.TipTap/wwwroot/tiptap.js
 
   deploy:
     name: Deploy to GitHub Pages

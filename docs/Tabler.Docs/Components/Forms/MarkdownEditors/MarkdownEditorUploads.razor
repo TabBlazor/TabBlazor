@@ -19,7 +19,7 @@
     private string text = "Paste a screenshot, drop an image here or use the image button.\n\n";
     private bool isUploading;
 
-    private async Task<MarkdownUploadResult> UploadAsync(MarkdownUploadFile file, CancellationToken cancellationToken)
+    private async Task<EditorUploadResult> UploadAsync(EditorUploadFile file, CancellationToken cancellationToken)
     {
         await using var stream = file.OpenReadStream(cancellationToken);
         using var buffer = new MemoryStream();
@@ -32,6 +32,6 @@
         }
 
         // A real app stores the file (blob storage, database, disk) and returns its URL.
-        return new MarkdownUploadResult($"data:{file.ContentType};base64,{Convert.ToBase64String(buffer.ToArray())}");
+        return new EditorUploadResult($"data:{file.ContentType};base64,{Convert.ToBase64String(buffer.ToArray())}");
     }
 }

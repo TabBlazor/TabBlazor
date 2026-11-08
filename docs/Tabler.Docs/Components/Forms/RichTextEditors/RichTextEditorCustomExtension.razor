@@ -1,0 +1,17 @@
+<RichTextEditor @ref="editor"
+                @bind-Value="html"
+                CustomExtensions="@(["callout"])"
+                ExtensionOptions="@(new Dictionary<string, object> { ["callout"] = new { color = "warning" } })"
+                aria-label="Notes">
+    <ToolbarExtra>
+        <button type="button" class="btn btn-ghost-secondary" data-rt-command="toggleCallout">Callout</button>
+        <button type="button" class="btn btn-ghost-secondary" @onclick="InsertSignatureAsync">Signature</button>
+    </ToolbarExtra>
+</RichTextEditor>
+
+@code {
+    private RichTextEditor editor;
+    private string html = """<p>Put the caret in a paragraph and press <strong>Callout</strong>.</p><div data-callout="">This is a callout.</div>""";
+
+    private Task InsertSignatureAsync() => editor.InsertContentAsync("<p>— The TabBlazor team</p>");
+}
