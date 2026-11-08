@@ -26,6 +26,9 @@
         <CodeSnippet Component="@typeof(RichTextEditorJson)" Title="JSON value">
             <Description>Format="RichTextEditorFormat.Json" stores the TipTap document as JSON instead of HTML: lossless, and with no markup to sanitize.</Description>
         </CodeSnippet>
+        <CodeSnippet Component="@typeof(RichTextEditorMarkdown)" Title="Markdown value">
+            <Description>Format="RichTextEditorFormat.Markdown" edits visually but stores markdown, with GitHub tables and task lists. Features markdown cannot store are turned off and leave the toolbar: underline, highlight and alignment. Mentions are stored as [@@ id="42" label="Anna"], which RichTextMentions.GetIds(value, RichTextEditorFormat.Markdown) reads. The markdown support is a separate 19 KB file, loaded only by editors that use it. Show saved markdown with an IMarkdownRenderer, such as the one from TabBlazor.Markdown.</Description>
+        </CodeSnippet>
         <CodeSnippet Component="@typeof(RichTextEditorValidation)" Title="Validation">
             <Description>Inside a form the editor validates like any input. An empty editor is null, so [Required] works.</Description>
         </CodeSnippet>

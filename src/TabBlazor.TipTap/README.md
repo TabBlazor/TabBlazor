@@ -51,6 +51,24 @@ Content of a feature that is off is reduced to plain paragraphs when it is paste
 The toolbar only picks buttons. What content is allowed is `Extensions`, so shortcuts (Ctrl+U) and pasted formatting
 still work without a button; set both for a simple editor.
 
+## Markdown value
+
+`Format="RichTextEditorFormat.Markdown"` edits visually but stores markdown (CommonMark with GitHub tables and task
+lists):
+
+```razor
+<RichTextEditor @bind-Value="model.Notes" Format="RichTextEditorFormat.Markdown" />
+```
+
+- Features markdown cannot store are off and leave the toolbar: underline, highlight and alignment.
+- Mentions are stored as `[@ id="42" label="Anna"]`; `RichTextMentions.GetIds(value, RichTextEditorFormat.Markdown)`
+  reads the ids.
+- App extensions need their own markdown rules (`renderMarkdown`/`parseMarkdown`), or their content is lost on save.
+- The support is a separate file (`tiptap-markdown.js`, 19 KB gzipped) that only these editors load. A custom bundle
+  that exports `Markdown` itself makes it unnecessary; otherwise `TipTapOptions.MarkdownScriptUrl` sets where it is.
+- Show saved markdown with an `IMarkdownRenderer`, such as the one from `TabBlazor.Markdown`; the read-only editor in
+  static rendering uses it too.
+
 ## Showing saved HTML safely
 
 The browser can post any HTML, so sanitize it where you save it and again where you show it. `RichTextView` shows
@@ -163,5 +181,5 @@ second copy.
 - In static server rendering the editor shows the content read-only (sanitized HTML, or its text without a sanitizer)
   and posts the value through a hidden input named after the bound field.
 - Keyboard: Alt+F10 moves to the toolbar, Escape returns to the text, Ctrl+K edits the link.
-- The TipTap bundle is built from `tools/tiptap` in the repository (`npm ci && npm run build`); CI checks that the
-  committed bundle matches the lockfile and that every bundled package is MIT licensed.
+- The TipTap bundles are built from `tools/tiptap` in the repository (`npm ci && npm run build`); CI checks that the
+  committed bundles match the lockfile and that every bundled package is MIT licensed.

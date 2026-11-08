@@ -97,6 +97,22 @@ test('mentions search .NET and store the id', async ({ page }) => {
     await expect(card.getByText(/Mentioned ids: 2, 1/)).toBeVisible();
 });
 
+test('markdown value loads as rich text and saves as markdown', async ({ page }) => {
+    const editor = example(page, 'Markdown value');
+    const prose = editor.locator('.ProseMirror');
+    await expect(prose.locator('table')).toBeVisible();
+    await expect(prose.locator('li[data-checked="true"]')).toHaveCount(1);
+    await expect(editor.locator('[data-rt-command="toggleUnderline"]')).toHaveCount(0);
+
+    await prose.locator('h2').click();
+    await page.keyboard.press('End');
+    await page.keyboard.type(' now');
+    await page.keyboard.press('Shift+Home');
+    await editor.locator('[data-rt-command="toggleItalic"]').click();
+
+    await expect(editor.locator('input.rich-text-editor-value')).toHaveValue(/^## \*Stored as markdown now\*\n/);
+});
+
 test('leaving the page disposes the editors cleanly', async ({ page }) => {
     // Client-side navigation, so the components are disposed rather than the page unloaded.
     await page.evaluate(() => window.Blazor.navigateTo('/docs/forms/markdown-editors'));

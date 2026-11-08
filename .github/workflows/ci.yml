@@ -121,8 +121,8 @@ jobs:
           npm ci
           npm run build
 
-      - name: Fail when the committed bundle differs
-        run: git diff --exit-code -- src/TabBlazor.TipTap/wwwroot/tiptap.js
+      - name: Fail when the committed bundles differ
+        run: git diff --exit-code -- src/TabBlazor.TipTap/wwwroot/tiptap.js src/TabBlazor.TipTap/wwwroot/tiptap-markdown.js
 
   deploy:
     name: Deploy to GitHub Pages
