@@ -389,6 +389,15 @@
     z-index: 6;
 }
 
+/* The same when nothing is frozen: action, select and expand cells (and list actions) each sit at z-index 2,
+   so without this the cells of later rows would cover a menu opened in an earlier row. */
+.dataview ::deep .dv-table > tbody td:focus-within,
+.dataview ::deep .dv-table > tbody td:has(.dropdown-menu.show),
+.dataview ::deep .dv-list-actions:focus-within,
+.dataview ::deep .dv-list-actions:has(.dropdown-menu.show) {
+    z-index: 4;
+}
+
 /* A shadow on the inner edge while content is scrolled under it. */
 .dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table .dv-fs-edge::after,
 .dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table .dv-fe-edge::after {
