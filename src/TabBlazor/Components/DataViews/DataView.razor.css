@@ -335,7 +335,7 @@
 /* Frozen columns: sticky cells offset by the widths of the frozen cells before them (start) or after them (end).
    tabBlazor.syncFrozenColumns measures those widths into --dv-fs-N / --dv-fe-N on the table, marks the scroll
    container dv-overflow-start / dv-overflow-end while content hides under an edge, and dv-freeze-off when the
-   frozen cells would take half the visible width or more. */
+   frozen cells would leave less than a quarter of the visible width (and at least 120px) to scroll. */
 /* Frozen cells need a solid background, but row and cell colors are see-through (bg-*-lt) or set on the row
    (table-*). So the surface color goes underneath and the row or cell color is drawn on top of it as an image
    layer; stripes, hover and selection are Tabler's inset box-shadow above both. */
@@ -361,6 +361,16 @@
     background-image:
         linear-gradient(var(--dv-tint, transparent), var(--dv-tint, transparent)),
         linear-gradient(var(--tblr-table-bg, transparent), var(--tblr-table-bg, transparent));
+}
+
+/* The offset is only applied while freezing is on: header and action cells are position: relative, so an inset
+   left on them when freezing switches off (dv-freeze-off) would shift them out of their column. */
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table .dv-fs {
+    inset-inline-start: var(--dv-inset, 0px);
+}
+
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table .dv-fe {
+    inset-inline-end: var(--dv-inset, 0px);
 }
 
 .dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table > thead > tr > .dv-fs,
@@ -404,7 +414,7 @@
     content: "";
     position: absolute;
     top: 0;
-    bottom: -1px;
+    bottom: 0; /* reaching below the last row would give the scroll container a vertical scrollbar */
     width: .75rem;
     pointer-events: none;
     opacity: 0;

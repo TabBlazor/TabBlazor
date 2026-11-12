@@ -2,7 +2,7 @@
 <DataView Items="orders" Title="Orders" KeySelector="o => o.Id" PageSize="10"
           Striped Hover ResizableColumns>
     <DataColumn Value="o => o.OrderNo" Title="Order" NoWrap Sortable Searchable Freeze="ColumnFreeze.Start" Width="110px" />
-    <DataColumn Value="o => o.Customer.Name" Title="Customer" NoWrap Sortable Searchable Freeze="ColumnFreeze.Start" />
+    <DataColumn Value="o => o.Customer.Name" Title="Customer" NoWrap Sortable Searchable />
     <DataColumn Value="o => o.Status" Sortable />
     <DataColumn Value="o => o.OrderDate" Title="Date" Format="d" NoWrap Sortable />
     <DataColumn Value="o => o.FirstName" Title="First name" NoWrap />
