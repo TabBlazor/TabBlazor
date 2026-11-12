@@ -1,0 +1,23 @@
+@using Align = TabBlazor.Align
+<DataView Items="orders" Title="Orders" KeySelector="o => o.Id" PageSize="10"
+          Striped Hover ResizableColumns>
+    <DataColumn Value="o => o.OrderNo" Title="Order" NoWrap Sortable Searchable Freeze="ColumnFreeze.Start" Width="110px" />
+    <DataColumn Value="o => o.Customer.Name" Title="Customer" NoWrap Sortable Searchable Freeze="ColumnFreeze.Start" />
+    <DataColumn Value="o => o.Status" Sortable />
+    <DataColumn Value="o => o.OrderDate" Title="Date" Format="d" NoWrap Sortable />
+    <DataColumn Value="o => o.FirstName" Title="First name" NoWrap />
+    <DataColumn Value="o => o.LastName" Title="Last name" NoWrap />
+    <DataColumn Value="o => o.Quantity" Align="Align.End" />
+    <DataColumn Value="o => o.Price" Format="N2" Align="Align.End" />
+    <DataColumn Value="o => o.Comment" NoWrap MinWidth="320px" />
+    <DataColumn Value="o => o.Total" Format="N2" Align="Align.End" Sortable Freeze="ColumnFreeze.End"
+                CellColor="@(o => o.Total > 1500 ? TablerColor.Green : null)" />
+
+    <RowActions>
+        <RowAction Title="Open" Icon="@TablerIcons.External_link" Href="@(o => $"docs/data-views?order={o.Id}")" />
+    </RowActions>
+</DataView>
+
+@code {
+    private readonly List<DemoOrder> orders = DataViewDemoData.Create(40);
+}

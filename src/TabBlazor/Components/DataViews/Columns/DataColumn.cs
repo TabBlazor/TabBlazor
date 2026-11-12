@@ -92,6 +92,12 @@ public partial class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<
     /// <summary>The minimum column width.</summary>
     [Parameter] public string? MinWidth { get; set; }
 
+    /// <summary>
+    /// Keeps the column visible at the start or end edge while the table scrolls sideways. Start-frozen columns
+    /// always come first and end-frozen columns last.
+    /// </summary>
+    [Parameter] public ColumnFreeze Freeze { get; set; }
+
     /// <summary>Hides the column below a Bootstrap breakpoint (sm, md, lg, xl, xxl), so narrow screens show the important columns.</summary>
     [Parameter] public string? HideBelow { get; set; }
 

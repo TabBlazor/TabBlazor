@@ -3,19 +3,22 @@
 
 @{
     var href = View.RowHref?.Invoke(Item);
-    var first = true;
+    var freeze = View.FreezePlan;
+    // The row link stretches from a cell that scrolls: a sticky cell would hold the stretched link inside itself.
+    var anchorAt = Enumerable.Range(0, Columns.Count).FirstOrDefault(i => freeze.Column(i).Class == null);
+    var index = 0;
 }
 <tr class="@View.GetRowClass(Item)" style="@View.RowStyle?.Invoke(Item)" @onclick="OnClickAsync" aria-selected="@(View.ShowCheckboxes ? State.Selected ? "true" : "false" : null)">
     @if (View.ShowCheckboxes)
     {
-        <td class="w-1 dv-select-cell" @onclick:stopPropagation="true">
+        <td class="@freeze.Select.AddClass("w-1 dv-select-cell")" style="@freeze.Select.Style" @onclick:stopPropagation="true">
             <input type="checkbox" class="form-check-input m-0 align-middle dv-select" checked="@State.Selected"
                    aria-label="@View.Texts.SelectRow" @onchange="ToggleSelectedAsync" />
         </td>
     }
     @if (View.ShowExpandColumn)
     {
-        <td class="w-1 dv-expand-cell" @onclick:stopPropagation="true">
+        <td class="@freeze.Expand.AddClass("w-1 dv-expand-cell")" style="@freeze.Expand.Style" @onclick:stopPropagation="true">
             <button type="button" class="btn btn-icon btn-sm btn-ghost-secondary dv-expand" aria-expanded="@(State.Expanded ? "true" : "false")"
                     aria-label="@View.Texts.ExpandRow" title="@View.Texts.ExpandRow" @onclick="ToggleDetailsAsync">
                 <Icon IconType="@(State.Expanded ? InternalIcons.Chevron_down : InternalIcons.Chevron_right)" class="icon" />
@@ -24,22 +27,23 @@
     }
     @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.Start)
     {
-        <td class="w-1 text-nowrap dv-actions-cell"><DataRowActions TItem="TItem" Item="Item" View="View" MenuOnly="View.IsSmallScreen" /></td>
+        <td class="@freeze.StartActions.AddClass("w-1 text-nowrap dv-actions-cell")" style="@freeze.StartActions.Style"><DataRowActions TItem="TItem" Item="Item" View="View" MenuOnly="View.IsSmallScreen" /></td>
     }
     @foreach (var column in Columns)
     {
-        <td class="@(first ? $"dv-first-col {column.GetCellClass(Item)}" : column.GetCellClass(Item))" style="@column.GetCellStyle(Item)" title="@column.GetCellTitle(Item)" data-label="@column.Title">
-            @if (first && href != null)
+        var cellFreeze = freeze.Column(index);
+        <td class="@cellFreeze.AddClass(index == 0 ? $"dv-first-col {column.GetCellClass(Item)}" : column.GetCellClass(Item))" style="@cellFreeze.AddStyle(column.GetCellStyle(Item))" title="@column.GetCellTitle(Item)" data-label="@column.Title">
+            @if (index == anchorAt && href != null)
             {
                 <a class="dv-row-anchor stretched-link" href="@href" aria-label="@View.Texts.OpenRow"></a>
             }
             @column.Cell(Item)
         </td>
-        first = false;
+        index++;
     }
     @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.End)
     {
-        <td class="w-1 text-nowrap dv-actions-cell"><DataRowActions TItem="TItem" Item="Item" View="View" MenuOnly="View.IsSmallScreen" /></td>
+        <td class="@freeze.EndActions.AddClass("w-1 text-nowrap dv-actions-cell")" style="@freeze.EndActions.Style"><DataRowActions TItem="TItem" Item="Item" View="View" MenuOnly="View.IsSmallScreen" /></td>
     }
 </tr>
 

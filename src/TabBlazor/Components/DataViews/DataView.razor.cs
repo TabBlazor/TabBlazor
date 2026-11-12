@@ -235,8 +235,11 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
     internal DataViewEngine<TItem> Engine => engine;
     internal DataViewText Texts => Text ?? (appTexts ??= AppTexts());
     internal TableDensity CurrentDensity => Density ?? density ?? TableDensity.Normal;
+    // Start-frozen columns come first and end-frozen columns last; the order within each group is kept.
     internal IReadOnlyList<IDataViewColumn<TItem>> VisibleColumns =>
-        engine.Columns.Where(c => c.Visible && c.ShowIn != ColumnVisibility.EditOnly).ToList();
+        engine.Columns.Where(c => c.Visible && c.ShowIn != ColumnVisibility.EditOnly)
+            .OrderBy(c => c.Freeze switch { ColumnFreeze.Start => 0, ColumnFreeze.End => 2, _ => 1 })
+            .ToList();
 
     /// <summary>The columns shown in edit forms.</summary>
     internal IReadOnlyList<IDataViewColumn<TItem>> FormColumns =>
@@ -377,6 +380,7 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
         await WatchScreenSizeAsync();
         await ApplyVirtualResetAsync();
         await AttachColumnResizeAsync();
+        await SyncFrozenCellsAsync();
         await NotifyUrlStateAsync();
 
         if (firstRender && columnsInitialized && !initialLoadStarted)

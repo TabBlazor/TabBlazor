@@ -50,6 +50,9 @@ public interface IDataViewColumn<TItem>
     string? GetHeaderClass();
     string? GetHeaderStyle();
 
+    /// <summary>The edge the column is frozen to while the table scrolls sideways.</summary>
+    ColumnFreeze Freeze => ColumnFreeze.None;
+
     /// <summary>Where the column shows: in the view, in edit forms, or both.</summary>
     ColumnVisibility ShowIn { get; }
 

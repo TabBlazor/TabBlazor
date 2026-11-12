@@ -85,6 +85,78 @@
         });
     },
 
+    // Frozen DataView columns: measures the sticky cells into offset variables on the table, and marks the scroll
+    // container while content hides under a frozen edge. active = false stops watching.
+    syncFrozenColumns: function (container, active) {
+        if (!container) {
+            return;
+        }
+
+        let state = container._dvFreeze;
+        if (!active) {
+            if (state) {
+                state.observer.disconnect();
+                container.removeEventListener('scroll', state.onScroll);
+                container.classList.remove('dv-overflow-start', 'dv-overflow-end', 'dv-freeze-off');
+                delete container._dvFreeze;
+            }
+            return;
+        }
+
+        if (!state) {
+            const onScroll = () => {
+                const max = container.scrollWidth - container.clientWidth;
+                const position = Math.abs(container.scrollLeft); // negative in right-to-left layouts
+                container.classList.toggle('dv-overflow-start', position > 0.5);
+                container.classList.toggle('dv-overflow-end', position < max - 0.5);
+            };
+            const measure = () => {
+                const table = container.querySelector(':scope > table');
+                const row = table && table.tHead && table.tHead.rows[0];
+                if (!row) {
+                    return;
+                }
+
+                const cells = Array.from(row.cells);
+                const width = cell => cell.getBoundingClientRect().width;
+                let start = 0;
+                cells.filter(c => c.classList.contains('dv-fs')).forEach((cell, i) => {
+                    table.style.setProperty('--dv-fs-' + i, start + 'px');
+                    start += width(cell);
+                });
+                let end = 0;
+                cells.filter(c => c.classList.contains('dv-fe')).reverse().forEach((cell, i) => {
+                    table.style.setProperty('--dv-fe-' + i, end + 'px');
+                    end += width(cell);
+                });
+
+                // Frozen cells that would cover half the view or more leave too little to scroll: they scroll too.
+                const frozen = start + end;
+                container.classList.toggle('dv-freeze-off', frozen > 0 && frozen >= container.clientWidth / 2);
+                onScroll();
+            };
+            state = container._dvFreeze = {
+                onScroll,
+                measure,
+                observer: new ResizeObserver(() => measure())
+            };
+            container.addEventListener('scroll', onScroll, { passive: true });
+        }
+
+        // Header cells change between renders (columns shown, hidden or resized), so watch the current ones.
+        state.observer.disconnect();
+        state.observer.observe(container);
+        const table = container.querySelector(':scope > table');
+        if (table) {
+            state.observer.observe(table);
+            const row = table.tHead && table.tHead.rows[0];
+            if (row) {
+                Array.from(row.cells).forEach(cell => state.observer.observe(cell));
+            }
+        }
+        state.measure();
+    },
+
     restoreFocus: function (key) {
         const saved = window.tabBlazor.savedFocus || {};
         const element = saved[key];
