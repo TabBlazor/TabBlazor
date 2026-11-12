@@ -130,9 +130,13 @@
                     end += width(cell);
                 });
 
-                // Frozen cells that would cover half the view or more leave too little to scroll: they scroll too.
+                // Frozen cells that would leave less than a quarter of the view (and at least 120px) to scroll
+                // make the table unusable: then they scroll too. The outer width is used so a scrollbar that
+                // comes or goes with the switch cannot flip it back.
                 const frozen = start + end;
-                container.classList.toggle('dv-freeze-off', frozen > 0 && frozen >= container.clientWidth / 2);
+                const view = container.offsetWidth;
+                const minScroll = Math.max(120, view / 4);
+                container.classList.toggle('dv-freeze-off', frozen > 0 && view - frozen < minScroll);
                 onScroll();
             };
             state = container._dvFreeze = {

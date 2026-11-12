@@ -83,7 +83,7 @@
                 <code>Freeze="ColumnFreeze.Start"</code> or <code>ColumnFreeze.End</code> keeps a column visible while the
                 table scrolls sideways. Start-frozen columns always come first and end-frozen columns last; the select
                 column and the row actions stay at their edge too (<code>FreezeRowActions="false"</code> turns that off).
-                Frozen columns that would take half the width or more scroll with the rest.
+                If the frozen columns would leave less than a quarter of the width to scroll, they scroll with the rest.
             </Description>
         </CodeSnippet>
         <CodeSnippet SetBackground Component="@typeof(DataViewsEditing)" Title="Editing">
