@@ -56,14 +56,14 @@ namespace TabBlazor.Tests.Components.DataViews
 
             Assert.Contains("dv-fs", cells[0].ClassList);
             Assert.DoesNotContain("dv-fs-edge", cells[0].ClassList);
-            Assert.Contains("inset-inline-start: var(--dv-fs-0, 0px)", cells[0].GetAttribute("style"));
+            Assert.Contains("--dv-inset: var(--dv-fs-0, 0px)", cells[0].GetAttribute("style"));
 
             Assert.Contains("dv-fs-edge", cells[1].ClassList);
-            Assert.Contains("inset-inline-start: var(--dv-fs-1, 0px)", cells[1].GetAttribute("style"));
+            Assert.Contains("--dv-inset: var(--dv-fs-1, 0px)", cells[1].GetAttribute("style"));
 
             Assert.Contains("dv-fe", cells[2].ClassList);
             Assert.Contains("dv-fe-edge", cells[2].ClassList);
-            Assert.Contains("inset-inline-end: var(--dv-fe-0, 0px)", cells[2].GetAttribute("style"));
+            Assert.Contains("--dv-inset: var(--dv-fe-0, 0px)", cells[2].GetAttribute("style"));
         }
 
         [Fact]
@@ -73,7 +73,7 @@ namespace TabBlazor.Tests.Components.DataViews
 
             var header = cut.Find("th[data-column-id=total]");
             Assert.Contains("dv-fe", header.ClassList);
-            Assert.Contains("inset-inline-end: var(--dv-fe-0, 0px)", header.GetAttribute("style"));
+            Assert.Contains("--dv-inset: var(--dv-fe-0, 0px)", header.GetAttribute("style"));
         }
 
         [Fact]
@@ -85,7 +85,7 @@ namespace TabBlazor.Tests.Components.DataViews
                 .Add(x => x.CellStyle, _ => "color: red;")));
 
             var style = FirstRowCells(cut)[1].GetAttribute("style");
-            Assert.Equal("color: red;inset-inline-start: var(--dv-fs-1, 0px)", style);
+            Assert.Equal("color: red;--dv-inset: var(--dv-fs-1, 0px)", style);
         }
 
         [Fact]
@@ -121,9 +121,9 @@ namespace TabBlazor.Tests.Components.DataViews
             });
 
             var cells = FirstRowCells(cut);
-            Assert.Contains("inset-inline-end: var(--dv-fe-1, 0px)", cells[2].GetAttribute("style"));
+            Assert.Contains("--dv-inset: var(--dv-fe-1, 0px)", cells[2].GetAttribute("style"));
             Assert.Contains("dv-fe-edge", cells[2].ClassList);
-            Assert.Contains("inset-inline-end: var(--dv-fe-0, 0px)", cells[3].GetAttribute("style"));
+            Assert.Contains("--dv-inset: var(--dv-fe-0, 0px)", cells[3].GetAttribute("style"));
             Assert.DoesNotContain("dv-fe-edge", cells[3].ClassList);
         }
 
@@ -134,8 +134,8 @@ namespace TabBlazor.Tests.Components.DataViews
 
             var cells = FirstRowCells(cut);
             Assert.Contains("dv-select-cell", cells[0].ClassList);
-            Assert.Contains("inset-inline-start: var(--dv-fs-0, 0px)", cells[0].GetAttribute("style"));
-            Assert.Contains("inset-inline-start: var(--dv-fs-1, 0px)", cells[1].GetAttribute("style"));
+            Assert.Contains("--dv-inset: var(--dv-fs-0, 0px)", cells[0].GetAttribute("style"));
+            Assert.Contains("--dv-inset: var(--dv-fs-1, 0px)", cells[1].GetAttribute("style"));
             Assert.Contains("dv-fs", cut.Find("thead th.dv-select-column").ClassList);
         }
 

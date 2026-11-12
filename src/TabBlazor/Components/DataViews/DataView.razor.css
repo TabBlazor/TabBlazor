@@ -363,6 +363,16 @@
         linear-gradient(var(--tblr-table-bg, transparent), var(--tblr-table-bg, transparent));
 }
 
+/* The offset is only applied while freezing is on: header and action cells are position: relative, so an inset
+   left on them when freezing switches off (dv-freeze-off) would shift them out of their column. */
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table .dv-fs {
+    inset-inline-start: var(--dv-inset, 0px);
+}
+
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table .dv-fe {
+    inset-inline-end: var(--dv-inset, 0px);
+}
+
 .dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table > thead > tr > .dv-fs,
 .dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table > thead > tr > .dv-fe {
     z-index: 5;

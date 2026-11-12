@@ -93,12 +93,12 @@ internal sealed class DataFreezePlan
             {
                 case ColumnFreeze.Start:
                     result[i] = new FrozenCell(i == lastStart ? "dv-fs dv-fs-edge" : "dv-fs",
-                        $"inset-inline-start: var(--dv-fs-{startIndex++}, 0px)");
+                        $"--dv-inset: var(--dv-fs-{startIndex++}, 0px)");
                     signature[i] = 'S';
                     break;
                 case ColumnFreeze.End:
                     result[i] = new FrozenCell(i == firstEnd ? "dv-fe dv-fe-edge" : "dv-fe",
-                        $"inset-inline-end: var(--dv-fe-{--endIndex}, 0px)");
+                        $"--dv-inset: var(--dv-fe-{--endIndex}, 0px)");
                     signature[i] = 'E';
                     break;
                 default:
