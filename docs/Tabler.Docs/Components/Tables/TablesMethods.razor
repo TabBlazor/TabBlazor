@@ -15,6 +15,9 @@
         <Button Size="ButtonSize.Small" BackgroundColor="TablerColor.Primary" OnClick="Search">Search</Button>
     </RowCol>
 
+    <RowCol Auto>
+        <Button Size="ButtonSize.Small" BackgroundColor="TablerColor.Primary" OnClick="CurrentItems">Current Items</Button>
+    </RowCol>
 </Row>
 
 
@@ -63,6 +66,13 @@
     {
         await TablerService.ShowAlert($"Edited order {order.OrderId}");
     }
+
+    private async Task CurrentItems()
+    {
+        var items =  table.CurrentItems ?? [];
+        await TablerService.ShowAlert($"{items.Count} current items");
+    }
+
 
     private async Task Search()
     {

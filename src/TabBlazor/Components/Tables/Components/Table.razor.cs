@@ -164,7 +164,7 @@ namespace TabBlazor
         [Parameter] public bool ShowFooter { get; set; } = true;
         [Parameter] public int PageSize { get; set; } = 20;
         [Parameter] public IList<Item> Items { get; set; }
-        public IList<Item> CurrentItems => Items ?? TempItems?.FirstOrDefault();
+        public IList<Item> CurrentItems => TempItems?.FirstOrDefault() ?? Items;
         [Parameter] public RenderFragment<Item> RowActionTemplate { get; set; }
         [Parameter] public List<Item> SelectedItems { get; set; }
         [Parameter] public bool MultiSelect { get; set; }
