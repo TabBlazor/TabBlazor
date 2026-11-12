@@ -78,6 +78,14 @@
                 colored from their data with Tabler colors, which follow the theme. Pair color with text for accessibility.
             </Description>
         </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsFrozen)" Title="Frozen columns">
+            <Description>
+                <code>Freeze="ColumnFreeze.Start"</code> or <code>ColumnFreeze.End</code> keeps a column visible while the
+                table scrolls sideways. Start-frozen columns always come first and end-frozen columns last; the select
+                column and the row actions stay at their edge too (<code>FreezeRowActions="false"</code> turns that off).
+                Frozen columns that would take half the width or more scroll with the rest.
+            </Description>
+        </CodeSnippet>
         <CodeSnippet SetBackground Component="@typeof(DataViewsEditing)" Title="Editing">
             <Description>
                 A <code>SaveItem</code> handler turns editing on. Rows are edited on a copy (the draft), so Cancel just throws

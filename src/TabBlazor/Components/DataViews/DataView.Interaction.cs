@@ -99,6 +99,11 @@ public partial class DataView<TItem>
     /// <summary>Where the row actions column sits. Defaults to the end.</summary>
     [Parameter] public RowActionsPosition RowActionsPosition { get; set; }
 
+    /// <summary>
+    /// Keeps the row actions column visible at its edge while the table scrolls sideways. Defaults to true.
+    /// </summary>
+    [Parameter] public bool FreezeRowActions { get; set; } = true;
+
     /// <summary>Where details appear. Defaults to inline.</summary>
     [Parameter] public DataDetailsMode DetailsMode { get; set; }
 

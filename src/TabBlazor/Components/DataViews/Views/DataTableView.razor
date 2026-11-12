@@ -7,6 +7,7 @@
     var columns = View.VisibleColumns;
     var columnCount = Math.Max(1, columns.Count + (View.ShowCheckboxes ? 1 : 0) + (View.ShowExpandColumn ? 1 : 0) + (View.ShowActionsColumn ? 1 : 0));
     var inlineEdit = View.EditSession != null && View.EffectiveEditMode == DataEditMode.Inline;
+    var freeze = View.UpdateFreezePlan(columns);
 }
 <div class="table-responsive dv-scroll" style="@ScrollStyle" @ref="View.ScrollContainer">
     <table class="@View.GetTableClass()" @ref="View.TableElement" style="@(View.IsVirtualized ? $"--dv-row-height: {View.ItemSize.ToString(System.Globalization.CultureInfo.InvariantCulture)}px" : null)" @attributes="View.UnmatchedParameters">
@@ -14,7 +15,7 @@
             <tr>
                 @if (View.ShowCheckboxes)
                 {
-                    <th class="w-1 dv-select-column">
+                    <th class="@freeze.Select.AddClass("w-1 dv-select-column")" style="@freeze.Select.Style">
                         <span title="@View.Texts.SelectAll">
                             <CheckboxTriState Value="View.PageSelectionState" ValueChanged="_ => View.TogglePageSelectionAsync()"
                                               Disabled="@(View.Status != DataViewStatus.Items)" />
@@ -23,11 +24,11 @@
                 }
                 @if (View.ShowExpandColumn)
                 {
-                    <th class="w-1 dv-expand-column"><span class="visually-hidden">@View.Texts.Details</span></th>
+                    <th class="@freeze.Expand.AddClass("w-1 dv-expand-column")" style="@freeze.Expand.Style"><span class="visually-hidden">@View.Texts.Details</span></th>
                 }
                 @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.Start)
                 {
-                    <th class="w-1 dv-actions-column"></th>
+                    <th class="@freeze.StartActions.AddClass("w-1 dv-actions-column")" style="@freeze.StartActions.Style"></th>
                 }
                 @for (var index = 0; index < columns.Count; index++)
                 {
@@ -35,7 +36,8 @@
                     var menuEnd = OpensToStart(index, columns.Count);
                     var sorted = engine.Sort?.Column == col.Id;
                     var headerClass = col == columns[0] ? $"dv-first-col {col.GetHeaderClass()}" : col.GetHeaderClass();
-                    <th scope="col" class="@headerClass" style="@View.GetHeaderStyle(col)" data-column-id="@col.Id"
+                    var cellFreeze = freeze.Column(index);
+                    <th scope="col" class="@cellFreeze.AddClass(headerClass)" style="@cellFreeze.AddStyle(View.GetHeaderStyle(col))" data-column-id="@col.Id"
                         aria-sort="@(col.Sortable ? sorted ? engine.Sort!.Descending ? "descending" : "ascending" : "none" : null)">
                         <div class="dv-th">
                         @if (col.Sortable)
@@ -96,7 +98,7 @@
                 }
                 @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.End)
                 {
-                    <th class="w-1 dv-actions-column"></th>
+                    <th class="@freeze.EndActions.AddClass("w-1 dv-actions-column")" style="@freeze.EndActions.Style"></th>
                 }
             </tr>
             @if (View.FilterMode == DataFilterMode.Row && View.FilterableColumns.Count > 0)
@@ -104,19 +106,21 @@
                 <tr class="dv-filter-row">
                     @if (View.ShowCheckboxes)
                     {
-                        <th></th>
+                        <th class="@freeze.Select.Class" style="@freeze.Select.Style"></th>
                     }
                     @if (View.ShowExpandColumn)
                     {
-                        <th></th>
+                        <th class="@freeze.Expand.Class" style="@freeze.Expand.Style"></th>
                     }
                     @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.Start)
                     {
-                        <th></th>
+                        <th class="@freeze.StartActions.Class" style="@freeze.StartActions.Style"></th>
                     }
-                    @foreach (var column in columns)
+                    @for (var index = 0; index < columns.Count; index++)
                     {
-                        <th class="@column.GetHeaderClass()">
+                        var column = columns[index];
+                        var cellFreeze = freeze.Column(index);
+                        <th class="@cellFreeze.AddClass(column.GetHeaderClass())" style="@cellFreeze.Style">
                             @if (column.Filterable)
                             {
                                 <DataColumnFilter TItem="TItem" View="View" Column="column" Compact="true" />
@@ -125,7 +129,7 @@
                     }
                     @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.End)
                     {
-                        <th></th>
+                        <th class="@freeze.EndActions.Class" style="@freeze.EndActions.Style"></th>
                     }
                 </tr>
             }

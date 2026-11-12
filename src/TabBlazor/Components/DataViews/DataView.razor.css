@@ -332,6 +332,106 @@
     box-sizing: border-box;
 }
 
+/* Frozen columns: sticky cells offset by the widths of the frozen cells before them (start) or after them (end).
+   tabBlazor.syncFrozenColumns measures those widths into --dv-fs-N / --dv-fe-N on the table, marks the scroll
+   container dv-overflow-start / dv-overflow-end while content hides under an edge, and dv-freeze-off when the
+   frozen cells would take half the visible width or more. */
+/* Frozen cells need a solid background, but row and cell colors are see-through (bg-*-lt) or set on the row
+   (table-*). So the surface color goes underneath and the row or cell color is drawn on top of it as an image
+   layer; stripes, hover and selection are Tabler's inset box-shadow above both. */
+.dataview ::deep .dv-table .bg-blue-lt { --dv-tint: var(--tblr-blue-lt); }
+.dataview ::deep .dv-table .bg-azure-lt { --dv-tint: var(--tblr-azure-lt); }
+.dataview ::deep .dv-table .bg-indigo-lt { --dv-tint: var(--tblr-indigo-lt); }
+.dataview ::deep .dv-table .bg-purple-lt { --dv-tint: var(--tblr-purple-lt); }
+.dataview ::deep .dv-table .bg-pink-lt { --dv-tint: var(--tblr-pink-lt); }
+.dataview ::deep .dv-table .bg-red-lt { --dv-tint: var(--tblr-red-lt); }
+.dataview ::deep .dv-table .bg-orange-lt { --dv-tint: var(--tblr-orange-lt); }
+.dataview ::deep .dv-table .bg-yellow-lt { --dv-tint: var(--tblr-yellow-lt); }
+.dataview ::deep .dv-table .bg-lime-lt { --dv-tint: var(--tblr-lime-lt); }
+.dataview ::deep .dv-table .bg-green-lt { --dv-tint: var(--tblr-green-lt); }
+.dataview ::deep .dv-table .bg-teal-lt { --dv-tint: var(--tblr-teal-lt); }
+.dataview ::deep .dv-table .bg-cyan-lt { --dv-tint: var(--tblr-cyan-lt); }
+.dataview ::deep .dv-table .bg-white-lt { --dv-tint: var(--tblr-white-lt); }
+
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table .dv-fs,
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table .dv-fe {
+    position: sticky;
+    z-index: 3;
+    background-color: var(--tblr-bg-surface, #fff) !important;
+    background-image:
+        linear-gradient(var(--dv-tint, transparent), var(--dv-tint, transparent)),
+        linear-gradient(var(--tblr-table-bg, transparent), var(--tblr-table-bg, transparent));
+}
+
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table > thead > tr > .dv-fs,
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table > thead > tr > .dv-fe {
+    z-index: 5;
+    background-image: linear-gradient(var(--tblr-bg-surface-tertiary, transparent), var(--tblr-bg-surface-tertiary, transparent));
+}
+
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table > thead > tr.dv-filter-row > .dv-fs,
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table > thead > tr.dv-filter-row > .dv-fe {
+    background-image: none;
+}
+
+/* An open menu in a frozen cell stays above the frozen cells of the rows below it. */
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table > tbody .dv-fs:focus-within,
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table > tbody .dv-fe:focus-within,
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table > tbody .dv-fs:has(.dropdown-menu.show),
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table > tbody .dv-fe:has(.dropdown-menu.show) {
+    z-index: 4;
+}
+
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table > thead .dv-fs:focus-within,
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table > thead .dv-fe:focus-within,
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table > thead .dv-fs:has(.dropdown-menu.show),
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table > thead .dv-fe:has(.dropdown-menu.show) {
+    z-index: 6;
+}
+
+/* A shadow on the inner edge while content is scrolled under it. */
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table .dv-fs-edge::after,
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table .dv-fe-edge::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: -1px;
+    width: .75rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .15s ease-in-out;
+}
+
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table .dv-fs-edge::after {
+    inset-inline-start: 100%;
+    background: linear-gradient(to right, rgba(var(--tblr-body-color-rgb, 24, 36, 51), .12), transparent);
+}
+
+.dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table .dv-fe-edge::after {
+    inset-inline-end: 100%;
+    background: linear-gradient(to left, rgba(var(--tblr-body-color-rgb, 24, 36, 51), .12), transparent);
+}
+
+[dir="rtl"] .dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table .dv-fs-edge::after {
+    background: linear-gradient(to left, rgba(var(--tblr-body-color-rgb, 24, 36, 51), .12), transparent);
+}
+
+[dir="rtl"] .dataview ::deep .dv-scroll:not(.dv-freeze-off) > .dv-table .dv-fe-edge::after {
+    background: linear-gradient(to right, rgba(var(--tblr-body-color-rgb, 24, 36, 51), .12), transparent);
+}
+
+.dataview ::deep .dv-scroll.dv-overflow-start:not(.dv-freeze-off) > .dv-table .dv-fs-edge::after,
+.dataview ::deep .dv-scroll.dv-overflow-end:not(.dv-freeze-off) > .dv-table .dv-fe-edge::after {
+    opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dataview ::deep .dv-table .dv-fs-edge::after,
+    .dataview ::deep .dv-table .dv-fe-edge::after {
+        transition: none;
+    }
+}
+
 /* Small screens (generated per breakpoint) */
 
 @media (max-width: 575.98px) {
@@ -414,23 +514,6 @@
     .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr.dv-state-row > td::before,
     .dataview.dv-stacked-sm ::deep .dv-table > tbody > tr.dv-details-row > td::before {
         content: none;
-    }
-
-    .dataview.dv-scroll-sm ::deep .dv-table .dv-first-col,
-    .dataview.dv-scroll-sm ::deep .dv-table .dv-actions-cell,
-    .dataview.dv-scroll-sm ::deep .dv-table .dv-actions-column {
-        position: sticky;
-        z-index: 2;
-        background: var(--tblr-bg-surface, #fff);
-    }
-
-    .dataview.dv-scroll-sm ::deep .dv-table .dv-first-col {
-        left: 0;
-    }
-
-    .dataview.dv-scroll-sm ::deep .dv-table .dv-actions-cell,
-    .dataview.dv-scroll-sm ::deep .dv-table .dv-actions-column {
-        right: 0;
     }
 }
 
@@ -515,23 +598,6 @@
     .dataview.dv-stacked-md ::deep .dv-table > tbody > tr.dv-details-row > td::before {
         content: none;
     }
-
-    .dataview.dv-scroll-md ::deep .dv-table .dv-first-col,
-    .dataview.dv-scroll-md ::deep .dv-table .dv-actions-cell,
-    .dataview.dv-scroll-md ::deep .dv-table .dv-actions-column {
-        position: sticky;
-        z-index: 2;
-        background: var(--tblr-bg-surface, #fff);
-    }
-
-    .dataview.dv-scroll-md ::deep .dv-table .dv-first-col {
-        left: 0;
-    }
-
-    .dataview.dv-scroll-md ::deep .dv-table .dv-actions-cell,
-    .dataview.dv-scroll-md ::deep .dv-table .dv-actions-column {
-        right: 0;
-    }
 }
 
 @media (max-width: 991.98px) {
@@ -614,23 +680,6 @@
     .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr.dv-state-row > td::before,
     .dataview.dv-stacked-lg ::deep .dv-table > tbody > tr.dv-details-row > td::before {
         content: none;
-    }
-
-    .dataview.dv-scroll-lg ::deep .dv-table .dv-first-col,
-    .dataview.dv-scroll-lg ::deep .dv-table .dv-actions-cell,
-    .dataview.dv-scroll-lg ::deep .dv-table .dv-actions-column {
-        position: sticky;
-        z-index: 2;
-        background: var(--tblr-bg-surface, #fff);
-    }
-
-    .dataview.dv-scroll-lg ::deep .dv-table .dv-first-col {
-        left: 0;
-    }
-
-    .dataview.dv-scroll-lg ::deep .dv-table .dv-actions-cell,
-    .dataview.dv-scroll-lg ::deep .dv-table .dv-actions-column {
-        right: 0;
     }
 }
 
@@ -715,23 +764,6 @@
     .dataview.dv-stacked-xl ::deep .dv-table > tbody > tr.dv-details-row > td::before {
         content: none;
     }
-
-    .dataview.dv-scroll-xl ::deep .dv-table .dv-first-col,
-    .dataview.dv-scroll-xl ::deep .dv-table .dv-actions-cell,
-    .dataview.dv-scroll-xl ::deep .dv-table .dv-actions-column {
-        position: sticky;
-        z-index: 2;
-        background: var(--tblr-bg-surface, #fff);
-    }
-
-    .dataview.dv-scroll-xl ::deep .dv-table .dv-first-col {
-        left: 0;
-    }
-
-    .dataview.dv-scroll-xl ::deep .dv-table .dv-actions-cell,
-    .dataview.dv-scroll-xl ::deep .dv-table .dv-actions-column {
-        right: 0;
-    }
 }
 
 @media (max-width: 1399.98px) {
@@ -814,23 +846,6 @@
     .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr.dv-state-row > td::before,
     .dataview.dv-stacked-xxl ::deep .dv-table > tbody > tr.dv-details-row > td::before {
         content: none;
-    }
-
-    .dataview.dv-scroll-xxl ::deep .dv-table .dv-first-col,
-    .dataview.dv-scroll-xxl ::deep .dv-table .dv-actions-cell,
-    .dataview.dv-scroll-xxl ::deep .dv-table .dv-actions-column {
-        position: sticky;
-        z-index: 2;
-        background: var(--tblr-bg-surface, #fff);
-    }
-
-    .dataview.dv-scroll-xxl ::deep .dv-table .dv-first-col {
-        left: 0;
-    }
-
-    .dataview.dv-scroll-xxl ::deep .dv-table .dv-actions-cell,
-    .dataview.dv-scroll-xxl ::deep .dv-table .dv-actions-column {
-        right: 0;
     }
 }
 

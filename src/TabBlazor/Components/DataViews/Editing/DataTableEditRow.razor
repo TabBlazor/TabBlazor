@@ -3,7 +3,9 @@
 @using Microsoft.AspNetCore.Components.Web
 
 @{
-    var columnCount = View.VisibleColumns.Count + (View.ShowCheckboxes ? 1 : 0) + (View.ShowExpandColumn ? 1 : 0) + (View.ShowActionsColumn ? 1 : 0);
+    var freeze = View.FreezePlan;
+    var columns = View.VisibleColumns;
+    var columnCount = columns.Count + (View.ShowCheckboxes ? 1 : 0) + (View.ShowExpandColumn ? 1 : 0) + (View.ShowActionsColumn ? 1 : 0);
 }
 <CascadingValue Value="Session.EditContext" IsFixed="false">
     @if (View.ValidatorComponent != null)
@@ -13,19 +15,21 @@
     <tr class="dv-edit-row @(Session.IsSaving ? "dv-saving" : null)" @onkeydown="OnKeyDownAsync" @onkeyup="OnKeyUpAsync" aria-busy="@(Session.IsSaving ? "true" : null)">
         @if (View.ShowCheckboxes)
         {
-            <td class="w-1"></td>
+            <td class="@freeze.Select.AddClass("w-1")" style="@freeze.Select.Style"></td>
         }
         @if (View.ShowExpandColumn)
         {
-            <td class="w-1"></td>
+            <td class="@freeze.Expand.AddClass("w-1")" style="@freeze.Expand.Style"></td>
         }
         @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.Start)
         {
-            <td class="w-1 text-nowrap"><DataRowActions TItem="TItem" Item="ActionItem" View="View" /></td>
+            <td class="@freeze.StartActions.AddClass("w-1 text-nowrap")" style="@freeze.StartActions.Style"><DataRowActions TItem="TItem" Item="ActionItem" View="View" /></td>
         }
-        @foreach (var column in View.VisibleColumns)
+        @for (var index = 0; index < columns.Count; index++)
         {
-            <td class="@column.GetCellClass(Session.Draft)" data-label="@column.Title">
+            var column = columns[index];
+            var cellFreeze = freeze.Column(index);
+            <td class="@cellFreeze.AddClass(column.GetCellClass(Session.Draft))" style="@cellFreeze.Style" data-label="@column.Title">
                 @if (column.CanEdit(Session.Draft))
                 {
                     @column.Editor(Session.Draft)
@@ -39,7 +43,7 @@
         }
         @if (View.ShowActionsColumn && View.RowActionsPosition == RowActionsPosition.End)
         {
-            <td class="w-1 text-nowrap"><DataRowActions TItem="TItem" Item="ActionItem" View="View" /></td>
+            <td class="@freeze.EndActions.AddClass("w-1 text-nowrap")" style="@freeze.EndActions.Style"><DataRowActions TItem="TItem" Item="ActionItem" View="View" /></td>
         }
     </tr>
     @if (Session.Message != null)

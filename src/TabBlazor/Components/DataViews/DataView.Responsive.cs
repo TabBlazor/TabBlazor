@@ -8,7 +8,7 @@ public enum DataMobileLayout
 {
     /// <summary>Each row is a card with "Label: value" lines built from the column titles.</summary>
     Stacked,
-    /// <summary>Columns are kept and scroll sideways; the first column and the actions stay pinned.</summary>
+    /// <summary>Columns are kept and scroll sideways; the first column and the actions stay frozen.</summary>
     Scroll,
     /// <summary>Your own card markup per row, from <c>MobileTemplate</c>.</summary>
     Template
