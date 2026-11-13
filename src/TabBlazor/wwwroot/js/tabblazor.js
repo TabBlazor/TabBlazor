@@ -105,10 +105,13 @@
 
         if (!state) {
             const onScroll = () => {
+                // scrollWidth and clientWidth are rounded to whole pixels while scrollLeft is fractional, so at
+                // either end the position can be off by almost a pixel: a tolerance below 1 leaves the shadow
+                // showing when the content is already scrolled all the way.
                 const max = container.scrollWidth - container.clientWidth;
                 const position = Math.abs(container.scrollLeft); // negative in right-to-left layouts
-                container.classList.toggle('dv-overflow-start', position > 0.5);
-                container.classList.toggle('dv-overflow-end', position < max - 0.5);
+                container.classList.toggle('dv-overflow-start', position > 1);
+                container.classList.toggle('dv-overflow-end', position < max - 1);
             };
             const measure = () => {
                 const table = container.querySelector(':scope > table');
