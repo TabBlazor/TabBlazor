@@ -7,6 +7,16 @@
     var sortable = engine.Columns.Where(c => c.Sortable).ToList();
 }
 <div class="card-header dv-header">
+    @if (View.IsExporting)
+    {
+        <div class="dv-export-status" role="status">
+            <span class="spinner-border spinner-border-sm me-2" role="presentation"></span>
+            <span>@string.Format(texts.ExportingRows, View.ExportedRows.ToString("N0"))</span>
+            <button type="button" class="btn btn-link btn-sm ms-2 dv-export-cancel" @onclick="View.CancelExport">
+                @texts.CancelExport
+            </button>
+        </div>
+    }
     @if (View.ShowCheckboxes && View.SelectedCount > 0)
     {
         var selection = View.GetSelection();
@@ -26,6 +36,14 @@
                 </button>
             }
             <div class="dv-bulk-actions ms-auto btn-list">
+                @if (View.ExportVisible)
+                {
+                    <button type="button" class="btn dv-bulk-export" disabled="@View.IsExporting"
+                            @onclick="() => View.ExportAsync(DataExportScope.Selected)">
+                        <Icon IconType="@InternalIcons.Download" class="icon" />
+                        @texts.Export
+                    </button>
+                }
                 @foreach (var action in View.BulkActionsSlot?.Actions.Where(a => a.IsVisible(View)) ?? [])
                 {
                     var a = action;
@@ -141,7 +159,7 @@
             </button>
         }
 
-        @if (View.ShowMenu && View.Density == null && !View.IsSmallScreen)
+        @if (View.ShowMenu && (View.Density == null || View.ExportVisible) && !View.IsSmallScreen)
         {
             @MoreMenu
         }
@@ -247,6 +265,28 @@
                             }
                         }
                     }
+                    @if (View.ExportVisible)
+                    {
+                        var scopes = View.AvailableExportScopes;
+                        if (scopes.Count == 1)
+                        {
+                            var only = scopes[0];
+                            <DropdownItem class="dv-menu-export" OnClick="() => View.ExportAsync(only)">
+                                <Icon IconType="@InternalIcons.Download" class="icon dropdown-item-icon" />@View.Texts.Export
+                            </DropdownItem>
+                        }
+                        else
+                        {
+                            <h6 class="dropdown-header">@View.Texts.Export</h6>
+                            @foreach (var scope in scopes)
+                            {
+                                var value = scope;
+                                <DropdownItem class="dv-menu-export" OnClick="() => View.ExportAsync(value)">
+                                    <Icon IconType="@InternalIcons.Download" class="icon dropdown-item-icon" />@ExportScopeText(value)
+                                </DropdownItem>
+                            }
+                        }
+                    }
                     @if (View.Density == null)
                     {
                         <h6 class="dropdown-header">@View.Texts.Density</h6>
@@ -274,6 +314,13 @@
     private string ViewText(DataViewKind value) => value == DataViewKind.List ? View.Texts.ListView : View.Texts.TableView;
 
     private static IIconType ViewIcon(DataViewKind value) => value == DataViewKind.List ? InternalIcons.List : InternalIcons.Table;
+
+    private string ExportScopeText(DataExportScope value) => value switch
+    {
+        DataExportScope.CurrentPage => View.Texts.ExportCurrentPage,
+        DataExportScope.Selected => View.Texts.ExportSelected,
+        _ => View.Texts.ExportAllMatching
+    };
 
     private string DensityText(TableDensity value) => value switch
     {

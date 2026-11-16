@@ -201,6 +201,20 @@
     width: 100%;
 }
 
+.dataview ::deep .dv-export-status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    margin-bottom: .5rem;
+    color: var(--tblr-secondary);
+    font-size: .875rem;
+}
+
+.dataview ::deep .dv-export-cancel {
+    padding: 0;
+}
+
 .dataview ::deep .dv-split {
     display: flex;
     min-height: 20rem;

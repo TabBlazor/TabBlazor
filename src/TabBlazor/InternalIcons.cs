@@ -33,6 +33,7 @@ namespace TabBlazor
         public static IIconType Check => new TablerIcon(@"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><path d='M5 12l5 5l10 -10' />");
         public static IIconType Plus => new TablerIcon(@"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><line x1='12' y1='5' x2='12' y2='19' /><line x1='5' y1='12' x2='19' y2='12' />");
         public static IIconType List => new TablerIcon(@"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><path d='M9 6l11 0' /><path d='M9 12l11 0' /><path d='M9 18l11 0' /><path d='M5 6l0 .01' /><path d='M5 12l0 .01' /><path d='M5 18l0 .01' />");
+        public static IIconType Download => new TablerIcon(@"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><path d='M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2' /><path d='M7 11l5 5l5 -5' /><path d='M12 4l0 12' />");
         public static IIconType Table => new TablerIcon(@"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><path d='M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14z' /><path d='M3 10h18' /><path d='M10 3v18' />");
 
         public static IIconType Bold => new TablerIcon(@"<path stroke='none' d='M0 0h24v24H0z' fill='none' /><path d='M7 5h6a3.5 3.5 0 0 1 0 7h-6z' /><path d='M13 12h1a3.5 3.5 0 0 1 0 7h-7v-7' />");

@@ -107,6 +107,16 @@
                 every row, so a server can act on all of them.
             </Description>
         </CodeSnippet>
+        <CodeSnippet SetBackground Component="@typeof(DataViewsExport)" Title="Export">
+            <Description>
+                <code>OnExport</code> gets a <code>DataExportContext</code>: the scope the user picked, the current
+                <code>DataRequest</code>, the exportable columns, and the rows as an <code>IAsyncEnumerable</code> paged from
+                the source. The app decides what to do with them, so no file format is built in; <code>DataExport.ToCsvAsync</code>
+                writes a CSV for the common case. A server-side export posts <code>Request</code> and never reads the rows.
+                <code>Exportable="false"</code> leaves a column out and <code>ExportValue</code> gives a template column
+                something to write.
+            </Description>
+        </CodeSnippet>
         <CodeSnippet SetBackground Component="@typeof(DataViewsDetails)" Title="Details">
             <Description>
                 Details are separate from selection and can show inline, in a drawer or in a side panel beside a list.

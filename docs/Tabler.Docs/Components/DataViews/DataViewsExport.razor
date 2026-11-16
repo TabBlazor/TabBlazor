@@ -1,0 +1,45 @@
+@inject TablerService TablerService
+
+<DataView Items="orders" Title="Orders" KeySelector="o => o.Id" PageSize="10"
+          SelectionMode="DataSelectionMode.Multiple" OnExport="ExportAsync" MaxExportRows="5000">
+    <DataColumn Value="o => o.OrderNo" Sortable Searchable />
+    <DataColumn Value="o => o.Customer.Name" Title="Customer" Sortable Searchable />
+    <DataColumn Value="o => o.OrderDate" Format="yyyy-MM-dd" Sortable />
+    <DataColumn Value="o => o.Total" Format="N2" Align="TabBlazor.Align.End" Sortable />
+
+    @* A template column has no value of its own: ExportValue says what to write. *@
+    <DataColumn TItem="DemoOrder" TValue="string" Title="Status" ExportValue="o => o.Status">
+        <Template>
+            <Badge BackgroundColor="@(context.Status == DemoOrderStatus.Cancelled ? TablerColor.Danger : TablerColor.Blue)">
+                @context.Status
+            </Badge>
+        </Template>
+    </DataColumn>
+
+    @* Nothing to export here. *@
+    <DataColumn TItem="DemoOrder" TValue="string" Title="" Exportable="false">
+        <Template>
+            <Icon IconType="@TablerIcons.Dots" />
+        </Template>
+    </DataColumn>
+</DataView>
+
+<p class="mt-3 text-secondary">@message</p>
+
+@code {
+    private readonly List<DemoOrder> orders = DataViewDemoData.Create(120);
+    private string message = "Export is in the \"⋮\" menu, and in the selection bar once rows are ticked.";
+
+    // DataView answers which rows, under what filters, in which columns. What to do with them is up to the app:
+    // here, a CSV written in the browser. An app with an export endpoint would post context.Request instead and
+    // never enumerate the rows.
+    private async Task ExportAsync(DataExportContext<DemoOrder> context)
+    {
+        var csv = await DataExport.ToCsvAsync(context, cancellationToken: context.CancellationToken);
+        await TablerService.SaveAsBinary("orders.csv", DataExport.CsvContentType, csv);
+
+        // OnExport is a plain delegate, so the page refreshes its own message.
+        message = $"Exported {context.Scope} as orders.csv ({csv.Length:N0} bytes).";
+        StateHasChanged();
+    }
+}
