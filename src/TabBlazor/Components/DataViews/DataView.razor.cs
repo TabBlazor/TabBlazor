@@ -624,6 +624,7 @@ public partial class DataView<TItem> : ComponentBase, IAsyncDisposable
         disposed = true;
         engine?.Dispose();
         CancelFilterDelays();
+        exportCts?.Cancel();
 
         // Before the JS call: the next page's view may register the same URL prefix while it is still running.
         DisposeUrlState();

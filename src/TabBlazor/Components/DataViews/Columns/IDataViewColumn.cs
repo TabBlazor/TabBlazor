@@ -41,6 +41,21 @@ public interface IDataViewColumn<TItem>
     /// <summary>The column's own text for a filter value (an enum filter option or chip), or null for the default.</summary>
     string? GetFilterValueText(object value) => null;
 
+    /// <summary>True when the column is part of an export. Action and icon columns set it to false.</summary>
+    bool Exportable => true;
+
+    /// <summary>
+    /// The raw value for an export cell (<c>ExportValue</c> when set, else the column's value), for formats that
+    /// write typed cells. Null when the column has neither.
+    /// </summary>
+    object? GetExportValue(TItem item) => null;
+
+    /// <summary>
+    /// The export cell as text: the formatted value, the same as the cell shows. Null for a column with no value
+    /// to export, which writes an empty cell.
+    /// </summary>
+    string? GetExportText(TItem item) => GetDisplayText(item);
+
     string? GetCellClass(TItem item);
     string? GetCellStyle(TItem item);
 

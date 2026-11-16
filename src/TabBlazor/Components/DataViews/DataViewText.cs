@@ -115,6 +115,20 @@ public sealed record DataViewText
     public string DeleteFailed { get; init; } = "Could not delete. Please try again.";
     public string ActionFailed { get; init; } = "The action failed.";
     public string SavedNotShown { get; init; } = "Saved. The item is not shown with the current search and filters.";
+    public string Export { get; init; } = "Export";
+    public string ExportCurrentPage { get; init; } = "This page";
+    public string ExportSelected { get; init; } = "Selected rows";
+    public string ExportAllMatching { get; init; } = "All matching rows";
+    public string CancelExport { get; init; } = "Cancel export";
+    public string ExportFailed { get; init; } = "The export failed.";
+
+    /// <summary>"Exporting… {count} rows". Argument: the number of rows read so far.</summary>
+    public string ExportingRows { get; init; } = "Exporting… {0} rows";
+
+    /// <summary>"The export stops at {max} rows…". Argument: the row limit.</summary>
+    public string ExportLimitReached { get; init; } =
+        "The export stops at {0} rows. Narrow the search or the filters and try again.";
+
     public string SelectRow { get; init; } = "Select row";
     public string SelectAll { get; init; } = "Select all on this page";
     public string ClearSelection { get; init; } = "Clear selection";

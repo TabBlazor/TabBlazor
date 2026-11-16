@@ -71,6 +71,15 @@ public partial class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<
     /// <summary>Cell content. Takes precedence over <see cref="Format"/> and <see cref="Formatter"/>.</summary>
     [Parameter] public RenderFragment<TItem>? Template { get; set; }
 
+    /// <summary>Includes the column in exports. Defaults to true; set it to false for action and icon columns.</summary>
+    [Parameter] public bool Exportable { get; set; } = true;
+
+    /// <summary>
+    /// The value to export for a row, for a column that has no <see cref="Value"/> to export (a
+    /// <see cref="Template"/> column). Takes precedence over <see cref="Value"/>.
+    /// </summary>
+    [Parameter] public Func<TItem, object?>? ExportValue { get; set; }
+
     /// <summary>Sort using these members instead of the displayed value: one member, or <c>x =&gt; new { x.A, x.B }</c>.</summary>
     [Parameter] public Expression<Func<TItem, object>>? SortBy { get; set; }
 
@@ -232,6 +241,37 @@ public partial class DataColumn<TItem, TValue> : ComponentBase, IDataViewColumn<
             Enum e => EnumDisplay.GetName(e),
             IFormattable f => f.ToString(null, CultureInfo.CurrentCulture),
             _ => value.ToString()
+        };
+    }
+
+    /// <summary>The raw value for an export cell: <see cref="ExportValue"/> when set, else the column's value.</summary>
+    public object? GetExportValue(TItem item)
+    {
+        if (ExportValue != null)
+        {
+            return ExportValue(item);
+        }
+
+        return TryGetValue(item, out var value) ? value : null;
+    }
+
+    /// <summary>
+    /// The export cell as text. A column with <see cref="ExportValue"/> formats that value with
+    /// <see cref="Format"/>; every other column exports exactly what its cell shows.
+    /// </summary>
+    public string? GetExportText(TItem item)
+    {
+        if (ExportValue == null)
+        {
+            return GetDisplayText(item);
+        }
+
+        return ExportValue(item) switch
+        {
+            null => null,
+            Enum e => EnumDisplay.GetName(e),
+            IFormattable f => f.ToString(Format, CultureInfo.CurrentCulture),
+            var other => other.ToString()
         };
     }
 
