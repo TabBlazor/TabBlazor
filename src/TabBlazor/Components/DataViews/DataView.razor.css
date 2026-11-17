@@ -32,6 +32,58 @@
     max-width: 100%;
 }
 
+/* The filters control looks like one button: the dropdown trigger sits inside it with its
+   own chrome stripped, and the clear-all badge is a sibling button so clicking it cannot
+   toggle the panel. */
+.dataview ::deep .dv-filters-control {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.dataview ::deep .dv-filters-control .dv-filters-dropdown {
+    display: flex;
+    align-items: center;
+}
+
+.dataview ::deep .dv-filters-control .dv-filters-button {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    box-shadow: none;
+}
+
+/* Matches the count badge beside it: same 20x20 box, glyph centred. The size is fixed
+   rather than content-driven so the icon's own dimensions cannot widen it. */
+.dataview ::deep .dv-filters-control .dv-clear-filters {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+    /* Pull the badge over the button's right padding so the two sides read evenly. */
+    margin-right: -.375rem;
+}
+
+/* Inside a .btn, Tabler gives icons a margin meant for icon-then-text buttons; clear it so
+   the glyph centres. min-width:0 stops flexbox using the svg's intrinsic 24px as a floor. */
+.dataview ::deep .dv-filters-control .dv-clear-filters > .icon {
+    flex: 0 0 auto;
+    width: .875rem;
+    height: .875rem;
+    min-width: 0;
+    margin: 0;
+}
+
 .dataview ::deep .dv-table {
     margin-bottom: 0;
 }

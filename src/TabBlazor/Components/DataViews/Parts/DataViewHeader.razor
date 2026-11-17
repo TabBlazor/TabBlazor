@@ -120,21 +120,31 @@
         {
             @if (View.FiltersButtonVisible)
             {
-                <Dropdown CloseOnClick="false" class="dv-filters-dropdown" Placement="Placement.BottomEnd">
-                    <ChildContent>
-                        <button type="button" class="btn dv-filters-button">
-                            <Icon IconType="@InternalIcons.Filter" class="icon" />
-                            @texts.Filters
-                            @FilterCountBadge
+                <div class="btn dv-filters-control">
+                    <Dropdown CloseOnClick="false" class="dv-filters-dropdown" Placement="Placement.BottomEnd">
+                        <ChildContent>
+                            <button type="button" class="dv-filters-button">
+                                <Icon IconType="@InternalIcons.Filter" class="icon" />
+                                @texts.Filters
+                                @FilterCountBadge
+                            </button>
+                        </ChildContent>
+                        <DropdownTemplate>
+                            <DropdownMenu Card="true" class="dropdown-menu-end p-3 dv-filters-menu">
+                                <DataViewPopupHeader Title="@texts.Filters" CloseLabel="@texts.Close" />
+                                <DataViewFiltersPanel TItem="TItem" View="View" />
+                            </DropdownMenu>
+                        </DropdownTemplate>
+                    </Dropdown>
+                    @if (View.ActiveFilterCount > 0)
+                    {
+                        @* A sibling of the Dropdown, not a child, so clicking it cannot toggle the panel. *@
+                        <button type="button" class="badge bg-red-lt dv-clear-filters" title="@texts.ClearAllFilters" aria-label="@texts.ClearAllFilters"
+                                @onclick="View.ClearFiltersAsync">
+                            <Icon IconType="@InternalIcons.X" class="icon" />
                         </button>
-                    </ChildContent>
-                    <DropdownTemplate>
-                        <DropdownMenu Card="true" class="dropdown-menu-end p-3 dv-filters-menu">
-                            <DataViewPopupHeader Title="@texts.Filters" CloseLabel="@texts.Close" />
-                            <DataViewFiltersPanel TItem="TItem" View="View" />
-                        </DropdownMenu>
-                    </DropdownTemplate>
-                </Dropdown>
+                    }
+                </div>
             }
 
             @if (View.SearchVisible)
