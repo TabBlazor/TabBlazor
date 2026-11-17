@@ -1,7 +1,9 @@
 ﻿<section class="mb-5">
     <h4 class="h2 mb-2 docs-heading" id="@Anchor">
         @Title
-        <a class="docs-anchor" href="@AnchorHref" title="Link to this example" aria-label="@($"Link to {Title}")"
+        @* Hidden from assistive technology, and not in the tab order: it would otherwise land in the heading's
+           accessible name ("Basic Link to Basic"). The "On this page" list links to every example accessibly. *@
+        <a class="docs-anchor" href="@AnchorHref" title="Link to this example" aria-hidden="true" tabindex="-1"
            @onclick="@(() => DocsExample.ScrollToAnchor(Anchor))" @onclick:preventDefault="false">#</a>
     </h4>
 

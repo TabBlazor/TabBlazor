@@ -55,6 +55,12 @@ namespace TabBlazor.Tests.Components
 
             var anchor = cut.Find("h4.docs-heading a.docs-anchor");
             Assert.Equal("docs/buttons#colors", anchor.GetAttribute("href"));
+
+            // Out of the accessibility tree and out of the tab order, so that the heading is announced as
+            // "Colors" rather than as the title plus the link. The "On this page" list links here accessibly.
+            Assert.Equal("true", anchor.GetAttribute("aria-hidden"));
+            Assert.Equal("-1", anchor.GetAttribute("tabindex"));
+            Assert.Null(anchor.GetAttribute("aria-label"));
         }
 
         [Fact]
