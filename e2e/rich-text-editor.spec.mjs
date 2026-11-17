@@ -1,13 +1,9 @@
 // Smoke test of RichTextEditor's browser side (TipTap glue) on the docs page: typing and value sync, a toolbar
 // command, paste with a data: image (uploaded, never stored inline), mentions, and a clean dispose.
 import { expect, test } from '@playwright/test';
+import { section } from './docs-example.mjs';
 
 const page_ = '/docs/forms/rich-text-editors';
-
-/** The docs example (a section with an h4 title). */
-function section(page, title) {
-    return page.locator('section', { has: page.getByRole('heading', { name: title, exact: true }) });
-}
 
 /** The editor in the docs example with the given title. */
 function example(page, title) {

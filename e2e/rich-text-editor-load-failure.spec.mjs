@@ -1,6 +1,7 @@
 // When the TipTap bundle cannot load (blocked by a proxy or CSP, missing), RichTextEditor must fall back to a plain
 // text area and keep the Blazor Server circuit alive.
 import { expect, test } from '@playwright/test';
+import { section as docsExample } from './docs-example.mjs';
 
 test('a blocked tiptap.js falls back to a text area and keeps the page working', async ({ page }) => {
     const pageErrors = [];
@@ -9,7 +10,7 @@ test('a blocked tiptap.js falls back to a text area and keeps the page working',
 
     await page.goto('/docs/forms/rich-text-editors');
 
-    const section = page.locator('section', { has: page.getByRole('heading', { name: 'Basic', exact: true }) });
+    const section = docsExample(page, 'Basic');
     const editor = section.locator('.rich-text-editor').first();
     const fallback = editor.locator('textarea.rich-text-editor-fallback');
     await expect(fallback).toBeVisible();
