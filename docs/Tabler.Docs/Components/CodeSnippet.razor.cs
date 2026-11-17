@@ -22,7 +22,18 @@ namespace Tabler.Docs.Components
 
         protected string Code;
 
-        public Guid Id { get; internal set; } = Guid.NewGuid();
+        /// <summary>
+        /// Stable, slugified id for this example, assigned by the parent <see cref="DocsExample"/>.
+        /// Used both as the heading element id and in the deep link to this example.
+        /// </summary>
+        public string Anchor { get; internal set; }
+
+        /// <summary>
+        /// True once the code listing has been fetched, i.e. once this example has its final height.
+        /// </summary>
+        internal bool Loaded { get; private set; }
+
+        private string AnchorHref => DocsExample.AnchorHref(this);
 
         protected override async Task OnInitializedAsync()
         {
@@ -72,6 +83,9 @@ namespace Tabler.Docs.Components
                 Code = code;
                 
             }
+
+            Loaded = true;
+            DocsExample.NotifySnippetLoaded();
         }
 
         private string HighlightRazor(string code)

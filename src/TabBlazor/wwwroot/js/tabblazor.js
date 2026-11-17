@@ -295,12 +295,12 @@
         }
     },
 
-    scrollToFragment: (elementId) => {
+    scrollToFragment: (elementId, smooth = true) => {
         var element = document.getElementById(elementId);
 
         if (element) {
             element.scrollIntoView({
-                behavior: 'smooth'
+                behavior: smooth ? 'smooth' : 'instant'
            });
         }
     },

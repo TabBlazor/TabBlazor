@@ -72,9 +72,13 @@ namespace TabBlazor.Services
             return await jsRuntime.InvokeAsync<bool>("tabBlazor.centerActiveNavItem", list);
         }
 
-        public async Task ScrollToFragment(string fragmentId)
+        /// <param name="smooth">
+        /// Animate the scroll. Pass false when the page is still settling, e.g. when jumping to a
+        /// fragment on load - a smooth scroll is cancelled by content that grows while it animates.
+        /// </param>
+        public async Task ScrollToFragment(string fragmentId, bool smooth = true)
         {
-            await jsRuntime.InvokeVoidAsync("tabBlazor.scrollToFragment", fragmentId);
+            await jsRuntime.InvokeVoidAsync("tabBlazor.scrollToFragment", fragmentId, smooth);
         }
 
         public async Task ScrollIntoView(string elementId, ScrollIntoViewOptions options)

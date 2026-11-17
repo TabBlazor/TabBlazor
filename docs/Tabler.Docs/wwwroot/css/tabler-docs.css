@@ -100,3 +100,19 @@ pre.highlight,
 .example-column-2 {
   max-width: 40rem;
 }
+
+.docs-heading {
+  scroll-margin-top: 5rem;
+}
+.docs-heading .docs-anchor {
+  opacity: 0;
+  margin-left: 0.35rem;
+  font-weight: 400;
+  text-decoration: none;
+  color: var(--tblr-primary);
+  transition: opacity 0.15s ease-in-out;
+}
+.docs-heading:hover .docs-anchor,
+.docs-heading .docs-anchor:focus-visible {
+  opacity: 1;
+}

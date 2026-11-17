@@ -1,5 +1,9 @@
 ﻿<section class="mb-5">
-    <h4 class="h2 mb-2" id="@Id">@Title</h4>
+    <h4 class="h2 mb-2 docs-heading" id="@Anchor">
+        @Title
+        <a class="docs-anchor" href="@AnchorHref" title="Link to this example" aria-label="@($"Link to {Title}")"
+           @onclick="@(() => DocsExample.ScrollToAnchor(Anchor))" @onclick:preventDefault="false">#</a>
+    </h4>
 
     @if (Description != null)
     {
