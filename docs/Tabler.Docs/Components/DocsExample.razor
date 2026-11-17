@@ -27,7 +27,8 @@
                 @foreach (var codeSnippet in CodeSnippets)
                 {
                     <li class="toc-entry toc-h2">
-                        <a href="javascript:void(0)" @onclick="@(() => NavigateTo(codeSnippet))">@codeSnippet.Title</a>
+                        <a href="@AnchorHref(codeSnippet)" @onclick="@(() => ScrollToAnchor(codeSnippet.Anchor))"
+                           @onclick:preventDefault="false">@codeSnippet.Title</a>
                     </li>
                 }
             </ul>
