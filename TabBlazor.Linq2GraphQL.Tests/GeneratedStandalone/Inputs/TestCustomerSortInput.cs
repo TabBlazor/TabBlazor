@@ -23,4 +23,12 @@ public partial class TestCustomerSortInput : GraphInputBase
     	set => SetValue("name", value);
 	}
 
+	[GraphQLMember("preferred")]
+	[JsonPropertyName("preferred")]
+	public SortEnumType? Preferred 
+	{
+		get => GetValue<SortEnumType?>("preferred");
+    	set => SetValue("preferred", value);
+	}
+
 }

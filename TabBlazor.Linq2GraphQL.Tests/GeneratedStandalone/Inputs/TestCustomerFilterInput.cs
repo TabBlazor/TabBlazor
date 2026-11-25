@@ -39,4 +39,12 @@ public partial class TestCustomerFilterInput : GraphInputBase
     	set => SetValue("name", value);
 	}
 
+	[GraphQLMember("preferred")]
+	[JsonPropertyName("preferred")]
+	public BooleanOperationFilterInput? Preferred 
+	{
+		get => GetValue<BooleanOperationFilterInput?>("preferred");
+    	set => SetValue("preferred", value);
+	}
+
 }

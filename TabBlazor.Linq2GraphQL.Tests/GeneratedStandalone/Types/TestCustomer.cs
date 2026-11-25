@@ -21,4 +21,8 @@ public partial class TestCustomer : GraphQLTypeBase
     [JsonPropertyName("name")]
     public string Name { get; set; }
 
+    [GraphQLMember("preferred")]
+    [JsonPropertyName("preferred")]
+    public bool Preferred { get; set; }
+
 }

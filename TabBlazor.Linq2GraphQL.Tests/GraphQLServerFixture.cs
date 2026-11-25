@@ -31,7 +31,7 @@ public class GraphQLServerFixture : IAsyncLifetime
             Id = i.Id,
             FirstName = i.FirstName,
             LastName = i.LastName,
-            Customer = i.Customer == null ? null : new Server.TestCustomer { Name = i.Customer.Name },
+            Customer = i.Customer == null ? null : new Server.TestCustomer { Name = i.Customer.Name, Preferred = IsPreferred(i.Customer.Name) },
             Quantity = i.Quantity,
             Price = i.Price,
             Date = i.Date,
@@ -54,6 +54,9 @@ public class GraphQLServerFixture : IAsyncLifetime
         Client = new TestItemsClient(http, Options.Create(new GraphClientOptions()), services);
         StandaloneClient = new StandaloneItemsClient(http, Options.Create(new StandaloneTestClient.Runtime.GraphClientOptions()), services);
     }
+
+    /// <summary>The seed's customers whose name contains "odin" (rows 1 and 3) are preferred.</summary>
+    public static bool IsPreferred(string customerName) => customerName.Contains("odin", StringComparison.OrdinalIgnoreCase);
 
     public async Task DisposeAsync()
     {

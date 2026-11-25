@@ -400,6 +400,18 @@ namespace TabBlazor.Tests.Components.DataViews
         }
 
         [Fact]
+        public async Task Filters_bools_with_equals_and_not_equals()
+        {
+            // The DataView's Any/Yes/No toggle sends Equals true or false.
+            Assert.Equal(Seed.Where(x => x.Active).Select(x => x.Id),
+                await AllIds(filters: [new FilterSpec("active", FilterOperator.Equals, true)]));
+            Assert.Equal(Seed.Where(x => !x.Active).Select(x => x.Id),
+                await AllIds(filters: [new FilterSpec("active", FilterOperator.Equals, false)]));
+            Assert.Equal(Seed.Where(x => x.Active).Select(x => x.Id),
+                await AllIds(filters: [new FilterSpec("active", FilterOperator.NotEquals, false)]));
+        }
+
+        [Fact]
         public async Task Filters_null_and_not_null()
         {
             // A null value on a nullable field (servers reject "is null" on non-nullable fields).

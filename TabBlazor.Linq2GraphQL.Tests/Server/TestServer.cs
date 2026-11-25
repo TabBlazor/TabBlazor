@@ -19,6 +19,9 @@ namespace TabBlazor.Linq2GraphQL.Tests.Server
     public class TestCustomer
     {
         public string Name { get; set; } = "";
+
+        // A nested bool: HotChocolate filters it with BooleanOperationFilterInput (only eq and neq).
+        public bool Preferred { get; set; }
     }
 
     public class TestItem
