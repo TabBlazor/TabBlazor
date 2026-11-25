@@ -38,13 +38,21 @@ internal static class GraphQLMembers
     public static bool IsInput(Type type) => ClientRuntime.IsInput(ElementType(type));
 
     /// <summary>
-    /// A leaf (operation) input is recognized by structure: apart from <c>and</c>/<c>or</c>, its members are scalars or
-    /// lists of scalars, for example <c>StringOperationFilterInput</c> with <c>eq</c>, <c>contains</c>, <c>in</c>.
+    /// A leaf (operation) input is recognized by structure: apart from <c>and</c>/<c>or</c>, it has at least one member
+    /// and all its members are scalars or lists of scalars, for example <c>StringOperationFilterInput</c> with
+    /// <c>eq</c>, <c>contains</c>, <c>in</c>, or <c>BooleanOperationFilterInput</c> with only <c>eq</c> and <c>neq</c>.
+    /// An object filter input's members are inputs themselves, so it is never a leaf.
     /// </summary>
-    public static bool IsLeafInput(Type type, string and, string or) =>
-        ClientRuntime.IsInput(type) &&
-        Of(type).Where(m => m.Key != and && m.Key != or).All(m => !IsInput(m.Value.PropertyType)) &&
-        Of(type).Count > 2;
+    public static bool IsLeafInput(Type type, string and, string or)
+    {
+        if (!ClientRuntime.IsInput(type))
+        {
+            return false;
+        }
+
+        var operations = Of(type).Where(m => m.Key != and && m.Key != or).ToList();
+        return operations.Count > 0 && operations.All(m => !IsInput(m.Value.PropertyType));
+    }
 
     /// <summary>
     /// Maps a DataView member path (camelCase C# names, <c>customer.name</c>) on a generated row type to its GraphQL
