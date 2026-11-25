@@ -213,8 +213,11 @@ Running list of places where the implementation differs from, or fills a gap in,
 
 ## Phase 6: Linq2GraphQL adapter (before the spike on a real screen)
 
-- **Package:** `TabBlazor.Linq2GraphQL` depends on the published `Linq2GraphQL.Client` 1.0.67-prerelease and
-  references TabBlazor as a normal dependency (the EF package embeds TabBlazor; this one does not).
+- **Package:** `TabBlazor.Linq2GraphQL` references TabBlazor as a normal dependency (the EF package embeds
+  TabBlazor; this one does not). It first depended on `Linq2GraphQL.Client` 1.0.67-prerelease; it no longer
+  references it, so clients generated with `--standalone` (Linq2GraphQL 1.0.102, runtime copied into
+  `<namespace>.Runtime`) work too. Runtime types are recognized by name (`ClientRuntime`), and `TFilter`/`TSort`
+  are constrained to `class, new()` with a check on creation instead of `GraphInputBase`.
 - **The page function returns `object`** (`Func<int?, string?, TFilter?, List<TSort>?, object>`), so the doc's
   three type arguments are enough; the connection type is read from the returned query. A wrong return type is a
   clear error on first load.
@@ -237,6 +240,10 @@ Running list of places where the implementation differs from, or fills a gap in,
 - **Finding for Linq2GraphQL:** generated code refers to `Linq2GraphQL.Client…` without `global::`, so a client
   generated into a namespace under one that contains a `Linq2GraphQL` namespace (like `TabBlazor.*` with this
   adapter) does not compile. Emitting `global::` in the templates would fix it.
+- **Finding for Linq2GraphQL (standalone):** the runtime copy's `HttpClientBuilderExtensions` reads
+  `ThisAssembly.AssemblyFileVersion`, a Nerdbank.GitVersioning type that a project without it does not have (and
+  that clashes with CS0436 where another assembly's `ThisAssembly` is visible). The copy should carry the runtime
+  version from `RuntimeInfo.Version` instead.
 
 ## Phase 7: docs and migration
 

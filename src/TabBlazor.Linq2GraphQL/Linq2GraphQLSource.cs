@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using Linq2GraphQL.Client;
 
 namespace TabBlazor.Linq2GraphQL;
 
@@ -23,8 +22,8 @@ public static class Linq2GraphQLSource
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TFilter,
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TSort>(
         Func<int?, string?, TFilter?, List<TSort>?, object> query)
-        where TFilter : GraphInputBase, new()
-        where TSort : GraphInputBase, new() =>
+        where TFilter : class, new()
+        where TSort : class, new() =>
         new(PagingMode.Cursor, (page, where, order) => query(page.First, page.After, where, order));
 
     /// <summary>An offset-paged source. The function gets <c>skip</c>, <c>take</c>, the filter and the sort, and returns the query.</summary>
@@ -32,8 +31,8 @@ public static class Linq2GraphQLSource
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TFilter,
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TSort>(
         Func<int?, int?, TFilter?, List<TSort>?, object> query)
-        where TFilter : GraphInputBase, new()
-        where TSort : GraphInputBase, new() =>
+        where TFilter : class, new()
+        where TSort : class, new() =>
         new(PagingMode.Offset, (page, where, order) => query(page.Skip, page.Take, where, order));
 }
 
@@ -41,11 +40,12 @@ public static class Linq2GraphQLSource
 /// A DataView source over a generated Linq2GraphQL client. Column member paths are turned into GraphQL paths through
 /// the generated types' <c>[GraphQLMember]</c> names; filters, search and sorts are built as the generated input types
 /// by an <see cref="IGraphQLConvention"/> (HotChocolate's by default). Paths are checked on first use, so a wrong
-/// path is a clear error before any query is sent.
+/// path is a clear error before any query is sent. Works with clients that use the <c>Linq2GraphQL.Client</c> package
+/// and with clients generated with <c>--standalone</c>, which carry their own copy of the runtime.
 /// </summary>
 public sealed class Linq2GraphQLSource<TNode, TFilter, TSort> : IDataViewSource<TNode>
-    where TFilter : GraphInputBase, new()
-    where TSort : GraphInputBase, new()
+    where TFilter : class, new()
+    where TSort : class, new()
 {
     private readonly Func<PageRequest, TFilter?, List<TSort>?, object> query;
     private readonly Dictionary<string, (string? SortPath, string? FilterPath)> mappedColumns = [];
@@ -58,6 +58,17 @@ public sealed class Linq2GraphQLSource<TNode, TFilter, TSort> : IDataViewSource<
 
     internal Linq2GraphQLSource(PagingMode pagingMode, Func<PageRequest, TFilter?, List<TSort>?, object> query)
     {
+        // Generic constraints cannot name GraphInputBase: a standalone client has its own copy of it.
+        foreach (var input in new[] { typeof(TFilter), typeof(TSort) })
+        {
+            if (!ClientRuntime.IsInput(input))
+            {
+                throw new ArgumentException(
+                    $"{input.Name} is not a generated Linq2GraphQL input type (one deriving from GraphInputBase); " +
+                    "pass the generated filter and sort inputs of the query.");
+            }
+        }
+
         PagingMode = pagingMode;
         this.query = query;
     }

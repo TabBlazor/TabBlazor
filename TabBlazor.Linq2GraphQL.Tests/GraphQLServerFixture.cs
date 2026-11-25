@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using TestItemsClient = GraphQLTestClient.TestItemsClient;
+using StandaloneItemsClient = StandaloneTestClient.StandaloneItemsClient;
 using TabBlazor.Linq2GraphQL.Tests.Server;
 using TabBlazor.Tests.Components.DataViews;
 
@@ -19,6 +20,9 @@ public class GraphQLServerFixture : IAsyncLifetime
     protected virtual double? MaxFieldCost => null;
 
     public TestItemsClient Client { get; private set; } = default!;
+
+    /// <summary>A client generated with <c>--standalone</c>: its own copy of the runtime, not the Linq2GraphQL.Client package.</summary>
+    public StandaloneItemsClient StandaloneClient { get; private set; } = default!;
 
     public async Task InitializeAsync()
     {
@@ -48,6 +52,7 @@ public class GraphQLServerFixture : IAsyncLifetime
         http.BaseAddress = new Uri("http://localhost/graphql/");
         var services = new ServiceCollection().AddMemoryCache().BuildServiceProvider();
         Client = new TestItemsClient(http, Options.Create(new GraphClientOptions()), services);
+        StandaloneClient = new StandaloneItemsClient(http, Options.Create(new StandaloneTestClient.Runtime.GraphClientOptions()), services);
     }
 
     public async Task DisposeAsync()

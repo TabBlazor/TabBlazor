@@ -1,13 +1,12 @@
 using System.Linq.Expressions;
 using System.Reflection;
-using Linq2GraphQL.Client;
 
 namespace TabBlazor.Linq2GraphQL;
 
 /// <summary>
 /// The fields of a row type that a request's columns read: the members their value, sort and filter expressions use
 /// (the key is one of the request's columns when it is a member path). Each field is a chain of
-/// <see cref="GraphQLMemberAttribute"/> properties from the row, such as <c>Customer.Name</c>.
+/// <c>[GraphQLMember]</c> properties from the row, such as <c>Customer.Name</c>.
 /// </summary>
 internal static class NodeFields
 {
@@ -65,7 +64,7 @@ internal static class NodeFields
             }
 
             // GraphQL fields up to the first member that is not one (string.Length, Nullable.Value).
-            var fields = chain.TakeWhile(m => m is PropertyInfo p && p.GetCustomAttribute<GraphQLMemberAttribute>() != null)
+            var fields = chain.TakeWhile(m => m is PropertyInfo p && ClientRuntime.GraphQLName(p) != null)
                 .Cast<PropertyInfo>()
                 .ToArray();
             if (fields.Length == 0)

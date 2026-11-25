@@ -1,7 +1,7 @@
+using System.Collections;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using Linq2GraphQL.Client;
 
 namespace TabBlazor.Linq2GraphQL;
 
@@ -40,21 +40,22 @@ public sealed partial class GraphQLCostLimitException : Exception
 
     /// <summary>
     /// The cost error in a Linq2GraphQL exception, or null. An HTTP 400 carries the response body in its message
-    /// (<see cref="GraphQueryRequestException"/>); an HTTP 200 carries parsed errors (<see cref="GraphQueryExecutionException"/>).
+    /// (<c>GraphQueryRequestException</c>); an HTTP 200 carries parsed errors (<c>GraphQueryExecutionException</c>).
+    /// The exceptions are recognized by name, so a standalone client's copy of the runtime works too.
     /// </summary>
     internal static GraphQLCostLimitException? From(Exception exception)
     {
-        if (exception is GraphQueryExecutionException { Errors: { } errors })
+        if (ClientRuntime.Is(exception.GetType(), ClientRuntime.GraphQueryExecutionException))
         {
-            var error = errors.FirstOrDefault(e => e.Extensions != null &&
-                                                   e.Extensions.TryGetValue("code", out var code) &&
-                                                   code?.ToString() == ErrorCode);
-            return error == null
+            var extensions = ClientRuntime.ErrorExtensions(exception)
+                .FirstOrDefault(e => e != null && e.Contains("code") && e["code"]?.ToString() == ErrorCode);
+            return extensions == null
                 ? null
-                : new GraphQLCostLimitException(Number(error.Extensions, "fieldCost"), Number(error.Extensions, "maxFieldCost"), exception);
+                : new GraphQLCostLimitException(Number(extensions, "fieldCost"), Number(extensions, "maxFieldCost"), exception);
         }
 
-        if (exception is GraphQueryRequestException && exception.Message.Contains($"\"{ErrorCode}\"", StringComparison.Ordinal))
+        if (ClientRuntime.Is(exception.GetType(), ClientRuntime.GraphQueryRequestException) &&
+            exception.Message.Contains($"\"{ErrorCode}\"", StringComparison.Ordinal))
         {
             return new GraphQLCostLimitException(Number(exception.Message, "fieldCost"), Number(exception.Message, "maxFieldCost"), exception);
         }
@@ -62,8 +63,8 @@ public sealed partial class GraphQLCostLimitException : Exception
         return null;
     }
 
-    private static double? Number(Dictionary<string, object>? extensions, string name) =>
-        extensions?.GetValueOrDefault(name) switch
+    private static double? Number(IDictionary extensions, string name) =>
+        (extensions.Contains(name) ? extensions[name] : null) switch
         {
             JsonElement { ValueKind: JsonValueKind.Number } e => e.GetDouble(),
             IConvertible c => c.ToDouble(CultureInfo.InvariantCulture),

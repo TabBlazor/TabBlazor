@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using System.Reflection;
-using Linq2GraphQL.Client;
-using Linq2GraphQL.Client.Common;
 
 namespace TabBlazor.Linq2GraphQL;
 
@@ -47,8 +45,8 @@ internal static class GraphQueryRunner
         var items = shape.Items.GetValue(result) is IEnumerable list ? list.Cast<TNode>().ToList() : [];
         int? total = shape.TotalCount?.GetValue(result) is int count ? count : null;
         var pageInfo = shape.PageInfo?.GetValue(result);
-        var hasNext = pageInfo?.GetType().GetProperty(nameof(PageInfo.HasNextPage))?.GetValue(pageInfo) is true;
-        var endCursor = pageInfo?.GetType().GetProperty(nameof(PageInfo.EndCursor))?.GetValue(pageInfo) as string;
+        var hasNext = pageInfo?.GetType().GetProperty("HasNextPage")?.GetValue(pageInfo) is true;
+        var endCursor = pageInfo?.GetType().GetProperty("EndCursor")?.GetValue(pageInfo) as string;
         return new GraphQLPageResult<TNode>(items, total, hasNext, endCursor);
     }
 
@@ -65,7 +63,7 @@ internal static class GraphQueryRunner
 
         public static QueryShape For(Type queryType)
         {
-            var resultType = FindResultType(queryType)
+            var resultType = ClientRuntime.QueryResultType(queryType)
                              ?? throw new InvalidOperationException(
                                  $"The page function must return a Linq2GraphQL query (GraphCursorQuery<T> or GraphQuery<T>), not {queryType.Name}.");
             var members = GraphQLMembers.Of(resultType);
@@ -83,19 +81,6 @@ internal static class GraphQueryRunner
                 TotalCount = members.GetValueOrDefault("totalCount"),
                 PageInfo = members.GetValueOrDefault("pageInfo")
             };
-        }
-
-        private static Type? FindResultType(Type? type)
-        {
-            for (; type != null; type = type.BaseType)
-            {
-                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(GraphBase<,>))
-                {
-                    return type.GetGenericArguments()[0];
-                }
-            }
-
-            return null;
         }
 
         public MethodInfo ExecuteAsync(Type executeType) => executeMethods.GetOrAdd(executeType, static t =>
