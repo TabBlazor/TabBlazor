@@ -4,9 +4,11 @@ using System.Reflection;
 namespace TabBlazor.Linq2GraphQL;
 
 /// <summary>
-/// Recognizes Linq2GraphQL's runtime types by name, never by assembly or namespace. A client generated with
+/// Recognizes Linq2GraphQL's runtime types by name and namespace, never by assembly. A client generated with
 /// <c>--standalone</c> carries its own copy of the runtime (<c>&lt;namespace&gt;.Runtime.GraphInputBase</c>, …), so the
 /// adapter works with that copy and with the <c>Linq2GraphQL.Client</c> package alike, and references neither.
+/// Only types in <c>Linq2GraphQL.Client</c> or a <c>….Runtime</c> namespace count, so an unrelated type of the same
+/// name does not.
 /// </summary>
 internal static class ClientRuntime
 {
@@ -23,7 +25,7 @@ internal static class ClientRuntime
     {
         for (; type != null; type = type.BaseType)
         {
-            if (type.Name == name)
+            if (type.Name == name && IsRuntimeType(type))
             {
                 return true;
             }
@@ -40,7 +42,7 @@ internal static class ClientRuntime
     {
         foreach (var attribute in property.CustomAttributes)
         {
-            if (attribute.AttributeType.Name == GraphQLMemberAttribute &&
+            if (attribute.AttributeType.Name == GraphQLMemberAttribute && IsRuntimeType(attribute.AttributeType) &&
                 attribute.ConstructorArguments is [{ Value: string name }, ..])
             {
                 return name;
@@ -55,13 +57,25 @@ internal static class ClientRuntime
     {
         for (; queryType != null; queryType = queryType.BaseType)
         {
-            if (queryType.IsGenericType && queryType.GetGenericTypeDefinition().Name == GraphBase)
+            if (queryType.IsGenericType && queryType.GetGenericTypeDefinition().Name == GraphBase && IsRuntimeType(queryType))
             {
                 return queryType.GetGenericArguments()[0];
             }
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// A type of the <c>Linq2GraphQL.Client</c> package or of a standalone copy of it (<c>&lt;namespace&gt;.Runtime</c>,
+    /// with its sub-namespaces such as <c>.Runtime.Common</c>).
+    /// </summary>
+    public static bool IsRuntimeType(Type type)
+    {
+        var ns = type.Namespace;
+        return ns != null &&
+               (ns == "Linq2GraphQL.Client" || ns.StartsWith("Linq2GraphQL.Client.", StringComparison.Ordinal) ||
+                ns.EndsWith(".Runtime", StringComparison.Ordinal) || ns.Contains(".Runtime.", StringComparison.Ordinal));
     }
 
     /// <summary>The <c>extensions</c> of each error a <c>GraphQueryExecutionException</c> carries.</summary>

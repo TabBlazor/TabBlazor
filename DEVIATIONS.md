@@ -216,7 +216,8 @@ Running list of places where the implementation differs from, or fills a gap in,
 - **Package:** `TabBlazor.Linq2GraphQL` references TabBlazor as a normal dependency (the EF package embeds
   TabBlazor; this one does not). It first depended on `Linq2GraphQL.Client` 1.0.67-prerelease; it no longer
   references it, so clients generated with `--standalone` (Linq2GraphQL 1.0.102, runtime copied into
-  `<namespace>.Runtime`) work too. Runtime types are recognized by name (`ClientRuntime`), and `TFilter`/`TSort`
+  `<namespace>.Runtime`) work too. Runtime types are recognized by name within
+  `Linq2GraphQL.Client` or a `….Runtime` namespace (`ClientRuntime`), and `TFilter`/`TSort`
   are constrained to `class, new()` with a check on creation instead of `GraphInputBase`.
 - **The page function returns `object`** (`Func<int?, string?, TFilter?, List<TSort>?, object>`), so the doc's
   three type arguments are enough; the connection type is read from the returned query. A wrong return type is a

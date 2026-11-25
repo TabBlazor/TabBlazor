@@ -123,4 +123,9 @@ public class InputTypeTests
 
         Assert.Contains(nameof(NotAnInput), error.Message);
     }
+
+    [Fact]
+    public void A_GraphInputBase_outside_a_Linq2GraphQL_runtime_namespace_is_not_an_input() =>
+        Assert.Throws<ArgumentException>(() =>
+            Linq2GraphQLSource.Cursor<TestItem, Unrelated.LookalikeFilterInput, TestItemSortInput>((_, _, _, _) => new object()));
 }
