@@ -1,0 +1,4 @@
+# Generated with --standalone. Its runtime copy reads Nerdbank.GitVersioning's ThisAssembly, which this project
+# also sees from TabBlazor.Linq2GraphQL (InternalsVisibleTo); the project's own one is the right one.
+[*.cs]
+dotnet_diagnostic.CS0436.severity = none

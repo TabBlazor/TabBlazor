@@ -32,10 +32,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Linq2GraphQL.Client" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\TabBlazor\TabBlazor.csproj" />
     </ItemGroup>
 

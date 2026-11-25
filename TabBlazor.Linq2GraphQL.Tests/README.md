@@ -20,5 +20,21 @@ dotnet tool install --global Linq2GraphQL.Generator --version 1.0.67-prerelease
 Linq2GraphQL -sc=Server/schema.graphql -c=TestItemsClient -n=GraphQLTestClient -o=Generated -nu
 ```
 
+`GeneratedStandalone/` is the same schema generated with `--standalone` (its own copy of the runtime in
+`StandaloneTestClient.Runtime`, no `Linq2GraphQL.Client`), so the adapter is also tested with a client that does
+not derive from the package's types (`StandaloneClientTests.cs`). Regenerate it with the standalone generator
+version the tests should cover:
+
+```bash
+dotnet tool install --global Linq2GraphQL.Generator --version 1.0.102-prerelease
+```
+
+```bash
+Linq2GraphQL -sc=Server/schema.graphql -c=StandaloneItemsClient -n=StandaloneTestClient -o=GeneratedStandalone -nu -sa
+```
+
+The generator does not delete files it no longer writes; remove stale files by hand. Keep
+`GeneratedStandalone/.editorconfig`, which silences CS0436 for the runtime copy's use of `ThisAssembly`.
+
 The client's namespace must not start with `TabBlazor.`: the generated code refers to `Linq2GraphQL.Client…`
 without `global::`, which would resolve to this adapter's `TabBlazor.Linq2GraphQL` namespace.

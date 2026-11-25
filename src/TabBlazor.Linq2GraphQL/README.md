@@ -45,6 +45,19 @@ add `!` to any other argument the compiler warns about in the same way.
   Members marked `[Browsable(false)]` or starting with `__` (the generator's `AddUnknownOption` adds `__Unknown` with
   both) are not offered as filter options.
 
+## Standalone clients
+
+The adapter does not reference `Linq2GraphQL.Client`. It finds Linq2GraphQL's runtime types by name
+(`GraphInputBase`, `[GraphQLMember]`, `GraphQuery<T>`/`GraphCursorQuery<T>`, the query exceptions), so it works
+with a client that uses the `Linq2GraphQL.Client` package and with one generated with `--standalone`
+(`"standalone": true`), whose runtime copy lives in `<namespace>.Runtime`. Only types in `Linq2GraphQL.Client` or a
+`….Runtime` namespace count. Nothing changes in the page function, and an app can use several standalone clients
+generated with different Linq2GraphQL versions.
+A client that uses the package references it itself; the adapter no longer brings it in.
+
+`TFilter` and `TSort` must be the query's generated filter and sort inputs: anything not deriving from a
+`GraphInputBase` is an `ArgumentException` when the source is created.
+
 ## Fetching only the columns' fields
 
 By default every row comes with all its scalar fields, whether a column shows them or not. `FetchColumnFieldsOnly()`
